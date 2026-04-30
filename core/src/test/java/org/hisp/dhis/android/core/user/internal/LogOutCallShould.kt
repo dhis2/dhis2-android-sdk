@@ -32,6 +32,9 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
@@ -51,6 +54,9 @@ class LogOutCallShould {
     private val credentials: Credentials = mock()
     private val databaseManager: DatabaseManager = mock()
     private val serverTimezoneManager: ServerTimezoneManager = mock()
+    private val defaultCategoryComboManager: DefaultCategoryComboManager = mock()
+    private val databaseConfigurationHelper: DatabaseConfigurationHelper = mock()
+    private val databaseConfigurationStore: DatabaseConfigurationInsecureStore = mock()
 
     private lateinit var logOutCall: LogOutCall
 
@@ -58,7 +64,15 @@ class LogOutCallShould {
     fun setUp() {
         whenever(credentials.username).thenReturn("user")
         whenever(credentials.password).thenReturn("password")
-        logOutCall = LogOutCall(databaseManager, credentialsSecureStore, userIdStore, serverTimezoneManager)
+        logOutCall = LogOutCall(
+            databaseManager,
+            credentialsSecureStore,
+            userIdStore,
+            serverTimezoneManager,
+            defaultCategoryComboManager,
+            databaseConfigurationHelper,
+            databaseConfigurationStore,
+        )
     }
 
     @Test
@@ -75,6 +89,13 @@ class LogOutCallShould {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
         logOutCall.logOut().blockingAwait()
         verify(serverTimezoneManager, times(1)).clearCache()
+    }
+
+    @Test
+    fun clear_default_category_combo_cache() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentials)
+        logOutCall.logOut().blockingAwait()
+        verify(defaultCategoryComboManager, times(1)).clearCache()
     }
 
     @Test

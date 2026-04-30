@@ -31,9 +31,14 @@ package org.hisp.dhis.android.core.arch.api
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
+@Suppress("TooManyFunctions")
 class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
     internal fun <T> fields(fields: Fields<T>) {
         parameters.add("fields" to fields.generateString())
+    }
+
+    internal fun <T> keys(keys: Fields<T>) {
+        parameters.add("key" to keys.generateString())
     }
 
     internal fun <T> filter(filter: Filter<T>?) {

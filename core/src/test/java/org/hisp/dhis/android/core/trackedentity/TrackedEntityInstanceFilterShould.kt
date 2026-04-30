@@ -42,11 +42,15 @@ import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityIn
 import org.junit.Test
 import org.mockito.internal.util.collections.Sets
 
-class TrackedEntityInstanceFilterShould :
-    TrackedEntityInstanceFilterCommonShould("trackedentity/tracked_entity_instance_filter.json") {
+internal class TrackedEntityInstanceFilterShould :
+    TrackedEntityInstanceFilterCommonShould<TrackedEntityInstanceFilterDTO>(
+        "trackedentity/tracked_entity_instance_filter.json",
+        TrackedEntityInstanceFilterDTO.serializer(),
+    ) {
+
     @Test
     override fun map_from_json_string() {
-        val trackedEntityInstanceFilterDTO = deserialize(TrackedEntityInstanceFilterDTO.serializer())
+        val trackedEntityInstanceFilterDTO = deserialize()
         val trackedEntityInstanceFilter = trackedEntityInstanceFilterDTO.toDomain()
 
         teiFilterCommonAsserts(trackedEntityInstanceFilter)

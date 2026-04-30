@@ -57,4 +57,11 @@ public class ReservedValueSettingStoreIntegrationShould extends
                 .numberOfValuesToReserve(100)
                 .build();
     }
+
+    @Override
+    protected ReservedValueSetting buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .numberOfValuesToReserve(null)
+                .build();
+    }
 }

@@ -47,6 +47,7 @@ internal class ParentPeriodGeneratorImpl(
     private val monthly: PeriodGenerator,
     private val nMonthly: NMonthlyPeriodGenerators,
     private val yearly: YearlyPeriodGenerators,
+    private val relativePeriodHelper: RelativePeriodHelper,
 ) : ParentPeriodGenerator {
 
     override fun generatePeriods(): List<Period> {
@@ -69,15 +70,19 @@ internal class ParentPeriodGeneratorImpl(
     }
 
     override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
-        val periodGenerator = getPeriodGenerator(relativePeriod.periodType)
+        val periodType = relativePeriod.getPeriodType(relativePeriodHelper)
+        val periodGenerator = getPeriodGenerator(periodType)
 
         return when {
             relativePeriod.start != null && relativePeriod.end != null ->
                 periodGenerator.generatePeriods(relativePeriod.start, relativePeriod.end).toPeriods()
+
             relativePeriod.periodsThisYear ->
                 periodGenerator.generatePeriodsInYear(0).toPeriods()
+
             relativePeriod.periodsLastYear ->
                 periodGenerator.generatePeriodsInYear(-1).toPeriods()
+
             else ->
                 emptyList()
         }
@@ -90,6 +95,7 @@ internal class ParentPeriodGeneratorImpl(
             PeriodType.Weekly -> weekly.weekly
             PeriodType.WeeklyWednesday -> weekly.weeklyWednesday
             PeriodType.WeeklyThursday -> weekly.weeklyThursday
+            PeriodType.WeeklyFriday -> weekly.weeklyFriday
             PeriodType.WeeklySaturday -> weekly.weeklySaturday
             PeriodType.WeeklySunday -> weekly.weeklySunday
             PeriodType.BiWeekly -> biWeekly
@@ -101,15 +107,21 @@ internal class ParentPeriodGeneratorImpl(
             PeriodType.SixMonthlyApril -> nMonthly.sixMonthlyApril
             PeriodType.SixMonthlyNov -> nMonthly.sixMonthlyNov
             PeriodType.Yearly -> yearly.yearly
+            PeriodType.FinancialFeb -> yearly.financialFeb
             PeriodType.FinancialApril -> yearly.financialApril
             PeriodType.FinancialJuly -> yearly.financialJuly
+            PeriodType.FinancialAug -> yearly.financialAug
+            PeriodType.FinancialSep -> yearly.financialSep
             PeriodType.FinancialOct -> yearly.financialOct
             PeriodType.FinancialNov -> yearly.financialNov
         }
     }
 
     companion object {
-        fun create(clockProvider: ClockProvider): ParentPeriodGeneratorImpl {
+        fun create(
+            clockProvider: ClockProvider,
+            relativePeriodHelper: RelativePeriodHelper,
+        ): ParentPeriodGeneratorImpl {
             val clock = clockProvider.clock
             return ParentPeriodGeneratorImpl(
                 DailyPeriodGenerator(clock),
@@ -118,6 +130,7 @@ internal class ParentPeriodGeneratorImpl(
                 MonthlyPeriodGenerator(clock),
                 NMonthlyPeriodGenerators(clock),
                 YearlyPeriodGenerators(clock),
+                relativePeriodHelper,
             )
         }
     }

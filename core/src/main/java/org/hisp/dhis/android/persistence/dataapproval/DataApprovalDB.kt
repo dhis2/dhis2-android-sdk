@@ -41,7 +41,7 @@ internal data class DataApprovalDB(
     val organisationUnit: String,
     val period: String,
     val attributeOptionCombo: String,
-    val state: String?,
+    val state: String,
 ) : EntityDB<DataApproval> {
 
     override fun toDomain(): DataApproval {
@@ -50,17 +50,17 @@ internal data class DataApprovalDB(
             organisationUnit(organisationUnit)
             period(period)
             attributeOptionCombo(attributeOptionCombo)
-            state?.let { state(DataApprovalState.valueOf(it)) }
+            state(DataApprovalState.valueOf(state))
         }.build()
     }
 }
 
 internal fun DataApproval.toDB(): DataApprovalDB {
     return DataApprovalDB(
-        workflow = workflow()!!,
-        organisationUnit = organisationUnit()!!,
-        period = period()!!,
-        attributeOptionCombo = attributeOptionCombo()!!,
-        state = state()?.name,
+        workflow = workflow(),
+        organisationUnit = organisationUnit(),
+        period = period(),
+        attributeOptionCombo = attributeOptionCombo(),
+        state = state().name,
     )
 }

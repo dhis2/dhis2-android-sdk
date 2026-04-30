@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.testapp.event.search
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.util.toJavaSimpleDate
+import org.hisp.dhis.android.core.util.toJavaSimpleDateNonNull
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -85,8 +85,8 @@ class EventQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
     @Test
     fun filter_by_date_data_value() {
         val events1 = d2.eventModule().eventQuery()
-            .byDataValue("uFAQYm3UgBL").after("2019-02-01".toJavaSimpleDate()!!)
-            .byDataValue("uFAQYm3UgBL").before("2019-02-10".toJavaSimpleDate()!!)
+            .byDataValue("uFAQYm3UgBL").after("2019-02-01".toJavaSimpleDateNonNull())
+            .byDataValue("uFAQYm3UgBL").before("2019-02-10".toJavaSimpleDateNonNull())
             .blockingGet()
 
         assertThat(events1.size).isEqualTo(1)

@@ -28,14 +28,14 @@
 
 package org.hisp.dhis.android.core.period.clock.internal
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 internal class FixedClockProvider(localDate: LocalDateTime) : ClockProvider {
     override val clock: Clock = FixedClock(localDate)

@@ -46,3 +46,19 @@ internal fun String?.toJavaDate(): Date? {
 internal fun Date?.dateFormat(): String? {
     return this?.let { DateUtils.DATE_FORMAT.format(it) }
 }
+
+internal fun String.toJavaSimpleDateNonNull(): Date {
+    return DateUtils.SIMPLE_DATE_FORMAT.parse(this)
+}
+
+internal fun Date.simpleDateFormatNonNull(): String {
+    return DateUtils.SIMPLE_DATE_FORMAT.format(this)
+}
+
+internal fun String.toJavaDateNonNull(): Date {
+    return DateUtils.DATE_FORMAT.parse(this)
+}
+
+internal fun Date.dateFormatNonNull(): String {
+    return DateUtils.DATE_FORMAT.format(this)
+}

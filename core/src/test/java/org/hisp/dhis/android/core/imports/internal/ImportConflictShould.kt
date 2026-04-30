@@ -35,18 +35,22 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ImportConflictShould : CoreObjectShould("imports/import_conflict.json") {
+internal class ImportConflictShould : CoreObjectShould<ImportConflictDTO>(
+    "imports/import_conflict.json",
+    ImportConflictDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importConflictDTO = deserialize(ImportConflictDTO.serializer())
+        val importConflictDTO = deserialize()
         val importConflict = importConflictDTO.toDomain()
 
-        assertThat(importConflict.`object`()).isEqualTo("UOlfIjgN8X6")
-        assertThat(importConflict.value())
+        assertThat(importConflict.`object`).isEqualTo("UOlfIjgN8X6")
+        assertThat(importConflict.value)
             .isEqualTo("Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric")
-        assertThat(importConflict.errorCode()).isEqualTo("E7619")
-        assertThat(importConflict.property()).isEqualTo("value")
-        assertThat(importConflict.indexes()!![0]).isEqualTo(2)
-        assertThat(importConflict.indexes()!![1]).isEqualTo(7)
+        assertThat(importConflict.errorCode).isEqualTo("E7619")
+        assertThat(importConflict.property).isEqualTo("value")
+        assertThat(importConflict.indexes!![0]).isEqualTo(2)
+        assertThat(importConflict.indexes!![1]).isEqualTo(7)
     }
 }

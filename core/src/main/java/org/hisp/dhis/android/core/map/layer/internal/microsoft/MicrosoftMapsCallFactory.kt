@@ -62,13 +62,24 @@ internal class MicrosoftMapsCallFactory(
         if (!versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_34)) return emptyList()
 
         return runCatching {
-            val key = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }
+            val azureKey = coroutineExecutor.wrap(storeError = true) { networkHandler.getAzureApiKey() }
                 .getOrNull()?.value()
-            if (key.isNullOrBlank()) return@runCatching emptyList()
 
-            val azureLayers = downloadWithTimeout(key, AzureBasemaps.list, ::downloadAzureBasemap, true)
+            if (!azureKey.isNullOrBlank()) {
+                val azureLayers = downloadWithTimeout(azureKey, AzureBasemaps.list, ::downloadAzureBasemap, true)
+                if (azureLayers.isNotEmpty()) {
+                    mapLayerHandler.handleMany(azureLayers)
+                    return@runCatching azureLayers
+                }
+            }
+
+            val bingKey = coroutineExecutor.wrap(storeError = true) { networkHandler.getBingApiKey() }
+                .getOrNull()?.value()
+            if (bingKey.isNullOrBlank()) return@runCatching emptyList()
+
+            val azureLayers = downloadWithTimeout(bingKey, AzureBasemaps.list, ::downloadAzureBasemap, true)
             val resultLayers = azureLayers.takeIf { it.isNotEmpty() }
-                ?: downloadWithTimeout(key, BingBasemaps.list, ::downloadBingBasemap)
+                ?: downloadWithTimeout(bingKey, BingBasemaps.list, ::downloadBingBasemap)
 
             mapLayerHandler.handleMany(resultLayers)
             resultLayers
@@ -103,18 +114,36 @@ internal class MicrosoftMapsCallFactory(
     }
 
     private suspend fun downloadAzureBasemap(key: String, basemap: AzureBasemap): List<MapLayer> {
-        return coroutineExecutor.wrap(storeError = false) {
-            azureNetworkHandler.getBaseMap(getAzureUrl(basemap.style, key), basemap, key)
-        }.let { result ->
+        val allLayers = mutableListOf<MapLayer>()
+        var baseLayerUid: String? = null
+
+        basemap.styles.forEachIndexed { index, style ->
+            val isBaseLayer = index == 0
+
+            val result = coroutineExecutor.wrap(storeError = false) {
+                azureNetworkHandler.getBaseMap(
+                    url = getAzureUrl(style.tilesetId, key),
+                    basemap = basemap,
+                    style = style,
+                    key = key,
+                    linkedLayerUid = if (isBaseLayer) null else baseLayerUid,
+                )
+            }
+
             when (result) {
-                is Success -> result.value
+                is Success -> {
+                    allLayers += result.value
+                    if (isBaseLayer) {
+                        baseLayerUid = result.value.firstOrNull()?.uid()
+                    }
+                }
                 is Failure -> if (result.failure.httpErrorCode() == HttpStatusCode.Unauthorized.value) {
                     throw result.failure
-                } else {
-                    emptyList()
                 }
             }
         }
+
+        return allLayers
     }
 
     private suspend fun downloadBingBasemap(key: String, basemap: BingBasemap): List<MapLayer> {
@@ -123,14 +152,14 @@ internal class MicrosoftMapsCallFactory(
         }.getOrNull().orEmpty()
     }
 
-    private fun getAzureUrl(style: String, key: String) =
+    private fun getAzureUrl(tilesetId: String, key: String) =
         if (D2Manager.isTestMode && !D2Manager.isRealIntegration) {
             "${ServerURLWrapper.serverUrl}/api/mockAzureMaps"
         } else {
             "https://atlas.microsoft.com/map/tileset" +
                 "?api-version=2024-04-01" +
                 "&subscription-key=$key" +
-                "&tilesetId=$style"
+                "&tilesetId=$tilesetId"
         }
 
     private fun getBingUrl(style: String, key: String) =

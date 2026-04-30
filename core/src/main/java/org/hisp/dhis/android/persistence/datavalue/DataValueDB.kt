@@ -3,8 +3,9 @@ package org.hisp.dhis.android.persistence.datavalue
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.util.dateFormat
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
@@ -12,6 +13,7 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.SyncStateDB
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB
+import org.hisp.dhis.android.persistence.dataset.DataSetDB
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitDB
 import org.hisp.dhis.android.persistence.period.PeriodDB
 
@@ -53,6 +55,13 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+        ForeignKey(
+            entity = DataSetDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["sourceDataSet"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
     ],
     primaryKeys = ["dataElement", "period", "organisationUnit", "categoryOptionCombo", "attributeOptionCombo"],
 )
@@ -62,6 +71,7 @@ internal data class DataValueDB(
     val organisationUnit: String,
     val categoryOptionCombo: String,
     val attributeOptionCombo: String,
+    val sourceDataSet: String?,
     val value: String?,
     val storedBy: String?,
     val created: String?,
@@ -73,7 +83,7 @@ internal data class DataValueDB(
 ) : EntityDB<DataValue>, DataObjectDB, DeletableObjectDB {
 
     override fun toDomain(): DataValue {
-        return DataValue.builder().apply {
+        val builder = DataValue.builder().apply {
             dataElement(dataElement)
             period(period)
             organisationUnit(organisationUnit)
@@ -81,13 +91,15 @@ internal data class DataValueDB(
             attributeOptionCombo(attributeOptionCombo)
             value(value)
             storedBy(storedBy)
-            created?.let { created(it.toJavaDate()!!) }
-            lastUpdated?.let { lastUpdated(it.toJavaDate()!!) }
+            created?.let { created(it.toJavaDateNonNull()) }
+            lastUpdated?.let { lastUpdated(it.toJavaDateNonNull()) }
             comment(comment)
             followUp(followUp)
             syncState?.let { syncState(it.toDomain()) }
             deleted(deleted)
-        }.build()
+        }
+        DataValueInternalAccessor.insertSourceDataSet(builder, sourceDataSet)
+        return builder.build()
     }
 }
 
@@ -98,6 +110,7 @@ internal fun DataValue.toDB(): DataValueDB {
         organisationUnit = organisationUnit()!!,
         categoryOptionCombo = categoryOptionCombo()!!,
         attributeOptionCombo = attributeOptionCombo()!!,
+        sourceDataSet = DataValueInternalAccessor.accessSourceDataSet(this),
         value = value(),
         storedBy = storedBy(),
         created = created().dateFormat(),

@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -35,9 +36,9 @@ plugins {
     id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.sonarqube)
     alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
 }
@@ -68,6 +69,10 @@ tasks.configureEach {
     if (name.startsWith("pre") && name.endsWith("AndroidTestBuild")) {
         dependsOn(copySharedTestResourcesToAndroidTest)
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -133,11 +138,18 @@ android {
     buildFeatures {
         buildConfig = true
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+        }
+    }
 }
 
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
+        freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
     }
 }
 
@@ -186,11 +198,17 @@ dependencies {
     api(libs.dhis2.compression)
     api(libs.dhis2.antlr.parser)
     implementation(libs.dhis2.peg.parser)
+    constraints {
+        api("org.apache.commons:commons-text:1.12.0") {
+            because("CVE-2022-42889: commons-text < 1.10.0 is vulnerable to RCE via StringSubstitutor")
+        }
+    }
 
     implementation(libs.zip4j)
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
+    implementation(libs.nimbus.jose.jwt)
 
     // Database
     implementation(libs.androidx.room.runtime)
@@ -225,14 +243,28 @@ dependencies {
     androidTestImplementation(libs.androidx.paging.testing)
 }
 
-ksp {
-    arg("migrationDir", "$rootDir/core/src/main/assets/migrations")
-    arg("room.schemaLocation", "$projectDir/schemas")
+class MigrationDirProvider(private val path: String) : CommandLineArgumentProvider {
+    override fun asArguments() = listOf("migrationDir=$path")
+}
+
+val migrationDirPath: String = layout.projectDirectory.dir("src/main/assets/migrations")
+    .asFile.absolutePath
+afterEvaluate {
+    tasks.named("kspDebugKotlin").configure {
+        (this as KspTask).commandLineArgumentProviders.add(
+            MigrationDirProvider(migrationDirPath),
+        )
+    }
+    tasks.named("kspReleaseKotlin").configure {
+        (this as KspTask).commandLineArgumentProviders.add(
+            MigrationDirProvider(migrationDirPath),
+        )
+    }
 }
 
 detekt {
     toolVersion = libs.versions.detekt.get()
-    config = files("config/detekt.yml")
+    config.setFrom(files("config/detekt.yml"))
     parallel = true
     buildUponDefaultConfig = false
 }
@@ -266,27 +298,6 @@ tasks.withType<DokkaTask>().configureEach {
 
 tasks.dokkaJavadoc.configure {
     dependsOn("kaptReleaseKotlin")
-}
-
-sonarqube {
-    properties {
-        val branch = System.getenv("GIT_BRANCH")
-        val targetBranch = System.getenv("GIT_BRANCH_DEST")
-        val pullRequestId = System.getenv("PULL_REQUEST")
-
-        property("sonar.projectKey", "dhis2_dhis2-android-sdk")
-        property("sonar.organization", "dhis2")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.projectName", "dhis2-android-sdk")
-
-        if (pullRequestId == null) {
-            property("sonar.branch.name", branch)
-        } else {
-            property("sonar.pullrequest.base", targetBranch)
-            property("sonar.pullrequest.branch", branch)
-            property("sonar.pullrequest.key", pullRequestId)
-        }
-    }
 }
 
 // Custom task to run code quality checks, unit tests, and instrumentation tests sequentially

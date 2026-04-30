@@ -70,12 +70,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent1.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent1.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (validEvent2.uid() == importSummary.reference()) {
+            } else if (validEvent2.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             }
         }
@@ -103,12 +103,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidEvent.uid() == importSummary.reference()) {
+            } else if (invalidEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.ERROR)
             }
         }
@@ -140,12 +140,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidEvent.uid() == importSummary.reference()) {
+            } else if (invalidEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.ERROR)
             }
         }
@@ -177,12 +177,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent1.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent1.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (validEvent2.uid() == importSummary.reference()) {
+            } else if (validEvent2.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             }
         }
@@ -210,12 +210,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.ERROR)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidEvent.uid() == importSummary.reference()) {
+            } else if (invalidEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.ERROR)
             }
         }
@@ -247,12 +247,12 @@ abstract class EventAPIRealShould internal constructor(
 
         val response = postPayload(events).getOrThrow()
 
-        assertThat(response.response()!!.status()).isEqualTo(ImportStatus.WARNING)
+        assertThat(response.response!!.status).isEqualTo(ImportStatus.WARNING)
 
-        for (importSummary in response.response()!!.importSummaries()!!) {
-            if (validEvent.uid() == importSummary.reference()) {
+        for (importSummary in response.response!!.importSummaries!!) {
+            if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
-            } else if (invalidEvent.uid() == importSummary.reference()) {
+            } else if (invalidEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.WARNING)
             }
         }

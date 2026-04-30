@@ -47,4 +47,12 @@ public class EventSyncStoreIntegrationShould extends ObjectStoreAbstractIntegrat
     protected EventSync buildObject() {
         return EventSyncSamples.get1();
     }
+
+    @Override
+    protected EventSync buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .program(null)
+                .workingListsHash(null)
+                .build();
+    }
 }

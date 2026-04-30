@@ -160,4 +160,24 @@ class ProgramRuleActionCollectionRepositoryMockIntegrationShould :
 
         assertThat(programRuleActions.size).isEqualTo(1)
     }
+
+    @Test
+    fun filter_by_priority() {
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byPriority()
+            .eq(1)
+            .blockingGet()
+
+        assertThat(programRuleActions.size).isEqualTo(2)
+    }
+
+    @Test
+    fun filter_by_legendSet() {
+        val programRuleActions = d2.programModule().programRuleActions()
+            .byLegendSetUid()
+            .eq("TiOkbpGEud4")
+            .blockingGet()
+
+        assertThat(programRuleActions.size).isEqualTo(2)
+    }
 }

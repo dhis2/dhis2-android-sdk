@@ -37,4 +37,5 @@ enum class DataSetNonEditableReason {
     PERIOD_IS_NOT_IN_ATTRIBUTE_OPTION_RANGE,
     CLOSED,
     EXPIRED,
+    PERIOD_NOT_IN_DATA_INPUT_PERIODS,
 }

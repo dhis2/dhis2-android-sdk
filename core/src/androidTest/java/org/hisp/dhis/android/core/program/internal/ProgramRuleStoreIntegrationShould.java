@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.program.ProgramRuleStoreImpl;
 import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -55,6 +57,20 @@ public class ProgramRuleStoreIntegrationShould
     protected ProgramRule buildObjectToUpdate() {
         return ProgramRuleSamples.getProgramRule().toBuilder()
                 .condition("new_condition")
+                .build();
+    }
+
+    @Override
+    protected ProgramRule buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .priority(null)
+                .condition(null)
+                .programStage(null)
                 .build();
     }
 }

@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.network.event
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EventImportSummaries
 import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
 @Serializable
 internal data class EventImportSummariesDTO(
@@ -44,9 +44,14 @@ internal data class EventImportSummariesDTO(
     val importSummaries: List<EventImportSummaryDTO>?,
 ) : BaseImportSummariesDTO {
     fun toDomain(): EventImportSummaries {
-        return EventImportSummaries.builder()
-            .applyImportSummariesFields(this)
-            .importSummaries(importSummaries?.map { it.toDomain() })
-            .build()
+        return EventImportSummaries(
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            imported = imported,
+            updated = updated,
+            deleted = deleted,
+            ignored = ignored,
+            importSummaries = importSummaries?.map { it.toDomain() },
+        )
     }
 }

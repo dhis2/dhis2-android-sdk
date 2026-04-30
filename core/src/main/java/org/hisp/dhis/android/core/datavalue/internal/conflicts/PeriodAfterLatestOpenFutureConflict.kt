@@ -45,8 +45,8 @@ internal class PeriodAfterLatestOpenFutureConflict(
 
     override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val period = conflict.`object`()
-        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(3)
+        val period = conflict.`object`
+        val dataElementUid = regex.find(conflict.value)?.groupValues?.get(3)
         dataValues.forEach { dataValue ->
             if (dataValue.period() == period && dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(
@@ -66,5 +66,5 @@ internal class PeriodAfterLatestOpenFutureConflict(
         dataElementUid?.let {
             val dataElementType = dataElementStore.selectByUid(it)?.valueType().toString()
             "Period $period is after latest open future period for data element: $dataElementType"
-        } ?: conflict.value()
+        } ?: conflict.value
 }

@@ -52,6 +52,7 @@ internal fun DataSyncPeriod.Companion.from(key: String): DataSyncPeriod {
 internal fun MetadataSyncPeriod.Companion.from(key: String): MetadataSyncPeriod {
     return when (key) {
         "1h" -> MetadataSyncPeriod.EVERY_HOUR
+        "6h" -> MetadataSyncPeriod.EVERY_6_HOURS
         "12h" -> MetadataSyncPeriod.EVERY_12_HOURS
         "24h" -> MetadataSyncPeriod.EVERY_24_HOURS
         "7h" -> MetadataSyncPeriod.EVERY_7_DAYS

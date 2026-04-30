@@ -38,15 +38,17 @@ internal data class DataApprovalDTO(
     val ou: String,
     val pe: String,
     val aoc: String,
-    val state: String,
+    val state: String?,
 ) {
-    fun toDomain(): DataApproval {
-        return DataApproval.builder()
-            .workflow(wf)
-            .organisationUnit(ou)
-            .period(pe)
-            .attributeOptionCombo(aoc)
-            .state(DataApprovalState.valueOf(state))
-            .build()
+    fun toDomain(): DataApproval? {
+        return state?.let {
+            return DataApproval.builder()
+                .workflow(wf)
+                .organisationUnit(ou)
+                .period(pe)
+                .attributeOptionCombo(aoc)
+                .state(DataApprovalState.valueOf(state))
+                .build()
+        }
     }
 }

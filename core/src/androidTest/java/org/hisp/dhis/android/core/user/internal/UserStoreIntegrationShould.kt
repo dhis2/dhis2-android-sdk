@@ -51,4 +51,21 @@ class UserStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationSho
             .name("new_name")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): User {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .birthday(null)
+            .education(null)
+            .gender(null)
+            .surname(null)
+            .firstName(null)
+            .email(null)
+            .username(null)
+            .build()
+    }
 }

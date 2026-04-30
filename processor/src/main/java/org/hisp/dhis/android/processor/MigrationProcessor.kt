@@ -44,11 +44,11 @@ class MigrationProcessor(
 ) : SymbolProcessor {
 
     private val outputPackage = "org.hisp.dhis.android.persistence.db.migrations"
-    private val migrationDir = File(options["migrationDir"]!!).canonicalFile
+    private val migrationDir = options["migrationDir"]?.let { File(it).canonicalFile }
     var invoked = false
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        if (invoked) {
+        if (invoked || migrationDir == null) {
             return emptyList()
         }
         if (!migrationDir.exists()) {

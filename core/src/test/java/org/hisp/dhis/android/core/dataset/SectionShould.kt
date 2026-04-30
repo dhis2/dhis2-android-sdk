@@ -33,10 +33,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.dataset.SectionDTO
 import org.junit.Test
 
-class SectionShould : CoreObjectShould("dataset/section.json") {
+internal class SectionShould : CoreObjectShould<SectionDTO>("dataset/section.json", SectionDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val sectionDTO = deserialize(SectionDTO.serializer())
+        val sectionDTO = deserialize()
         val section = sectionDTO.toDomain()
 
         assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx")
@@ -56,8 +57,8 @@ class SectionShould : CoreObjectShould("dataset/section.json") {
         assertThat(section.showRowTotals()).isFalse()
         assertThat(section.showColumnTotals()).isFalse()
         assertThat(section.disableDataElementAutoGroup()).isTrue()
-        assertThat(section.dataElements()!!.size).isEqualTo(15)
-        assertThat(section.dataElements()!![0].uid()).isEqualTo("s46m5MS0hxu")
+        assertThat(section.dataElementUids()!!.size).isEqualTo(15)
+        assertThat(section.dataElementUids()!![0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
         assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 

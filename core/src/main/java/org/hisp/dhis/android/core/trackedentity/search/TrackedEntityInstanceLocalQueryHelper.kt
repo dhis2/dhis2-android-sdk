@@ -575,7 +575,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
             FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
             FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
             FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
-            FilterItemOperator.IN -> {
+            FilterItemOperator.IN, FilterItemOperator.NOT_IN -> {
                 val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
                 "($value)"
             }

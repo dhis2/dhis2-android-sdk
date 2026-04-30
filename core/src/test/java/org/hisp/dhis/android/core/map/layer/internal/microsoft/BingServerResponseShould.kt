@@ -33,10 +33,14 @@ import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.network.bing.BingServerResponseDTO
 import org.junit.Test
 
-class BingServerResponseShould : CoreObjectShould("map/layer/microsoft/bing_server_response.json") {
+internal class BingServerResponseShould : CoreObjectShould<BingServerResponseDTO>(
+    "map/layer/microsoft/bing_server_response.json",
+    BingServerResponseDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val bingServerResponseDTO = deserialize(BingServerResponseDTO.serializer())
+        val bingServerResponseDTO = deserialize()
         assertThat(bingServerResponseDTO.resourceSets!!.size).isEqualTo(1)
 
         bingServerResponseDTO.resourceSets.first().let { s ->

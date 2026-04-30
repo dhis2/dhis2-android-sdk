@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitStoreImpl;
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,26 @@ public class OrganisationUnitStoreIntegrationShould extends IdentifiableObjectSt
     protected OrganisationUnit buildObjectToUpdate() {
         return buildObject().toBuilder()
                 .level(67)
+                .build();
+    }
+
+    @Override
+    protected OrganisationUnit buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .path(null)
+                .openingDate((Date) null)
+                .closedDate((Date) null)
+                .level(null)
+                .parent(null)
                 .build();
     }
 }

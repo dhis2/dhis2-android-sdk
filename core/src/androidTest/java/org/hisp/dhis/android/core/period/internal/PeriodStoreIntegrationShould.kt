@@ -63,9 +63,21 @@ class PeriodStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationSho
             .build()
     }
 
+    override fun buildObjectWithNullableFields(): Period {
+        return buildObject().toBuilder()
+            .periodType(null)
+            .startDate(null)
+            .endDate(null)
+            .build()
+    }
+
     @Test
     fun select_correct_period_passing_period_type_and_a_date() = runTest {
-        PeriodHandler(periodStore, create(ClockProviderFactory.createFixed())).generateAndPersist()
+        val relativePeriodHelper = RelativePeriodHelperMock()
+        PeriodHandler(
+            periodStore,
+            create(ClockProviderFactory.createFixed(), relativePeriodHelper),
+        ).generateAndPersist()
         val period = periodStore.selectPeriodByTypeAndDate(
             PeriodType.SixMonthly,
             DateUtils.DATE_FORMAT.parse("2019-03-02T12:24:25.319"),

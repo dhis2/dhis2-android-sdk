@@ -57,7 +57,10 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
     public abstract Boolean allowFutureDate();
 
     @Nullable
-    public abstract DataElement dataElement();
+    abstract DataElement fullDataElement();
+
+    @Nullable
+    public abstract ObjectWithUid dataElement();
 
     @Nullable
     public abstract ObjectWithUid programStage();
@@ -84,7 +87,9 @@ public abstract class ProgramStageDataElement extends BaseIdentifiableObject imp
 
         public abstract Builder allowFutureDate(Boolean allowFutureDate);
 
-        public abstract Builder dataElement(DataElement dataElement);
+        abstract Builder fullDataElement(DataElement fullDataElement);
+
+        public abstract Builder dataElement(ObjectWithUid dataElement);
 
         public abstract Builder programStage(ObjectWithUid programStage);
 

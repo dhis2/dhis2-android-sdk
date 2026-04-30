@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.server
 
-import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
-
 data class LoginConfig(
     val apiVersion: String? = null,
     val applicationTitle: String? = null,
@@ -52,17 +50,12 @@ data class LoginConfig(
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
 ) {
     fun isOauthEnabled(): Boolean {
-        return isAtLeast43() && oidcProviders.any { it.id == DHIS2_OAUTH_CLIENT_ID }
-    }
-
-    private fun isAtLeast43(): Boolean {
-        return apiVersion?.let {
-            DHISPatchVersion.isGreaterThanPatch(apiVersion, DHISPatchVersion.V2_43_0)
-        } ?: false
+        return OAUTH_ENABLED
     }
 
     internal companion object {
-        const val DHIS2_OAUTH_CLIENT_ID = "dhis2-client"
+        // return false for SDK release 1.14.0 to prevent issues until fully implemented
+        private const val OAUTH_ENABLED = false
 
         fun createDefault(serverUrl: String): LoginConfig {
             return LoginConfig(

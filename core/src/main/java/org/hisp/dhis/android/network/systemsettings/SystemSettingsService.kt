@@ -36,7 +36,7 @@ internal class SystemSettingsService(private val client: HttpServiceClient) {
         return client.get {
             url("systemSettings")
             parameters {
-                fields(fields)
+                keys(fields)
             }
         }
     }

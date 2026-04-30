@@ -33,6 +33,7 @@ import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
@@ -97,20 +98,72 @@ class DataValuePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         assertThat(firstValue["lastUpdated"]).isNull()
     }
 
+    @Test
+    fun post_datavalues_grouped_by_dataset() {
+        dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_success.json")
+        dhis2MockServer.enqueueMockResponse("datavalueset/data_value_set_success.json")
+        dhis2MockServer.takeLastRequest()
+
+        provideDataValuesForMultipleDataSets()
+
+        d2.dataValueModule().dataValues().blockingUpload()
+
+        val payload1 = parseRequestBody(dhis2MockServer.takeRequest().body.readUtf8())
+        val payload2 = parseRequestBody(dhis2MockServer.takeRequest().body.readUtf8())
+
+        val dataSets = setOf(
+            (payload1["dataSet"] as JsonPrimitive).content,
+            (payload2["dataSet"] as JsonPrimitive).content,
+        )
+        assertThat(dataSets).containsExactly("lyLU2wR22tC", "BfMAe6Itzgt")
+
+        assertThat((payload1["dataValues"] as JsonArray).size).isEqualTo(1)
+        assertThat((payload2["dataValues"] as JsonArray).size).isEqualTo(1)
+
+        val synced = d2.dataValueModule().dataValues().bySyncState().eq(State.SYNCED).blockingGet()
+        assertThat(synced.size).isEqualTo(2)
+    }
+
+    private fun parseRequestBody(body: String): JsonObject {
+        return KotlinxJsonParser.instance.parseToJsonElement(body) as JsonObject
+    }
+
+    private fun provideDataValuesForMultipleDataSets() {
+        d2.dataValueModule().dataValues().value(
+            "201906",
+            "DiszpKrYNg8",
+            "g9eOBujte1U",
+            "Gmbgme7z9BF",
+            "bRowv6yZOF2",
+            "lyLU2wR22tC",
+        ).blockingSet("100")
+
+        d2.dataValueModule().dataValues().value(
+            "201908",
+            "DiszpKrYNg8",
+            "g9eOBujte1U",
+            "Gmbgme7z9BF",
+            "Gmbgme7z9BF",
+            "BfMAe6Itzgt",
+        ).blockingSet("200")
+    }
+
     private fun provideDataValues(value1: String, value2: String) {
         d2.dataValueModule().dataValues().value(
-            "20191021",
+            "201906",
             "DiszpKrYNg8",
-            "Ok9OQpitjQr",
-            "DwrQJzeChWp",
-            "DwrQJzeChWp",
+            "g9eOBujte1U",
+            "Gmbgme7z9BF",
+            "bRowv6yZOF2",
+            "lyLU2wR22tC",
         ).blockingSet(value1)
         d2.dataValueModule().dataValues().value(
-            "20191021",
+            "201906",
             "DiszpKrYNg8",
-            "vANAXwtLwcT",
+            "bx6fsa0t90x",
+            "Gmbgme7z9BF",
             "bRowv6yZOF2",
-            "bRowv6yZOF2",
+            "lyLU2wR22tC",
         ).blockingSet(value2)
     }
 }

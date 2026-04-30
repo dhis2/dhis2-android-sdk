@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.apkdistribution.ApkDistributionVersionDTO
 import org.junit.Test
 
-class VersionsSettingsShould : CoreObjectShould("settings/version.json") {
+internal class VersionsSettingsShould : CoreObjectShould<ApkDistributionVersionDTO>(
+    "settings/version.json",
+    ApkDistributionVersionDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val versionDTO = deserialize(ApkDistributionVersionDTO.serializer())
+        val versionDTO = deserialize()
         val version = versionDTO.toDomain()
 
         assertThat(version.version).isEqualTo("40.1")

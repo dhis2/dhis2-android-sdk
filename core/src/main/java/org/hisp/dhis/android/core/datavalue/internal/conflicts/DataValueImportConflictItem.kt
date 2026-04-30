@@ -44,7 +44,7 @@ internal interface DataValueImportConflictItem {
         displayDescription: String,
     ): DataValueConflict.Builder {
         return DataValueConflict.builder()
-            .conflict(conflict.value())
+            .conflict(conflict.value)
             .value(dataValue.value())
             .attributeOptionCombo(dataValue.attributeOptionCombo())
             .categoryOptionCombo(dataValue.categoryOptionCombo())
@@ -53,7 +53,7 @@ internal interface DataValueImportConflictItem {
             .period(dataValue.period())
             .status(ImportStatus.WARNING)
             .displayDescription(displayDescription)
-            .errorCode(conflict.errorCode())
+            .errorCode(conflict.errorCode)
             .created(Date())
     }
 }

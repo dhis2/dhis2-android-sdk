@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
@@ -80,7 +81,8 @@ class TrackedEntityInstanceQueryDataSourceShould {
 
     private val initialCallback: ItemKeyedDataSource.LoadInitialCallback<TrackedEntityInstance> = mock()
     private val clockProvider = ClockProviderFactory.clockProvider
-    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider))
+    private val relativePeriodHelper = RelativePeriodHelperMock()
+    private val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
     private val onlineHelper = TrackedEntityInstanceQueryOnlineHelper(periodHelper)
     private val localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
     private val onlineCache: TrackedEntityInstanceOnlineCache =

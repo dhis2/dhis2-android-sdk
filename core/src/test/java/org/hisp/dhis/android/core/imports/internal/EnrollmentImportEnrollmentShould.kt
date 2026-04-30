@@ -36,27 +36,31 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class EnrollmentImportEnrollmentShould : CoreObjectShould("imports/import_enrollment.json") {
+internal class EnrollmentImportEnrollmentShould : CoreObjectShould<EnrollmentImportSummariesDTO>(
+    "imports/import_enrollment.json",
+    EnrollmentImportSummariesDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importEnrollmentDTO = deserialize(EnrollmentImportSummariesDTO.serializer())
+        val importEnrollmentDTO = deserialize()
         val importEnrollment = importEnrollmentDTO.toDomain()
 
-        assertThat(importEnrollment.imported()).isEqualTo(0)
-        assertThat(importEnrollment.updated()).isEqualTo(1)
-        assertThat(importEnrollment.ignored()).isEqualTo(0)
-        assertThat(importEnrollment.deleted()).isEqualTo(0)
+        assertThat(importEnrollment.imported).isEqualTo(0)
+        assertThat(importEnrollment.updated).isEqualTo(1)
+        assertThat(importEnrollment.ignored).isEqualTo(0)
+        assertThat(importEnrollment.deleted).isEqualTo(0)
 
-        assertThat(importEnrollment.responseType()).isEqualTo("ImportSummaries")
-        assertThat(importEnrollment.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importEnrollment.importSummaries()).isNotNull()
+        assertThat(importEnrollment.responseType).isEqualTo("ImportSummaries")
+        assertThat(importEnrollment.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEnrollment.importSummaries).isNotNull()
 
-        assertThat(importEnrollment.importSummaries()!!.size).isEqualTo(1)
+        assertThat(importEnrollment.importSummaries!!.size).isEqualTo(1)
 
-        val importSummary = importEnrollment.importSummaries()!![0]
+        val importSummary = importEnrollment.importSummaries!![0]
 
         assertThat(importSummary).isNotNull()
-        assertThat(importSummary.events()).isNotNull()
-        assertThat(importSummary.reference()).isEqualTo("XaBZwKbHVxS")
+        assertThat(importSummary.events).isNotNull()
+        assertThat(importSummary.reference).isEqualTo("XaBZwKbHVxS")
     }
 }

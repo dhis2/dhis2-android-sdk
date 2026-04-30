@@ -35,12 +35,16 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class RelationshipDeleteWebResponseShould : CoreObjectShould("imports/relationship_delete_web_response.json") {
+internal class RelationshipDeleteWebResponseShould : CoreObjectShould<RelationshipDeleteWebResponseDTO>(
+    "imports/relationship_delete_web_response.json",
+    RelationshipDeleteWebResponseDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val webResponse = deserialize(RelationshipDeleteWebResponseDTO.serializer()).toDomain()
+        val webResponse = deserialize().toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
+        assertThat(webResponse.response).isNotNull()
     }
 }

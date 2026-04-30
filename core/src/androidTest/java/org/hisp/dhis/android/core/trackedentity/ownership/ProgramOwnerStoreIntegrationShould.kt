@@ -50,4 +50,10 @@ class ProgramOwnerStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrat
             .ownerOrgUnit("Other orgunit")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramOwner {
+        return buildObject().toBuilder()
+            .syncState(null)
+            .build()
+    }
 }

@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.zeroPrefixed
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
 
 internal class DailyPeriodGenerator(clock: Clock) :
     AbstractPeriodGenerator(clock, PeriodType.Daily) {
@@ -50,6 +51,6 @@ internal class DailyPeriodGenerator(clock: Clock) :
     }
 
     override fun generateId(startDate: LocalDate): String {
-        return "${startDate.year}${startDate.monthNumber.zeroPrefixed()}${startDate.dayOfMonth.zeroPrefixed()}"
+        return "${startDate.year}${startDate.month.number.zeroPrefixed()}${startDate.day.zeroPrefixed()}"
     }
 }

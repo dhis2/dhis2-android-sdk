@@ -45,4 +45,18 @@ class AttributeValueFilterStoreIntegrationShould : ObjectStoreAbstractIntegratio
     override fun buildObject(): AttributeValueFilter {
         return AttributeValueFilterSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): AttributeValueFilter {
+        return buildObject().toBuilder()
+            .sw(null)
+            .ew(null)
+            .le(null)
+            .ge(null)
+            .gt(null)
+            .lt(null)
+            .eq(null)
+            .like(null)
+            .dateFilter(null)
+            .build()
+    }
 }

@@ -33,6 +33,7 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
@@ -129,7 +130,8 @@ internal class DatabaseConfigurationMigration(
                 serverConf.users.map { userConf ->
                     DatabaseAccount.builder().username(userConf.username)
                         .serverUrl(ServerUrlParser.removeTrailingApi(serverConf.serverUrl))
-                        .databaseName(userConf.databaseName).databaseCreationDate(userConf.databaseCreationDate)
+                        .databaseName(userConf.databaseName)
+                        .databaseCreationDate(DateUtils.DATE_FORMAT.parse(userConf.databaseCreationDate))
                         .encrypted(userConf.encrypted).build()
                 }
             }

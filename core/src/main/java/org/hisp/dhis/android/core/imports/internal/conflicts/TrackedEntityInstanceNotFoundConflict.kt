@@ -38,11 +38,11 @@ internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictIte
     override val errorCode: String = "E1063"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getTrackedEntityInstance(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -52,6 +52,6 @@ internal object TrackedEntityInstanceNotFoundConflict : TrackerImportConflictIte
         return getTrackedEntityInstance(conflict)?.let { trackedEntityInstanceUid ->
             description(trackedEntityInstanceUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

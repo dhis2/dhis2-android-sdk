@@ -51,4 +51,10 @@ class FileResourceStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegr
             .name("new_name")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): FileResource {
+        return buildObject().toBuilder()
+            .domain(null)
+            .build()
+    }
 }

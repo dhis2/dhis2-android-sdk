@@ -30,25 +30,32 @@ package org.hisp.dhis.android.core.analytics.trackerlinelist.internal.evaluator
 
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateFilter
 import org.hisp.dhis.android.core.analytics.trackerlinelist.DateItem
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
 import org.hisp.dhis.android.core.period.internal.PeriodParser
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 import java.util.Date
 
 internal abstract class BaseDateEvaluator(
     private val item: DateItem,
 ) : TrackerLineListEvaluator() {
 
-    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.clockProvider)
+    private val relativePeriodHelper: RelativePeriodHelper = koin.get()
+    private val parentPeriodGenerator = ParentPeriodGeneratorImpl.create(
+        ClockProviderFactory.clockProvider,
+        relativePeriodHelper,
+    )
     private val periodParser = PeriodParser()
 
     fun getDateWhereClause(): String {
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            return item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+            val orClause = item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+            if (item.filters.size > 1) "($orClause)" else orClause
         }
     }
 

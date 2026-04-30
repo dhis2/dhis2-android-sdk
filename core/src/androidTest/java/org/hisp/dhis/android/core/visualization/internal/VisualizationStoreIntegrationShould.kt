@@ -52,4 +52,21 @@ class VisualizationStoreIntegrationShould : IdentifiableObjectStoreAbstractInteg
             .hideEmptyRowItems(HideEmptyItemStrategy.AFTER_LAST)
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): Visualization {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .description(null)
+            .displayDescription(null)
+            .title(null)
+            .displayTitle(null)
+            .subtitle(null)
+            .displaySubtitle(null)
+            .type(null)
+            .build()
+    }
 }

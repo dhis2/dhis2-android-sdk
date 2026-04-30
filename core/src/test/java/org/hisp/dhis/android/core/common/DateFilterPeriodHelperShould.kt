@@ -32,6 +32,7 @@ import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
 import org.junit.Before
 import org.junit.Test
 
@@ -43,9 +44,16 @@ class DateFilterPeriodHelperShould {
     fun setUp() {
         val fixedDate = LocalDateTime(2019, 12, 10, 10, 30)
         val clockProvider = FixedClockProvider(fixedDate)
+        val relativePeriodHelper = RelativePeriodHelperMock()
 
         dateFilterPeriodHelper =
-            DateFilterPeriodHelper(clockProvider, ParentPeriodGeneratorImpl.create(clockProvider))
+            DateFilterPeriodHelper(
+                clockProvider,
+                ParentPeriodGeneratorImpl.create(
+                    clockProvider,
+                    relativePeriodHelper,
+                ),
+            )
     }
 
     @Test

@@ -42,7 +42,7 @@ internal class InvalidDataElementType37Conflict(
 
     override suspend fun getDataValues(conflict: ImportConflict, dataValues: List<DataValue>): List<DataValueConflict> {
         val foundDataValuesConflicts: MutableList<DataValueConflict> = ArrayList()
-        val dataElementUid = regex.find(conflict.value())?.groupValues?.get(1)
+        val dataElementUid = regex.find(conflict.value)?.groupValues?.get(1)
         dataValues.forEach { dataValue ->
             if (dataValue.dataElement() == dataElementUid) {
                 foundDataValuesConflicts.add(

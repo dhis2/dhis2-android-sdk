@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementStoreImpl;
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -57,4 +59,17 @@ public class ProgramStageDataElementStoreIntegrationShould extends IdentifiableO
                 .build();
     }
 
+    @Override
+    protected ProgramStageDataElement buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .displayInReports(null)
+                .compulsory(null)
+                .sortOrder(null)
+                .build();
+    }
 }

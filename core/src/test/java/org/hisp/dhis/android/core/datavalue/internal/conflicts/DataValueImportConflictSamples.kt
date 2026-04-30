@@ -30,24 +30,24 @@ package org.hisp.dhis.android.core.datavalue.internal.conflicts
 
 import org.hisp.dhis.android.core.imports.internal.ImportConflict
 
-object DataValueImportConflictSamples {
+internal object DataValueImportConflictSamples {
 
-    fun invalidDataElementType(): ImportConflict = ImportConflict.create(
+    fun invalidDataElementType(): ImportConflict = ImportConflict(
         "40L",
         "Data value is not a positive integer, must match data element type: vANAXwtLwcT",
     )
 
-    fun pastExpiryDate(): ImportConflict = ImportConflict.create(
+    fun pastExpiryDate(): ImportConflict = ImportConflict(
         "202104",
         "Current date is past expiry days for period 202104 and data set: BfMAe6Itzgt",
     )
 
-    fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict.create(
+    fun periodAfterLatestOpenFuture(): ImportConflict = ImportConflict(
         "202111",
         "Period: 202111 is after latest open future period: 202105 for data element: UOlfIjgN8X6",
     )
 
-    fun indexedImportConflict(): ImportConflict = ImportConflict.create(
+    fun indexedImportConflict(): ImportConflict = ImportConflict(
         "UOlfIjgN8X6",
         "Value must match data element's `UOlfIjgN8X6` type constraints: Data value is not numeric",
         "E7619",

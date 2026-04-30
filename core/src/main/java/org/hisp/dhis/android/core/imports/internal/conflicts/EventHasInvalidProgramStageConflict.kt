@@ -37,11 +37,11 @@ internal object EventHasInvalidProgramStageConflict : TrackerImportConflictItem 
     override val errorCode: String = ""
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getEvent(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -51,6 +51,6 @@ internal object EventHasInvalidProgramStageConflict : TrackerImportConflictItem 
         return getEvent(conflict)?.let { eventUid ->
             description(eventUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

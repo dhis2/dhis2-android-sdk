@@ -135,7 +135,7 @@ jobs:
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     
     steps:
       - name: Checkout code
@@ -226,7 +226,7 @@ jobs:
     name: JaCoCo Coverage Report
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    needs: [instrumented-tests]
+    needs: [unit-tests, instrumented-tests]
     if: always() && needs.instrumented-tests.result == 'success'
     
     steps:
@@ -373,23 +373,23 @@ jobs:
       - name: Check if SonarQube token exists
         id: sonar_check
         run: |
-          if [ -z "${{ secrets.SONAR_TOKEN }}" ]; then
+          if [ -z "${{ secrets.DHIS2_BOT_SONARCLOUD_TOKEN }}" ]; then
             echo "skip=true" >> $GITHUB_OUTPUT
-            echo "⚠️ SONAR_TOKEN not configured, skipping SonarQube analysis"
+            echo "⚠️ DHIS2_BOT_SONARCLOUD_TOKEN not configured, skipping SonarQube analysis"
           else
             echo "skip=false" >> $GITHUB_OUTPUT
-            echo "✅ SONAR_TOKEN configured, running SonarQube analysis"
+            echo "✅ DHIS2_BOT_SONARCLOUD_TOKEN configured, running SonarQube analysis"
           fi
       
       - name: Run SonarQube analysis
         if: steps.sonar_check.outputs.skip != 'true'
         run: ./scripts/sonarqube.sh
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.DHIS2_BOT_SONARCLOUD_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GIT_BRANCH: ${{ github.ref_name }}
-          GIT_BRANCH_DEST: ${{ github.base_ref }}
-          PULL_REQUEST: ${{ github.event.pull_request.number }}
+          GIT_BRANCH_DEST: ${{ github.event_name == 'pull_request' && github.base_ref || '' }}
+          PULL_REQUEST: ${{ github.event_name == 'pull_request' && github.event.pull_request.number || '' }}
 
   deploy:
     name: Trigger Deployment

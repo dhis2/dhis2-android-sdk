@@ -46,4 +46,15 @@ class DataValueConflictStoreIntegrationShould : ObjectStoreAbstractIntegrationSh
     override fun buildObject(): DataValueConflict {
         return DataValueConflictSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): DataValueConflict {
+        return buildObject().toBuilder()
+            .conflict(null)
+            .value(null)
+            .errorCode(null)
+            .status(null)
+            .created(null)
+            .displayDescription(null)
+            .build()
+    }
 }

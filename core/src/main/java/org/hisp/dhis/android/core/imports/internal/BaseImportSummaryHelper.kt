@@ -32,6 +32,6 @@ internal object BaseImportSummaryHelper {
 
     @JvmStatic
     fun getReferences(objects: Collection<BaseImportSummary?>?): List<String> {
-        return objects?.mapNotNull { it?.reference() } ?: listOf()
+        return objects?.mapNotNull { it?.reference } ?: listOf()
     }
 }

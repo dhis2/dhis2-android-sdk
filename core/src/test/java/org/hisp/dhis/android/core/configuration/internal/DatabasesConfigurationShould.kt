@@ -28,16 +28,20 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
 import org.junit.Test
 
-class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_configuration.json") {
+internal class DatabasesConfigurationShould : CoreObjectShould<DatabasesConfigurationDB>(
+    "configuration/databases_configuration.json",
+    DatabasesConfigurationDB.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val configurationDao = deserialize(DatabasesConfigurationDB.serializer())
+        val configurationDao = deserialize()
         val configuration = configurationDao.toDomain()
 
         assertThat(configuration.versionCode()).isEqualTo(260)
@@ -49,12 +53,12 @@ class DatabasesConfigurationShould : CoreObjectShould("configuration/databases_c
         assertThat(user1.serverUrl()).isEqualTo("server1")
         assertThat(user1.databaseName()).isEqualTo("dbname1.db")
         assertThat(user1.encrypted()).isTrue()
-        assertThat(user1.databaseCreationDate()).isEqualTo("2014-06-06T20:44:21.375")
+        assertThat(user1.databaseCreationDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))
     }
 
     @Test
     fun equal_when_deserialize_serialize_deserialize() {
-        val configurationDao = deserialize(DatabasesConfigurationDB.serializer())
+        val configurationDao = deserialize()
         val configuration = configurationDao.toDomain()
 
         val serialized = serialize(configuration.toDB(), DatabasesConfigurationDB.serializer())

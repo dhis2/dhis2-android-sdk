@@ -36,27 +36,31 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class EventImportEventShould : CoreObjectShould("imports/import_event.json") {
+internal class EventImportEventShould : CoreObjectShould<EventImportSummariesDTO>(
+    "imports/import_event.json",
+    EventImportSummariesDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importEventDTO = deserialize(EventImportSummariesDTO.serializer())
+        val importEventDTO = deserialize()
         val importEvent = importEventDTO.toDomain()
 
-        assertThat(importEvent.imported()).isEqualTo(1)
-        assertThat(importEvent.updated()).isEqualTo(2)
-        assertThat(importEvent.deleted()).isEqualTo(3)
-        assertThat(importEvent.ignored()).isEqualTo(4)
+        assertThat(importEvent.imported).isEqualTo(1)
+        assertThat(importEvent.updated).isEqualTo(2)
+        assertThat(importEvent.deleted).isEqualTo(3)
+        assertThat(importEvent.ignored).isEqualTo(4)
 
-        assertThat(importEvent.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importEvent.responseType()).isEqualTo("ImportSummaries")
-        assertThat(importEvent.importSummaries()).isNotNull()
-        assertThat(importEvent.importSummaries()!!.size).isEqualTo(2)
+        assertThat(importEvent.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importEvent.responseType).isEqualTo("ImportSummaries")
+        assertThat(importEvent.importSummaries).isNotNull()
+        assertThat(importEvent.importSummaries!!.size).isEqualTo(2)
 
-        val importSummary = importEvent.importSummaries()!![0]
+        val importSummary = importEvent.importSummaries!![0]
         assertThat(importSummary).isNotNull()
-        assertThat(importSummary.reference()).isEqualTo("xqpUvfxT4PZ")
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importSummary.importCount()).isNotNull()
+        assertThat(importSummary.reference).isEqualTo("xqpUvfxT4PZ")
+        assertThat(importSummary.responseType).isEqualTo("ImportSummary")
+        assertThat(importSummary.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummary.importCount).isNotNull()
     }
 }

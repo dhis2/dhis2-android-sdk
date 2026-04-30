@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.arch.call
 
 open class D2Progress(
-    @get:JvmName("getIsComplete")
     open val isComplete: Boolean,
     open val totalCalls: Int?,
     open val doneCalls: List<String>,
 ) {
 
-    fun isComplete(): Boolean = isComplete
     fun totalCalls(): Int? = totalCalls
     fun doneCalls(): List<String> = doneCalls
 

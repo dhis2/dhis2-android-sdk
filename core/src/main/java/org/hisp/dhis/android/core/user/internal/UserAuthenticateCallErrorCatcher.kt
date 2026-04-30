@@ -50,7 +50,7 @@ internal class UserAuthenticateCallErrorCatcher : APICallErrorCatcher {
             } else {
                 val errorResponse = HttpMessageResponseDTO.toErrorClass(response.errorBody)
                 val isUnauthorized = response.statusCode == HttpURLConnection.HTTP_UNAUTHORIZED
-                if (isUnauthorized && errorResponse.message().contains("Account locked")) {
+                if (isUnauthorized && errorResponse.message.contains("Account locked")) {
                     D2ErrorCode.USER_ACCOUNT_LOCKED
                 } else if (isUnauthorized) {
                     D2ErrorCode.BAD_CREDENTIALS

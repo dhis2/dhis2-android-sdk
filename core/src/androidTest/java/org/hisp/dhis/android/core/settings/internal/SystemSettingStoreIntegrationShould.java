@@ -56,4 +56,11 @@ public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAb
                 .value("new_value")
                 .build();
     }
+
+    @Override
+    protected SystemSetting buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .value(null)
+                .build();
+    }
 }

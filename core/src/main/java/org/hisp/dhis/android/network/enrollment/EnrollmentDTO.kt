@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryOptionComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
@@ -83,6 +84,7 @@ internal data class EnrollmentDTO(
             status(status?.let { EnrollmentStatus.valueOf(it) })
             trackedEntityInstance(trackedEntityInstance)
             geometry(geometry?.toDomain())
+            attributeOptionCombo(CategoryOptionComboWithFallbackDTO(null).toDomain())
             EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
             notes(notes?.map { it.toDomain(enrollment = enrollment) })
             relationships(relationships?.map { it.toDomain() })

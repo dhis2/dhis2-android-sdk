@@ -36,15 +36,16 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class DataValueImportSummaryWebResponseShould : CoreObjectShould(
+internal class DataValueImportSummaryWebResponseShould : CoreObjectShould<DataValueImportSummaryWebResponseDTO>(
     "imports/data_value_import_summary_web_response.json",
+    DataValueImportSummaryWebResponseDTO.serializer(),
 ) {
 
     @Test
     override fun map_from_json_string() {
-        val webResponseDTO = deserialize(DataValueImportSummaryWebResponseDTO.serializer())
+        val webResponseDTO = deserialize()
         val webResponse = webResponseDTO.toDomain()
 
-        assertThat(webResponse.response.importStatus()).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(webResponse.response.importStatus).isEqualTo(ImportStatus.SUCCESS)
     }
 }

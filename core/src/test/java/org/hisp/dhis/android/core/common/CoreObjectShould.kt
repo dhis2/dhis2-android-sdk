@@ -28,19 +28,25 @@
 
 package org.hisp.dhis.android.core.common
 
+import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.TimeZone
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.arch.helpers.DateTimezoneConverter
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.junit.Before
+import org.junit.Test
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import java.io.InputStream
 
-abstract class CoreObjectShould(private val jsonPath: String) {
+abstract class CoreObjectShould<T>(
+    private val jsonPath: String,
+    private val serializer: kotlinx.serialization.KSerializer<T>,
+) {
 
     private val jsonParser = KotlinxJsonParser.instance
 
@@ -64,11 +70,30 @@ abstract class CoreObjectShould(private val jsonPath: String) {
             DhisAndroidSdkKoinContext.koin = koinApp.koin
             DateTimezoneConverter.serverTimezoneManager = neutralMock
         }
+
+        // Ensure DefaultCategoryComboManager is registered regardless of initialization order
+        if (DhisAndroidSdkKoinContext.koin.getOrNull<DefaultCategoryComboManager>() == null) {
+            val defaultCategoryComboManager: DefaultCategoryComboManager = mock {
+                on { defaultCategoryOptionComboUid } doReturn "HllvX50cXC0"
+            }
+            DhisAndroidSdkKoinContext.koin.loadModules(
+                listOf(module { single { defaultCategoryComboManager } }),
+            )
+        }
     }
 
     abstract fun map_from_json_string()
 
-    protected fun <T> deserialize(serializer: kotlinx.serialization.KSerializer<T>): T {
+    @Test
+    open fun round_trip_json_serialization() {
+        val original = deserialize()
+        val serialized = serialize(original, serializer)
+        val deserialized = deserialize(serialized, serializer)
+        val reserialized = serialize(deserialized, serializer)
+        assertThat(reserialized).isEqualTo(serialized)
+    }
+
+    protected fun deserialize(): T {
         return deserializePath(jsonPath, serializer)
     }
 
@@ -83,10 +108,6 @@ abstract class CoreObjectShould(private val jsonPath: String) {
 
     protected fun <T> serialize(value: T, serializer: kotlinx.serialization.KSerializer<T>): String {
         return jsonParser.encodeToString(serializer, value)
-    }
-
-    protected fun getStringValueFromFile(): String {
-        return getStringValueFromFile(jsonPath)
     }
 
     private fun getStringValueFromFile(path: String): String {

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
@@ -53,7 +54,7 @@ public abstract class DataSet extends BaseNameableObject
     @Nullable
     public abstract PeriodType periodType();
 
-    @Nullable
+    @NonNull
     public abstract ObjectWithUid categoryCombo();
 
     @Nullable
@@ -129,7 +130,7 @@ public abstract class DataSet extends BaseNameableObject
             implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
         public abstract Builder periodType(PeriodType periodType);
 
-        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+        public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
 
         public abstract Builder mobile(Boolean mobile);
 

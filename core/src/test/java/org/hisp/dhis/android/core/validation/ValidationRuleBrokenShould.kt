@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.junit.Test
 
-class ValidationRuleBrokenShould : CoreObjectShould("validation/validation_rule_broken.json") {
+internal class ValidationRuleBrokenShould : CoreObjectShould<ValidationRuleDTO>(
+    "validation/validation_rule_broken.json",
+    ValidationRuleDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val validationRule = deserialize(ValidationRuleDTO.serializer()).toDomain()
+        val validationRule = deserialize().toDomain()
 
         assertThat(validationRule).isNull()
     }

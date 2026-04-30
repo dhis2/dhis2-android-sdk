@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
 
@@ -70,7 +72,8 @@ internal class DatabaseConfigurationHelper(
             .serverUrl(serverUrl)
             .databaseName(dbName)
             .encrypted(encrypt)
-            .databaseCreationDate(dateProvider.dateStr)
+            .databaseCreationDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
+            .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .loginConfig(loginConfig)
             .importDB(importDb)
             .build()
@@ -89,6 +92,33 @@ internal class DatabaseConfigurationHelper(
         return (configuration?.toBuilder() ?: DatabasesConfiguration.builder())
             .accounts(otherAccounts + account)
             .build()
+    }
+
+    fun updateLastAccessDate(
+        store: ObjectKeyValueStore<DatabasesConfiguration>,
+        serverUrl: String,
+        username: String,
+    ): DatabasesConfiguration? {
+        val configuration = store.get()
+        val updatedConfiguration = updateAccountLastAccessDate(configuration, serverUrl, username)
+        if (updatedConfiguration != null) {
+            store.set(updatedConfiguration)
+        }
+        return store.get()
+    }
+
+    private fun updateAccountLastAccessDate(
+        configuration: DatabasesConfiguration?,
+        serverUrl: String,
+        username: String,
+    ): DatabasesConfiguration? {
+        val account = getAccount(configuration, serverUrl, username) ?: return configuration
+
+        val updatedAccount = account.toBuilder()
+            .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
+            .build()
+
+        return addOrUpdateAccount(configuration, updatedAccount)
     }
 
     companion object {

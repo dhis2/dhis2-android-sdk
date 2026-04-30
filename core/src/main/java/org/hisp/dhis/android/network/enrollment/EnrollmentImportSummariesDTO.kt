@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.network.enrollment
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.EnrollmentImportSummaries
 import org.hisp.dhis.android.network.common.dto.BaseImportSummariesDTO
-import org.hisp.dhis.android.network.common.dto.applyImportSummariesFields
 
 @Serializable
 internal data class EnrollmentImportSummariesDTO(
@@ -44,9 +44,14 @@ internal data class EnrollmentImportSummariesDTO(
     val importSummaries: List<EnrollmentImportSummaryDTO>?,
 ) : BaseImportSummariesDTO {
     fun toDomain(): EnrollmentImportSummaries {
-        return EnrollmentImportSummaries.builder()
-            .applyImportSummariesFields(this)
-            .importSummaries(importSummaries?.map { it.toDomain() })
-            .build()
+        return EnrollmentImportSummaries(
+            status = ImportStatus.valueOf(status),
+            responseType = responseType,
+            imported = imported,
+            updated = updated,
+            deleted = deleted,
+            ignored = ignored,
+            importSummaries = importSummaries?.map { it.toDomain() },
+        )
     }
 }

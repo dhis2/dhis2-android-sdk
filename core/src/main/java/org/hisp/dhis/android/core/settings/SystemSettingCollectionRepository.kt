@@ -68,12 +68,26 @@ class SystemSettingCollectionRepository internal constructor(
         return byKey().eq(SystemSettingKey.FLAG).one()
     }
 
+    @Deprecated("Use customColor() instead", replaceWith = ReplaceWith("customColor()"))
     fun style(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        @Suppress("DEPRECATION")
         return byKey().eq(SystemSettingKey.STYLE).one()
+    }
+
+    fun customColor(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.CUSTOM_COLOR).one()
     }
 
     fun defaultBaseMap(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
         return byKey().eq(SystemSettingKey.DEFAULT_BASE_MAP).one()
+    }
+
+    fun analyticsFinancialYearStart(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START).one()
+    }
+
+    fun analyticsWeeklyStart(): ReadOnlyOneObjectRepositoryFinalImpl<SystemSetting> {
+        return byKey().eq(SystemSettingKey.ANALYTICS_WEEK_START).one()
     }
 
     internal companion object {

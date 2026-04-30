@@ -38,11 +38,11 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
     override val errorCode: String = ""
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return errorStr == conflict.value()
+        return errorStr == conflict.value
     }
 
     override fun getDataElement(conflict: ImportConflict): String? {
-        return conflict.`object`()
+        return conflict.`object`
     }
 
     override suspend fun getDisplayDescription(
@@ -55,6 +55,6 @@ internal object MissingDataElementConflict : TrackerImportConflictItem {
                 description(name)
             }
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

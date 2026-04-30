@@ -45,11 +45,11 @@ internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {
 
         @Suppress("MagicNumber")
         return if (
-            parsed.httpStatusCode() == HttpsURLConnection.HTTP_UNAUTHORIZED ||
-            parsed.httpStatusCode() == HttpsURLConnection.HTTP_CONFLICT ||
-            parsed.httpStatusCode() == HttpsURLConnection.HTTP_FORBIDDEN
+            parsed.httpStatusCode == HttpsURLConnection.HTTP_UNAUTHORIZED ||
+            parsed.httpStatusCode == HttpsURLConnection.HTTP_CONFLICT ||
+            parsed.httpStatusCode == HttpsURLConnection.HTTP_FORBIDDEN
         ) {
-            val message = parsed.message()
+            val message = parsed.message
             when {
                 message.contains("OWNERSHIP_ACCESS_DENIED") -> D2ErrorCode.OWNERSHIP_ACCESS_DENIED
                 message.contains("PROGRAM_ACCESS_CLOSED") -> D2ErrorCode.PROGRAM_ACCESS_CLOSED

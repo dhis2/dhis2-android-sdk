@@ -27,13 +27,17 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Month
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
 
 internal object YearlyPeriodGeneratorFactory {
     fun yearly(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.Yearly, Month.JANUARY, "")
+    }
+
+    fun financialFeb(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialFeb, Month.FEBRUARY, "Feb")
     }
 
     fun financialApril(clock: Clock): YearlyPeriodGenerator {
@@ -42,6 +46,14 @@ internal object YearlyPeriodGeneratorFactory {
 
     fun financialJuly(clock: Clock): YearlyPeriodGenerator {
         return YearlyPeriodGenerator(clock, PeriodType.FinancialJuly, Month.JULY, "July")
+    }
+
+    fun financialAug(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialAug, Month.AUGUST, "Aug")
+    }
+
+    fun financialSep(clock: Clock): YearlyPeriodGenerator {
+        return YearlyPeriodGenerator(clock, PeriodType.FinancialSep, Month.SEPTEMBER, "Sep")
     }
 
     fun financialOct(clock: Clock): YearlyPeriodGenerator {

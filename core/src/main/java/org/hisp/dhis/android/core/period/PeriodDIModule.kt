@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -41,8 +42,11 @@ import org.koin.core.annotation.Singleton
 internal class PeriodDIModule {
 
     @Singleton
-    fun parentPeriodGenerator(clockProvider: ClockProvider): ParentPeriodGenerator {
-        return ParentPeriodGeneratorImpl.create(clockProvider)
+    fun parentPeriodGenerator(
+        clockProvider: ClockProvider,
+        relativePeriodHelper: RelativePeriodHelper,
+    ): ParentPeriodGenerator {
+        return ParentPeriodGeneratorImpl.create(clockProvider, relativePeriodHelper)
     }
 
     @Singleton

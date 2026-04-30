@@ -32,7 +32,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.imports.internal.EventWebResponse
 import org.hisp.dhis.android.network.common.dto.WebResponseDTO
-import org.hisp.dhis.android.network.common.dto.applyWebResponseFields
 
 @Serializable
 internal data class EventWebResponseDTO(
@@ -43,10 +42,13 @@ internal data class EventWebResponseDTO(
     val response: EventImportSummariesDTO?,
 ) : WebResponseDTO {
     fun toDomain(): EventWebResponse {
-        return EventWebResponse.builder()
-            .applyWebResponseFields(this)
-            .response(response?.toDomain())
-            .build()
+        return EventWebResponse(
+            httpStatus = httpStatus,
+            httpStatusCode = httpStatusCode,
+            status = status,
+            message = message,
+            response = response?.toDomain(),
+        )
     }
 
     companion object {

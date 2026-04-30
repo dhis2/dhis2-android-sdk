@@ -33,11 +33,15 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
 import org.junit.Test
 
-class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
+internal class DataValueShould : CoreObjectShould<DataValueDTO>(
+    "datavalue/data_value.json",
+    DataValueDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val dataValueDTO = deserialize(DataValueDTO.serializer())
-        val dataValue = dataValueDTO.toDomain()
+        val dataValueDTO = deserialize()
+        val dataValue = dataValueDTO.toDomain("lyLU2wR22tC")
 
         assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
         assertThat(dataValue.period()).isEqualTo("201712")
@@ -55,5 +59,6 @@ class DataValueShould : CoreObjectShould("datavalue/data_value.json") {
         assertThat(dataValue.comment()).isEqualTo("")
         assertThat(dataValue.followUp()).isFalse()
         assertThat(dataValue.deleted()).isFalse()
+        assertThat(dataValue.sourceDataSet()).isEqualTo("lyLU2wR22tC")
     }
 }

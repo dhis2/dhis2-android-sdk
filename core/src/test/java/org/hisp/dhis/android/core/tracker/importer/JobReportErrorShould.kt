@@ -35,11 +35,14 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjec
 import org.hisp.dhis.android.network.tracker.JobReportDTO
 import org.junit.Test
 
-class JobReportErrorShould : CoreObjectShould("tracker/importer/jobreport-error.json") {
+internal class JobReportErrorShould : CoreObjectShould<JobReportDTO>(
+    "tracker/importer/jobreport-error.json",
+    JobReportDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val jobReportDTO = deserialize(JobReportDTO.serializer())
+        val jobReportDTO = deserialize()
         val jobReport = jobReportDTO.toDomain()
 
         assertThat(jobReport.status).isEqualTo("ERROR")

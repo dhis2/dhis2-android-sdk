@@ -51,4 +51,10 @@ class DataStoreEntryStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegr
             .value("value2")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): DataStoreEntry {
+        return buildObject().toBuilder()
+            .value(null)
+            .build()
+    }
 }

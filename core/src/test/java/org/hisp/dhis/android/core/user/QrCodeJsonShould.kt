@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.twofactorauth.QrCodeJsonDTO
 import org.junit.Test
 
-class QrCodeJsonShould : CoreObjectShould("user/qr-code.json") {
+internal class QrCodeJsonShould : CoreObjectShould<QrCodeJsonDTO>("user/qr-code.json", QrCodeJsonDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val qrCodeJsonDTO = deserialize(QrCodeJsonDTO.serializer())
+        val qrCodeJsonDTO = deserialize()
         val secret = qrCodeJsonDTO.toDomain()
 
         assertThat(secret).isEqualTo("HMFQS5AAEFRHQ5D6UNIQCGJUKB3ITNPD")

@@ -47,7 +47,7 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     fun filter_all() {
         val mapLayers = d2.mapsModule().mapLayers().blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(8)
+        assertThat(mapLayers.size).isEqualTo(10)
     }
 
     @Test
@@ -71,7 +71,7 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
     @Test
     fun filter_by_display_name() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byName().eq(AzureBasemaps.list.first().name)
+            .byDisplayName().eq(AzureBasemaps.list.first().name)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
@@ -92,7 +92,7 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
             .byExternal().isFalse
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(4)
+        assertThat(mapLayers.size).isEqualTo(6)
     }
 
     @Test
@@ -101,16 +101,71 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
             .byMapLayerPosition().eq(MapLayerPosition.BASEMAP)
             .blockingGet()
 
-        assertThat(mapLayers.size).isEqualTo(6)
+        assertThat(mapLayers.size).isEqualTo(7)
+    }
+
+    @Test
+    fun filter_by_overlay_position() {
+        val mapLayers = d2.mapsModule().mapLayers()
+            .byMapLayerPosition().eq(MapLayerPosition.OVERLAY)
+            .blockingGet()
+
+        assertThat(mapLayers.size).isEqualTo(3)
+    }
+
+    @Test
+    fun verify_hybrid_layers_are_linked() {
+        val hybridBasemap = AzureBasemaps.list.find { it.id == "azureHybrid" }!!
+        val baseLayerUid = hybridBasemap.id + hybridBasemap.styles.first().idSuffix
+        val overlayLayerUid = hybridBasemap.id + hybridBasemap.styles.last().idSuffix
+
+        // Get the overlay layer and verify it's linked to the base layer
+        val overlayLayer = d2.mapsModule().mapLayers()
+            .byUid().eq(overlayLayerUid)
+            .blockingGet()
+            .first()
+
+        assertThat(overlayLayer.linkedLayerUid()).isEqualTo(baseLayerUid)
+        assertThat(overlayLayer.mapLayerPosition()).isEqualTo(MapLayerPosition.OVERLAY)
+
+        // Get the base layer and verify it has no linkedLayerUid
+        val baseLayer = d2.mapsModule().mapLayers()
+            .byUid().eq(baseLayerUid)
+            .blockingGet()
+            .first()
+
+        assertThat(baseLayer.linkedLayerUid()).isNull()
+        assertThat(baseLayer.mapLayerPosition()).isEqualTo(MapLayerPosition.BASEMAP)
+    }
+
+    @Test
+    fun filter_by_linked_layer_uid() {
+        val hybridBasemap = AzureBasemaps.list.find { it.id == "azureHybrid" }!!
+        val baseLayerUid = hybridBasemap.id + hybridBasemap.styles.first().idSuffix
+
+        val linkedLayers = d2.mapsModule().mapLayers()
+            .byLinkedLayerUid().eq(baseLayerUid)
+            .blockingGet()
+
+        assertThat(linkedLayers.size).isEqualTo(1)
     }
 
     @Test
     fun filter_by_style() {
         val mapLayers = d2.mapsModule().mapLayers()
-            .byStyle().eq(AzureBasemaps.list.first().style)
+            .byStyle().eq(AzureBasemaps.list.first().styles.first().tilesetId)
             .blockingGet()
 
         assertThat(mapLayers.size).isEqualTo(1)
+    }
+
+    @Test
+    fun azure_dark_not_present_due_to_401() {
+        val azureDarkLayers = d2.mapsModule().mapLayers()
+            .byUid().eq("azureDark")
+            .blockingGet()
+
+        assertThat(azureDarkLayers).isEmpty()
     }
 
     @Test
@@ -159,11 +214,19 @@ class AzureMapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrati
         fun setUp() {
             setUpClass()
 
-            dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
+            // Azure API key request (keyAzureMapsApiKey in response -> uses Azure path)
+            dhis2MockServer.enqueueMockResponse("settings/system_settings_azure.json")
+            // azureLight (1 style - success)
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
+            // azureDark (1 style - fails with 401, but not first so continues without Bing fallback)
             dhis2MockServer.enqueueMockResponse(401)
+            // azureAerial (1 style - success)
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
-            dhis2MockServer.enqueueMockResponse(401)
+            // azureHybrid (2 styles: imagery + hybrid.road - both success)
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/azure_server_response.json")
+            // Azure layers non-empty -> returns early, no Bing key fetch needed
+            // external map layers
             dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 
             d2.mapsModule().mapLayersDownloader().downloadMetadata().blockingAwait()

@@ -149,7 +149,7 @@ class EventUtils {
     // Assertions
 
     static void assertEvent(EventImportSummary eventSummary, ImportStatus status) {
-        assertThat(eventSummary.status()).isEqualTo(status);
+        assertThat(eventSummary.getStatus()).isEqualTo(status);
     }
 
 }

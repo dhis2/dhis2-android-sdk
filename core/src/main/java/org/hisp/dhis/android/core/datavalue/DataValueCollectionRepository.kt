@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.datavalue
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -42,26 +43,31 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operator
 import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.koin.core.annotation.Singleton
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 @Singleton
 class DataValueCollectionRepository internal constructor(
     private val store: DataValueStore,
     scope: RepositoryScope,
     private val postCall: DataValuePostCall,
+    private val dataSetElementStore: DataSetElementStore,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        DataValueCollectionRepository(store, s, postCall)
+        DataValueCollectionRepository(store, s, postCall, dataSetElementStore)
     },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
@@ -82,12 +88,14 @@ class DataValueCollectionRepository internal constructor(
         dataElement: String,
         categoryOptionCombo: String,
         attributeOptionCombo: String,
+        sourceDataSet: String,
     ): DataValueObjectRepository {
         val updatedScope = byPeriod().eq(period)
             .byOrganisationUnitUid().eq(organisationUnit)
             .byDataElementUid().eq(dataElement)
             .byCategoryOptionComboUid().eq(categoryOptionCombo)
-            .byAttributeOptionComboUid().eq(attributeOptionCombo).scope
+            .byAttributeOptionComboUid().eq(attributeOptionCombo)
+            .scope
         return DataValueObjectRepository(
             store,
             childrenAppenders,
@@ -97,7 +105,39 @@ class DataValueCollectionRepository internal constructor(
             dataElement,
             categoryOptionCombo,
             attributeOptionCombo,
+            sourceDataSet,
         )
+    }
+
+    @LegacyDataValueApi
+    @Deprecated(
+        message = "Use value(period, organisationUnit, dataElement, categoryOptionCombo, " +
+            "attributeOptionCombo, sourceDataSet) instead. DataSet is required for DHIS2 v43+.",
+        replaceWith = ReplaceWith(
+            "value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, sourceDataSet)",
+        ),
+    )
+    fun value(
+        period: String,
+        organisationUnit: String,
+        dataElement: String,
+        categoryOptionCombo: String,
+        attributeOptionCombo: String,
+    ): DataValueObjectRepository {
+        return runBlocking {
+            val dataSet = dataSetElementStore.getFirstValidDataSet(
+                dataElementUid = dataElement,
+                periodId = period,
+                organisationUnitUid = organisationUnit,
+                categoryOptionComboUid = categoryOptionCombo,
+                attributeOptionComboUid = attributeOptionCombo,
+            ) ?: throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.Database)
+                .errorCode(D2ErrorCode.INVALID_CONFIGURATION)
+                .errorDescription("No valid DataSet found for DataElement $dataElement")
+                .build()
+            value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, dataSet)
+        }
     }
 
     fun byDataElementUid(): StringFilterConnector<DataValueCollectionRepository> {
@@ -161,7 +201,7 @@ class DataValueCollectionRepository internal constructor(
     }
 
     fun bySyncState(): EnumFilterConnector<DataValueCollectionRepository, State> {
-        return cf.enumC<State>(DataValueTableInfo.Columns.SYNC_STATE)
+        return cf.enumC(DataValueTableInfo.Columns.SYNC_STATE)
     }
 
     fun byDeleted(): BooleanFilterConnector<DataValueCollectionRepository> {

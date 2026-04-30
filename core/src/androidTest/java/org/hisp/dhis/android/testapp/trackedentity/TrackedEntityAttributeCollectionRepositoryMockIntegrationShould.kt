@@ -210,4 +210,31 @@ class TrackedEntityAttributeCollectionRepositoryMockIntegrationShould : BaseMock
 
         assertThat(trackedEntityAttributes.size).isEqualTo(1)
     }
+
+    @Test
+    fun filter_by_preferred_search_operator() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byPreferredSearchOperator().eq("SW")
+            .blockingGet()
+
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
+    }
+
+    @Test
+    fun filter_by_blocked_search_operators() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byBlockedSearchOperators().like("LIKE")
+            .blockingGet()
+
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
+    }
+
+    @Test
+    fun filter_by_min_characters_to_search() {
+        val trackedEntityAttributes = d2.trackedEntityModule().trackedEntityAttributes()
+            .byMinCharactersToSearch().eq(2)
+            .blockingGet()
+
+        assertThat(trackedEntityAttributes.size).isEqualTo(1)
+    }
 }

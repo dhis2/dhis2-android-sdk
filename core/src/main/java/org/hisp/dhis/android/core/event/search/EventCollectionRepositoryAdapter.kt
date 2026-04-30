@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.event.search
 
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRep
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
 import org.koin.core.annotation.Singleton
+import kotlin.time.Instant
 import org.hisp.dhis.android.core.event.search.EventQueryScopeOrderColumn.Type as OrderColumnType
 
 @Singleton
@@ -108,7 +108,7 @@ internal class EventCollectionRepositoryAdapter(
         filter: EventDataFilter,
     ): EventCollectionRepository {
         var filterRepo = repository
-        filter.dataItem()?.let { deId ->
+        filter.dataItem().let { deId ->
             filter.eq()?.let { filterRepo = filterRepo.byDataValue(deId).eq(it) }
             filter.ge()?.let { filterRepo = filterRepo.byDataValue(deId).ge(it) }
             filter.gt()?.let { filterRepo = filterRepo.byDataValue(deId).gt(it) }

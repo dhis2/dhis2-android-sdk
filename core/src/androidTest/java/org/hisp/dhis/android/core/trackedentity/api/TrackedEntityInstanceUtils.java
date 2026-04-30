@@ -288,6 +288,7 @@ class TrackedEntityInstanceUtils {
                 .trackedEntityInstance(teiUid)
                 .deleted(false)
                 .notes(Collections.emptyList())
+                .attributeOptionCombo("bRowv6yZOF2")
                 .build();
     }
 
@@ -370,21 +371,21 @@ class TrackedEntityInstanceUtils {
     }
 
     static void assertEnrollments(TEIImportSummary importSummary, ImportStatus status) {
-        for (EnrollmentImportSummary enrollmentSummary : importSummary.enrollments().importSummaries()) {
+        for (EnrollmentImportSummary enrollmentSummary : importSummary.getEnrollments().getImportSummaries()) {
             assertSummary(enrollmentSummary, status);
         }
     }
 
     static void assertEvents(TEIImportSummary importSummary, ImportStatus status) {
         for (EnrollmentImportSummary enrollmentSummary :
-                importSummary.enrollments().importSummaries()) {
-            for (EventImportSummary eventSummary : enrollmentSummary.events().importSummaries()) {
+                importSummary.getEnrollments().getImportSummaries()) {
+            for (EventImportSummary eventSummary : enrollmentSummary.getEvents().getImportSummaries()) {
                 assertSummary(eventSummary, status);
             }
         }
     }
 
     private static void assertSummary(BaseImportSummary importSummary, ImportStatus status) {
-        assertThat(importSummary.status()).isEqualTo(status);
+        assertThat(importSummary.getStatus()).isEqualTo(status);
     }
 }

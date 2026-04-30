@@ -54,4 +54,14 @@ public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstr
     protected SystemInfo buildObjectToUpdate() {
         return SystemInfoSamples.get2();
     }
+
+    @Override
+    protected SystemInfo buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .serverDate(null)
+                .dateFormat(null)
+                .version(null)
+                .systemName(null)
+                .build();
+    }
 }

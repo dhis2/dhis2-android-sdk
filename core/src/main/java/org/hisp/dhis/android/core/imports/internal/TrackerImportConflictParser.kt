@@ -132,11 +132,11 @@ internal class TrackerImportConflictParser(
                 .dataElement(conflictType.getDataElement(conflict))
         } else {
             conflictBuilder
-                .displayDescription(conflict.value())
+                .displayDescription(conflict.value)
         }
 
         return conflictBuilder
-            .conflict(conflict.value())
+            .conflict(conflict.value)
             .value(getConflictValue(conflictBuilder))
             .build()
     }

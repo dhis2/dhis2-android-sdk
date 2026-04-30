@@ -159,6 +159,9 @@
       "categoryCombo": {
         "id": "m2jTvAj5kkm"
       },
+      "enrollmentCategoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
       "programRuleVariables": [
       ],
       "programTrackedEntityAttributes": [
@@ -335,6 +338,9 @@
         "id": "nEenWmSyUEp"
       },
       "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "enrollmentCategoryCombo": {
         "id": "m2jTvAj5kkm"
       }
     }

@@ -59,6 +59,13 @@ class RelationshipItemStoreIntegrationShould : ObjectWithoutUidStoreAbstractInte
             .build()
     }
 
+    override fun buildObjectWithNullableFields(): RelationshipItem {
+        return buildObject().toBuilder()
+            .trackedEntityInstance(null)
+            .enrollment(null)
+            .build()
+    }
+
     @Test
     fun get_by_entity_uid() = runTest {
         val sample = RelationshipItemSamples.getRelationshipItem()

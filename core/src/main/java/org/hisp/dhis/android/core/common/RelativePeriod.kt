@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.common
 
 import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 
 @Suppress("MagicNumber")
 enum class RelativePeriod constructor(
@@ -82,4 +83,41 @@ enum class RelativePeriod constructor(
     LAST_4_BIWEEKS(PeriodType.BiWeekly, -4, 0),
     LAST_12_WEEKS(PeriodType.Weekly, -12, 0),
     LAST_52_WEEKS(PeriodType.Weekly, -52, 0),
+    ;
+
+    internal fun getPeriodType(relativePeriodHelper: RelativePeriodHelper): PeriodType {
+        return if (isFinancialYearRelativePeriod()) {
+            relativePeriodHelper.getFinancialYearPeriodType()
+        } else if (isWeeklyRelativePeriod()) {
+            relativePeriodHelper.getWeeklyPeriodType()
+        } else {
+            periodType
+        }
+    }
+
+    internal fun isFinancialYearRelativePeriod(): Boolean {
+        return this in FINANCIAL_YEAR_PERIODS
+    }
+
+    internal fun isWeeklyRelativePeriod(): Boolean {
+        return this in WEEKLY_PERIODS
+    }
+
+    companion object {
+        internal val FINANCIAL_YEAR_PERIODS = setOf(
+            THIS_FINANCIAL_YEAR,
+            LAST_FINANCIAL_YEAR,
+            LAST_5_FINANCIAL_YEARS,
+            LAST_10_FINANCIAL_YEARS,
+        )
+
+        internal val WEEKLY_PERIODS = setOf(
+            WEEKS_THIS_YEAR,
+            THIS_WEEK,
+            LAST_WEEK,
+            LAST_4_WEEKS,
+            LAST_12_WEEKS,
+            LAST_52_WEEKS,
+        )
+    }
 }

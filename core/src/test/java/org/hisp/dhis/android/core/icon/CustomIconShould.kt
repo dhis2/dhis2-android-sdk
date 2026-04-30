@@ -32,11 +32,11 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.customicon.CustomIconDTO
 import org.junit.Test
 
-class CustomIconShould : CoreObjectShould("icon/custom_icon.json") {
+internal class CustomIconShould : CoreObjectShould<CustomIconDTO>("icon/custom_icon.json", CustomIconDTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {
-        val iconDTO = deserialize(CustomIconDTO.serializer())
+        val iconDTO = deserialize()
         val icon = iconDTO.toDomain()
 
         assertThat(icon.key()).isEqualTo("childIcon")

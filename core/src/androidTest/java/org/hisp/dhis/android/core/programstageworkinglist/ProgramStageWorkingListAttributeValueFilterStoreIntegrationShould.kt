@@ -45,4 +45,17 @@ class ProgramStageWorkingListAttributeValueFilterStoreIntegrationShould :
     override fun buildObject(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilterSamples.get()
     }
+
+    override fun buildObjectWithNullableFields(): ProgramStageWorkingListAttributeValueFilter {
+        return buildObject().toBuilder()
+            .sw(null)
+            .ew(null)
+            .le(null)
+            .ge(null)
+            .gt(null)
+            .lt(null)
+            .like(null)
+            .dateFilter(null)
+            .build()
+    }
 }

@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.mockwebserver
 
 import android.util.Log
 import io.ktor.http.HttpStatusCode
-import okhttp3.internal.UTC
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -41,6 +40,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import java.util.concurrent.TimeUnit
 
 @Suppress("TooManyFunctions")
@@ -59,7 +59,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     private fun start(port: Int) {
         try {
             server.start(port)
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             Log.e(MOCKWEBSERVER, "Could not start server")
         }
     }
@@ -67,7 +67,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
     fun shutdown() {
         try {
             server.shutdown()
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             Log.e(MOCKWEBSERVER, "Could not shutdown server")
         }
     }
@@ -228,8 +228,13 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/indicatorTypes?") ->
                         createMockResponse(INDICATOR_TYPES_JSON)
 
-                    path.startsWith("/api/categoryCombos?") ->
-                        createMockResponse(CATEGORY_COMBOS_JSON)
+                    path.startsWith("/api/categoryCombos?") -> {
+                        if (path.contains("filter=isDefault:eq:true")) {
+                            createMockResponse(DEFAULT_CATEGORY_COMBO_JSON)
+                        } else {
+                            createMockResponse(CATEGORY_COMBOS_JSON)
+                        }
+                    }
 
                     path.startsWith("/api/categories?") ->
                         createMockResponse(CATEGORIES_JSON)
@@ -271,7 +276,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                         createMockResponse(NEW_EVENTS_JSON)
 
                     path.startsWith("/api/dataValueSets?") ->
-                        createMockResponse(DATA_VALUES_JSON)
+                        createDataValuesResponse(path)
 
                     path.startsWith("/api/completeDataSetRegistrations?") ->
                         createMockResponse(DATA_SET_COMPLETE_REGISTRATIONS_JSON)
@@ -349,6 +354,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         enqueueMockResponse(VERSIONS_JSON)
         enqueueMockResponse(STOCK_USE_CASES_JSON)
         enqueueMockResponse(CONSTANTS_JSON)
+        enqueueMockResponse(DEFAULT_CATEGORY_COMBO_JSON)
         enqueueMockResponse(USER_JSON)
         enqueueMockResponse(AUTHORITIES_JSON)
         enqueueMockResponse(ORGANISATION_UNIT_LEVELS_JSON)
@@ -393,6 +399,17 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         return createMockResponse(fileName, HttpStatusCode.OK.value)
     }
 
+    private fun createDataValuesResponse(path: String): MockResponse {
+        val dataSetParam = path.substringAfter("dataSet=").substringBefore("&")
+        val jsonFile = when (dataSetParam) {
+            "lyLU2wR22tC" -> DATA_VALUES_LYLUWRTC_JSON
+            "BfMAe6Itzgt" -> DATA_VALUES_BFMAEITZGT_JSON
+            "TaMAefItzgt" -> DATA_VALUES_TAMEFITZGT_JSON
+            else -> DATA_VALUES_EMPTY_JSON
+        }
+        return createMockResponse(jsonFile)
+    }
+
     private fun createMockResponse(fileName: String, code: Int): MockResponse {
         try {
             val body = fileReader.getStringFromFile(fileName)
@@ -401,7 +418,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
             response.setBody(body!!)
             response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
             return response
-        } catch (e: IOException) {
+        } catch (_: IOException) {
             return MockResponse().setResponseCode(HttpStatusCode.InternalServerError.value)
                 .setBody("Error reading JSON file for MockServer")
         }
@@ -412,7 +429,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
 
         val rfc1123: DateFormat = SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US)
         rfc1123.isLenient = false
-        rfc1123.timeZone = UTC
+        rfc1123.timeZone = TimeZone.getTimeZone("UTC")
         val dateHeaderValue = rfc1123.format(dateHeader)
 
         response.setHeader("Date", dateHeaderValue)
@@ -490,6 +507,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val INDICATORS_JSON = "indicators/indicators.json"
         private const val INDICATOR_TYPES_JSON = "indicators/indicator_types.json"
         private const val CATEGORY_COMBOS_JSON = "category/category_combos.json"
+        private const val DEFAULT_CATEGORY_COMBO_JSON = "category/default_category_combo.json"
         private const val CATEGORIES_JSON = "category/categories.json"
         private const val CATEGORY_OPTIONS_JSON = "category/category_options.json"
         private const val CATEGORY_OPTION_ORGUNITS_JSON = "category/category_option_orgunits.json"
@@ -508,7 +526,10 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val TRACKED_ENTITY_INSTANCES_JSON = "trackedentity/tracked_entity_instances.json"
         private const val NEW_TRACKED_ENTITY_INSTANCES_JSON =
             "trackedentity/new_tracker_importer_tracked_entities.json"
-        private const val DATA_VALUES_JSON = "datavalue/data_values.json"
+        private const val DATA_VALUES_LYLUWRTC_JSON = "datavalue/data_values_lyLU2wR22tC.json"
+        private const val DATA_VALUES_BFMAEITZGT_JSON = "datavalue/data_values_BfMAe6Itzgt.json"
+        private const val DATA_VALUES_TAMEFITZGT_JSON = "datavalue/data_values_TaMAefItzgt.json"
+        private const val DATA_VALUES_EMPTY_JSON = "datavalue/data_values_empty.json"
         private const val TRACKED_ENTITY_IMAGE = "trackedentity/tracked_entity_attribute_value_image.png"
         private const val FILE_RESOURCES =
             "trackedentity/tracked_entity_attribute_value_image_resources.json"

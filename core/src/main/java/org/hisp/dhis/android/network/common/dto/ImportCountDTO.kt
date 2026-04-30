@@ -39,6 +39,6 @@ internal data class ImportCountDTO(
     val ignored: Int,
 ) {
     fun toDomain(): ImportCount {
-        return ImportCount.create(imported, updated, deleted, ignored)
+        return ImportCount(imported, updated, deleted, ignored)
     }
 }

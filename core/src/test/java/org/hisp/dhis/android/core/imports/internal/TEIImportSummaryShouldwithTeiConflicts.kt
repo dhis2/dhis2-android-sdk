@@ -36,30 +36,33 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class TEIImportSummaryShouldwithTeiConflicts : CoreObjectShould("imports/import_summary_with_tei_conflicts.json") {
+internal class TEIImportSummaryShouldwithTeiConflicts : CoreObjectShould<TEIImportSummaryDTO>(
+    "imports/import_summary_with_tei_conflicts.json",
+    TEIImportSummaryDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val importSummaryDTO = deserialize(TEIImportSummaryDTO.serializer())
+        val importSummaryDTO = deserialize()
         val importSummary = importSummaryDTO.toDomain()
 
-        assertThat(importSummary.status()).isEqualTo(ImportStatus.ERROR)
-        assertThat(importSummary.responseType()).isEqualTo("ImportSummary")
-        assertThat(importSummary.importCount()).isNotNull()
-        assertThat(importSummary.importCount().imported()).isEqualTo(0)
-        assertThat(importSummary.importCount().updated()).isEqualTo(0)
-        assertThat(importSummary.importCount().ignored()).isEqualTo(1)
-        assertThat(importSummary.importCount().deleted()).isEqualTo(0)
+        assertThat(importSummary.status).isEqualTo(ImportStatus.ERROR)
+        assertThat(importSummary.responseType).isEqualTo("ImportSummary")
+        assertThat(importSummary.importCount).isNotNull()
+        assertThat(importSummary.importCount.imported).isEqualTo(0)
+        assertThat(importSummary.importCount.updated).isEqualTo(0)
+        assertThat(importSummary.importCount.ignored).isEqualTo(1)
+        assertThat(importSummary.importCount.deleted).isEqualTo(0)
 
-        assertThat(importSummary.conflicts()).isNotNull()
-        assertThat(importSummary.conflicts()!!.size).isEqualTo(1)
+        assertThat(importSummary.conflicts).isNotNull()
+        assertThat(importSummary.conflicts!!.size).isEqualTo(1)
 
-        val importConflict = importSummary.conflicts()!![0]
+        val importConflict = importSummary.conflicts!![0]
 
         assertThat(importConflict).isNotNull()
-        assertThat(importConflict.value())
+        assertThat(importConflict.value)
             .isEqualTo("Value '201921212' is not a valid date for attribute iESIqZ0R0R0")
-        assertThat(importConflict.`object`()).isEqualTo("Attribute.value")
+        assertThat(importConflict.`object`).isEqualTo("Attribute.value")
     }
 
     @Test

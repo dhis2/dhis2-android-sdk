@@ -27,20 +27,21 @@
  */
 package org.hisp.dhis.android.core.arch.helpers
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.format.char
+import kotlinx.datetime.number
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.android.core.arch.dateformat.internal.SafeDateFormat
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 @Suppress("TooManyFunctions")
 object DateUtils {
@@ -56,7 +57,7 @@ object DateUtils {
         char('-')
         monthNumber()
         char('-')
-        dayOfMonth()
+        day()
         char('T')
         hour()
         char(':')
@@ -83,10 +84,11 @@ object DateUtils {
         val instantWithOffset = when (periodType) {
             PeriodType.Daily -> instant.plus(periods, DateTimeUnit.DAY, TimeZone.currentSystemDefault())
             PeriodType.Weekly,
+            PeriodType.WeeklyWednesday,
+            PeriodType.WeeklyThursday,
+            PeriodType.WeeklyFriday,
             PeriodType.WeeklySaturday,
             PeriodType.WeeklySunday,
-            PeriodType.WeeklyThursday,
-            PeriodType.WeeklyWednesday,
             -> instant.plus(periods, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
 
             PeriodType.BiWeekly -> instant.plus(periods * 2, DateTimeUnit.WEEK, TimeZone.currentSystemDefault())
@@ -102,8 +104,11 @@ object DateUtils {
             -> instant.plus(periods * 6, DateTimeUnit.MONTH, TimeZone.currentSystemDefault())
 
             PeriodType.Yearly,
+            PeriodType.FinancialFeb,
             PeriodType.FinancialApril,
             PeriodType.FinancialJuly,
+            PeriodType.FinancialAug,
+            PeriodType.FinancialSep,
             PeriodType.FinancialOct,
             PeriodType.FinancialNov,
             -> instant.plus(periods, DateTimeUnit.YEAR, TimeZone.currentSystemDefault())
@@ -137,8 +142,8 @@ object DateUtils {
         val dateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
         val year = dateTime.year
-        val month = dateTime.monthNumber.zeroPrefixed()
-        val day = dateTime.dayOfMonth.zeroPrefixed()
+        val month = dateTime.month.number.zeroPrefixed()
+        val day = dateTime.day.zeroPrefixed()
         val hour = dateTime.hour.zeroPrefixed()
         val minute = dateTime.minute.zeroPrefixed()
         val seconds = dateTime.second.zeroPrefixed()

@@ -35,13 +35,17 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web_response.json") {
+internal class RelationshipWebResponseShould : CoreObjectShould<RelationshipWebResponseDTO>(
+    "imports/relationship_web_response.json",
+    RelationshipWebResponseDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val webResponse = deserialize(RelationshipWebResponseDTO.serializer()).toDomain()
+        val webResponse = deserialize().toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("Import was successful.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("Import was successful.")
+        assertThat(webResponse.response).isNotNull()
     }
 
     @Test
@@ -51,7 +55,7 @@ class RelationshipWebResponseShould : CoreObjectShould("imports/relationship_web
             RelationshipWebResponseDTO.serializer(),
         ).toDomain()
 
-        assertThat(webResponse.message()).isEqualTo("An error occurred, please check import summary.")
-        assertThat(webResponse.response()).isNotNull()
+        assertThat(webResponse.message).isEqualTo("An error occurred, please check import summary.")
+        assertThat(webResponse.response).isNotNull()
     }
 }

@@ -32,13 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityPayload
 import org.junit.Test
 
-class NewTrackerImporterTrackedEntityPayloadGreaterEqualV41Should : CoreObjectShould(
+internal class NewTrackerImporterTrackedEntityPayloadGreaterEqualV41Should : CoreObjectShould<NewTrackedEntityPayload>(
     "trackedentity/new_tracker_importer_tracked_entities_greater_equal_v41.json",
+    NewTrackedEntityPayload.serializer(),
 ) {
 
     @Test
     override fun map_from_json_string() {
-        val trackedEntityPayloadDTO = deserialize(NewTrackedEntityPayload.serializer())
+        val trackedEntityPayloadDTO = deserialize()
         val trackedEntityPayload = trackedEntityPayloadDTO
 
         assertThat(trackedEntityPayload.pager()?.page).isEqualTo(1)

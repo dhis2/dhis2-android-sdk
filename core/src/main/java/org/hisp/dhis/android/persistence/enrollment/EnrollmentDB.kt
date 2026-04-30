@@ -7,6 +7,7 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
@@ -41,6 +42,13 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+        ForeignKey(
+            entity = CategoryOptionComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["attributeOptionCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
     ],
 )
 internal data class EnrollmentDB(
@@ -63,6 +71,7 @@ internal data class EnrollmentDB(
     val geometryCoordinates: String?,
     override val deleted: Boolean?,
     val completedDate: String?,
+    val attributeOptionCombo: String,
 ) : EntityDB<Enrollment>, DataObjectDB, DeletableObjectDB {
 
     override fun toDomain(): Enrollment {
@@ -84,6 +93,7 @@ internal data class EnrollmentDB(
             geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
             deleted(deleted)
             completedDate(completedDate.toJavaDate())
+            attributeOptionCombo(attributeOptionCombo)
         }.build()
     }
 }
@@ -110,5 +120,6 @@ internal fun Enrollment.toDB(): EnrollmentDB {
         geometryCoordinates = geometryDB.geometryCoordinates,
         deleted = deleted(),
         completedDate = completedDate().dateFormat(),
+        attributeOptionCombo = attributeOptionCombo(),
     )
 }

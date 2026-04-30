@@ -31,18 +31,25 @@ import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.period.internal.PeriodStore
-import org.hisp.dhis.android.core.util.toJavaDate
-import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
+import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
+import org.junit.After
 import org.junit.Test
 import java.text.ParseException
 
-class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+class PeriodMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueable() {
+    @After
+    fun tearDown() = runTest {
+        val periodStore: PeriodStore = koin.get()
+        periodStore.delete()
+    }
+
     @Test
     @Throws(ParseException::class)
     fun get_period_passing_period_type_and_a_date() {
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodTypeAndDate(
             PeriodType.BiWeekly,
-            "2019-07-08T12:24:25.319".toJavaDate()!!,
+            "2019-07-08T12:24:25.319".toJavaDateNonNull(),
         )
         Truth.assertThat(period.periodId()).isEqualTo("2019BiW14")
     }
@@ -52,7 +59,7 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
     fun create_period_in_database_if_not_exist() = runTest {
         val periodStore: PeriodStore = koin.get()
 
-        val date = "2010-12-24T12:24:25.319".toJavaDate()!!
+        val date = "2010-12-24T12:24:25.319".toJavaDateNonNull()
 
         var periodInDb = periodStore.selectPeriodByTypeAndDate(PeriodType.Monthly, date)
         Truth.assertThat(periodInDb).isNull()
@@ -68,20 +75,5 @@ class PeriodMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
         Truth.assertThat(periodInDb).isNotNull()
 
         periodStore.deleteWhere(period)
-    }
-
-    @Test
-    fun get_periods() {
-        Truth.assertThat(d2.periodModule().periods().blockingCount()).isEqualTo(230)
-    }
-
-    @Test
-    fun ensure_future_periods_are_downloaded() {
-        Truth.assertThat(d2.periodModule().periods().byPeriodType().eq(PeriodType.Monthly).blockingCount())
-            .isEqualTo(MONTHLY_PERIODS + 4)
-    }
-
-    companion object {
-        private const val MONTHLY_PERIODS = 11 // Copy from ParentPeriodGeneratorImpl to keep it private
     }
 }

@@ -32,16 +32,19 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.junit.Test
 
-class HttpMessageBreakGlassSuccessfulShould : CoreObjectShould("trackedentity/glass/break_glass_successful.json") {
+internal class HttpMessageBreakGlassSuccessfulShould : CoreObjectShould<HttpMessageResponseDTO>(
+    "trackedentity/glass/break_glass_successful.json",
+    HttpMessageResponseDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val responseDTO = deserialize(HttpMessageResponseDTO.serializer())
+        val responseDTO = deserialize()
         val response = responseDTO.toDomain()
 
-        assertThat(response.httpStatus()).isEqualTo("OK")
-        assertThat(response.httpStatusCode()).isEqualTo(200)
-        assertThat(response.status()).isEqualTo("OK")
-        assertThat(response.message()).isEqualTo("Temporary Ownership granted")
+        assertThat(response.httpStatus).isEqualTo("OK")
+        assertThat(response.httpStatusCode).isEqualTo(200)
+        assertThat(response.status).isEqualTo("OK")
+        assertThat(response.message).isEqualTo("Temporary Ownership granted")
     }
 }

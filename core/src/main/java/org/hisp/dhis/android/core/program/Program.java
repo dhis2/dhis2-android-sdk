@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.program;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
 import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.category.CategoryCombo;
 import org.hisp.dhis.android.core.common.Access;
 import org.hisp.dhis.android.core.common.BaseNameableObject;
 import org.hisp.dhis.android.core.common.CoreObject;
@@ -125,13 +125,8 @@ public abstract class Program extends BaseNameableObject
     @Nullable
     public abstract TrackedEntityType trackedEntityType();
 
-    @Nullable
+    @NonNull
     public abstract ObjectWithUid categoryCombo();
-
-    public String categoryComboUid() {
-        ObjectWithUid combo = categoryCombo();
-        return combo == null ? CategoryCombo.DEFAULT_UID : combo.uid();
-    }
 
     public abstract Access access();
 
@@ -261,6 +256,9 @@ public abstract class Program extends BaseNameableObject
     @Nullable
     public abstract List<AttributeValue> attributeValues();
 
+    @NonNull
+    public abstract ObjectWithUid enrollmentCategoryCombo();
+
     public static Builder builder() {
         return new AutoValue_Program.Builder();
     }
@@ -324,7 +322,7 @@ public abstract class Program extends BaseNameableObject
 
         public abstract Builder trackedEntityType(TrackedEntityType trackedEntityType);
 
-        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
+        public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
 
         public abstract Builder access(Access access);
 
@@ -433,6 +431,8 @@ public abstract class Program extends BaseNameableObject
         abstract AccessLevel accessLevel();
 
         abstract ObjectStyle style();
+
+        public abstract Builder enrollmentCategoryCombo(@NonNull ObjectWithUid enrollmentCategoryCombo);
 
         public Program build() {
             if (featureType() == null) {

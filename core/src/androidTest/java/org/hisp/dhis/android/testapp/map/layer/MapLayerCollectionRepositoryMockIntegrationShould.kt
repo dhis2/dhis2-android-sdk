@@ -156,12 +156,18 @@ class MapLayerCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTes
         fun setUp() {
             setUpClass()
 
+            // Azure API key request (no keyAzureMapsApiKey in response -> blank -> skip Azure path)
             dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
+            // Bing API key request (keyBingMapsApiKey in response -> falls through to Bing path)
+            dhis2MockServer.enqueueMockResponse("settings/system_settings.json")
+            // Azure basemaps with Bing key: first gets 401 -> abort -> empty
+            dhis2MockServer.enqueueMockResponse(401)
+            // Bing basemaps fallback
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
+            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
             dhis2MockServer.enqueueMockResponse(401)
             dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
-            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
-            dhis2MockServer.enqueueMockResponse(401)
-            dhis2MockServer.enqueueMockResponse("map/layer/microsoft/bing_server_response.json")
+            // external map layers
             dhis2MockServer.enqueueMockResponse("map/layer/externalmap/external_map_layers.json")
 
             d2.mapsModule().mapLayersDownloader().downloadMetadata().blockingAwait()

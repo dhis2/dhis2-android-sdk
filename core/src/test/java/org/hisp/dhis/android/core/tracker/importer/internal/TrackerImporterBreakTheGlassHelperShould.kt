@@ -146,6 +146,8 @@ class TrackerImporterBreakTheGlassHelperShould {
         val program = Program.builder()
             .uid(programUid)
             .accessLevel(AccessLevel.PROTECTED)
+            .categoryCombo(mock())
+            .enrollmentCategoryCombo(mock())
             .build()
         whenever(programStore.selectByUid(programUid)).doReturn(program)
     }
@@ -154,6 +156,8 @@ class TrackerImporterBreakTheGlassHelperShould {
         val program = Program.builder()
             .uid(programUid)
             .accessLevel(AccessLevel.OPEN)
+            .categoryCombo(mock())
+            .enrollmentCategoryCombo(mock())
             .build()
         whenever(programStore.selectByUid(programUid)).doReturn(program)
     }

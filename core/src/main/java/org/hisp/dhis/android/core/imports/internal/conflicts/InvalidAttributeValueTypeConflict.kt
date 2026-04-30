@@ -47,11 +47,11 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
     override val errorCode: String = "E1007"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return errorRegex.any { it.matches(conflict.value()) }
+        return errorRegex.any { it.matches(conflict.value) }
     }
 
     override fun getTrackedEntityAttribute(conflict: ImportConflict): String? {
-        return errorRegex.find { it.matches(conflict.value()) }?.find(conflict.value())?.groupValues?.getOrNull(1)
+        return errorRegex.find { it.matches(conflict.value) }?.find(conflict.value)?.groupValues?.getOrNull(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -63,6 +63,6 @@ internal object InvalidAttributeValueTypeConflict : TrackerImportConflictItem {
                 val name = attribute.displayFormName() ?: attribute.displayName() ?: attributeUid
                 description(name)
             }
-        } ?: conflict.value()
+        } ?: conflict.value
     }
 }

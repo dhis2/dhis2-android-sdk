@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.categoryoption.CategoryOptionDTO
 import org.junit.Test
 
-class CategoryOptionShould : CoreObjectShould("category/category_option.json") {
+internal class CategoryOptionShould : CoreObjectShould<CategoryOptionDTO>(
+    "category/category_option.json",
+    CategoryOptionDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val optionDTO = deserialize(CategoryOptionDTO.serializer())
+        val optionDTO = deserialize()
         val option = optionDTO.toDomain()
 
         assertThat(option.uid()).isEqualTo("cQYFfHX9oIT")

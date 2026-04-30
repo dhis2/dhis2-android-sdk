@@ -33,10 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.settings.DataSetSettingsDTO
 import org.junit.Test
 
-class DataSetSettingsShould : CoreObjectShould("settings/dataset_settings.json") {
+internal class DataSetSettingsShould : CoreObjectShould<DataSetSettingsDTO>(
+    "settings/dataset_settings.json",
+    DataSetSettingsDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val dataSetSettingsDTO = deserialize(DataSetSettingsDTO.serializer())
+        val dataSetSettingsDTO = deserialize()
         val dataSetSettings = dataSetSettingsDTO.toDomain()
 
         val global = dataSetSettings.globalSettings()

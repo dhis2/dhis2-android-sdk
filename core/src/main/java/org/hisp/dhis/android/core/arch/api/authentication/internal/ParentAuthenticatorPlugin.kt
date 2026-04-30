@@ -39,6 +39,7 @@ internal class ParentAuthenticatorPlugin(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val passwordAndCookieAuthenticator: PasswordAndCookieAuthenticator,
     private val openIDConnectAuthenticator: OpenIDConnectAuthenticator,
+    private val oauth2Authenticator: OAuth2Authenticator,
     private val cookieHelper: CookieAuthenticatorHelper,
 ) {
     val instance = createClientPlugin(name = "ParentAuthenticatorPlugin") {
@@ -62,6 +63,10 @@ internal class ParentAuthenticatorPlugin(
 
                     credentials?.openIDConnectState != null -> {
                         openIDConnectAuthenticator.handleTokenCall(this, request, credentials)
+                    }
+
+                    credentials?.oauth2State != null -> {
+                        oauth2Authenticator.handleTokenCall(this, request, credentials)
                     }
 
                     else -> {

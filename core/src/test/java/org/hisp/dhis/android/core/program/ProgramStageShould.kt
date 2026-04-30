@@ -37,10 +37,14 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.programstage.ProgramStageDTO
 import org.junit.Test
 
-class ProgramStageShould : CoreObjectShould("program/program_stage.json") {
+internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
+    "program/program_stage.json",
+    ProgramStageDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val programStageDTO = deserialize(ProgramStageDTO.serializer())
+        val programStageDTO = deserialize()
         val programStage = programStageDTO.toDomain()
 
         assertThat(programStage.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2013-04-10T12:15:02.041"))

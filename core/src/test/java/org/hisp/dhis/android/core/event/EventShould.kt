@@ -34,10 +34,11 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.network.event.EventDTO
 import org.junit.Test
 
-class EventShould : CoreObjectShould("event/event.json") {
+internal class EventShould : CoreObjectShould<EventDTO>("event/event.json", EventDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val eventDTO = deserialize(EventDTO.serializer())
+        val eventDTO = deserialize()
         val event = eventDTO.toDomain()
 
         assertThat(event.uid()).isEqualTo("hnaWBxMw5j3")

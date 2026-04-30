@@ -29,4 +29,7 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.datavalue.DataValue
 
-internal class DataValueSet(val dataValues: List<DataValue> = emptyList())
+internal class DataValueSet(
+    val dataValues: List<DataValue> = emptyList(),
+    val dataSet: String? = null,
+)

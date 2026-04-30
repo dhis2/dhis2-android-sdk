@@ -38,11 +38,11 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
     override val errorCode: String = "E1081"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getEnrollment(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -52,6 +52,6 @@ internal object EnrollmentNotFoundConflict : TrackerImportConflictItem {
         return getEnrollment(conflict)?.let { enrollmentUid ->
             description(enrollmentUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

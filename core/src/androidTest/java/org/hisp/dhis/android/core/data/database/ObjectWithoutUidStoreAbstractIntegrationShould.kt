@@ -87,6 +87,12 @@ abstract class ObjectWithoutUidStoreAbstractIntegrationShould<M : CoreObject> in
     }
 
     @Test
+    fun delete_where_if_exists_does_not_throw_when_object_missing() = runTest {
+        store.deleteWhereIfExists(`object`)
+        assertThat(store.count()).isEqualTo(0)
+    }
+
+    @Test
     fun insert_same_object_simultaneously_and_transactionally() = runTest {
         val s1 = rxSingle { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())
         val s2 = rxSingle { store.updateOrInsertWhere(`object`) }.subscribeOn(Schedulers.io())

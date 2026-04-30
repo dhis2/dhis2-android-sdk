@@ -37,11 +37,11 @@ internal object FileResourceReferenceNotFoundConflict : TrackerImportConflictIte
     override val errorCode: String = "E1084"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return regex.matches(conflict.value())
+        return regex.matches(conflict.value)
     }
 
     override fun getFileResource(conflict: ImportConflict): String? {
-        return regex.find(conflict.value())?.groupValues?.get(1)
+        return regex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -51,6 +51,6 @@ internal object FileResourceReferenceNotFoundConflict : TrackerImportConflictIte
         return getFileResource(conflict)?.let { fileResourceUid ->
             description(fileResourceUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

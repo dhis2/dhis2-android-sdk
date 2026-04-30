@@ -29,23 +29,32 @@ package org.hisp.dhis.android.core.settings
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.junit.Test
 
-class SystemSettingsShould : CoreObjectShould("settings/system_settings.json") {
+internal class SystemSettingsShould : CoreObjectShould<SystemSettingsDTO>(
+    "settings/system_settings.json",
+    SystemSettingsDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val settingsDTO = deserialize(SystemSettingsDTO.serializer())
+        val settingsDTO = deserialize()
         val settingsSplitted = settingsDTO.toDomainSplitted()
-        assertThat(settingsSplitted.get(0).key()).isEqualTo(SystemSetting.SystemSettingKey.FLAG)
-        assertThat(settingsSplitted.get(0).value()).isEqualTo("sierra_leone")
-        assertThat(settingsSplitted.get(1).key()).isEqualTo(SystemSetting.SystemSettingKey.STYLE)
-        assertThat(settingsSplitted.get(1).value()).isEqualTo("light_blue/light_blue.css")
-        assertThat(settingsSplitted.get(2).key()).isEqualTo(SystemSetting.SystemSettingKey.DEFAULT_BASE_MAP)
-        assertThat(settingsSplitted.get(2).value()).isEqualTo("keyDefaultBaseMap")
+        assertThat(settingsSplitted).hasSize(6)
+        assertThat(settingsSplitted[0].key()).isEqualTo(SystemSettingKey.FLAG)
+        assertThat(settingsSplitted[0].value()).isEqualTo("sierra_leone")
+        @Suppress("DEPRECATION")
+        assertThat(settingsSplitted[1].key()).isEqualTo(SystemSettingKey.STYLE)
+        assertThat(settingsSplitted[1].value()).isEqualTo("light_blue/light_blue.css")
+        assertThat(settingsSplitted[2].key()).isEqualTo(SystemSettingKey.CUSTOM_COLOR)
+        assertThat(settingsSplitted[2].value()).isEqualTo("#007DEB")
+        assertThat(settingsSplitted[3].key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
+        assertThat(settingsSplitted[3].value()).isEqualTo("keyDefaultBaseMap")
 
         val settingsBingMaps = settingsDTO.toDomainBingMapsApiKey()
-        assertThat(settingsBingMaps.key()).isEqualTo(SystemSetting.SystemSettingKey.BING_BASE_MAP)
+        assertThat(settingsBingMaps.key()).isEqualTo(SystemSettingKey.BING_BASE_MAP)
         assertThat(settingsBingMaps.value()).isEqualTo("keyBingMapsApiKey")
     }
 }

@@ -128,7 +128,7 @@ internal class TrackerImporterPostCall internal constructor(
         return coroutineAPICallExecutor.wrap(storeError = true) {
             networkHandler.postTrackerPayload(payload, importStrategy)
         }.map { res ->
-            val jobId = res.response().uid()
+            val jobId = res.response.uid()
             jobObjectHandler.handleMany(generateJobObjects(payload, jobId))
             jobId
         }

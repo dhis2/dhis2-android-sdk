@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.program.ProgramStageStoreImpl;
 import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,21 @@ public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreA
     protected ProgramStage buildObjectToUpdate() {
         return ProgramStageSamples.getProgramStage().toBuilder()
                 .minDaysFromStart(12)
+                .build();
+    }
+
+    @Override
+    protected ProgramStage buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .description(null)
+                .displayDescription(null)
+                .periodType(null)
+                .sortOrder(null)
                 .build();
     }
 }

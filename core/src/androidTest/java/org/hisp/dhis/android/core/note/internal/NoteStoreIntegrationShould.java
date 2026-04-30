@@ -57,4 +57,17 @@ public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractI
                 .syncState(State.SYNCED)
                 .build();
     }
+
+    @Override
+    protected Note buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .noteType(null)
+                .event(null)
+                .enrollment(null)
+                .value(null)
+                .storedBy(null)
+                .storedDate(null)
+                .deleted(null)
+                .build();
+    }
 }

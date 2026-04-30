@@ -36,17 +36,21 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class TEIImportSummariesShould : CoreObjectShould("imports/import_summaries.json") {
+internal class TEIImportSummariesShould : CoreObjectShould<TEIImportSummariesDTO>(
+    "imports/import_summaries.json",
+    TEIImportSummariesDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val importSummariesDTO = deserialize(TEIImportSummariesDTO.serializer())
+        val importSummariesDTO = deserialize()
         val importSummaries = importSummariesDTO.toDomain()
 
-        assertThat(importSummaries.responseType()).isEqualTo("ImportSummaries")
-        assertThat(importSummaries.status()).isEqualTo(ImportStatus.SUCCESS)
-        assertThat(importSummaries.imported()).isEqualTo(1)
-        assertThat(importSummaries.updated()).isEqualTo(2)
-        assertThat(importSummaries.deleted()).isEqualTo(3)
-        assertThat(importSummaries.ignored()).isEqualTo(4)
+        assertThat(importSummaries.responseType).isEqualTo("ImportSummaries")
+        assertThat(importSummaries.status).isEqualTo(ImportStatus.SUCCESS)
+        assertThat(importSummaries.imported).isEqualTo(1)
+        assertThat(importSummaries.updated).isEqualTo(2)
+        assertThat(importSummaries.deleted).isEqualTo(3)
+        assertThat(importSummaries.ignored).isEqualTo(4)
     }
 }

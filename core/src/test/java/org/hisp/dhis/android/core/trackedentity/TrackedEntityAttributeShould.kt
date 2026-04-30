@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
@@ -35,10 +36,14 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 import org.junit.Test
 
-class TrackedEntityAttributeShould : CoreObjectShould("trackedentity/tracked_entity_attribute.json") {
+internal class TrackedEntityAttributeShould : CoreObjectShould<TrackedEntityAttributeDTO>(
+    "trackedentity/tracked_entity_attribute.json",
+    TrackedEntityAttributeDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val trackedEntityAttributeDTO = deserialize(TrackedEntityAttributeDTO.serializer())
+        val trackedEntityAttributeDTO = deserialize()
         val trackedEntityAttribute = trackedEntityAttributeDTO.toDomain()
 
         assertThat(trackedEntityAttribute.lastUpdated()).isEqualTo(
@@ -58,6 +63,9 @@ class TrackedEntityAttributeShould : CoreObjectShould("trackedentity/tracked_ent
         assertThat(trackedEntityAttribute.displayFormName()).isEqualTo("num")
         assertThat(trackedEntityAttribute.displayInListNoProgram()).isFalse()
         assertThat(trackedEntityAttribute.displayOnVisitSchedule()).isFalse()
+        assertThat(trackedEntityAttribute.minCharactersToSearch()).isEqualTo(2)
+        assertThat(trackedEntityAttribute.preferredSearchOperator()).isEqualTo(TrackerSearchOperator.SW)
+        assertThat(trackedEntityAttribute.blockedSearchOperators()).contains(TrackerSearchOperator.LIKE)
         assertThat(trackedEntityAttribute.confidential()).isFalse()
         assertThat(trackedEntityAttribute.generated()).isFalse()
         assertThat(trackedEntityAttribute.aggregationType()).isEqualTo(AggregationType.DEFAULT)

@@ -32,11 +32,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.usecase.stock.StockUseCaseDTO
 import org.junit.Test
 
-class InternalStockUseCaseShould : CoreObjectShould("usecase.stock/stock_use_case.json") {
+internal class InternalStockUseCaseShould : CoreObjectShould<StockUseCaseDTO>(
+    "usecase.stock/stock_use_case.json",
+    StockUseCaseDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val stockUseCaseDTO = deserialize(StockUseCaseDTO.serializer())
+        val stockUseCaseDTO = deserialize()
         val internalStockUseCase = stockUseCaseDTO.toDomain()
 
         assertThat(internalStockUseCase).isNotNull()

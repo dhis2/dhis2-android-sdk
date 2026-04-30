@@ -34,10 +34,14 @@ import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.network.dataelement.DataElementDTO
 import org.junit.Test
 
-class DataElementShould : CoreObjectShould("dataelement/data_element.json") {
+internal class DataElementShould : CoreObjectShould<DataElementDTO>(
+    "dataelement/data_element.json",
+    DataElementDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val dataElementDTO = deserialize(DataElementDTO.serializer())
+        val dataElementDTO = deserialize()
         val dataElement = dataElementDTO.toDomain()
 
         // basic properties
@@ -57,7 +61,7 @@ class DataElementShould : CoreObjectShould("dataelement/data_element.json") {
         assertThat(dataElement.valueType()).isEqualTo(ValueType.TEXT)
         assertThat(dataElement.zeroIsSignificant()).isFalse()
         assertThat(dataElement.optionSetUid()).isEqualTo("fUS7fy2HbaI")
-        assertThat(dataElement.categoryComboUid()).isEqualTo("p0KPaWEg3cf")
+        assertThat(dataElement.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf")
         assertThat(dataElement.domainType()).isEqualTo("TRACKER")
         assertThat(dataElement.fieldMask()).isEqualTo("XXXXX")
     }

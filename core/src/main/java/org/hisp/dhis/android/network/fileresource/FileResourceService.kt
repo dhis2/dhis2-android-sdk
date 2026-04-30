@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
+@Suppress("TooManyFunctions")
 internal class FileResourceService(private val client: HttpServiceClient) {
 
     suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResourceResponseDTO {
@@ -64,7 +65,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         }
     }
 
-    suspend fun getImageFromTrackedEntityAttribute(
+    suspend fun getImageFromTrackedEntityAttribute41(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
         dimension: String,
@@ -72,7 +73,29 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/image")
             parameters {
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
+            }
+        }
+    }
+
+    suspend fun getFileFromTrackedEntityAttribute41(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/file")
+        }
+    }
+
+    suspend fun getImageFromTrackedEntityAttribute(
+        trackedEntityInstanceUid: String,
+        trackedEntityAttributeUid: String,
+        dimension: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/image")
+            parameters {
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -82,11 +105,11 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         trackedEntityAttributeUid: String,
     ): ByteArray {
         return client.get {
-            url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid/$trackedEntityAttributeUid/file")
+            url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/file")
         }
     }
 
-    suspend fun getFileFromEventValue(
+    suspend fun getFileFromEventValue41(
         eventUid: String,
         dataElementUid: String,
         dimension: String,
@@ -96,7 +119,29 @@ internal class FileResourceService(private val client: HttpServiceClient) {
             parameters {
                 attribute("eventUid", eventUid)
                 attribute("dataElementUid", dataElementUid)
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
+            }
+        }
+    }
+
+    suspend fun getFileFromEventValue(
+        eventUid: String,
+        dataElementUid: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKER/$EVENTS/$eventUid/$DATA_VALUES/$dataElementUid/file")
+        }
+    }
+
+    suspend fun getImageFromEventValue(
+        eventUid: String,
+        dataElementUid: String,
+        dimension: String,
+    ): ByteArray {
+        return client.get {
+            url("$TRACKER/$EVENTS/$eventUid/$DATA_VALUES/$dataElementUid/image")
+            parameters {
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -123,7 +168,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
                 attribute("pe", period)
                 attribute("ou", organisationUnit)
                 attribute("co", categoryOptionCombo)
-                dimension.takeIf { it != DimensionSize.ORIGIANL_NAME }?.let { attribute("dimension", dimension) }
+                dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
     }
@@ -133,8 +178,11 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         const val FILE_RESOURCE = "fileResource"
         const val TRACKED_ENTITY_INSTANCES = "trackedEntityInstances"
         const val TRACKED_ENTITY_INSTANCE = "trackedEntityInstance"
+        const val TRACKED_ENTIES = "trackedEntities"
+        const val ATTRIBUTES = "attributes"
         const val TRACKED_ENTITY_ATTRIBUTE = "trackedEntityAttribute"
         const val EVENTS = "events"
+        const val TRACKER = "tracker"
         const val DATA_VALUES = "dataValues"
     }
 }

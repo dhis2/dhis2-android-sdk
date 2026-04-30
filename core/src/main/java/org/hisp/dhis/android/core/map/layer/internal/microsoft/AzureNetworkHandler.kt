@@ -31,5 +31,11 @@ package org.hisp.dhis.android.core.map.layer.internal.microsoft
 import org.hisp.dhis.android.core.map.layer.MapLayer
 
 internal fun interface AzureNetworkHandler {
-    suspend fun getBaseMap(url: String, basemap: AzureBasemap, key: String): List<MapLayer>
+    suspend fun getBaseMap(
+        url: String,
+        basemap: AzureBasemap,
+        style: AzureBasemapStyle,
+        key: String,
+        linkedLayerUid: String?,
+    ): List<MapLayer>
 }

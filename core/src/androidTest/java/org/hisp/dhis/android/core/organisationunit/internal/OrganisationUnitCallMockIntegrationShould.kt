@@ -77,13 +77,16 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
             val categoryComboUid = "category_combo_uid"
             val categoryComboStore = koin.get<CategoryComboStore>()
-            categoryComboStore.insert(CategoryCombo.builder().uid(categoryComboUid).build())
+            categoryComboStore.insert(CategoryCombo.builder().uid(categoryComboUid).isDefault(true).build())
 
             // inserting programs for creating OrgUnitProgramLinks
             val programUid = "lxAQ7Zs9VYR"
             val programStore = koin.get<ProgramStore>()
             programStore.insert(
-                Program.builder().uid(programUid).categoryCombo(ObjectWithUid.create(categoryComboUid)).build(),
+                Program.builder().uid(programUid)
+                    .categoryCombo(ObjectWithUid.create(categoryComboUid))
+                    .enrollmentCategoryCombo(ObjectWithUid.create(categoryComboUid))
+                    .build(),
             )
 
             // inserting dataSets for creating OrgUnitDataSetLinks
@@ -95,6 +98,7 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
             organisationUnitCall = {
                 OrganisationUnitCall(
+                    koin.get(),
                     koin.get(),
                     koin.get(),
                     koin.get(),

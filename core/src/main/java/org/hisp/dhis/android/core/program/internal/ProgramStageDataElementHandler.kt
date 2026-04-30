@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.valuetype.rendering.internal.ValueTypeRenderingHandler
 import org.hisp.dhis.android.core.dataelement.internal.DataElementHandler
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
+import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -43,8 +44,9 @@ internal class ProgramStageDataElementHandler(
 ) : IdentifiableHandlerImpl<ProgramStageDataElement>(programStageDataElementStore) {
 
     override suspend fun afterObjectHandled(o: ProgramStageDataElement, action: HandleAction) {
-        if (o.dataElement() != null) {
-            dataElementHandler.handle(o.dataElement()!!)
+        val dataElement = ProgramStageDataElementInternalAccessor.accessFullDataElement(o)
+        if (dataElement != null) {
+            dataElementHandler.handle(dataElement)
         }
         valueTypeRenderingHandler.handle(
             o.renderType(),

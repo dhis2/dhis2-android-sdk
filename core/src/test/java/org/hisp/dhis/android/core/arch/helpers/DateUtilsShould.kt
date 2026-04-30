@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.arch.helpers
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toKtxInstant
 import org.hisp.dhis.android.core.period.PeriodType
 import org.junit.Test
 
@@ -37,7 +35,7 @@ class DateUtilsShould {
 
     @Test
     fun dateWithOffset_should_add_offset() {
-        val refDate = DateUtils.DATE_FORMAT.parse("2022-03-08T12:34:00.000").toKtxInstant()
+        val refDate = DateUtils.DATE_FORMAT.parse("2022-03-08T12:34:00.000")
 
         listOf(
             OffsetCase(30, PeriodType.Daily, "2022-04-07T12:34:00.000"),
@@ -57,7 +55,7 @@ class DateUtilsShould {
             OffsetCase(1, PeriodType.Yearly, "2023-03-08T12:34:00.000"),
             OffsetCase(-1, PeriodType.Yearly, "2021-03-08T12:34:00.000"),
         ).forEach {
-            val result = DateUtils.dateWithOffset(refDate, it.periods, it.type).toJavaDate()
+            val result = DateUtils.dateWithOffset(refDate, it.periods, it.type)
             assertThat(DateUtils.DATE_FORMAT.format(result)).isEqualTo(it.expected)
         }
     }

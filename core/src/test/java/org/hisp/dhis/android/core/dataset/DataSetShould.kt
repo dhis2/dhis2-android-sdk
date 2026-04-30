@@ -39,10 +39,11 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.junit.Test
 
-class DataSetShould : CoreObjectShould("dataset/data_set.json") {
+internal class DataSetShould : CoreObjectShould<DataSetDTO>("dataset/data_set.json", DataSetDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val dataSetDTO = deserialize(DataSetDTO.serializer())
+        val dataSetDTO = deserialize()
         val dataSet = dataSetDTO.toDomain()
 
         assertThat(dataSet.code()).isEqualTo("DS_394131")
@@ -71,7 +72,7 @@ class DataSetShould : CoreObjectShould("dataset/data_set.json") {
         assertThat(dataSet.openFuturePeriods()).isEqualTo(0)
         assertThat(dataSet.expiryDays()).isEqualTo(0.0)
         assertThat(dataSet.workflow()?.uid()).isEqualTo("R22tClyLU2w")
-        assertThat(dataSet.categoryCombo()!!.uid()).isEqualTo("O4VaNks6tta")
+        assertThat(dataSet.categoryCombo().uid()).isEqualTo("O4VaNks6tta")
         assertThat(dataSet.dataSetElements()!!.size).isEqualTo(3)
         assertThat(dataSet.dataInputPeriods()!!.size).isEqualTo(1)
         assertThat(dataSet.dataInputPeriods()!![0].period()).isEqualTo(ObjectWithUid.create("201801"))

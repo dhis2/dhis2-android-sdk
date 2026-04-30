@@ -167,7 +167,7 @@ internal object FileResourceUtil {
 
             // Filter out sizes requiring upscaling
             val validSizes = sizes.filter {
-                it.name == DimensionSize.ORIGIANL_NAME || it.maxSizeB < orignalContentLength
+                it.name == DimensionSize.ORIGINAL_NAME || it.maxSizeB < orignalContentLength
             }
 
             // Step 3: Remove ORIGINAL if it exceeds MEDIUM max size
@@ -179,8 +179,8 @@ internal object FileResourceUtil {
             limitedSizes.lastOrNull { it.maxSizeB <= maxContentLength }?.name ?: DimensionSize.NotSupported.name
         } else {
             when {
-                orignalContentLength == null || maxContentLength == null -> DimensionSize.ORIGIANL_NAME
-                orignalContentLength <= maxContentLength -> DimensionSize.ORIGIANL_NAME
+                orignalContentLength == null || maxContentLength == null -> DimensionSize.ORIGINAL_NAME
+                orignalContentLength <= maxContentLength -> DimensionSize.ORIGINAL_NAME
                 else -> DimensionSize.NotSupported.name
             }
         }

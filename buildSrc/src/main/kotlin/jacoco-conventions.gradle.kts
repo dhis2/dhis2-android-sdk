@@ -65,10 +65,15 @@ jacoco {
 }
 
 tasks.register("jacocoReport", JacocoReport::class) {
+    dependsOn("assembleDebug")
     group = "Coverage"
     description = "Generate XML/HTML code coverage reports for coverage.ec"
 
-    sourceDirectories.setFrom("${project.projectDir}/src/main/java")
+    sourceDirectories.setFrom(
+        "${project.projectDir}/src/main/java",
+        "${project.projectDir}/src/main/kotlin",
+        layout.buildDirectory.file("generated/ksp/debug/kotlin")
+    )
 
     val excludes = mutableSetOf(
         // data binding
@@ -117,7 +122,9 @@ tasks.register("jacocoReport", JacocoReport::class) {
         "**/*\$Result.*",
         "**/*\$Result$*.*",
         // DHIS2 Android SDK fields
-        "**/*AutoValue_*.*"
+        "**/*AutoValue_*.*",
+        // Room-generated DAO classes (generated code not meaningful to cover)
+        "**/*Dao_Impl*.*"
     )
 
     val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {

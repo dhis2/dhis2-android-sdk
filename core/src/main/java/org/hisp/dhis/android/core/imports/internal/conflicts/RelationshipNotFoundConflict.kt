@@ -42,7 +42,7 @@ internal object RelationshipNotFoundConflict : TrackerImportConflictItem {
     override val errorCode: String = "E4017"
 
     override fun matches(conflict: ImportConflict): Boolean {
-        return matchesString(conflict.value())
+        return matchesString(conflict.value)
     }
 
     /**
@@ -54,8 +54,8 @@ internal object RelationshipNotFoundConflict : TrackerImportConflictItem {
     }
 
     fun getRelationship(conflict: ImportConflict): String? {
-        return notFoundRegex.find(conflict.value())?.groupValues?.get(1)
-            ?: alreadyDeletedRegex.find(conflict.value())?.groupValues?.get(1)
+        return notFoundRegex.find(conflict.value)?.groupValues?.get(1)
+            ?: alreadyDeletedRegex.find(conflict.value)?.groupValues?.get(1)
     }
 
     override suspend fun getDisplayDescription(
@@ -65,6 +65,6 @@ internal object RelationshipNotFoundConflict : TrackerImportConflictItem {
         return getRelationship(conflict)?.let { relationshipUid ->
             description(relationshipUid)
         }
-            ?: conflict.value()
+            ?: conflict.value
     }
 }

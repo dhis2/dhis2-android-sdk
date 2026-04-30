@@ -58,8 +58,17 @@ class PerformanceHintsServiceShould {
     @Before
     @Throws(IOException::class)
     fun setUp() = runTest {
-        program1 = Program.builder().uid("p1").build()
-        program2 = Program.builder().uid("p2").build()
+        program1 = Program.builder()
+            .uid("p1")
+            .categoryCombo(ObjectWithUid.create("cc1"))
+            .enrollmentCategoryCombo(ObjectWithUid.create("cc1"))
+            .build()
+
+        program2 = Program.builder()
+            .uid("p2")
+            .categoryCombo(ObjectWithUid.create("cc2"))
+            .enrollmentCategoryCombo(ObjectWithUid.create("cc2"))
+            .build()
 
         whenever(programRule1.program()).thenReturn(ObjectWithUid.create(program1.uid()))
         whenever(programRule2.program()).thenReturn(ObjectWithUid.create(program2.uid()))

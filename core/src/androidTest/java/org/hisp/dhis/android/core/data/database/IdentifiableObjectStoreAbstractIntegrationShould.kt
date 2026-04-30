@@ -139,8 +139,33 @@ abstract class IdentifiableObjectStoreAbstractIntegrationShould<M> internal cons
     }
 
     @Test
-    fun select_inserted_object_uids_where() {
-        // TODO Implement test for store.selectUidsWhere() method
+    fun select_inserted_object_uids_where() = runTest {
+        store.insert(`object`)
+        val uids = store.selectUidsWhere("uid = '${`object`.uid()}'")
+        assertThat(uids).containsExactly(`object`.uid())
+    }
+
+    @Test
+    fun select_inserted_object_uids_where_with_order() = runTest {
+        store.insert(`object`)
+        val uids = store.selectUidsWhere("uid = '${`object`.uid()}'", null)
+        assertThat(uids).containsExactly(`object`.uid())
+    }
+
+    @Test
+    fun group_and_get_count_by_uid_returns_correct_counts() = runTest {
+        store.insert(`object`)
+        val result = store.groupAndGetCountBy("uid")
+        assertThat(result).isNotEmpty()
+        assertThat(result[`object`.uid()]).isEqualTo(1)
+    }
+
+    @Test
+    fun delete_by_entity() = runTest {
+        store.insert(`object`)
+        val deleted = store.deleteByEntity(`object`)
+        assertThat(deleted).isTrue()
+        assertThat(store.selectFirst()).isNull()
     }
 
     init {

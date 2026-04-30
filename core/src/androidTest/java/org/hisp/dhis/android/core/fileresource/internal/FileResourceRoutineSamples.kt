@@ -131,6 +131,7 @@ object FileResourceRoutineSamples {
         .uid(generator.generate())
         .trackedEntityType(trackedEntityType)
         .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+        .enrollmentCategoryCombo(ObjectWithUid.create(categoryCombo.uid()))
         .build()
 
     val programStage1: ProgramStage = ProgramStage.builder()
@@ -150,6 +151,7 @@ object FileResourceRoutineSamples {
         .program(program.uid())
         .trackedEntityInstance(trackedEntityInstance.uid())
         .organisationUnit(orgUnit1.uid())
+        .attributeOptionCombo("bRowv6yZOF2")
         .build()
 
     val event1: Event = Event.builder()

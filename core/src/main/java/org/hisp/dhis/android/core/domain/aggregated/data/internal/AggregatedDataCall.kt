@@ -152,7 +152,7 @@ internal class AggregatedDataCall(
         bundle: AggregatedDataCallBundle,
     ): List<DataApproval> {
         val dataSetsWithWorkflow = bundle.dataSets.filter { it.workflow() != null }
-        val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }
+        val workflowUids = dataSetsWithWorkflow.mapNotNull { it.workflow()?.uid() }.toSet()
 
         return if (workflowUids.isEmpty()) {
             emptyList()
@@ -170,7 +170,7 @@ internal class AggregatedDataCall(
     }
 
     private suspend fun getAttributeOptionCombosUidsFrom(dataSetsWithWorkflow: Collection<DataSet>): Set<String> {
-        val categoryComboUids = dataSetsWithWorkflow.mapNotNull { it.categoryCombo()?.uid() }.toSet()
+        val categoryComboUids = dataSetsWithWorkflow.map { it.categoryCombo().uid() }.toSet()
 
         val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(

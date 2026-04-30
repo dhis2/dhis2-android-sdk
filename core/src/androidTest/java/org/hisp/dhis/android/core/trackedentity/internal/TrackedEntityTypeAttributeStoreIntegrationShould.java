@@ -63,4 +63,12 @@ public class TrackedEntityTypeAttributeStoreIntegrationShould
     protected String addMasterUid() {
         return TrackedEntityTypeAttributeSamples.get().trackedEntityType().uid();
     }
+
+    @Override
+    protected TrackedEntityTypeAttribute buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .mandatory(null)
+                .sortOrder(null)
+                .build();
+    }
 }

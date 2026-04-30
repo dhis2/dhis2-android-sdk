@@ -32,6 +32,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
@@ -65,7 +66,7 @@ internal class ProgramIndicatorEvaluatorIntegrationShould : BaseEvaluatorIntegra
         d2.programModule().programIndicatorEngine() as ProgramIndicatorEngineImpl,
     )
 
-    private val helper = BaseTrackerDataIntegrationHelper()
+    private val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo.uid())
 
     @Test
     fun should_aggregate_data_from_multiple_teis() = runTest {

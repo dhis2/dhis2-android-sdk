@@ -39,8 +39,12 @@ class SystemSettingSplitterShould {
     private val settings: SystemSettingsDTO = SystemSettingsDTO(
         keyFlag = "aFlag",
         keyStyle = "aStyle",
+        keyCustomColorMobile = null,
         keyDefaultBaseMap = "aDefaultBaseMap",
         keyBingMapsApiKey = null,
+        keyAzureMapsApiKey = null,
+        analyticsFinancialYearStart = null,
+        analyticsWeeklyStart = null,
     )
 
     @Test
@@ -56,17 +60,27 @@ class SystemSettingSplitterShould {
     fun build_style_setting() {
         val settingList = settings.toDomainSplitted()
         settingList[1].let { style ->
+            @Suppress("DEPRECATION")
             assertThat(style.key()).isEqualTo(SystemSettingKey.STYLE)
             assertThat(style.value()).isEqualTo("aStyle")
         }
     }
 
     @Test
+    fun build_custom_color_setting() {
+        val settingList = settings.toDomainSplitted()
+        settingList[2].let { customColor ->
+            assertThat(customColor.key()).isEqualTo(SystemSettingKey.CUSTOM_COLOR)
+            assertThat(customColor.value()).isEqualTo("#007DEB")
+        }
+    }
+
+    @Test
     fun build_default_base_map_setting() {
         val settingList = settings.toDomainSplitted()
-        settingList[2].let { style ->
-            assertThat(style.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
-            assertThat(style.value()).isEqualTo("aDefaultBaseMap")
+        settingList[3].let { defaultBaseMap ->
+            assertThat(defaultBaseMap.key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
+            assertThat(defaultBaseMap.value()).isEqualTo("aDefaultBaseMap")
         }
     }
 }

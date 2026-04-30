@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.azure
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemap
+import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureBasemapStyle
 import org.hisp.dhis.android.core.map.layer.internal.microsoft.AzureNetworkHandler
 import org.koin.core.annotation.Singleton
 
@@ -39,8 +40,14 @@ internal class AzureNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
 ) : AzureNetworkHandler {
     private val service = AzureService(httpServiceClient)
-    override suspend fun getBaseMap(url: String, basemap: AzureBasemap, key: String): List<MapLayer> {
+    override suspend fun getBaseMap(
+        url: String,
+        basemap: AzureBasemap,
+        style: AzureBasemapStyle,
+        key: String,
+        linkedLayerUid: String?,
+    ): List<MapLayer> {
         val apiPayload = service.getBaseMap(url)
-        return apiPayload.toDomain(basemap, key)
+        return apiPayload.toDomain(basemap, style, key, linkedLayerUid)
     }
 }

@@ -34,10 +34,11 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.network.program.ProgramDTO
 import org.junit.Test
 
-class ProgramShould : CoreObjectShould("program/program.json") {
+internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.json", ProgramDTO.serializer()) {
+
     @Test
     override fun map_from_json_string() {
-        val programDTO = deserialize(ProgramDTO.serializer())
+        val programDTO = deserialize()
         val program = programDTO.toDomain()
 
         assertThat(program.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2015-10-15T11:32:27.242"))
@@ -73,7 +74,7 @@ class ProgramShould : CoreObjectShould("program/program.json") {
         assertThat(program.displayFrontPageList()).isFalse()
         assertThat(program.programType()).isEqualTo(ProgramType.WITH_REGISTRATION)
         assertThat(program.displayIncidentDate()).isFalse()
-        assertThat(program.categoryCombo()!!.uid()).isEqualTo("p0KPaWEg3cf")
+        assertThat(program.categoryCombo().uid()).isEqualTo("p0KPaWEg3cf")
         assertThat(program.trackedEntityType()!!.uid()).isEqualTo("nEenWmSyUEp")
         assertThat(program.relatedProgram()!!.uid()).isEqualTo("IpHINAT79UW")
         assertThat(program.programRuleVariables()!![0].uid()).isEqualTo("varonrw1032")

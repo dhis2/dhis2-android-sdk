@@ -55,9 +55,13 @@ internal interface FileResourceNetworkHandler {
         v: MissingTrackerAttributeValue,
     ): ByteArray
 
-    suspend fun getFileFromEventValue(
+    suspend fun getImageFromEventValue(
         v: TrackedEntityDataValue,
         dimension: String,
+    ): ByteArray
+
+    suspend fun getFileFromEventValue(
+        v: TrackedEntityDataValue,
     ): ByteArray
 
     suspend fun getCustomIcon(

@@ -27,18 +27,10 @@
  */
 package org.hisp.dhis.android.core.imports.internal
 
-data class DataValueImportSummaryWebResponse(
+internal data class DataValueImportSummaryWebResponse(
     val response: DataValueImportSummary,
-    val httpStatus: String,
-    val httpStatusCode: Int,
-    val status: String,
-    val message: String,
-) : WebResponse() {
-    override fun httpStatus() = httpStatus
-
-    override fun httpStatusCode() = httpStatusCode
-
-    override fun status() = status
-
-    override fun message() = message
-}
+    override val httpStatus: String,
+    override val httpStatusCode: Int,
+    override val status: String,
+    override val message: String,
+) : WebResponse

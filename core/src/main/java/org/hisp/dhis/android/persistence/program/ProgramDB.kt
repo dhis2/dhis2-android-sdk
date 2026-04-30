@@ -38,6 +38,13 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
             onDelete = ForeignKey.CASCADE,
             deferred = true,
         ),
+        ForeignKey(
+            entity = CategoryComboDB::class,
+            parentColumns = ["uid"],
+            childColumns = ["enrollmentCategoryCombo"],
+            onDelete = ForeignKey.CASCADE,
+            deferred = true,
+        ),
     ],
 )
 internal data class ProgramDB(
@@ -67,7 +74,7 @@ internal data class ProgramDB(
     val programType: String?,
     val relatedProgram: String?,
     val trackedEntityType: String?,
-    val categoryCombo: String?,
+    val categoryCombo: String,
     val accessDataWrite: AccessDB?,
     val expiryDays: Int?,
     val completeEventsExpiryDays: Int?,
@@ -86,6 +93,7 @@ internal data class ProgramDB(
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
+    val enrollmentCategoryCombo: String,
 ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
@@ -107,7 +115,7 @@ internal data class ProgramDB(
             relatedProgram?.let { relatedProgram(ObjectWithUid.create(it)) }
             relatedProgram?.let { relatedProgram(ObjectWithUidDB(it).toDomain()) }
             trackedEntityType?.let { trackedEntityType(TrackedEntityType.builder().uid(it).build()) }
-            categoryCombo?.let { categoryCombo(ObjectWithUid.create(it)) }
+            categoryCombo(ObjectWithUid.create(categoryCombo))
             accessDataWrite?.let { access(it.toDomain()) }
             expiryDays(expiryDays)
             completeEventsExpiryDays(completeEventsExpiryDays)
@@ -125,6 +133,7 @@ internal data class ProgramDB(
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
+            enrollmentCategoryCombo(ObjectWithUid.create(enrollmentCategoryCombo))
         }.build()
     }
 }
@@ -156,7 +165,7 @@ internal fun Program.toDB(): ProgramDB {
         programType = programType()?.name,
         relatedProgram = relatedProgram()?.uid(),
         trackedEntityType = trackedEntityType()?.uid(),
-        categoryCombo = categoryCombo()?.uid() ?: CategoryComboDB.Companion.DEFAULT_UID,
+        categoryCombo = categoryCombo().uid(),
         accessDataWrite = access().toDB(),
         expiryDays = expiryDays(),
         completeEventsExpiryDays = completeEventsExpiryDays(),
@@ -175,5 +184,6 @@ internal fun Program.toDB(): ProgramDB {
         displayTrackedEntityAttributeLabel = displayTrackedEntityAttributeLabel(),
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
     )
 }

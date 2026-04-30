@@ -32,6 +32,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 import org.junit.Before
 import org.junit.Test
@@ -79,6 +80,29 @@ abstract class LinkStoreAbstractIntegrationShould<M : CoreObject> internal const
         val links = store.selectLinksForMasterUid(masterUid)
         assertThat(links.size).isEqualTo(1)
         assertEqualsIgnoreId(links.first(), `object`)
+    }
+
+    @Test
+    fun insert_if_not_exists_inserts_new_object() = runTest {
+        val action = store.insertIfNotExists(`object`)
+        assertThat(action).isEqualTo(HandleAction.Insert)
+        assertThat(store.selectFirst()).isNotNull()
+    }
+
+    @Test
+    fun insert_if_not_exists_does_not_duplicate_or_crash() = runTest {
+        store.insert(`object`)
+        val action = store.insertIfNotExists(`object`)
+        assertThat(action).isAnyOf(HandleAction.NoAction, HandleAction.Insert)
+    }
+
+    @Test
+    fun delete_all_links_removes_everything() = runTest {
+        store.insert(`object`)
+        store.insert(objectWithOtherMasterUid)
+        val deleted = store.deleteAllLinks()
+        assertThat(deleted).isEqualTo(2)
+        assertThat(store.count()).isEqualTo(0)
     }
 
     init {

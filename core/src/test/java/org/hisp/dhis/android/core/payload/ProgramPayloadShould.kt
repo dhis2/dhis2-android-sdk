@@ -36,10 +36,14 @@ import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.program.ProgramPayload
 import org.junit.Test
 
-class ProgramPayloadShould : CoreObjectShould("program/program_payload.json") {
+internal class ProgramPayloadShould : CoreObjectShould<ProgramPayload>(
+    "program/program_payload.json",
+    ProgramPayload.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val payloadDTO: ProgramPayload = deserialize(ProgramPayload.serializer())
+        val payloadDTO = deserialize()
         val payload = payloadDTO.mapItems(ProgramDTO::toDomain)
 
         val programs: List<Program?> = payload.items()
@@ -58,6 +62,7 @@ class ProgramPayloadShould : CoreObjectShould("program/program_payload.json") {
                 DataAccess.create(false, false),
             ),
         )
+        assertThat(program.categoryCombo().uid()).isEqualTo("default_cc_uid")
 
         val program1 = programs[1]
         assertThat(program1!!.uid()).isEqualTo("q04UBOqq3rp")

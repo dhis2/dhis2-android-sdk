@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.option.OptionGroupStoreImpl;
 import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -54,6 +56,17 @@ public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAb
     protected OptionGroup buildObjectToUpdate() {
         return OptionGroupSamples.getOptionGroup().toBuilder()
                 .name("new_name")
+                .build();
+    }
+
+    @Override
+    protected OptionGroup buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
                 .build();
     }
 }

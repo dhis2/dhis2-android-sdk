@@ -35,10 +35,14 @@ import org.hisp.dhis.android.core.util.toJavaDate
 import org.hisp.dhis.android.network.enrollment.EnrollmentDTO
 import org.junit.Test
 
-class EnrollmentShould : CoreObjectShould("enrollment/enrollment.json") {
+internal class EnrollmentShould : CoreObjectShould<EnrollmentDTO>(
+    "enrollment/enrollment.json",
+    EnrollmentDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val enrollmentDTO = deserialize(EnrollmentDTO.serializer())
+        val enrollmentDTO = deserialize()
         val enrollment = enrollmentDTO.toDomain()
 
         assertThat(enrollment.created()).isEqualTo("2015-03-28T12:27:50.740".toJavaDate())
@@ -56,6 +60,7 @@ class EnrollmentShould : CoreObjectShould("enrollment/enrollment.json") {
         assertThat(enrollment.geometry()!!.type()).isEqualTo(FeatureType.POINT)
         assertThat(enrollment.geometry()!!.coordinates()).isEqualTo("[11.11,10.03]")
         assertThat(enrollment.deleted()).isFalse()
+        assertThat(enrollment.attributeOptionCombo()).isEqualTo("HllvX50cXC0")
 
         assertThat(enrollment.notes()!![0].uid()).isEqualTo("enrollmentNote1")
         assertThat(enrollment.notes()!![1].uid()).isEqualTo("enrollmentNote2")

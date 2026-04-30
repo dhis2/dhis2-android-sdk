@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 internal class YearlyPeriodGenerators(clock: Clock) {
     val yearly = YearlyPeriodGeneratorFactory.yearly(clock)
@@ -35,4 +35,7 @@ internal class YearlyPeriodGenerators(clock: Clock) {
     val financialJuly = YearlyPeriodGeneratorFactory.financialJuly(clock)
     val financialOct = YearlyPeriodGeneratorFactory.financialOct(clock)
     val financialNov = YearlyPeriodGeneratorFactory.financialNov(clock)
+    val financialFeb = YearlyPeriodGeneratorFactory.financialFeb(clock)
+    val financialAug = YearlyPeriodGeneratorFactory.financialAug(clock)
+    val financialSep = YearlyPeriodGeneratorFactory.financialSep(clock)
 }

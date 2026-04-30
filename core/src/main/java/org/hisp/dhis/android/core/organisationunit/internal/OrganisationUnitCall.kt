@@ -27,12 +27,17 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
+import androidx.sqlite.db.SimpleSQLiteQuery
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
+import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.hisp.dhis.android.persistence.user.UserOrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.concurrent.atomic.AtomicInteger
@@ -44,6 +49,7 @@ internal class OrganisationUnitCall(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitStore: OrganisationUnitStore,
     private val collectionCleaner: OrganisationUnitCollectionCleaner,
+    private val databaseAdapter: DatabaseAdapter,
 ) {
 
     companion object {
@@ -69,7 +75,8 @@ internal class OrganisationUnitCall(
                 UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT,
                 "1",
             )
-        collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds)
+        val trackerDataOrgUnitIds = getOrgUnitUidsReferencedByTrackerData()
+        collectionCleaner.deleteNotPresentByUid(assignedOrgunitIds + trackerDataOrgUnitIds)
     }
 
     private suspend fun downloadSearchOrgUnits(
@@ -138,5 +145,18 @@ internal class OrganisationUnitCall(
         handler.handleMany(orgunits)
 
         return orgunits.size
+    }
+
+    private suspend fun getOrgUnitUidsReferencedByTrackerData(): Set<String> {
+        val query = """
+            SELECT DISTINCT ${TrackedEntityInstanceTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${TrackedEntityInstanceTableInfo.TABLE_NAME}
+            UNION SELECT DISTINCT ${EnrollmentTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${EnrollmentTableInfo.TABLE_NAME}
+            UNION SELECT DISTINCT ${EventTableInfo.Columns.ORGANISATION_UNIT} 
+            FROM ${EventTableInfo.TABLE_NAME}
+        """.trimIndent()
+        val dao = databaseAdapter.getCurrentDatabase().d2Dao()
+        return dao.stringListRawQuery(SimpleSQLiteQuery(query)).toSet()
     }
 }

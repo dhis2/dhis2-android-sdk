@@ -95,7 +95,7 @@ class ProgramEndpointCallMockIntegrationShould : BaseMockIntegrationTestEmptyEnq
             executor.wrapTransactionallyRoom {
                 val categoryComboStore = koin.get<CategoryComboStore>()
                 val categoryComboUid = "m2jTvAj5kkm"
-                val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid)
+                val categoryCombo = CreateCategoryComboUtils.create(categoryComboUid, true)
                 categoryComboStore.insert(categoryCombo)
 
                 // inserting tracked entity

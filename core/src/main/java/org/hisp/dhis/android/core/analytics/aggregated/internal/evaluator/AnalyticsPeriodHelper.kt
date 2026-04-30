@@ -28,16 +28,21 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl
+import org.hisp.dhis.android.core.period.internal.RelativePeriodHelper
 
 object AnalyticsPeriodHelper {
-
-    private val periodGenerator = ParentPeriodGeneratorImpl.create(ClockProviderFactory.clockProvider)
+    private val relativePeriodHelper: RelativePeriodHelper = koin.get()
+    private val periodGenerator = ParentPeriodGeneratorImpl.create(
+        ClockProviderFactory.clockProvider,
+        relativePeriodHelper,
+    )
 
     fun shiftPeriod(period: Period, offset: Int): Period {
         return periodGenerator.generatePeriod(period.periodType()!!, period.startDate()!!, offset)

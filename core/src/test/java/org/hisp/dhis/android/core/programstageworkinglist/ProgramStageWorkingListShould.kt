@@ -37,11 +37,14 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListDTO
 import org.junit.Test
 
-class ProgramStageWorkingListShould : CoreObjectShould("programstageworkinglist/program_stage_working_list.json") {
+internal class ProgramStageWorkingListShould : CoreObjectShould<ProgramStageWorkingListDTO>(
+    "programstageworkinglist/program_stage_working_list.json",
+    ProgramStageWorkingListDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val workingListDTO = deserialize(ProgramStageWorkingListDTO.serializer())
+        val workingListDTO = deserialize()
         val workingList = workingListDTO.toDomain()
 
         assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))

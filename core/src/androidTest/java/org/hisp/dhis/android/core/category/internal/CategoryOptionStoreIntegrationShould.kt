@@ -53,4 +53,16 @@ class CategoryOptionStoreIntegrationShould : IdentifiableObjectStoreAbstractInte
             .displayName("UpdatedCategoryOption")
             .build()
     }
+
+    override fun buildObjectWithNullableFields(): CategoryOption {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .startDate(null)
+            .endDate(null)
+            .build()
+    }
 }

@@ -30,15 +30,20 @@ package org.hisp.dhis.android.core.program
 import com.google.common.truth.Truth
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementDTO
 import org.junit.Test
 
-class ProgramStageDataElementShould : CoreObjectShould("program/program_stage_data_element.json") {
+internal class ProgramStageDataElementShould : CoreObjectShould<ProgramStageDataElementDTO>(
+    "program/program_stage_data_element.json",
+    ProgramStageDataElementDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        val programStageDataElementDTO = deserialize(ProgramStageDataElementDTO.serializer())
+        val programStageDataElementDTO = deserialize()
         val programStageDataElement = programStageDataElementDTO.toDomain()
 
         Truth.assertThat(programStageDataElement.lastUpdated()).isEqualTo(
@@ -49,6 +54,10 @@ class ProgramStageDataElementShould : CoreObjectShould("program/program_stage_da
         )
         Truth.assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W")
         Truth.assertThat(programStageDataElement.dataElement()!!.uid()).isEqualTo("aei1xRjSU2l")
+        Truth.assertThat(
+            ProgramStageDataElementInternalAccessor.accessFullDataElement(programStageDataElement)
+                ?.categoryCombo(),
+        ).isEqualTo(ObjectWithUid.create("p0KPaWEg3cf"))
         Truth.assertThat(programStageDataElement.allowFutureDate()).isFalse()
         Truth.assertThat(programStageDataElement.compulsory()).isFalse()
         Truth.assertThat(programStageDataElement.sortOrder()).isEqualTo(11)

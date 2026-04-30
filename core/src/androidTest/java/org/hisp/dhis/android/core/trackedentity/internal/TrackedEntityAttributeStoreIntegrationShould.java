@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.trackedentity.internal;
 
+import androidx.annotation.NonNull;
+
 import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeSamples;
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
@@ -35,6 +37,8 @@ import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFact
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeStoreImpl;
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo;
+import java.util.Date;
+
 import org.junit.runner.RunWith;
 
 @RunWith(D2JunitRunner.class)
@@ -55,6 +59,25 @@ public class TrackedEntityAttributeStoreIntegrationShould
     protected TrackedEntityAttribute buildObjectToUpdate() {
         return TrackedEntityAttributeSamples.get().toBuilder()
                 .description("new_description")
+                .build();
+    }
+
+    @Override
+    protected TrackedEntityAttribute buildObjectWithNullableFields() {
+        return buildObject().toBuilder()
+                .code(null)
+                .name(null)
+                .displayName(null)
+                .created((Date) null)
+                .lastUpdated((Date) null)
+                .shortName(null)
+                .displayShortName(null)
+                .description(null)
+                .displayDescription(null)
+                .pattern(null)
+                .optionSet(null)
+                .valueType(null)
+                .formName(null)
                 .build();
     }
 }

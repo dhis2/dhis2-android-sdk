@@ -11,6 +11,12 @@
           "write": false
         }
       },
+      "categoryCombo": {
+        "id": "default_cc_uid"
+      },
+      "enrollmentCategoryCombo": {
+        "id": "default_cc_uid"
+      },
       "programTrackedEntityAttributes": [
         {
           "id": "K6BlNQdIxd1",
@@ -38,6 +44,12 @@
     {
       "id": "q04UBOqq3rp",
       "version": 1,
+      "categoryCombo": {
+        "id": "default_cc_uid"
+      },
+      "enrollmentCategoryCombo": {
+        "id": "default_cc_uid"
+      },
       "programTrackedEntityAttributes": []
     }
   ]

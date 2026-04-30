@@ -122,4 +122,22 @@ class TrackedEntitySearchCollectionRepositoryMockIntegrationShould :
 
         assertThat(trackedEntityInstances.size).isEqualTo(1)
     }
+
+    @Test
+    fun find_by_sw_filter() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
+            .byFilter("cejWyOfXge6").sw("408")
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(1)
+    }
+
+    @Test
+    fun find_by_ew_filter() {
+        val trackedEntityInstances = d2.trackedEntityModule().trackedEntitySearch()
+            .byFilter("cejWyOfXge6").ew("507")
+            .blockingGet()
+
+        assertThat(trackedEntityInstances.size).isEqualTo(1)
+    }
 }

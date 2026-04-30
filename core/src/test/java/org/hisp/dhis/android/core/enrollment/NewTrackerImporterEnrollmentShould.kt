@@ -33,11 +33,14 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.tracker.NewEnrollmentDTO
 import org.junit.Test
 
-class NewTrackerImporterEnrollmentShould : CoreObjectShould("enrollment/new_tracker_importer_enrollment.json") {
+internal class NewTrackerImporterEnrollmentShould : CoreObjectShould<NewEnrollmentDTO>(
+    "enrollment/new_tracker_importer_enrollment.json",
+    NewEnrollmentDTO.serializer(),
+) {
 
     @Test
     override fun map_from_json_string() {
-        val enrollmentDTO = deserialize(NewEnrollmentDTO.serializer())
+        val enrollmentDTO = deserialize()
         val enrollment = enrollmentDTO.toDomain()
 
         assertThat(enrollment.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2018-01-20T10:44:02.929"))
@@ -54,5 +57,6 @@ class NewTrackerImporterEnrollmentShould : CoreObjectShould("enrollment/new_trac
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.COMPLETED)
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("vOxUH373fy5")
         assertThat(enrollment.deleted()).isEqualTo(false)
+        assertThat(enrollment.attributeOptionCombo()).isEqualTo("HllvX50cXC0")
     }
 }

@@ -31,9 +31,13 @@ import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
-class DataValueSetOnlyCommonFieldsShould : CoreObjectShould("datavalue/data_values_only_common_fields.json") {
+internal class DataValueSetOnlyCommonFieldsShould : CoreObjectShould<DataValueSetDTO>(
+    "datavalue/data_values_only_common_fields.json",
+    DataValueSetDTO.serializer(),
+) {
+
     @Test
     override fun map_from_json_string() {
-        deserialize(DataValueSetDTO.serializer()).toDomain()
+        deserialize().toDomain()
     }
 }

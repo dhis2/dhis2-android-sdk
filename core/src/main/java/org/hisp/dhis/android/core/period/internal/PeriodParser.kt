@@ -1,12 +1,18 @@
 package org.hisp.dhis.android.core.period.internal
 
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.number
+import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.firstDayOfTheWeek
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
 import org.hisp.dhis.android.core.period.generator.internal.WeeklyPeriodGeneratorHelper
 import org.koin.core.annotation.Singleton
+import kotlin.time.Instant
 
 @Singleton
 internal class PeriodParser {
@@ -32,7 +38,7 @@ internal class PeriodParser {
         return when (periodType) {
             PeriodType.Daily -> getDateForDaily(matchResult, year)
             PeriodType.Weekly, PeriodType.WeeklyWednesday, PeriodType.WeeklyThursday,
-            PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
+            PeriodType.WeeklyFriday, PeriodType.WeeklySaturday, PeriodType.WeeklySunday,
             PeriodType.BiWeekly,
             -> getDateForWeeklyOrBiWeekly(matchResult, year, periodType)
 
@@ -41,7 +47,8 @@ internal class PeriodParser {
             PeriodType.SixMonthly, PeriodType.SixMonthlyApril, PeriodType.SixMonthlyNov,
             -> getDateFromMonthPattern(matchResult, year, periodType)
 
-            PeriodType.Yearly, PeriodType.FinancialApril, PeriodType.FinancialJuly,
+            PeriodType.Yearly, PeriodType.FinancialFeb, PeriodType.FinancialApril,
+            PeriodType.FinancialJuly, PeriodType.FinancialAug, PeriodType.FinancialSep,
             PeriodType.FinancialOct, PeriodType.FinancialNov,
             -> getDateFromYearPattern(year, periodType)
         }
@@ -69,7 +76,7 @@ internal class PeriodParser {
         val firstDayOfWeekOfYear = weekHelper.getFirstDayOfWeekOfYear(year)
 
         val weekStart = firstDayOfWeekOfYear.plus((week - 1).toLong(), DateTimeUnit.WEEK)
-        return LocalDate(weekStart.year, weekStart.monthNumber, weekStart.dayOfMonth)
+        return LocalDate(weekStart.year, weekStart.month.number, weekStart.day)
     }
 
     private fun getDateFromMonthPattern(matchResult: MatchResult, year: Int, periodType: PeriodType): LocalDate {
@@ -81,26 +88,29 @@ internal class PeriodParser {
             PeriodType.QuarterlyNov -> getDateForQuarterlyNov(year, monthQuarterOrSemester)
             PeriodType.SixMonthly -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.value),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.JANUARY.number),
             )
+
             PeriodType.SixMonthlyApril -> getDateFromMonth(
                 year,
-                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.value),
+                monthQuarterOrSemester * SEMESTER_MONTHS - (SEMESTER_MONTHS - Month.APRIL.number),
             )
+
             PeriodType.SixMonthlyNov -> getDateFromMonth(
                 if (monthQuarterOrSemester == 1) year - 1 else year,
-                if (monthQuarterOrSemester == 1) Month.NOVEMBER.value else Month.MAY.value,
+                if (monthQuarterOrSemester == 1) Month.NOVEMBER.number else Month.MAY.number,
             )
+
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }
 
     private fun getDateForQuarterlyNov(year: Int, quarter: Int): LocalDate {
         val quarterMap = mapOf(
-            Q1 to Month.NOVEMBER.value,
-            Q2 to Month.FEBRUARY.value,
-            Q3 to Month.MAY.value,
-            Q4 to Month.AUGUST.value,
+            Q1 to Month.NOVEMBER.number,
+            Q2 to Month.FEBRUARY.number,
+            Q3 to Month.MAY.number,
+            Q4 to Month.AUGUST.number,
         )
         return getDateFromMonth(
             if (quarter == 1) year - 1 else year,
@@ -110,17 +120,20 @@ internal class PeriodParser {
 
     private fun getDateFromYearPattern(year: Int, periodType: PeriodType): LocalDate {
         return when (periodType) {
-            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.value)
-            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.value)
-            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.value)
-            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.value)
-            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.value)
+            PeriodType.Yearly -> getDateFromMonth(year, Month.JANUARY.number)
+            PeriodType.FinancialFeb -> getDateFromMonth(year, Month.FEBRUARY.number)
+            PeriodType.FinancialApril -> getDateFromMonth(year, Month.APRIL.number)
+            PeriodType.FinancialJuly -> getDateFromMonth(year, Month.JULY.number)
+            PeriodType.FinancialAug -> getDateFromMonth(year, Month.AUGUST.number)
+            PeriodType.FinancialSep -> getDateFromMonth(year, Month.SEPTEMBER.number)
+            PeriodType.FinancialOct -> getDateFromMonth(year, Month.OCTOBER.number)
+            PeriodType.FinancialNov -> getDateFromMonth(year - 1, Month.NOVEMBER.number)
             else -> throw IllegalArgumentException("Invalid period type")
         }
     }
 
     private fun getDateFromMonth(year: Int, month: Int): LocalDate {
-        require(month in Month.JANUARY.value..Month.DECEMBER.value) {
+        require(month in Month.JANUARY.number..Month.DECEMBER.number) {
             "The periodId does not match a real date."
         }
         return LocalDate(year, month, 1)

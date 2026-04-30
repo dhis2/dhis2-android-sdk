@@ -62,13 +62,18 @@ class OwnershipManagerShould {
     private val fixedDate = LocalDateTime(2020, 2, 5, 0, 0)
     private val clockProvider: ClockProvider = FixedClockProvider(fixedDate)
 
-    private val httpResponse: HttpMessageResponse = mock()
+    private val successResponse = HttpMessageResponse(
+        httpStatus = "OK",
+        httpStatusCode = 200,
+        status = "OK",
+        message = "Break glass success",
+    )
 
     private lateinit var ownershipManager: OwnershipManagerImpl
 
     @Before
     fun setUp() = runTest {
-        whenever(ownershipNetworkHandler.breakGlass(any(), any(), any())).doReturn(httpResponse)
+        whenever(ownershipNetworkHandler.breakGlass(any(), any(), any())).doReturn(successResponse)
         whenever(programTempOwnerStore.selectWhere(any(), any(), any())).doReturn(emptyList())
 
         ownershipManager = OwnershipManagerImpl(
@@ -83,7 +88,6 @@ class OwnershipManagerShould {
 
     @Test
     fun persist_program_temp_owner_record_if_success() = runTest {
-        whenever(httpResponse.httpStatusCode()).doReturn(HttpStatusCode.OK.value)
         whenever(programTempOwnerStore.insert(any<ProgramTempOwner>())).doReturn(1L)
 
         ownershipManager.breakGlass("tei_uid", "program", "reason").blockingAwait()
@@ -92,9 +96,14 @@ class OwnershipManagerShould {
     }
 
     @Test
-    fun do_not_persist_program_temp_owner_record_if_error() {
-        whenever(httpResponse.httpStatusCode()).doReturn(HttpStatusCode.Unauthorized.value)
-        whenever(httpResponse.message()).doReturn("Error in break the glass")
+    fun do_not_persist_program_temp_owner_record_if_error() = runTest {
+        val errorResponse = HttpMessageResponse(
+            httpStatus = "Unauthorized",
+            httpStatusCode = HttpStatusCode.Unauthorized.value,
+            status = "Unauthorized",
+            message = "Error in break the glass",
+        )
+        whenever(ownershipNetworkHandler.breakGlass(any(), any(), any())).doReturn(errorResponse)
 
         try {
             ownershipManager.blockingBreakGlass("tei_uid", "program", "reason")

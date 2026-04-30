@@ -28,9 +28,11 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
+import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
+import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl
@@ -53,5 +55,32 @@ internal class DataSetDataElementLinkStoreImpl(
             .build()
         val selectStatement = builder.selectWhere(whereClause)
         return selectRawQuery(selectStatement)
+    }
+
+    override suspend fun getFirstDataSetForDataElement(dataElementUid: String): String? {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetDataElementLinkTableInfo.Columns.DATA_ELEMENT, dataElementUid)
+            .build()
+        val orderBy = "${DataSetDataElementLinkTableInfo.Columns.DATA_SET} ASC"
+        val selectStatement = builder.selectWhere(whereClause, orderBy, 1)
+        return selectRawQuery(selectStatement).firstOrNull()?.dataSet()?.uid()
+    }
+
+    override suspend fun getFirstValidDataSet(
+        dataElementUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        categoryOptionComboUid: String,
+        attributeOptionComboUid: String,
+    ): String? {
+        val query = DataValueByDataSetQueryHelper.firstValidDataSetQuery(
+            dataElementUid = dataElementUid,
+            periodId = periodId,
+            organisationUnitUid = organisationUnitUid,
+            categoryOptionComboUid = categoryOptionComboUid,
+            attributeOptionComboUid = attributeOptionComboUid,
+        )
+        val dao = daoProvider()
+        return dao.stringListRawQuery(RoomRawQuery(query)).firstOrNull()
     }
 }

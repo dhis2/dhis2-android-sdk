@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.period.generator.internal
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.period.PeriodType
+import kotlin.time.Clock
 
 internal class WeeklyPeriodGenerator(
     clock: Clock,

@@ -31,8 +31,10 @@ package org.hisp.dhis.android.core.category.internal
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.CategoryCombo
 
-internal fun interface CategoryComboNetworkHandler {
+internal interface CategoryComboNetworkHandler {
     suspend fun getCategoryCombos(
         categoryComboUids: Set<String>,
     ): Payload<CategoryCombo>
+
+    suspend fun getDefaultCategoryCombo(): CategoryCombo?
 }

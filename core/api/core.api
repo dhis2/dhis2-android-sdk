@@ -3831,6 +3831,15 @@ public abstract interface class org/hisp/dhis/android/core/common/ObjectWithStyl
 	public abstract fun style ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
 }
 
+public abstract interface class org/hisp/dhis/android/core/common/ObjectWithStyleKt : org/hisp/dhis/android/core/common/ObjectWithStyle {
+	public abstract fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public fun style ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+}
+
+public final class org/hisp/dhis/android/core/common/ObjectWithStyleKt$DefaultImpls {
+	public static fun style (Lorg/hisp/dhis/android/core/common/ObjectWithStyleKt;)Lorg/hisp/dhis/android/core/common/ObjectStyle;
+}
+
 public abstract interface class org/hisp/dhis/android/core/common/ObjectWithSyncStateInterface {
 	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
 }

@@ -151,7 +151,7 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             )
         }
         val item =
-            RepositoryScopeOrderByItem.builder().column(column).direction(direction).keyExtractor(extractor).build()
+            RepositoryScopeOrderByItem.builder().column(column).direction(direction).build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }
 
@@ -169,23 +169,10 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             ifTrueColumn,
             ifFalseColumn,
         )
-        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
-            val conditionalValue = contentValues.getAsString(conditionalColumn)
-            val ifTrueValue = contentValues.getAsString(ifTrueColumn)
-            val ifFalseValue = contentValues.getAsString(ifFalseColumn)
-            String.format(
-                "(CASE WHEN '%s' %s THEN '%s' ELSE '%s' END)",
-                conditionalValue,
-                condition,
-                ifTrueValue,
-                ifFalseValue,
-            )
-        }
         val orderDirection = direction ?: OrderByDirection.ASC
         val item = RepositoryScopeOrderByItem.builder()
             .column(column)
             .direction(orderDirection)
-            .keyExtractor(extractor)
             .build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }

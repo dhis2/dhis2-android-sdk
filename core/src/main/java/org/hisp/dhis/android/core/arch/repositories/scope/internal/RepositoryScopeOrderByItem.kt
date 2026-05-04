@@ -35,15 +35,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 internal data class RepositoryScopeOrderByItem(
     val column: String,
     val direction: RepositoryScope.OrderByDirection,
-    val keyExtractor: RepositoryScopeKeyOrderExtractor,
 ) {
     fun column(): String = column
     fun direction(): RepositoryScope.OrderByDirection = direction
-    fun keyExtractor(): RepositoryScopeKeyOrderExtractor = keyExtractor
-
-    fun getKey(contentValues: ContentValues): String =
-        keyExtractor.extractKey(contentValues, column)
-
     fun toSQLString(): String = "$column $direction"
 
     fun toBuilder(): Builder = RepositoryScopeOrderByItemBuilder.from(this)
@@ -52,9 +46,6 @@ internal data class RepositoryScopeOrderByItem(
 
     companion object {
         @JvmStatic
-        fun builder(): Builder = Builder().keyExtractor { contentValues, column ->
-            val key = contentValues.getAsString(column)
-            "'$key'"
-        }
+        fun builder(): Builder = Builder()
     }
 }

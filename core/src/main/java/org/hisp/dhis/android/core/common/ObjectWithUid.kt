@@ -27,11 +27,9 @@
  */
 package org.hisp.dhis.android.core.common
 
-import com.google.auto.value.AutoValue
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject.Companion.UID
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.fields.Field.Companion.create
-
 
 data class ObjectWithUid(
     val uid: String,

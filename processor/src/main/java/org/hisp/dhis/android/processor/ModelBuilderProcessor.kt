@@ -160,7 +160,8 @@ class ModelBuilderProcessor(
     }
 
     private fun getBuilderInternalProperty(field: ClassField): String {
-        val isPrimitive = listOf("Int", "Double", "Boolean").contains(field.type.toString())
+        val isPrimitive = listOf("Int", "Long", "Short", "Byte", "Char", "Float", "Double", "Boolean")
+            .contains(field.type.toString())
         val isNotNull = !field.type.isMarkedNullable
 
         return when {

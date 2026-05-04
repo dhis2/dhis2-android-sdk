@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.scope.internal
 
-import android.content.ContentValues
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 

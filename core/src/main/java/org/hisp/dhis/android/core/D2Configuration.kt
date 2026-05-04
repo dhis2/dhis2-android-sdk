@@ -62,6 +62,7 @@ data class D2Configuration(
         const val READ_TIMEOUT_IN_SECONDS_DEFAULT = 30
         const val CONNECT_TIMEOUT_IN_SECONDS_DEFAULT = 30
         const val WRITE_TIMEOUT_IN_SECONDS_DEFAULT = 30
+
         @JvmStatic
         fun builder(): Builder = Builder()
             .readTimeoutInSeconds(READ_TIMEOUT_IN_SECONDS_DEFAULT)

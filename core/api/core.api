@@ -50,7 +50,10 @@ public final class org/hisp/dhis/android/core/D2 {
 }
 
 public final class org/hisp/dhis/android/core/D2Configuration {
+	public static final field CONNECT_TIMEOUT_IN_SECONDS_DEFAULT I
 	public static final field Companion Lorg/hisp/dhis/android/core/D2Configuration$Companion;
+	public static final field READ_TIMEOUT_IN_SECONDS_DEFAULT I
+	public static final field WRITE_TIMEOUT_IN_SECONDS_DEFAULT I
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;IIILjava/util/List;Ljava/util/List;Ljava/util/List;Landroid/content/Context;)V
 	public final fun appName ()Ljava/lang/String;
 	public final fun appVersion ()Ljava/lang/String;

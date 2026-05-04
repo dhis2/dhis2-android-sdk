@@ -12,7 +12,6 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
 @Entity(
@@ -59,7 +58,7 @@ internal data class TrackedEntityInstanceFilterDB(
     override fun toDomain(): TrackedEntityInstanceFilter {
         return TrackedEntityInstanceFilter.builder().apply {
             applyBaseIdentifiableFields(this@TrackedEntityInstanceFilterDB)
-            applyStyleFields(this@TrackedEntityInstanceFilterDB)
+            style(this@TrackedEntityInstanceFilterDB.toDomainStyle())
             program(ObjectWithUid.create(program))
             description(description)
             sortOrder(sortOrder)

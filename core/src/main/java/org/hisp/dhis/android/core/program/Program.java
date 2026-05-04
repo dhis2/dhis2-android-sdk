@@ -50,7 +50,7 @@ import java.util.List;
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class Program extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle<Program, Program.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract Integer version();
@@ -269,8 +269,7 @@ public abstract class Program extends BaseNameableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<Program, Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
 
         public abstract Builder version(Integer version);
 
@@ -421,6 +420,8 @@ public abstract class Program extends BaseNameableObAuVa
         public abstract Builder displayEventLabel(String displayEventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract Program autoBuild();
 

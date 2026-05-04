@@ -29,19 +29,15 @@
 package org.hisp.dhis.android.persistence.common
 
 import org.hisp.dhis.android.core.common.ObjectStyle
-import org.hisp.dhis.android.core.common.ObjectWithStyle
 
 internal interface ObjectWithStyleDB {
     val color: String?
     val icon: String?
-}
 
-internal fun <O, B> B.applyStyleFields(item: ObjectWithStyleDB): B where B : ObjectWithStyle.Builder<O, B> {
-    style(
-        ObjectStyle.builder()
-            .color(item.color)
-            .icon(item.icon)
-            .build(),
-    )
-    return this
+    fun toDomainStyle(): ObjectStyle {
+        return ObjectStyle.builder()
+            .color(color)
+            .icon(icon)
+            .build()
+    }
 }

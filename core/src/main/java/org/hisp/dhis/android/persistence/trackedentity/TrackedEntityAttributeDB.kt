@@ -14,7 +14,6 @@ import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.option.OptionSetDB
 
@@ -69,7 +68,7 @@ internal data class TrackedEntityAttributeDB(
     override fun toDomain(): TrackedEntityAttribute {
         return TrackedEntityAttribute.builder().apply {
             applyBaseNameableFields(this@TrackedEntityAttributeDB)
-            applyStyleFields(this@TrackedEntityAttributeDB)
+            style(this@TrackedEntityAttributeDB.toDomainStyle())
             pattern(pattern)
             sortOrderInListNoProgram(sortOrderInListNoProgram)
             optionSet?.let { optionSet(ObjectWithUidDB(it).toDomain()) }

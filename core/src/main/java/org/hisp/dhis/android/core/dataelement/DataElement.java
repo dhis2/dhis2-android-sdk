@@ -45,7 +45,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class DataElement extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle<DataElement, DataElement.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract ValueType valueType();
@@ -92,8 +92,7 @@ public abstract class DataElement extends BaseNameableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<DataElement.Builder>
-            implements ObjectWithStyle.Builder<DataElement, DataElement.Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<DataElement.Builder> {
         public abstract DataElement.Builder valueType(ValueType valueType);
 
         public abstract DataElement.Builder zeroIsSignificant(Boolean zeroIsSignificant);
@@ -115,6 +114,8 @@ public abstract class DataElement extends BaseNameableObAuVa
         public abstract DataElement.Builder fieldMask(String fieldMask);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract DataElement autoBuild();
 

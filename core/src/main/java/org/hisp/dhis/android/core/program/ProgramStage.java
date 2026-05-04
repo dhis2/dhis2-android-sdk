@@ -22,7 +22,7 @@ import java.util.List;
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
 public abstract class ProgramStage extends BaseIdentifiableObAuVa
-        implements ObjectWithStyle<ProgramStage, ProgramStage.Builder>, CoreObject {
+        implements ObjectWithStyle, CoreObject {
 
     @Nullable
     public abstract String description();
@@ -163,8 +163,7 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<ProgramStage, Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder description(String description);
 
@@ -258,6 +257,8 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
         public abstract Builder displayEventLabel(String displayEventLabel);
 
         public abstract Builder attributeValues(List<AttributeValue> attributeValues);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract ProgramStage autoBuild();
 

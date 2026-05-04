@@ -44,7 +44,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class TrackedEntityType extends BaseNameableObAuVa implements CoreObject,
-        ObjectWithStyle<TrackedEntityType, TrackedEntityType.Builder> {
+        ObjectWithStyle {
 
     @Nullable
     public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
@@ -61,14 +61,15 @@ public abstract class TrackedEntityType extends BaseNameableObAuVa implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityType, Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
 
         public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
 
         public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder access(Access access);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract TrackedEntityType autoBuild();
 

@@ -43,7 +43,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class ProgramSection extends BaseIdentifiableObAuVa
-        implements CoreObject, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract String description();
@@ -70,8 +70,7 @@ public abstract class ProgramSection extends BaseIdentifiableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<ProgramSection, Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder description(String description);
 
@@ -84,6 +83,8 @@ public abstract class ProgramSection extends BaseIdentifiableObAuVa
         public abstract Builder formName(String formName);
 
         public abstract Builder renderType(SectionRendering renderType);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract ProgramSection autoBuild();
 

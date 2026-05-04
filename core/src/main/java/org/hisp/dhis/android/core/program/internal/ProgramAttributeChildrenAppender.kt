@@ -44,7 +44,7 @@ internal class ProgramAttributeChildrenAppender private constructor(
             .map {
                 AttributeValue.builder()
                     .attribute(ObjectWithUid.create(it.attribute()))
-                    .value(it.value())
+                    .value(it.value()!!)
                     .build()
             }
         return m.toBuilder().attributeValues(attributeValues).build()

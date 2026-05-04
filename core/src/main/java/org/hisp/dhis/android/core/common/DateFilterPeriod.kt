@@ -25,38 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DateFilterPeriod(
+    val startBuffer: Int?,
+    val endBuffer: Int?,
+    val startDate: Date?,
+    val endDate: Date?,
+    val period: RelativePeriod?,
+    val type: DatePeriodType?,
+) {
+    fun startBuffer(): Int? = startBuffer
+    fun endBuffer(): Int? = endBuffer
+    fun startDate(): Date? = startDate
+    fun endDate(): Date? = endDate
+    fun period(): RelativePeriod? = period
+    fun type(): DatePeriodType? = type
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DateFilterPeriodBuilder.from(this)
 
-@AutoValue
-public abstract class CustomText {
+    class Builder : DateFilterPeriodBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_CustomText.Builder();
-    }
-
-    @Nullable
-    public abstract String header();
-
-    @Nullable
-    public abstract String subHeader();
-
-    @Nullable
-    public abstract TextAlign align();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder header(String header);
-
-        public abstract Builder subHeader(String subHeader);
-
-        public abstract Builder align(TextAlign align);
-
-        public abstract CustomText build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

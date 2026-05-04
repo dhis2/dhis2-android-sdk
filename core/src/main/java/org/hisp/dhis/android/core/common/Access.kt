@@ -25,49 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.dataset;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class Access(
+    val read: Boolean,
+    val write: Boolean,
+    val data: DataAccess,
+) {
+    fun read(): Boolean = read
+    fun write(): Boolean = write
+    fun data(): DataAccess = data
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = AccessBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    class Builder : AccessBuilder()
 
-import java.util.Date;
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-@AutoValue
-public abstract class DataInputPeriod implements CoreObject {
-
-    @Nullable
-    public abstract ObjectWithUid dataSet();
-
-    public abstract ObjectWithUid period();
-
-    @Nullable
-    public abstract Date openingDate();
-
-    @Nullable
-    public abstract Date closingDate();
-
-    public abstract DataInputPeriod.Builder toBuilder();
-
-    public static DataInputPeriod.Builder builder() {
-        return new AutoValue_DataInputPeriod.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(ObjectWithUid dataSet);
-
-        public abstract Builder period(ObjectWithUid period);
-
-        public abstract Builder openingDate(Date openingDate);
-
-        public abstract Builder closingDate(Date closingDate);
-
-        public abstract DataInputPeriod build();
+        @JvmStatic
+        fun create(read: Boolean, write: Boolean, data: DataAccess) =
+            Access(read, write, data)
     }
 }

@@ -44,7 +44,7 @@ internal class DataElementAttributeChildrenAppender private constructor(
             .map {
                 AttributeValue.builder()
                     .attribute(ObjectWithUid.create(it.attribute()))
-                    .value(it.value())
+                    .value(it.value()!!)
                     .build()
             }
 

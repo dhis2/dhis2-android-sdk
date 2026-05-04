@@ -50,7 +50,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 sealed class MetadataItem(val id: String, val displayName: String) {
     class DataElementItem(val item: DataElement) : MetadataItem(item.uid(), item.displayName()!!)
     class DataElementOperandItem(val item: DataElementOperand, dataElementName: String, cocName: String?) :
-        MetadataItem(item.uid()!!, "$dataElementName $cocName")
+        MetadataItem(item.uid(), "$dataElementName $cocName")
 
     class TrackedEntityAttributeItem(val item: TrackedEntityAttribute) : MetadataItem(item.uid(), item.displayName()!!)
 

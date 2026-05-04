@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,28 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataInputPeriod(
+    val dataSet: ObjectWithUid?,
+    val period: ObjectWithUid,
+    val openingDate: Date?,
+    val closingDate: Date?,
+) : CoreObject {
+    fun dataSet(): ObjectWithUid? = dataSet
+    fun period(): ObjectWithUid = period
+    fun openingDate(): Date? = openingDate
+    fun closingDate(): Date? = closingDate
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataInputPeriodBuilder.from(this)
 
-@AutoValue
-public abstract class ValueTypeRendering {
-    public static final String DESKTOP = "DESKTOP";
-    public static final String MOBILE = "MOBILE";
+    class Builder : DataInputPeriodBuilder()
 
-    @Nullable
-    public abstract ValueTypeDeviceRendering desktop();
-
-    @Nullable
-    public abstract ValueTypeDeviceRendering mobile();
-
-    public static ValueTypeRendering create(
-            ValueTypeDeviceRendering desktop,
-            ValueTypeDeviceRendering mobile) {
-
-        return new AutoValue_ValueTypeRendering(desktop, mobile);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

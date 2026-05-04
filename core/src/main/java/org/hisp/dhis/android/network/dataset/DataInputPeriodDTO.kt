@@ -40,13 +40,11 @@ internal data class DataInputPeriodDTO(
     val closingDate: String?,
 ) {
     fun toDomain(dataSet: ObjectWithUidDTO?): DataInputPeriod {
-        return DataInputPeriod.builder()
-            .dataSet(dataSet?.toDomain())
-            .period(period?.toDomain())
-            .apply {
-                openingDate?.let { openingDate(DateUtils.DATE_FORMAT.parse(openingDate)) }
-                closingDate?.let { closingDate(DateUtils.DATE_FORMAT.parse(closingDate)) }
-            }
-            .build()
+        return DataInputPeriod.builder().apply {
+            dataSet?.let { dataSet(it.toDomain()) }
+            period?.let { period(it.toDomain()) }
+            openingDate?.let { openingDate(DateUtils.DATE_FORMAT.parse(openingDate)) }
+            closingDate?.let { closingDate(DateUtils.DATE_FORMAT.parse(closingDate)) }
+        }.build()
     }
 }

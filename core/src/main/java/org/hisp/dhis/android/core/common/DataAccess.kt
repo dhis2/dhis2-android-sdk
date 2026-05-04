@@ -25,52 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.dataelement;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataAccess(
+    val read: Boolean,
+    val write: Boolean,
+) {
+    fun read(): Boolean = read
+    fun write(): Boolean = write
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DataAccessBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    class Builder : DataAccessBuilder()
 
-@AutoValue
-public abstract class DataElementOperand implements CoreObject, ObjectWithUidInterface, ObjectWithDeleteInterface {
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    @Override
-    @Nullable
-    public abstract String uid();
-
-    @Override
-    @Nullable
-    public abstract Boolean deleted();
-
-    @Nullable
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid categoryOptionCombo();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataElementOperand.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder deleted(Boolean deleted);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder categoryOptionCombo(ObjectWithUid categoryOptionCombo);
-
-        public abstract DataElementOperand build();
+        @JvmStatic
+        fun create(read: Boolean, write: Boolean): DataAccess = DataAccess(read, write)
     }
 }

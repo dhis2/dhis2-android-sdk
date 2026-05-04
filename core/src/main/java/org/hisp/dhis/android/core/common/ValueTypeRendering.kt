@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,35 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+data class ValueTypeRendering(
+    val desktop: ValueTypeDeviceRendering?,
+    val mobile: ValueTypeDeviceRendering?,
+) {
+    fun desktop(): ValueTypeDeviceRendering? = desktop
+    fun mobile(): ValueTypeDeviceRendering? = mobile
 
-import androidx.annotation.Nullable;
+    companion object {
+        const val DESKTOP = "DESKTOP"
+        const val MOBILE = "MOBILE"
 
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class Geometry {
-
-    @Nullable
-    public abstract FeatureType type();
-
-    @Nullable
-    public abstract String coordinates();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Geometry.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder type(FeatureType type);
-
-        public abstract Builder coordinates(String coordinates);
-
-        public abstract Geometry build();
+        @JvmStatic
+        fun create(
+            desktop: ValueTypeDeviceRendering?,
+            mobile: ValueTypeDeviceRendering?,
+        ): ValueTypeRendering {
+            return ValueTypeRendering(desktop, mobile)
+        }
     }
 }

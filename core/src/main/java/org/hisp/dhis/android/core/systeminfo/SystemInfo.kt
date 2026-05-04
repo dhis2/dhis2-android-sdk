@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,58 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.systeminfo;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class SystemInfo(
+    val serverDate: Date?,
+    val dateFormat: String?,
+    val version: String?,
+    val contextPath: String?,
+    val systemName: String?,
+    val serverTimeZoneId: String?,
+) : CoreObject {
+    fun serverDate(): Date? = serverDate
+    fun dateFormat(): String? = dateFormat
+    fun version(): String? = version
+    fun contextPath(): String? = contextPath
+    fun systemName(): String? = systemName
+    fun serverTimeZoneId(): String? = serverTimeZoneId
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = SystemInfoBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    class Builder : SystemInfoBuilder()
 
-import java.util.Date;
-
-@AutoValue
-public abstract class SystemInfo implements CoreObject {
-
-    @Nullable
-    public abstract Date serverDate();
-
-    @Nullable
-    public abstract String dateFormat();
-
-    @Nullable
-    public abstract String version();
-
-    @Nullable
-    public abstract String contextPath();
-
-    @Nullable
-    public abstract String systemName();
-
-    @Nullable
-    public abstract String serverTimeZoneId();
-
-    public static Builder builder() {
-        return new AutoValue_SystemInfo.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverDate(Date serverDate);
-
-        public abstract Builder dateFormat(String dateFormat);
-
-        public abstract Builder version(String version);
-
-        public abstract Builder contextPath(String contextPath);
-
-        public abstract Builder systemName(String systemName);
-
-        public abstract Builder serverTimeZoneId(String serverTimeZoneId);
-
-        public abstract SystemInfo build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,86 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import android.content.Context
+import okhttp3.Interceptor
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.api.NetworkPlugin
 
-import android.content.Context;
+@ModelBuilder
+data class D2Configuration(
+    val appName: String?,
+    val appVersion: String?,
+    val readTimeoutInSeconds: Int,
+    val connectTimeoutInSeconds: Int,
+    val writeTimeoutInSeconds: Int,
+    val interceptors: List<Interceptor>,
+    val networkInterceptors: List<Interceptor>,
+    val networkPlugins: List<NetworkPlugin<Any, Any>>,
+    val context: Context,
+) {
+    fun appName(): String? = appName
+    fun appVersion(): String? = appVersion
+    fun readTimeoutInSeconds(): Int = readTimeoutInSeconds
+    fun connectTimeoutInSeconds(): Int = connectTimeoutInSeconds
+    fun writeTimeoutInSeconds(): Int = writeTimeoutInSeconds
+    fun interceptors(): List<Interceptor> = interceptors
+    fun networkInterceptors(): List<Interceptor> = networkInterceptors
+    fun networkPlugins(): List<NetworkPlugin<Any, Any>> = networkPlugins
+    fun context(): Context = context
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+    fun toBuilder(): Builder = D2ConfigurationBuilder.from(this)
 
-import com.google.auto.value.AutoValue;
+    class Builder : D2ConfigurationBuilder()
 
-import org.hisp.dhis.android.core.arch.api.NetworkPlugin;
-
-import java.util.Collections;
-import java.util.List;
-
-import okhttp3.Interceptor;
-
-@AutoValue
-public abstract class D2Configuration {
-
-    @Nullable
-    public abstract String appName();
-
-    @Nullable
-    public abstract String appVersion();
-
-    @NonNull
-    public abstract Integer readTimeoutInSeconds();
-
-    @NonNull
-    public abstract Integer connectTimeoutInSeconds();
-
-    @NonNull
-    public abstract Integer writeTimeoutInSeconds();
-
-    @NonNull
-    public abstract List<Interceptor> interceptors();
-
-    @NonNull
-    public abstract List<Interceptor> networkInterceptors();
-
-    @NonNull
-    public abstract List<NetworkPlugin> networkPlugins();
-
-    @NonNull
-    public abstract Context context();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_D2Configuration.Builder()
-                .readTimeoutInSeconds(30)
-                .connectTimeoutInSeconds(30)
-                .writeTimeoutInSeconds(30)
-                .networkInterceptors(Collections.emptyList())
-                .interceptors(Collections.emptyList())
-                .networkPlugins(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder appName(String appName);
-
-        public abstract Builder appVersion(String appVersion);
-
-        public abstract Builder context(Context context);
-
-        public abstract Builder readTimeoutInSeconds(Integer readTimeoutInSeconds);
-
-        public abstract Builder connectTimeoutInSeconds(Integer connectTimeoutInSeconds);
-
-        public abstract Builder writeTimeoutInSeconds(Integer writeTimeoutInSeconds);
-
-        public abstract Builder interceptors(List<Interceptor> interceptors);
-
-        public abstract Builder networkInterceptors(List<Interceptor> networkInterceptors);
-
-        public abstract Builder networkPlugins(List<NetworkPlugin> networkPlugins);
-
-        public abstract D2Configuration build();
+    companion object {
+        const val READ_TIMEOUT_IN_SECONDS_DEFAULT = 30
+        const val CONNECT_TIMEOUT_IN_SECONDS_DEFAULT = 30
+        const val WRITE_TIMEOUT_IN_SECONDS_DEFAULT = 30
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .readTimeoutInSeconds(READ_TIMEOUT_IN_SECONDS_DEFAULT)
+            .connectTimeoutInSeconds(CONNECT_TIMEOUT_IN_SECONDS_DEFAULT)
+            .writeTimeoutInSeconds(WRITE_TIMEOUT_IN_SECONDS_DEFAULT)
+            .interceptors(emptyList())
+            .networkInterceptors(emptyList())
+            .networkPlugins(emptyList())
     }
 }

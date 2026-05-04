@@ -83,7 +83,7 @@ internal fun Indicator.toDB(): IndicatorDB {
         denominatorDescription = denominatorDescription(),
         url = url(),
         decimals = decimals(),
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
     )
 }

@@ -74,8 +74,8 @@ internal fun ProgramSection.toDB(): ProgramSectionDB {
         program = program()?.uid(),
         sortOrder = sortOrder(),
         formName = formName(),
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         desktopRenderType = renderType()?.desktop()?.type()?.name,
         mobileRenderType = renderType()?.mobile()?.type()?.name,
     )

@@ -54,8 +54,8 @@ internal fun TrackedEntityType.toDB(): TrackedEntityTypeDB {
         description = description(),
         displayDescription = displayDescription(),
         featureType = featureType()?.name,
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         accessDataWrite = access().toDB(),
     )
 }

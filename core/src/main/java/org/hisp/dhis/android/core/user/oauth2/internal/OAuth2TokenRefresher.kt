@@ -36,18 +36,16 @@ import org.koin.core.annotation.Singleton
 internal class OAuth2TokenRefresher(
     private val oauth2NetworkHandler: OAuth2NetworkHandler,
     private val keyStoreManager: KeyStoreManager,
-    private val oauth2SecureStore: OAuth2SecureStore,
     private val logoutHandler: OAuth2LogoutHandler,
 ) {
     @Suppress("ReturnCount")
-    suspend fun refreshToken(state: OAuth2State): OAuth2State? {
+    suspend fun refreshToken(state: OAuth2State, serverUrl: String): OAuth2State? {
         return try {
             if (state.refreshToken == null) {
                 logoutHandler.logOut()
                 return null
             }
 
-            val serverUrl = oauth2SecureStore.serverUrl ?: return null
             val privateKey = keyStoreManager.getPrivateKey(state.keyId) ?: return null
 
             val clientAssertion = JWTHelper.createClientAssertion(

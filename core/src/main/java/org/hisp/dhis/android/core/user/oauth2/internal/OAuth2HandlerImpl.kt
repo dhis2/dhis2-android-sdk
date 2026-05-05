@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 import io.reactivex.Observable
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.LogInCall
@@ -49,6 +50,7 @@ internal class OAuth2HandlerImpl(
     private val keyStoreManager: KeyStoreManager,
     private val oauth2SecureStore: OAuth2SecureStore,
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val credentialsSecureStore: CredentialsSecureStore,
 ) : OAuth2Handler {
 
     private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
@@ -160,9 +162,9 @@ internal class OAuth2HandlerImpl(
         return when (result) {
             is Result.Success -> {
                 val oauth2State = result.value.copy(keyId = keyId)
-                oauth2SecureStore.clearTemporaryData()
                 val user = logInCall.logInOAuth2(normalizedUrl, oauth2State)
                 oauth2StateSecureStore.set(normalizedUrl, user.username()!!, oauth2State)
+                oauth2SecureStore.clearAll()
                 user
             }
             is Result.Failure -> {
@@ -183,11 +185,11 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun isLoggedIn(): Boolean {
-        return logInCall.isUserLoggedIn() && oauth2SecureStore.clientId != null
+        return logInCall.isUserLoggedIn() && credentialsSecureStore.get()?.oauth2State != null
     }
 
     override fun getClientId(): String? {
-        return oauth2SecureStore.clientId
+        return credentialsSecureStore.get()?.oauth2State?.clientId
     }
 
     override fun blockingLogOut() {

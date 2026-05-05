@@ -29,21 +29,21 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
-import org.hisp.dhis.android.core.user.oauth2.OAuth2Tokens
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 import java.security.MessageDigest
 
 @Singleton
-internal class OAuth2TokenSecureStore(
+internal class OAuth2StateSecureStore(
     private val secureStore: ChunkedSecureStore,
 ) {
-    fun set(serverUrl: String, username: String, tokens: OAuth2Tokens) {
-        secureStore.setData(buildKey(serverUrl, username), tokens.jsonSerializeString())
+    fun set(serverUrl: String, username: String, state: OAuth2State) {
+        secureStore.setData(buildKey(serverUrl, username), state.jsonSerializeString())
     }
 
-    fun get(serverUrl: String, username: String): OAuth2Tokens? {
+    fun get(serverUrl: String, username: String): OAuth2State? {
         return secureStore.getData(buildKey(serverUrl, username))
-            ?.let { OAuth2Tokens.jsonDeserialize(it) }
+            ?.let { OAuth2State.jsonDeserialize(it) }
     }
 
     fun remove(serverUrl: String, username: String) {
@@ -61,7 +61,7 @@ internal class OAuth2TokenSecureStore(
     }
 
     companion object {
-        private const val KEY_PREFIX = "oauth2_tokens_"
+        private const val KEY_PREFIX = "oauth2_state_"
         private const val HASH_ALGORITHM = "SHA-256"
         private const val HASH_BYTE_COUNT = 4
         private const val HEX_STRING_WIDTH = 2

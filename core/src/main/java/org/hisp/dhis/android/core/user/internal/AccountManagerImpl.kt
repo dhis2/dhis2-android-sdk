@@ -46,7 +46,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
-import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2TokenSecureStore
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -59,7 +59,7 @@ internal class AccountManagerImpl(
     private val logOutCall: LogOutCall,
     private val context: Context,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
-    private val oauth2TokenSecureStore: OAuth2TokenSecureStore,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
@@ -146,7 +146,7 @@ internal class AccountManagerImpl(
 
             FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
             databaseManager.deleteDatabase(loggedAccount.databaseName(), loggedAccount.encrypted())
-            oauth2TokenSecureStore.remove(credentials.serverUrl, credentials.username)
+            oauth2StateSecureStore.remove(credentials.serverUrl, credentials.username)
         }
     }
 

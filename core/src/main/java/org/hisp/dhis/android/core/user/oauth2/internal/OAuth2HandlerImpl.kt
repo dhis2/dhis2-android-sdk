@@ -48,7 +48,7 @@ internal class OAuth2HandlerImpl(
     private val oauth2NetworkHandler: OAuth2NetworkHandler,
     private val keyStoreManager: KeyStoreManager,
     private val oauth2SecureStore: OAuth2SecureStore,
-    private val oauth2TokenSecureStore: OAuth2TokenSecureStore,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
 ) : OAuth2Handler {
 
     private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
@@ -162,7 +162,7 @@ internal class OAuth2HandlerImpl(
                 val oauth2State = result.value.copy(keyId = keyId)
                 oauth2SecureStore.clearTemporaryData()
                 val user = logInCall.logInOAuth2(normalizedUrl, oauth2State)
-                oauth2TokenSecureStore.set(normalizedUrl, user.username()!!, oauth2State.toTokens())
+                oauth2StateSecureStore.set(normalizedUrl, user.username()!!, oauth2State)
                 user
             }
             is Result.Failure -> {

@@ -30,22 +30,26 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
-import org.hisp.dhis.android.core.user.oauth2.OAuth2Tokens
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.junit.Before
 import org.junit.Test
 
-class OAuth2TokenSecureStoreShould {
+class OAuth2StateSecureStoreShould {
 
-    private lateinit var store: OAuth2TokenSecureStore
+    private lateinit var store: OAuth2StateSecureStore
 
-    private val tokensA = OAuth2Tokens(
+    private val stateA = OAuth2State(
+        clientId = "client-A",
+        keyId = "key-A",
         accessToken = "access-A",
         refreshToken = "refresh-A",
         expiresAt = 1_700_000_000L,
         scope = "openid",
     )
 
-    private val tokensB = OAuth2Tokens(
+    private val stateB = OAuth2State(
+        clientId = "client-B",
+        keyId = "key-B",
         accessToken = "access-B",
         refreshToken = "refresh-B",
         expiresAt = 1_800_000_000L,
@@ -54,7 +58,7 @@ class OAuth2TokenSecureStoreShould {
 
     @Before
     fun setUp() {
-        store = OAuth2TokenSecureStore(ChunkedSecureStore(InMemorySecureStore()))
+        store = OAuth2StateSecureStore(ChunkedSecureStore(InMemorySecureStore()))
     }
 
     @Test
@@ -63,47 +67,47 @@ class OAuth2TokenSecureStoreShould {
     }
 
     @Test
-    fun should_round_trip_tokens() {
-        store.set("https://play.dhis2.org", "admin", tokensA)
+    fun should_round_trip_state() {
+        store.set("https://play.dhis2.org", "admin", stateA)
 
-        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(tokensA)
+        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(stateA)
     }
 
     @Test
     fun should_isolate_entries_per_account() {
-        store.set("https://play.dhis2.org", "admin", tokensA)
-        store.set("https://play.dhis2.org", "user", tokensB)
-        store.set("https://other.dhis2.org", "admin", tokensB)
+        store.set("https://play.dhis2.org", "admin", stateA)
+        store.set("https://play.dhis2.org", "user", stateB)
+        store.set("https://other.dhis2.org", "admin", stateB)
 
-        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(tokensA)
-        assertThat(store.get("https://play.dhis2.org", "user")).isEqualTo(tokensB)
-        assertThat(store.get("https://other.dhis2.org", "admin")).isEqualTo(tokensB)
+        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(stateA)
+        assertThat(store.get("https://play.dhis2.org", "user")).isEqualTo(stateB)
+        assertThat(store.get("https://other.dhis2.org", "admin")).isEqualTo(stateB)
     }
 
     @Test
     fun should_treat_normalized_server_url_variants_as_same_account() {
-        store.set("https://play.dhis2.org", "admin", tokensA)
+        store.set("https://play.dhis2.org", "admin", stateA)
 
-        assertThat(store.get("HTTPS://PLAY.DHIS2.ORG/", "admin")).isEqualTo(tokensA)
-        assertThat(store.get("https://play.dhis2.org/api", "admin")).isEqualTo(tokensA)
+        assertThat(store.get("HTTPS://PLAY.DHIS2.ORG/", "admin")).isEqualTo(stateA)
+        assertThat(store.get("https://play.dhis2.org/api", "admin")).isEqualTo(stateA)
     }
 
     @Test
     fun should_remove_only_the_target_account() {
-        store.set("https://play.dhis2.org", "admin", tokensA)
-        store.set("https://play.dhis2.org", "user", tokensB)
+        store.set("https://play.dhis2.org", "admin", stateA)
+        store.set("https://play.dhis2.org", "user", stateB)
 
         store.remove("https://play.dhis2.org", "admin")
 
         assertThat(store.get("https://play.dhis2.org", "admin")).isNull()
-        assertThat(store.get("https://play.dhis2.org", "user")).isEqualTo(tokensB)
+        assertThat(store.get("https://play.dhis2.org", "user")).isEqualTo(stateB)
     }
 
     @Test
-    fun should_overwrite_existing_tokens_for_same_account() {
-        store.set("https://play.dhis2.org", "admin", tokensA)
-        store.set("https://play.dhis2.org", "admin", tokensB)
+    fun should_overwrite_existing_state_for_same_account() {
+        store.set("https://play.dhis2.org", "admin", stateA)
+        store.set("https://play.dhis2.org", "admin", stateB)
 
-        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(tokensB)
+        assertThat(store.get("https://play.dhis2.org", "admin")).isEqualTo(stateB)
     }
 }

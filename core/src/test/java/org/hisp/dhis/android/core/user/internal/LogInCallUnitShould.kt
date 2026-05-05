@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -75,6 +76,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val multiUserDatabaseManager: MultiUserDatabaseManager = mock()
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
+    private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
 
     @Before
     @Throws(Exception::class)
@@ -110,6 +112,7 @@ class LogInCallUnitShould : BaseCallShould() {
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
+            oauth2StateSecureStore,
         ).logIn(username, password, serverUrl)
     }
 

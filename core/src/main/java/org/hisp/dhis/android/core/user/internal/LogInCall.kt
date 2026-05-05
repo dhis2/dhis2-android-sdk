@@ -41,10 +41,11 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class LogInCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: UserNetworkHandler,
@@ -58,23 +59,55 @@ internal class LogInCall(
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
 ) {
     @Throws(D2Error::class)
     suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
-        exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
 
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
-
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
+        val oauth2State = oauth2StateSecureStore.get(trimmedServerUrl!!, username!!)
+        return if (oauth2State != null) {
+            logInWithOAuth2State(trimmedServerUrl, username, oauth2State)
+        } else {
+            exceptions.throwExceptionIfPasswordNull(password)
+            logInWithPassword(trimmedServerUrl, username, password)
+        }
+    }
 
+    private suspend fun logInWithOAuth2State(
+        serverUrl: String,
+        username: String,
+        state: OAuth2State,
+    ): User {
+        val credentials = Credentials(username, serverUrl, null, null, state)
         return try {
-            if (loginDatabaseManager.isPendingToImportDB(trimmedServerUrl, username)) {
-                importDB(trimmedServerUrl, credentials)
+            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
+                networkHandler.authenticate("Bearer ${state.accessToken!!}")
+            }.getOrThrow()
+            loginOnline(user, credentials)
+        } catch (d2Error: D2Error) {
+            if (d2Error.isOffline) {
+                tryLoginOffline(credentials, d2Error)
+            } else {
+                throw handleOnlineException(d2Error, credentials)
+            }
+        }
+    }
+
+    private suspend fun logInWithPassword(
+        serverUrl: String,
+        username: String,
+        password: String?,
+    ): User {
+        val credentials = Credentials(username, serverUrl, password, null)
+        return try {
+            if (loginDatabaseManager.isPendingToImportDB(serverUrl, username)) {
+                importDB(serverUrl, credentials)
             } else {
                 val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                     networkHandler.authenticate(

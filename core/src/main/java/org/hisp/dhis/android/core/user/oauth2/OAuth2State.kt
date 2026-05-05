@@ -54,6 +54,14 @@ data class OAuth2State(
         }.toString()
     }
 
+    internal fun toTokens(): OAuth2Tokens =
+        OAuth2Tokens(
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expiresAt = expiresAt,
+            scope = scope,
+        )
+
     companion object {
         private const val KEY_CLIENT_ID = "client_id"
         private const val KEY_KEY_ID = "key_id"

@@ -10,7 +10,6 @@ import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 
 @Entity(
     tableName = "Indicator",
@@ -51,7 +50,7 @@ internal data class IndicatorDB(
     override fun toDomain(): Indicator {
         return Indicator.builder().apply {
             applyBaseNameableFields(this@IndicatorDB)
-            applyStyleFields(this@IndicatorDB)
+            style(this@IndicatorDB.toDomainStyle())
             annualized(annualized)
             indicatorType?.let { indicatorType(ObjectWithUid.create(indicatorType)) }
             numerator(numerator)
@@ -84,7 +83,7 @@ internal fun Indicator.toDB(): IndicatorDB {
         denominatorDescription = denominatorDescription(),
         url = url(),
         decimals = decimals(),
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
     )
 }

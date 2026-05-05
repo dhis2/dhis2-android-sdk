@@ -13,7 +13,6 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 
 @Entity(
     tableName = "ProgramSection",
@@ -48,7 +47,7 @@ internal data class ProgramSectionDB(
     override fun toDomain(): ProgramSection {
         return ProgramSection.builder().apply {
             applyBaseIdentifiableFields(this@ProgramSectionDB)
-            applyStyleFields(this@ProgramSectionDB)
+            style(this@ProgramSectionDB.toDomainStyle())
             description(description)
             program?.let { program(ObjectWithUid.create(it)) }
             sortOrder(sortOrder)
@@ -75,8 +74,8 @@ internal fun ProgramSection.toDB(): ProgramSectionDB {
         program = program()?.uid(),
         sortOrder = sortOrder(),
         formName = formName(),
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         desktopRenderType = renderType()?.desktop()?.type()?.name,
         mobileRenderType = renderType()?.mobile()?.type()?.name,
     )

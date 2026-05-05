@@ -48,7 +48,7 @@ import java.util.List;
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
 public abstract class TrackedEntityAttribute extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract String pattern();
@@ -122,8 +122,7 @@ public abstract class TrackedEntityAttribute extends BaseNameableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityAttribute, TrackedEntityAttribute.Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
 
         public abstract Builder pattern(String pattern);
 

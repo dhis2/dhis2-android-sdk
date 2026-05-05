@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid;
 
 @AutoValue
 public abstract class Option extends BaseIdentifiableObAuVa
-        implements CoreObject, ObjectWithStyle<Option, Option.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract Integer sortOrder();
@@ -55,12 +55,13 @@ public abstract class Option extends BaseIdentifiableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<Option, Option.Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder sortOrder(@Nullable Integer sortOrder);
 
         public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract Option autoBuild();
 

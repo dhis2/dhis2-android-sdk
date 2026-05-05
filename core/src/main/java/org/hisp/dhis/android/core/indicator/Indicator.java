@@ -42,7 +42,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class Indicator extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle<Indicator, Indicator.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract Boolean annualized();
@@ -78,8 +78,7 @@ public abstract class Indicator extends BaseNameableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<Indicator, Indicator.Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder annualized(Boolean annualized);
 
         public abstract Builder indicatorType(ObjectWithUid indicatorType);
@@ -97,6 +96,8 @@ public abstract class Indicator extends BaseNameableObAuVa
         public abstract Builder url(String url);
 
         public abstract Builder decimals(Integer decimals);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract Indicator autoBuild();
 

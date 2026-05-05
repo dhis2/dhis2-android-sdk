@@ -25,18 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public interface ObjectWithStyle<O, B extends ObjectWithStyle.Builder<O, B>> {
-
-    ObjectStyle style();
-
-    B toBuilder();
-
-    interface Builder<O, T extends Builder> {
-        T style(ObjectStyle style);
-
-        O build();
-    }
+interface ObjectWithStyle {
+    fun style(): ObjectStyle
 }

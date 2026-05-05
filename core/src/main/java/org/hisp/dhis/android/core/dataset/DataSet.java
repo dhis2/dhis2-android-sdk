@@ -49,7 +49,7 @@ import java.util.List;
 @AutoValue
 @SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
 public abstract class DataSet extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle<DataSet, DataSet.Builder> {
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract PeriodType periodType();
@@ -126,8 +126,7 @@ public abstract class DataSet extends BaseNameableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<DataSet, DataSet.Builder> {
+    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
         public abstract Builder periodType(PeriodType periodType);
 
         public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
@@ -173,6 +172,8 @@ public abstract class DataSet extends BaseNameableObAuVa
         public abstract Builder displayOptions(DataSetDisplayOptions displayOptions);
 
         public abstract Builder access(Access access);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract DataSet autoBuild();
 

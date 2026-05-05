@@ -46,7 +46,7 @@ import java.util.List;
 
 @AutoValue
 public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObAuVa implements CoreObject,
-        ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
+        ObjectWithStyle {
 
     @Nullable
     public abstract ObjectWithUid program();
@@ -102,8 +102,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObAuVa
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder program(ObjectWithUid program);
 
@@ -114,6 +113,8 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObAuVa
         public abstract Builder entityQueryCriteria(EntityQueryCriteria entityQueryCriteria);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract TrackedEntityInstanceFilter autoBuild();
 

@@ -62,5 +62,20 @@ data class OAuth2State(
         private const val KEY_EXPIRES_AT = "expires_at"
         private const val KEY_SCOPE = "scope"
         private const val BUFFER = 60
+
+        fun jsonDeserialize(json: String): OAuth2State {
+            val obj = JSONObject(json)
+            return OAuth2State(
+                clientId = obj.getString(KEY_CLIENT_ID),
+                keyId = obj.getString(KEY_KEY_ID),
+                accessToken = obj.optNullableString(KEY_ACCESS_TOKEN),
+                refreshToken = obj.optNullableString(KEY_REFRESH_TOKEN),
+                expiresAt = obj.getLong(KEY_EXPIRES_AT),
+                scope = obj.optNullableString(KEY_SCOPE),
+            )
+        }
+
+        private fun JSONObject.optNullableString(key: String): String? =
+            if (has(key) && !isNull(key)) getString(key) else null
     }
 }

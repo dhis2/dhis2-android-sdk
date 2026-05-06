@@ -86,6 +86,6 @@ data class DataElement(
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()
-            .style(ObjectStyle(null, null))
+            .style(ObjectStyle())
     }
 }

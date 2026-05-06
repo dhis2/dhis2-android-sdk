@@ -4006,7 +4006,9 @@ public class org/hisp/dhis/android/core/common/NameableWithStyleColumns : org/hi
 
 public final class org/hisp/dhis/android/core/common/ObjectStyle {
 	public static final field Companion Lorg/hisp/dhis/android/core/common/ObjectStyle$Companion;
+	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
 	public final fun color ()Ljava/lang/String;
 	public final fun component1 ()Ljava/lang/String;

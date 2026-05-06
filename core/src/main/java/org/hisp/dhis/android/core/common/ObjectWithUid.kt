@@ -25,58 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.systeminfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject.Companion.UID
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.fields.Field.Companion.create
 
-import androidx.annotation.Nullable;
+data class ObjectWithUid(
+    val uid: String,
+) : ObjectWithUidInterface {
+    override fun uid(): String = uid
 
-import com.google.auto.value.AutoValue;
+    companion object {
+        @JvmField
+        internal val uid: Field<ObjectWithUid> = Field.create(UID)
 
-import org.hisp.dhis.android.core.common.CoreObject;
+        @JvmStatic
+        fun create(uid: String): ObjectWithUid = ObjectWithUid(uid)
 
-import java.util.Date;
-
-@AutoValue
-public abstract class SystemInfo implements CoreObject {
-
-    @Nullable
-    public abstract Date serverDate();
-
-    @Nullable
-    public abstract String dateFormat();
-
-    @Nullable
-    public abstract String version();
-
-    @Nullable
-    public abstract String contextPath();
-
-    @Nullable
-    public abstract String systemName();
-
-    @Nullable
-    public abstract String serverTimeZoneId();
-
-    public static Builder builder() {
-        return new AutoValue_SystemInfo.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverDate(Date serverDate);
-
-        public abstract Builder dateFormat(String dateFormat);
-
-        public abstract Builder version(String version);
-
-        public abstract Builder contextPath(String contextPath);
-
-        public abstract Builder systemName(String systemName);
-
-        public abstract Builder serverTimeZoneId(String serverTimeZoneId);
-
-        public abstract SystemInfo build();
+        @JvmStatic
+        fun fromIdentifiable(identifiableObject: IdentifiableObject): ObjectWithUid =
+            create(identifiableObject.uid())
     }
 }

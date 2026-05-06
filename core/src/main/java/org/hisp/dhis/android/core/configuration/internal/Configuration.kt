@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import static org.hisp.dhis.android.core.common.BaseIdentifiableObject.UID;
+/**
+ * Old configuration class. Needs to be kept for migration from SDK version previous to 1.1.0
+ * Use [DatabasesConfiguration] instead.
+ */
+@Deprecated("Use DatabasesConfiguration instead")
+@ModelBuilder
+data class Configuration(
+    val serverUrl: String,
+) : CoreObject {
+    fun serverUrl(): String = serverUrl
 
-import androidx.annotation.NonNull;
+    fun toBuilder(): Builder = ConfigurationBuilder.from(this)
 
-import com.google.auto.value.AutoValue;
+    class Builder : ConfigurationBuilder()
 
-import org.hisp.dhis.android.network.common.fields.Field;
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-@AutoValue
-public abstract class ObjectWithUid implements ObjectWithUidInterface {
-
-    public static final Field<ObjectWithUid> uid = Field.create(UID);
-
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    public static ObjectWithUid create(String uid) {
-        return new AutoValue_ObjectWithUid(uid);
-    }
-
-    public static ObjectWithUid fromIdentifiable(IdentifiableObject identifiableObject) {
-        return create(identifiableObject.uid());
+        internal fun forServerUrl(url: String): Configuration =
+            builder().serverUrl(url).build()
     }
 }

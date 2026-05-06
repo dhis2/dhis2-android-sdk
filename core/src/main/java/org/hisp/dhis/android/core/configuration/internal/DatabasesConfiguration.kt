@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.configuration.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.BuildConfig
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DatabasesConfiguration(
+    val versionCode: Long,
+    val maxAccounts: Int?,
+    val accounts: List<DatabaseAccount>,
+) {
+    fun versionCode(): Long = versionCode
+    fun maxAccounts(): Int? = maxAccounts
+    fun accounts(): List<DatabaseAccount> = accounts
 
-@AutoValue
-public abstract class DatabaseAccountImport {
+    fun toBuilder(): Builder = DatabasesConfigurationBuilder.from(this)
 
-    @NonNull
-    public abstract DatabaseAccountImportStatus status();
+    class Builder : DatabasesConfigurationBuilder()
 
-    @NonNull
-    public abstract String protectedDbName();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DatabaseAccountImport.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder status(DatabaseAccountImportStatus importStatus);
-
-        public abstract Builder protectedDbName(String protectedDbName);
-
-        public abstract DatabaseAccountImport build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .versionCode(BuildConfig.VERSION_CODE)
+            .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+            .accounts(emptyList())
     }
 }

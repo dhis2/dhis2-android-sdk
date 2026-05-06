@@ -25,26 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.scope.internal
+package org.hisp.dhis.android.core
 
+import android.content.Context
+import okhttp3.Interceptor
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.arch.api.NetworkPlugin
 
 @ModelBuilder
-internal data class RepositoryScopeOrderByItem(
-    val column: String,
-    val direction: RepositoryScope.OrderByDirection,
+data class D2Configuration(
+    val appName: String?,
+    val appVersion: String?,
+    val readTimeoutInSeconds: Int,
+    val connectTimeoutInSeconds: Int,
+    val writeTimeoutInSeconds: Int,
+    val interceptors: List<Interceptor>,
+    val networkInterceptors: List<Interceptor>,
+    val networkPlugins: List<NetworkPlugin<Any, Any>>,
+    val context: Context,
 ) {
-    fun column(): String = column
-    fun direction(): RepositoryScope.OrderByDirection = direction
-    fun toSQLString(): String = "$column $direction"
+    fun appName(): String? = appName
+    fun appVersion(): String? = appVersion
+    fun readTimeoutInSeconds(): Int = readTimeoutInSeconds
+    fun connectTimeoutInSeconds(): Int = connectTimeoutInSeconds
+    fun writeTimeoutInSeconds(): Int = writeTimeoutInSeconds
+    fun interceptors(): List<Interceptor> = interceptors
+    fun networkInterceptors(): List<Interceptor> = networkInterceptors
+    fun networkPlugins(): List<NetworkPlugin<Any, Any>> = networkPlugins
+    fun context(): Context = context
 
-    fun toBuilder(): Builder = RepositoryScopeOrderByItemBuilder.from(this)
+    fun toBuilder(): Builder = D2ConfigurationBuilder.from(this)
 
-    class Builder : RepositoryScopeOrderByItemBuilder()
+    class Builder : D2ConfigurationBuilder()
 
     companion object {
+        const val READ_TIMEOUT_IN_SECONDS_DEFAULT = 30
+        const val CONNECT_TIMEOUT_IN_SECONDS_DEFAULT = 30
+        const val WRITE_TIMEOUT_IN_SECONDS_DEFAULT = 30
+
         @JvmStatic
         fun builder(): Builder = Builder()
+            .readTimeoutInSeconds(READ_TIMEOUT_IN_SECONDS_DEFAULT)
+            .connectTimeoutInSeconds(CONNECT_TIMEOUT_IN_SECONDS_DEFAULT)
+            .writeTimeoutInSeconds(WRITE_TIMEOUT_IN_SECONDS_DEFAULT)
+            .interceptors(emptyList())
+            .networkInterceptors(emptyList())
+            .networkPlugins(emptyList())
     }
 }

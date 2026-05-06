@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.NonNull;
+@ModelBuilder
+data class DatabaseAccountImport(
+    val status: DatabaseAccountImportStatus,
+    val protectedDbName: String,
+) {
+    fun status(): DatabaseAccountImportStatus = status
+    fun protectedDbName(): String = protectedDbName
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DatabaseAccountImportBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    class Builder : DatabaseAccountImportBuilder()
 
-/**
- * Old configuration class. Needs to be kept for migration from SDK version previous to 1.1.0
- * Use {@link DatabasesConfiguration} instead.
- */
-@AutoValue
-@Deprecated
-public abstract class Configuration implements CoreObject {
-
-    @NonNull
-    public abstract String serverUrl();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Configuration build();
-    }
-
-    static Configuration forServerUrl(String url) {
-        return Configuration.builder().serverUrl(url).build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

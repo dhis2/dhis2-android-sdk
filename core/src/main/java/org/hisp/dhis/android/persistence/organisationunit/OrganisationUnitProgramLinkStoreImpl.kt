@@ -54,6 +54,6 @@ internal class OrganisationUnitProgramLinkStoreImpl(
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, organisationUnitUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.program()) }
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.program()!!) }
     }
 }

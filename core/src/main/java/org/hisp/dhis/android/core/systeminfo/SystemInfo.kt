@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,21 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.systeminfo
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import androidx.annotation.NonNull;
+@ModelBuilder
+data class SystemInfo(
+    val serverDate: Date?,
+    val dateFormat: String?,
+    val version: String?,
+    val contextPath: String?,
+    val systemName: String?,
+    val serverTimeZoneId: String?,
+) : CoreObject {
+    fun serverDate(): Date? = serverDate
+    fun dateFormat(): String? = dateFormat
+    fun version(): String? = version
+    fun contextPath(): String? = contextPath
+    fun systemName(): String? = systemName
+    fun serverTimeZoneId(): String? = serverTimeZoneId
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = SystemInfoBuilder.from(this)
 
-@AutoValue
-public abstract class StorableObjectWithUid implements CoreObject, ObjectWithUidInterface {
+    class Builder : SystemInfoBuilder()
 
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    public static StorableObjectWithUid create(String uid) {
-        return new AutoValue_StorableObjectWithUid(uid);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

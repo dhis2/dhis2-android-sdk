@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.server.LoginConfig
+import java.util.Date
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DatabaseAccount(
+    val username: String,
+    val serverUrl: String,
+    val databaseName: String,
+    val databaseCreationDate: Date,
+    val lastAccessDate: Date?,
+    val encrypted: Boolean,
+    val syncState: State?,
+    val importDB: DatabaseAccountImport?,
+    val loginConfig: LoginConfig?,
+) {
+    fun username(): String = username
+    fun serverUrl(): String = serverUrl
+    fun databaseName(): String = databaseName
+    fun databaseCreationDate(): Date = databaseCreationDate
+    fun lastAccessDate(): Date? = lastAccessDate
+    fun encrypted(): Boolean = encrypted
+    fun syncState(): State? = syncState
+    fun importDB(): DatabaseAccountImport? = importDB
+    fun loginConfig(): LoginConfig? = loginConfig
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DatabaseAccountBuilder.from(this)
 
-import org.hisp.dhis.android.BuildConfig;
+    class Builder : DatabaseAccountBuilder()
 
-import java.util.Collections;
-import java.util.List;
-
-@AutoValue
-public abstract class DatabasesConfiguration {
-
-    public abstract long versionCode();
-
-    @Nullable
-    public abstract Integer maxAccounts();
-
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder versionCode(long versionCode);
-
-        public abstract Builder maxAccounts(Integer maxAccounts);
-
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
-
-        public abstract DatabasesConfiguration build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

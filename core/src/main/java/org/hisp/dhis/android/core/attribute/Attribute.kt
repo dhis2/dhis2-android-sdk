@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,194 +26,103 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
-
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ValueType;
-
-@AutoValue
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class Attribute extends BaseNameableObAuVa implements CoreObject {
-
-    @Nullable
-    public abstract ValueType valueType();
-
-    @Nullable
-    public abstract Boolean unique();
-
-    @Nullable
-    public abstract Boolean mandatory();
-
-    @Nullable
-    public abstract Boolean indicatorAttribute();
-
-    @Nullable
-    public abstract Boolean indicatorGroupAttribute();
-
-    @Nullable
-    public abstract Boolean userGroupAttribute();
-
-    @Nullable
-    public abstract Boolean dataElementAttribute();
-
-    @Nullable
-    public abstract Boolean constantAttribute();
-
-    @Nullable
-    public abstract Boolean categoryOptionAttribute();
-
-    @Nullable
-    public abstract Boolean optionSetAttribute();
-
-    @Nullable
-    public abstract Boolean sqlViewAttribute();
-
-    @Nullable
-    public abstract Boolean legendSetAttribute();
-
-    @Nullable
-    public abstract Boolean trackedEntityAttributeAttribute();
-
-    @Nullable
-    public abstract Boolean organisationUnitAttribute();
-
-    @Nullable
-    public abstract Boolean dataSetAttribute();
-
-    @Nullable
-    public abstract Boolean documentAttribute();
-
-    @Nullable
-    public abstract Boolean validationRuleGroupAttribute();
-
-    @Nullable
-    public abstract Boolean dataElementGroupAttribute();
-
-    @Nullable
-    public abstract Boolean sectionAttribute();
-
-    @Nullable
-    public abstract Boolean trackedEntityTypeAttribute();
-
-    @Nullable
-    public abstract Boolean userAttribute();
-
-    @Nullable
-    public abstract Boolean categoryOptionGroupAttribute();
-
-    @Nullable
-    public abstract Boolean programStageAttribute();
-
-    @Nullable
-    public abstract Boolean programAttribute();
-
-    @Nullable
-    public abstract Boolean categoryAttribute();
-
-    @Nullable
-    public abstract Boolean categoryOptionComboAttribute();
-
-    @Nullable
-    public abstract Boolean categoryOptionGroupSetAttribute();
-
-    @Nullable
-    public abstract Boolean validationRuleAttribute();
-
-    @Nullable
-    public abstract Boolean programIndicatorAttribute();
-
-    @Nullable
-    public abstract Boolean organisationUnitGroupAttribute();
-
-    @Nullable
-    public abstract Boolean dataElementGroupSetAttribute();
-
-    @Nullable
-    public abstract Boolean organisationUnitGroupSetAttribute();
-
-    @Nullable
-    public abstract Boolean optionAttribute();
-
-
-    public static Builder builder() {
-        return new AutoValue_Attribute.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder valueType(ValueType valueType);
-
-        public abstract Builder mandatory(Boolean mandatory);
-
-        public abstract Builder unique(Boolean unique);
-
-        public abstract Builder indicatorAttribute(Boolean value);
-
-        public abstract Builder indicatorGroupAttribute(Boolean value);
-
-        public abstract Builder userGroupAttribute(Boolean value);
-
-        public abstract Builder dataElementAttribute(Boolean value);
-
-        public abstract Builder constantAttribute(Boolean value);
-
-        public abstract Builder categoryOptionAttribute(Boolean value);
-
-        public abstract Builder optionSetAttribute(Boolean value);
-
-        public abstract Builder sqlViewAttribute(Boolean value);
-
-        public abstract Builder legendSetAttribute(Boolean value);
-
-        public abstract Builder trackedEntityAttributeAttribute(Boolean value);
-
-        public abstract Builder organisationUnitAttribute(Boolean value);
-
-        public abstract Builder dataSetAttribute(Boolean value);
-
-        public abstract Builder documentAttribute(Boolean value);
-
-        public abstract Builder validationRuleGroupAttribute(Boolean value);
-
-        public abstract Builder dataElementGroupAttribute(Boolean value);
-
-        public abstract Builder sectionAttribute(Boolean value);
-
-        public abstract Builder trackedEntityTypeAttribute(Boolean value);
-
-        public abstract Builder userAttribute(Boolean value);
-
-        public abstract Builder categoryOptionGroupAttribute(Boolean value);
-
-        public abstract Builder programStageAttribute(Boolean value);
-
-        public abstract Builder programAttribute(Boolean value);
-
-        public abstract Builder categoryAttribute(Boolean value);
-
-        public abstract Builder categoryOptionComboAttribute(Boolean value);
-
-        public abstract Builder categoryOptionGroupSetAttribute(Boolean value);
-
-        public abstract Builder validationRuleAttribute(Boolean value);
-
-        public abstract Builder programIndicatorAttribute(Boolean value);
-
-        public abstract Builder organisationUnitGroupAttribute(Boolean value);
-
-        public abstract Builder dataElementGroupSetAttribute(Boolean value);
-
-        public abstract Builder organisationUnitGroupSetAttribute(Boolean value);
-
-        public abstract Builder optionAttribute(Boolean value);
-
-        public abstract Attribute build();
+package org.hisp.dhis.android.core.attribute
+
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ValueType
+import java.util.Date
+
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class Attribute(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val valueType: ValueType?,
+    val unique: Boolean?,
+    val mandatory: Boolean?,
+    val indicatorAttribute: Boolean?,
+    val indicatorGroupAttribute: Boolean?,
+    val userGroupAttribute: Boolean?,
+    val dataElementAttribute: Boolean?,
+    val constantAttribute: Boolean?,
+    val categoryOptionAttribute: Boolean?,
+    val optionSetAttribute: Boolean?,
+    val sqlViewAttribute: Boolean?,
+    val legendSetAttribute: Boolean?,
+    val trackedEntityAttributeAttribute: Boolean?,
+    val organisationUnitAttribute: Boolean?,
+    val dataSetAttribute: Boolean?,
+    val documentAttribute: Boolean?,
+    val validationRuleGroupAttribute: Boolean?,
+    val dataElementGroupAttribute: Boolean?,
+    val sectionAttribute: Boolean?,
+    val trackedEntityTypeAttribute: Boolean?,
+    val userAttribute: Boolean?,
+    val categoryOptionGroupAttribute: Boolean?,
+    val programStageAttribute: Boolean?,
+    val programAttribute: Boolean?,
+    val categoryAttribute: Boolean?,
+    val categoryOptionComboAttribute: Boolean?,
+    val categoryOptionGroupSetAttribute: Boolean?,
+    val validationRuleAttribute: Boolean?,
+    val programIndicatorAttribute: Boolean?,
+    val organisationUnitGroupAttribute: Boolean?,
+    val dataElementGroupSetAttribute: Boolean?,
+    val organisationUnitGroupSetAttribute: Boolean?,
+    val optionAttribute: Boolean?,
+) : BaseNameableObjectKt, CoreObject {
+
+    fun valueType(): ValueType? = valueType
+    fun unique(): Boolean? = unique
+    fun mandatory(): Boolean? = mandatory
+    fun indicatorAttribute(): Boolean? = indicatorAttribute
+    fun indicatorGroupAttribute(): Boolean? = indicatorGroupAttribute
+    fun userGroupAttribute(): Boolean? = userGroupAttribute
+    fun dataElementAttribute(): Boolean? = dataElementAttribute
+    fun constantAttribute(): Boolean? = constantAttribute
+    fun categoryOptionAttribute(): Boolean? = categoryOptionAttribute
+    fun optionSetAttribute(): Boolean? = optionSetAttribute
+    fun sqlViewAttribute(): Boolean? = sqlViewAttribute
+    fun legendSetAttribute(): Boolean? = legendSetAttribute
+    fun trackedEntityAttributeAttribute(): Boolean? = trackedEntityAttributeAttribute
+    fun organisationUnitAttribute(): Boolean? = organisationUnitAttribute
+    fun dataSetAttribute(): Boolean? = dataSetAttribute
+    fun documentAttribute(): Boolean? = documentAttribute
+    fun validationRuleGroupAttribute(): Boolean? = validationRuleGroupAttribute
+    fun dataElementGroupAttribute(): Boolean? = dataElementGroupAttribute
+    fun sectionAttribute(): Boolean? = sectionAttribute
+    fun trackedEntityTypeAttribute(): Boolean? = trackedEntityTypeAttribute
+    fun userAttribute(): Boolean? = userAttribute
+    fun categoryOptionGroupAttribute(): Boolean? = categoryOptionGroupAttribute
+    fun programStageAttribute(): Boolean? = programStageAttribute
+    fun programAttribute(): Boolean? = programAttribute
+    fun categoryAttribute(): Boolean? = categoryAttribute
+    fun categoryOptionComboAttribute(): Boolean? = categoryOptionComboAttribute
+    fun categoryOptionGroupSetAttribute(): Boolean? = categoryOptionGroupSetAttribute
+    fun validationRuleAttribute(): Boolean? = validationRuleAttribute
+    fun programIndicatorAttribute(): Boolean? = programIndicatorAttribute
+    fun organisationUnitGroupAttribute(): Boolean? = organisationUnitGroupAttribute
+    fun dataElementGroupSetAttribute(): Boolean? = dataElementGroupSetAttribute
+    fun organisationUnitGroupSetAttribute(): Boolean? = organisationUnitGroupSetAttribute
+    fun optionAttribute(): Boolean? = optionAttribute
+
+    fun toBuilder(): Builder = AttributeBuilder.from(this)
+
+    class Builder : AttributeBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

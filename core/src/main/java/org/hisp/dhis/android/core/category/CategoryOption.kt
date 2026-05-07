@@ -25,69 +25,51 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.category;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class CategoryOption(
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val startDate: Date?,
+    val endDate: Date?,
+    val access: Access? = defaultAccess(),
+    val organisationUnits: MutableList<ObjectWithUid?>?
+) : BaseNameableObjectKt, CoreObject {
+    fun startDate(): Date? = startDate
 
-import com.google.auto.value.AutoValue;
+    fun endDate(): Date? = endDate
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-public abstract class CategoryOption extends BaseNameableObAuVa implements CoreObject {
-
-    @Nullable
-    public abstract Date startDate();
-
-    @Nullable
-    public abstract Date endDate();
-
-    public abstract Access access();
+    fun access(): Access? = access
 
     /**
      * This method only return results in versions greater or equal to 2.37.
      */
-    @Nullable
-    public abstract List<ObjectWithUid> organisationUnits();
+    fun organisationUnits(): MutableList<ObjectWithUid?>? = organisationUnits
 
+    fun toBuilder(): Builder = CategoryOptionBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : CategoryOptionBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_CategoryOption.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder startDate(@Nullable Date startDate);
-
-        public abstract Builder endDate(@Nullable Date endDate);
-
-        public abstract Builder access(Access access);
-
-        public abstract Builder organisationUnits(@Nullable List<ObjectWithUid> organisationUnits);
-
-        abstract CategoryOption autoBuild();
-
-        // Auxiliary fields
-        abstract Access access();
-
-        public CategoryOption build() {
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -33,7 +33,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.common.ValueType
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
@@ -67,7 +66,7 @@ internal class FileResourceRoutine(
     suspend fun internalDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .suspendGet().map(DataElement::uid)
+            .suspendGet().map { it.uid }
 
         val trackedEntityAttributesUids = trackedEntityAttributeCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)

@@ -4046,7 +4046,9 @@ public class org/hisp/dhis/android/core/common/NameableWithStyleColumns : org/hi
 
 public final class org/hisp/dhis/android/core/common/ObjectStyle {
 	public static final field Companion Lorg/hisp/dhis/android/core/common/ObjectStyle$Companion;
+	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/common/ObjectStyle$Builder;
 	public final fun color ()Ljava/lang/String;
 	public final fun component1 ()Ljava/lang/String;
@@ -5091,39 +5093,142 @@ public final class org/hisp/dhis/android/core/dataapproval/DataApprovalState : j
 	public static fun values ()[Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 }
 
-public abstract class org/hisp/dhis/android/core/dataelement/DataElement : org/hisp/dhis/android/core/common/BaseNameableObAuVa, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
-	public fun <init> ()V
-	public abstract fun aggregationType ()Ljava/lang/String;
-	public abstract fun attributeValues ()Ljava/util/List;
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun displayFormName ()Ljava/lang/String;
-	public abstract fun domainType ()Ljava/lang/String;
-	public abstract fun fieldMask ()Ljava/lang/String;
-	public abstract fun formName ()Ljava/lang/String;
-	public abstract fun legendSets ()Ljava/util/List;
-	public abstract fun optionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public fun optionSetUid ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun valueType ()Lorg/hisp/dhis/android/core/common/ValueType;
-	public abstract fun zeroIsSignificant ()Ljava/lang/Boolean;
+public final class org/hisp/dhis/android/core/dataelement/DataElement : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataelement/DataElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
+	public final fun aggregationType ()Ljava/lang/String;
+	public final fun attributeValues ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/ValueType;
+	public final fun component13 ()Ljava/lang/Boolean;
+	public final fun component14 ()Ljava/lang/String;
+	public final fun component15 ()Ljava/lang/String;
+	public final fun component16 ()Ljava/lang/String;
+	public final fun component17 ()Ljava/lang/String;
+	public final fun component18 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component19 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component20 ()Ljava/util/List;
+	public final fun component21 ()Ljava/lang/String;
+	public final fun component22 ()Ljava/util/List;
+	public final fun component23 ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataelement/DataElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun description ()Ljava/lang/String;
+	public fun displayDescription ()Ljava/lang/String;
+	public final fun displayFormName ()Ljava/lang/String;
+	public fun displayName ()Ljava/lang/String;
+	public fun displayShortName ()Ljava/lang/String;
+	public final fun domainType ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun fieldMask ()Ljava/lang/String;
+	public final fun formName ()Ljava/lang/String;
+	public final fun getAggregationType ()Ljava/lang/String;
+	public final fun getAttributeValues ()Ljava/util/List;
+	public final fun getCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDescription ()Ljava/lang/String;
+	public fun getDisplayDescription ()Ljava/lang/String;
+	public final fun getDisplayFormName ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getDisplayShortName ()Ljava/lang/String;
+	public final fun getDomainType ()Ljava/lang/String;
+	public final fun getFieldMask ()Ljava/lang/String;
+	public final fun getFormName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLegendSets ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public final fun getOptionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getShortName ()Ljava/lang/String;
+	public fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public fun getUid ()Ljava/lang/String;
+	public final fun getValueType ()Lorg/hisp/dhis/android/core/common/ValueType;
+	public final fun getZeroIsSignificant ()Ljava/lang/Boolean;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun legendSets ()Ljava/util/List;
+	public fun name ()Ljava/lang/String;
+	public final fun optionSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun optionSetUid ()Ljava/lang/String;
+	public fun shortName ()Ljava/lang/String;
+	public fun style ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+	public final fun valueType ()Lorg/hisp/dhis/android/core/common/ValueType;
+	public final fun zeroIsSignificant ()Ljava/lang/Boolean;
 }
 
-public abstract class org/hisp/dhis/android/core/dataelement/DataElement$Builder : org/hisp/dhis/android/core/common/BaseNameableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/dataelement/DataElement$Builder : org/hisp/dhis/android/core/dataelement/DataElementBuilder {
 	public fun <init> ()V
-	public abstract fun aggregationType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun attributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
-	public abstract fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun displayFormName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun domainType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun fieldMask (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun formName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun optionSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun valueType (Lorg/hisp/dhis/android/core/common/ValueType;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
-	public abstract fun zeroIsSignificant (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataelement/DataElement$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataelement/DataElementBuilder : org/hisp/dhis/android/core/common/BaseNameableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataelement/DataElementBuilder$Companion;
+	public fun <init> ()V
+	public final fun aggregationType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun attributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun build ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	public final fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElementBuilder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
+	public fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
+	public fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun displayFormName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
+	public fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun domainType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun fieldMask (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun formName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElementBuilder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun optionSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
+	public fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun valueType (Lorg/hisp/dhis/android/core/common/ValueType;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+	public final fun zeroIsSignificant (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataelement/DataElementBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataelement/DataElement;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataelement/DataElementCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {

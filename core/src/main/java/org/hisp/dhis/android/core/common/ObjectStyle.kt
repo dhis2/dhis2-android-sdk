@@ -31,8 +31,8 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 
 @ModelBuilder
 data class ObjectStyle(
-    val color: String?,
-    val icon: String?,
+    val color: String? = null,
+    val icon: String? = null,
 ) {
     fun color(): String? = color
     fun icon(): String? = icon

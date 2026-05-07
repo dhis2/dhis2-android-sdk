@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoCall
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.junit.Before
 import org.junit.Test
@@ -257,11 +258,70 @@ class LogInCallUnitShould : BaseCallShould() {
         verify(userIdStore).set("test_uid")
     }
 
+    // OAuth2 dispatcher tests
+
+    @Test
+    fun route_to_oauth2_path_with_bearer_when_state_exists_for_account() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+        whenever(
+            userNetworkHandler.authenticate(credentialsCaptor.capture()),
+        ).thenReturn(apiUser)
+
+        // password is null — must NOT throw because the OAuth2 path skips the null check
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $ACCESS_TOKEN")
+    }
+
+    @Test
+    fun persist_credentials_with_oauth2_state_and_null_password_after_oauth2_login() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        verify(credentialsSecureStore).set(
+            Credentials(USERNAME, SERVER_URL, null, null, state),
+        )
+    }
+
+    @Test
+    fun fall_back_to_offline_login_for_oauth2_when_authenticate_throws_offline() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        // OAuth2 accounts have hash() == null because password is null on both sides.
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        verify(credentialsSecureStore).set(
+            Credentials(USERNAME, SERVER_URL, null, null, state),
+        )
+    }
+
+    private fun oauth2State(accessToken: String): OAuth2State =
+        OAuth2State(
+            clientId = "client",
+            keyId = "key",
+            accessToken = accessToken,
+            refreshToken = "refresh",
+            expiresAt = 1_700_000_000L,
+            scope = null,
+        )
+
     companion object {
         private const val USERNAME = "test_username"
         private const val UID = "test_uid"
         private const val PASSWORD = "test_password"
         private const val BASE_URL = "https://dhis-instance.org"
         private const val SERVER_URL = BASE_URL
+        private const val ACCESS_TOKEN = "access-token-1"
     }
 }

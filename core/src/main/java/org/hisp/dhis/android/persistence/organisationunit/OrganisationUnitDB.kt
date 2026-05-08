@@ -54,7 +54,7 @@ internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
     val geometryDB = geometry().toDB()
 
     return OrganisationUnitDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

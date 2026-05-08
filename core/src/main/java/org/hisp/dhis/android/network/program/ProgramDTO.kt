@@ -73,6 +73,7 @@ internal data class ProgramDTO(
     val dataEntryMethod: Boolean?,
     val ignoreOverdueEvents: Boolean?,
     val selectIncidentDatesInFuture: Boolean?,
+    val captureCoordinates: Boolean? = null,
     val useFirstStageDuringRegistration: Boolean?,
     val displayFrontPageList: Boolean?,
     val programType: String?,
@@ -143,7 +144,17 @@ internal data class ProgramDTO(
             minAttributesRequiredToSearch(minAttributesRequiredToSearch)
             maxTeiCountToReturn(maxTeiCountToReturn)
             ProgramInternalAccessor.insertProgramSections(this, programSections?.map { it.toDomain() })
-            featureType(featureType?.let { FeatureType.valueOf(featureType) })
+            val featureTypeEnum = featureType?.let { FeatureType.valueOf(it) }
+            when {
+                featureTypeEnum != null -> {
+                    featureType(featureTypeEnum)
+                    captureCoordinates(featureTypeEnum != FeatureType.NONE)
+                }
+                captureCoordinates != null -> {
+                    captureCoordinates(captureCoordinates)
+                    featureType(if (captureCoordinates) FeatureType.POINT else FeatureType.NONE)
+                }
+            }
             accessLevel(accessLevel?.let { AccessLevel.valueOf(accessLevel) })
             displayEnrollmentLabel(displayEnrollmentLabel ?: enrollmentLabel)
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)

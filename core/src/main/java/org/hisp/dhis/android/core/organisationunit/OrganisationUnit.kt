@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,97 +26,72 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.text.ParseException
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OrganisationUnit(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val parent: ObjectWithUid?,
+    val path: String?,
+    val openingDate: Date?,
+    val closedDate: Date?,
+    val level: Int?,
+    val geometry: Geometry?,
+    val programs: List<ObjectWithUid>?,
+    val dataSets: List<ObjectWithUid>?,
+    val organisationUnitGroups: List<OrganisationUnitGroup>?,
+    val displayNamePath: List<String>?,
+) : BaseNameableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-
-import java.text.ParseException;
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-public abstract class OrganisationUnit extends BaseNameableObAuVa implements CoreObject {
-
-    public enum Scope {
+    enum class Scope {
         SCOPE_DATA_CAPTURE,
-        SCOPE_TEI_SEARCH
+        SCOPE_TEI_SEARCH,
     }
 
-    @Nullable
-    public abstract ObjectWithUid parent();
+    fun parent(): ObjectWithUid? = parent
+    fun path(): String? = path
+    fun openingDate(): Date? = openingDate
+    fun closedDate(): Date? = closedDate
+    fun level(): Int? = level
+    fun geometry(): Geometry? = geometry
+    fun programs(): List<ObjectWithUid>? = programs
+    fun dataSets(): List<ObjectWithUid>? = dataSets
+    fun organisationUnitGroups(): List<OrganisationUnitGroup>? = organisationUnitGroups
+    fun displayNamePath(): List<String>? = displayNamePath
 
-    @Nullable
-    public abstract String path();
+    fun toBuilder(): Builder = OrganisationUnitBuilder.from(this)
 
-    @Nullable
-    public abstract Date openingDate();
+    class Builder : OrganisationUnitBuilder() {
+        @Throws(ParseException::class)
+        fun openingDate(openingDateStr: String): Builder =
+            openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr))
 
-    @Nullable
-    public abstract Date closedDate();
-
-    @Nullable
-    public abstract Integer level();
-
-    @Nullable
-    public abstract Geometry geometry();
-
-    @Nullable
-    public abstract List<ObjectWithUid> programs();
-
-    @Nullable
-    public abstract List<ObjectWithUid> dataSets();
-
-    @Nullable
-    public abstract List<OrganisationUnitGroup> organisationUnitGroups();
-
-    @Nullable
-    public abstract List<String> displayNamePath();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnit.Builder();
+        @Throws(ParseException::class)
+        fun closedDate(closedDateStr: String): Builder =
+            closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr))
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder parent(ObjectWithUid parent);
-
-        public abstract Builder path(String path);
-
-        public abstract Builder openingDate(Date openingDate);
-
-        public Builder openingDate(@NonNull String openingDateStr) throws ParseException {
-            return openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr));
-        }
-
-        public abstract Builder closedDate(Date closedDate);
-
-        public Builder closedDate(@NonNull String closedDateStr) throws ParseException {
-            return closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr));
-        }
-
-        public abstract Builder level(Integer level);
-
-        public abstract Builder geometry(Geometry geometry);
-
-        public abstract Builder programs(List<ObjectWithUid> programs);
-
-        public abstract Builder dataSets(List<ObjectWithUid> dataSets);
-
-        public abstract Builder organisationUnitGroups(List<OrganisationUnitGroup> organisationUnitGroups);
-
-        public abstract Builder displayNamePath(List<String> displayNamePath);
-
-        public abstract OrganisationUnit build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

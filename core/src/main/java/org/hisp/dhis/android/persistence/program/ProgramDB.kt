@@ -122,7 +122,11 @@ internal data class ProgramDB(
             expiryPeriodType?.let { expiryPeriodType(PeriodType.valueOf(it)) }
             minAttributesRequiredToSearch(minAttributesRequiredToSearch)
             maxTeiCountToReturn(maxTeiCountToReturn)
-            featureType?.let { featureType(FeatureType.valueOf(it)) }
+            featureType?.let {
+                val ft = FeatureType.valueOf(it)
+                featureType(ft)
+                captureCoordinates(ft != FeatureType.NONE)
+            }
             accessLevel?.let { accessLevel(AccessLevel.valueOf(it)) }
             style(ObjectStyle.builder().color(color).icon(icon).build())
             displayEnrollmentLabel(displayEnrollmentLabel)
@@ -140,7 +144,7 @@ internal data class ProgramDB(
 
 internal fun Program.toDB(): ProgramDB {
     return ProgramDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -174,8 +178,8 @@ internal fun Program.toDB(): ProgramDB {
         maxTeiCountToReturn = maxTeiCountToReturn(),
         featureType = featureType()?.name,
         accessLevel = accessLevel()?.name,
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         displayEnrollmentLabel = displayEnrollmentLabel(),
         displayFollowUpLabel = displayFollowUpLabel(),
         displayOrgUnitLabel = displayOrgUnitLabel(),

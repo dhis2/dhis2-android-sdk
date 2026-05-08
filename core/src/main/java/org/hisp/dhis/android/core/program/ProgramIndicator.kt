@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,95 +26,65 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramIndicator(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val displayInForm: Boolean?,
+    val expression: String?,
+    val dimensionItem: String?,
+    val filter: String?,
+    val decimals: Int?,
+    val aggregationType: AggregationType?,
+    val program: ObjectWithUid?,
+    val analyticsType: AnalyticsType?,
+    val analyticsPeriodBoundaries: List<AnalyticsPeriodBoundary>?,
+    val legendSets: List<ObjectWithUid>?,
+    val categoryCombo: ObjectWithUid,
+    val attributeCombo: ObjectWithUid,
+    val categoryMappingIds: List<String>?,
+) : BaseNameableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.AnalyticsType;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun displayInForm(): Boolean? = displayInForm
+    fun expression(): String? = expression
+    fun dimensionItem(): String? = dimensionItem
+    fun filter(): String? = filter
+    fun decimals(): Int? = decimals
+    fun aggregationType(): AggregationType? = aggregationType
+    fun program(): ObjectWithUid? = program
+    fun analyticsType(): AnalyticsType? = analyticsType
+    fun analyticsPeriodBoundaries(): List<AnalyticsPeriodBoundary>? = analyticsPeriodBoundaries
+    fun legendSets(): List<ObjectWithUid>? = legendSets
+    fun categoryCombo(): ObjectWithUid = categoryCombo
+    fun attributeCombo(): ObjectWithUid = attributeCombo
+    fun categoryMappingIds(): List<String>? = categoryMappingIds
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramIndicatorBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramIndicator extends BaseNameableObAuVa implements CoreObject {
+    class Builder : ProgramIndicatorBuilder()
 
-    @Nullable
-    public abstract Boolean displayInForm();
-
-    @Nullable
-    public abstract String expression();
-
-    @Nullable
-    public abstract String dimensionItem();
-
-    @Nullable
-    public abstract String filter();
-
-    @Nullable
-    public abstract Integer decimals();
-
-    @Nullable
-    public abstract AggregationType aggregationType();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract AnalyticsType analyticsType();
-
-    @Nullable
-    public abstract List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries();
-
-    @Nullable
-    public abstract List<ObjectWithUid> legendSets();
-
-    public abstract ObjectWithUid categoryCombo();
-
-    public abstract ObjectWithUid attributeCombo();
-
-    @Nullable
-    public abstract List<String> categoryMappingIds();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramIndicator.Builder()
-                .aggregationType(AggregationType.NONE);
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder  extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder displayInForm(Boolean displayInForm);
-
-        public abstract Builder expression(String expression);
-
-        public abstract Builder dimensionItem(String dimensionItem);
-
-        public abstract Builder filter(String filter);
-
-        public abstract Builder decimals(Integer decimals);
-
-        public abstract Builder aggregationType(AggregationType aggregationType);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder analyticsType(AnalyticsType analyticsType);
-
-        public abstract Builder analyticsPeriodBoundaries(List<AnalyticsPeriodBoundary> analyticsPeriodBoundaries);
-
-        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
-
-        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
-
-        public abstract Builder attributeCombo(ObjectWithUid attributeCombo);
-
-        public abstract Builder categoryMappingIds(List<String> categoryMappingIds);
-
-        public abstract ProgramIndicator build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .aggregationType(AggregationType.NONE)
     }
 }

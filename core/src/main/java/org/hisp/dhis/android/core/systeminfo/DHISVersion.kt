@@ -42,6 +42,7 @@ internal const val VERSION_2_40 = "2.40"
 internal const val VERSION_2_41 = "2.41"
 internal const val VERSION_2_42 = "2.42"
 internal const val VERSION_2_43 = "2.43"
+internal const val VERSION_2_44 = "2.44"
 
 enum class DHISVersion(internal val prefix: String, internal val supported: Boolean = true) {
     V2_29(VERSION_2_29, false),
@@ -59,6 +60,7 @@ enum class DHISVersion(internal val prefix: String, internal val supported: Bool
     V2_41(VERSION_2_41),
     V2_42(VERSION_2_42),
     V2_43(VERSION_2_43),
+    V2_44(VERSION_2_44),
     UNKNOWN("UNKNOWN", false),
     ;
 

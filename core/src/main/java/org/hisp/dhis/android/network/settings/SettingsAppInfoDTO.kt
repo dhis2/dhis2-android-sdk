@@ -40,7 +40,7 @@ internal data class SettingsAppInfoDTO(
     fun toDomain(): SettingsAppInfo {
         return SettingsAppInfo(
             dataStoreVersion = SettingsAppDataStoreVersion.from(dataStoreVersion),
-            androidSettingsVersion = androidSettingsVersion
+            androidSettingsVersion = androidSettingsVersion,
         )
     }
 }

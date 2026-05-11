@@ -50,19 +50,19 @@ data class CategoryOption(
     override val deleted: Boolean?,
     val startDate: Date?,
     val endDate: Date?,
-    val access: Access? = defaultAccess(),
-    val organisationUnits: MutableList<ObjectWithUid?>?
+    val access: Access = defaultAccess(),
+    val organisationUnits: List<ObjectWithUid>?,
 ) : BaseNameableObjectKt, CoreObject {
     fun startDate(): Date? = startDate
 
     fun endDate(): Date? = endDate
 
-    fun access(): Access? = access
+    fun access(): Access = access
 
     /**
      * This method only return results in versions greater or equal to 2.37.
      */
-    fun organisationUnits(): MutableList<ObjectWithUid?>? = organisationUnits
+    fun organisationUnits(): List<ObjectWithUid>? = organisationUnits
 
     fun toBuilder(): Builder = CategoryOptionBuilder.from(this)
 
@@ -71,5 +71,6 @@ data class CategoryOption(
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()
+            .access(defaultAccess())
     }
 }

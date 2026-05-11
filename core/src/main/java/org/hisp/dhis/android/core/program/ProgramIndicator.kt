@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
 
 @ModelBuilder
+@Suppress("TooManyFunctions")
 data class ProgramIndicator(
     override val uid: String,
     override val code: String?,

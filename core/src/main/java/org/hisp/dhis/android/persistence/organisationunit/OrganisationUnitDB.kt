@@ -44,7 +44,7 @@ internal data class OrganisationUnitDB(
             .closedDate(closedDate.toJavaDate())
             .level(level)
             .parent(parent?.let { ObjectWithUidDB(it).toDomain() })
-            .displayNamePath(displayNamePath?.toDomain())
+            .displayNamePath(displayNamePath?.toDomain() ?: emptyList())
             .geometry(GeometryDB(geometryType, geometryCoordinates).toDomain())
             .build()
     }
@@ -69,7 +69,7 @@ internal fun OrganisationUnit.toDB(): OrganisationUnitDB {
         closedDate = closedDate().dateFormat(),
         level = level(),
         parent = parent()?.uid(),
-        displayNamePath = displayNamePath()?.toDB(),
+        displayNamePath = displayNamePath().toDB(),
         geometryType = geometryDB.geometryType,
         geometryCoordinates = geometryDB.geometryCoordinates,
     )

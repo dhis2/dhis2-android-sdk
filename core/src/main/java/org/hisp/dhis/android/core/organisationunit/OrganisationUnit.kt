@@ -38,6 +38,7 @@ import java.text.ParseException
 import java.util.Date
 
 @ModelBuilder
+@Suppress("TooManyFunctions")
 data class OrganisationUnit(
     override val uid: String,
     override val code: String?,
@@ -59,7 +60,7 @@ data class OrganisationUnit(
     val programs: List<ObjectWithUid>?,
     val dataSets: List<ObjectWithUid>?,
     val organisationUnitGroups: List<OrganisationUnitGroup>?,
-    val displayNamePath: List<String>?,
+    val displayNamePath: List<String>,
 ) : BaseNameableObjectKt, CoreObject {
 
     enum class Scope {
@@ -76,7 +77,7 @@ data class OrganisationUnit(
     fun programs(): List<ObjectWithUid>? = programs
     fun dataSets(): List<ObjectWithUid>? = dataSets
     fun organisationUnitGroups(): List<OrganisationUnitGroup>? = organisationUnitGroups
-    fun displayNamePath(): List<String>? = displayNamePath
+    fun displayNamePath(): List<String> = displayNamePath
 
     fun toBuilder(): Builder = OrganisationUnitBuilder.from(this)
 
@@ -93,5 +94,6 @@ data class OrganisationUnit(
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()
+            .displayNamePath(emptyList())
     }
 }

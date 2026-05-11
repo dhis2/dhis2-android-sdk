@@ -26,35 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion;
-
-@AutoValue
-public abstract class SettingsAppInfo {
-
-    public abstract SettingsAppDataStoreVersion dataStoreVersion();
-
-    @Nullable
-    public abstract String androidSettingsVersion();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_SettingsAppInfo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataStoreVersion(SettingsAppDataStoreVersion dataStoreVersion);
-
-        public abstract Builder androidSettingsVersion(String androidSettingsVersion);
-
-        public abstract SettingsAppInfo build();
-    }
-}
+internal data class SettingsAppInfo(
+    val dataStoreVersion: SettingsAppDataStoreVersion,
+    val androidSettingsVersion: String?,
+)

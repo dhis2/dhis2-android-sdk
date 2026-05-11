@@ -113,7 +113,6 @@ internal data class ProgramDB(
             displayFrontPageList(displayFrontPageList)
             programType?.let { programType(ProgramType.valueOf(it)) }
             relatedProgram?.let { relatedProgram(ObjectWithUid.create(it)) }
-            relatedProgram?.let { relatedProgram(ObjectWithUidDB(it).toDomain()) }
             trackedEntityType?.let { trackedEntityType(TrackedEntityType.builder().uid(it).build()) }
             categoryCombo(ObjectWithUid.create(categoryCombo))
             accessDataWrite?.let { access(it.toDomain()) }

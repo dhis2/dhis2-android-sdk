@@ -126,7 +126,7 @@ class ModelBuilderProcessor(
                 }
             }
                 
-                fun build(): $className {
+                open fun build(): $className {
                     return $className(
                         ${
                 fields.joinToString("\n                        ") { field ->
@@ -165,9 +165,9 @@ class ModelBuilderProcessor(
         val isNotNull = !field.type.isMarkedNullable
 
         return when {
-            isNotNull && isPrimitive -> "private var ${field.name} by Delegates.notNull<${field.type}>()"
-            isNotNull -> "private lateinit var ${field.name}: ${field.type}"
-            else -> "private var ${field.name}: ${field.type} = null"
+            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<${field.type}>()"
+            isNotNull -> "protected lateinit var ${field.name}: ${field.type}"
+            else -> "protected var ${field.name}: ${field.type} = null"
         }
     }
 

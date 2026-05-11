@@ -122,11 +122,7 @@ internal data class ProgramDB(
             expiryPeriodType?.let { expiryPeriodType(PeriodType.valueOf(it)) }
             minAttributesRequiredToSearch(minAttributesRequiredToSearch)
             maxTeiCountToReturn(maxTeiCountToReturn)
-            featureType?.let {
-                val ft = FeatureType.valueOf(it)
-                featureType(ft)
-                captureCoordinates(ft != FeatureType.NONE)
-            }
+            featureType?.let { featureType(FeatureType.valueOf(it)) }
             accessLevel?.let { accessLevel(AccessLevel.valueOf(it)) }
             style(ObjectStyle.builder().color(color).icon(icon).build())
             displayEnrollmentLabel(displayEnrollmentLabel)

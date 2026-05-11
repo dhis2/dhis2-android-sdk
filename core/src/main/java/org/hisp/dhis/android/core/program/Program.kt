@@ -173,6 +173,21 @@ data class Program(
 
     @Suppress("TooManyFunctions")
     class Builder : ProgramBuilder() {
+
+        override fun build(): Program {
+            val ft = featureType
+            val cc = captureCoordinates
+            if (ft == null) {
+                if (cc != null) {
+                    featureType(if (cc) FeatureType.POINT else FeatureType.NONE)
+                }
+            } else {
+                captureCoordinates(ft != FeatureType.NONE)
+            }
+            return super.build()
+        }
+
+
         @Deprecated("replaced by displayEnrollmentDateLabel(String)")
         fun enrollmentDateLabel(enrollmentDateLabel: String?): Builder =
             displayEnrollmentDateLabel(enrollmentDateLabel)

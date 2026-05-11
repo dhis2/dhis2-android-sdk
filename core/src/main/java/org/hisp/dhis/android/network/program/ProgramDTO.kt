@@ -144,17 +144,7 @@ internal data class ProgramDTO(
             minAttributesRequiredToSearch(minAttributesRequiredToSearch)
             maxTeiCountToReturn(maxTeiCountToReturn)
             ProgramInternalAccessor.insertProgramSections(this, programSections?.map { it.toDomain() })
-            val featureTypeEnum = featureType?.let { FeatureType.valueOf(it) }
-            when {
-                featureTypeEnum != null -> {
-                    featureType(featureTypeEnum)
-                    captureCoordinates(featureTypeEnum != FeatureType.NONE)
-                }
-                captureCoordinates != null -> {
-                    captureCoordinates(captureCoordinates)
-                    featureType(if (captureCoordinates) FeatureType.POINT else FeatureType.NONE)
-                }
-            }
+            featureType(featureType?.let { FeatureType.valueOf(it) })
             accessLevel(accessLevel?.let { AccessLevel.valueOf(accessLevel) })
             displayEnrollmentLabel(displayEnrollmentLabel ?: enrollmentLabel)
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)

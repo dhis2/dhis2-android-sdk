@@ -8,7 +8,6 @@
   "ignoreOverdueEvents": false,
   "skipOffline": false,
   "dataEntryMethod": false,
-  "captureCoordinates": true,
   "displayEnrollmentDateLabel": "Date of first visit",
   "onlyEnrollOnce": false,
   "version": 11,

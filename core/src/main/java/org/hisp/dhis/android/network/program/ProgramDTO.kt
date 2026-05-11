@@ -73,7 +73,6 @@ internal data class ProgramDTO(
     val dataEntryMethod: Boolean?,
     val ignoreOverdueEvents: Boolean?,
     val selectIncidentDatesInFuture: Boolean?,
-    val captureCoordinates: Boolean? = null,
     val useFirstStageDuringRegistration: Boolean?,
     val displayFrontPageList: Boolean?,
     val programType: String?,

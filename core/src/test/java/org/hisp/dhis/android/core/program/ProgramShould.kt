@@ -50,7 +50,6 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.displayShortName()).isEqualTo("WHO RMNCH Tracker")
         assertThat(program.ignoreOverdueEvents()).isFalse()
         assertThat(program.dataEntryMethod()).isFalse()
-        assertThat(program.captureCoordinates()).isTrue()
         assertThat(program.displayEnrollmentDateLabel()).isEqualTo("Date of first visit")
         assertThat(program.onlyEnrollOnce()).isFalse()
         assertThat(program.version()).isEqualTo(11)

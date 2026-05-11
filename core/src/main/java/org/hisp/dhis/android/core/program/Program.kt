@@ -66,7 +66,6 @@ data class Program(
     val dataEntryMethod: Boolean?,
     val ignoreOverdueEvents: Boolean?,
     val selectIncidentDatesInFuture: Boolean?,
-    val captureCoordinates: Boolean?,
     val useFirstStageDuringRegistration: Boolean?,
     val displayFrontPageList: Boolean?,
     val programType: ProgramType?,
@@ -114,7 +113,6 @@ data class Program(
     fun dataEntryMethod(): Boolean? = dataEntryMethod
     fun ignoreOverdueEvents(): Boolean? = ignoreOverdueEvents
     fun selectIncidentDatesInFuture(): Boolean? = selectIncidentDatesInFuture
-    fun captureCoordinates(): Boolean? = captureCoordinates
     fun useFirstStageDuringRegistration(): Boolean? = useFirstStageDuringRegistration
     fun displayFrontPageList(): Boolean? = displayFrontPageList
     fun programType(): ProgramType? = programType
@@ -173,21 +171,6 @@ data class Program(
 
     @Suppress("TooManyFunctions")
     class Builder : ProgramBuilder() {
-
-        override fun build(): Program {
-            val ft = featureType
-            val cc = captureCoordinates
-            if (ft == null) {
-                if (cc != null) {
-                    featureType(if (cc) FeatureType.POINT else FeatureType.NONE)
-                }
-            } else {
-                captureCoordinates(ft != FeatureType.NONE)
-            }
-            return super.build()
-        }
-
-
         @Deprecated("replaced by displayEnrollmentDateLabel(String)")
         fun enrollmentDateLabel(enrollmentDateLabel: String?): Builder =
             displayEnrollmentDateLabel(enrollmentDateLabel)

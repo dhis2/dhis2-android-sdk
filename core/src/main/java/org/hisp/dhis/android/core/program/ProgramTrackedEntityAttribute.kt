@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,69 +26,53 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramTrackedEntityAttribute(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val mandatory: Boolean?,
+    val trackedEntityAttribute: ObjectWithUid?,
+    val allowFutureDate: Boolean?,
+    val displayInList: Boolean?,
+    val program: ObjectWithUid?,
+    val sortOrder: Int?,
+    val searchable: Boolean?,
+    val renderType: ValueTypeRendering?,
+) : BaseNameableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
+    fun mandatory(): Boolean? = mandatory
+    fun trackedEntityAttribute(): ObjectWithUid? = trackedEntityAttribute
+    fun allowFutureDate(): Boolean? = allowFutureDate
+    fun displayInList(): Boolean? = displayInList
+    fun program(): ObjectWithUid? = program
+    fun sortOrder(): Int? = sortOrder
+    fun searchable(): Boolean? = searchable
+    fun renderType(): ValueTypeRendering? = renderType
 
-@AutoValue
-public abstract class ProgramTrackedEntityAttribute extends BaseNameableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ProgramTrackedEntityAttributeBuilder.from(this)
 
-    @Nullable
-    public abstract Boolean mandatory();
+    class Builder : ProgramTrackedEntityAttributeBuilder()
 
-    @Nullable
-    public abstract ObjectWithUid trackedEntityAttribute();
-
-    @Nullable
-    public abstract Boolean allowFutureDate();
-
-    @Nullable
-    public abstract Boolean displayInList();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    @Nullable
-    public abstract Boolean searchable();
-
-    @Nullable
-    public abstract ValueTypeRendering renderType();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramTrackedEntityAttribute.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-
-        public abstract Builder mandatory(Boolean mandatory);
-
-        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
-
-        public abstract Builder allowFutureDate(Boolean allowFutureDate);
-
-        public abstract Builder displayInList(Boolean displayInList);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder searchable(Boolean searchable);
-
-        public abstract Builder renderType(ValueTypeRendering renderType);
-
-        public abstract ProgramTrackedEntityAttribute build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

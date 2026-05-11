@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,71 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityType(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val trackedEntityTypeAttributes: List<TrackedEntityTypeAttribute>?,
+    val featureType: FeatureType?,
+    val access: Access,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
+    fun trackedEntityTypeAttributes(): List<TrackedEntityTypeAttribute>? = trackedEntityTypeAttributes
+    fun featureType(): FeatureType? = featureType
+    fun access(): Access = access
 
-import java.util.List;
+    fun toBuilder(): Builder = TrackedEntityTypeBuilder.from(this)
 
-@AutoValue
-public abstract class TrackedEntityType extends BaseNameableObAuVa implements CoreObject,
-        ObjectWithStyle {
+    class Builder : TrackedEntityTypeBuilder()
 
-    @Nullable
-    public abstract List<TrackedEntityTypeAttribute> trackedEntityTypeAttributes();
-
-    @Nullable
-    public abstract FeatureType featureType();
-
-    public abstract Access access();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityType.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-
-        public abstract Builder trackedEntityTypeAttributes(List<TrackedEntityTypeAttribute> trackedEntityAttributes);
-
-        public abstract Builder featureType(FeatureType featureType);
-
-        public abstract Builder access(Access access);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract TrackedEntityType autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-        abstract Access access();
-
-        public TrackedEntityType build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
+            .style(ObjectStyle())
     }
 }

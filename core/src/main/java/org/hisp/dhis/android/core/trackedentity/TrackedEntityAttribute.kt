@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,171 +26,91 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class TrackedEntityAttribute(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val pattern: String?,
+    val sortOrderInListNoProgram: Int?,
+    val optionSet: ObjectWithUid?,
+    val valueType: ValueType?,
+    val expression: String?,
+    val aggregationType: AggregationType?,
+    val programScope: Boolean?,
+    val displayInListNoProgram: Boolean?,
+    val generated: Boolean?,
+    val displayOnVisitSchedule: Boolean?,
+    val confidential: Boolean?,
+    val orgUnitScope: Boolean?,
+    val unique: Boolean?,
+    val inherit: Boolean?,
+    val fieldMask: String?,
+    val legendSets: List<ObjectWithUid>?,
+    val access: Access,
+    val formName: String?,
+    val displayFormName: String?,
+    val preferredSearchOperator: TrackerSearchOperator?,
+    val blockedSearchOperators: List<TrackerSearchOperator>?,
+    val minCharactersToSearch: Int?,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
+    fun pattern(): String? = pattern
+    fun sortOrderInListNoProgram(): Int? = sortOrderInListNoProgram
+    fun optionSet(): ObjectWithUid? = optionSet
+    fun valueType(): ValueType? = valueType
+    fun expression(): String? = expression
+    fun aggregationType(): AggregationType? = aggregationType
+    fun programScope(): Boolean? = programScope
+    fun displayInListNoProgram(): Boolean? = displayInListNoProgram
+    fun generated(): Boolean? = generated
+    fun displayOnVisitSchedule(): Boolean? = displayOnVisitSchedule
+    fun confidential(): Boolean? = confidential
+    fun orgUnitScope(): Boolean? = orgUnitScope
+    fun unique(): Boolean? = unique
+    fun inherit(): Boolean? = inherit
+    fun fieldMask(): String? = fieldMask
+    fun legendSets(): List<ObjectWithUid>? = legendSets
+    fun access(): Access = access
+    fun formName(): String? = formName
+    fun displayFormName(): String? = displayFormName
+    fun preferredSearchOperator(): TrackerSearchOperator? = preferredSearchOperator
+    fun blockedSearchOperators(): List<TrackerSearchOperator>? = blockedSearchOperators
+    fun minCharactersToSearch(): Int? = minCharactersToSearch
 
-import java.util.List;
+    fun toBuilder(): Builder = TrackedEntityAttributeBuilder.from(this)
 
-@AutoValue
-@SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class TrackedEntityAttribute extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    class Builder : TrackedEntityAttributeBuilder()
 
-    @Nullable
-    public abstract String pattern();
-
-    @Nullable
-    public abstract Integer sortOrderInListNoProgram();
-
-    @Nullable
-    public abstract ObjectWithUid optionSet();
-
-    @Nullable
-    public abstract ValueType valueType();
-
-    @Nullable
-    public abstract String expression();
-
-    @Nullable
-    public abstract AggregationType aggregationType();
-
-    @Nullable
-    public abstract Boolean programScope();
-
-    @Nullable
-    public abstract Boolean displayInListNoProgram();
-
-    @Nullable
-    public abstract Boolean generated();
-
-    @Nullable
-    public abstract Boolean displayOnVisitSchedule();
-
-    @Nullable
-    public abstract Boolean confidential();
-
-    @Nullable
-    public abstract Boolean orgUnitScope();
-
-    @Nullable
-    public abstract Boolean unique();
-
-    @Nullable
-    public abstract Boolean inherit();
-
-    @Nullable
-    public abstract String fieldMask();
-
-    @Nullable
-    public abstract List<ObjectWithUid> legendSets();
-
-    public abstract Access access();
-
-    @Nullable
-    public abstract String formName();
-
-    @Nullable
-    public abstract String displayFormName();
-
-    @Nullable
-    public abstract TrackerSearchOperator preferredSearchOperator();
-
-    @Nullable
-    public abstract List<TrackerSearchOperator> blockedSearchOperators();
-
-    @Nullable
-    public abstract Integer minCharactersToSearch();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityAttribute.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-
-        public abstract Builder pattern(String pattern);
-
-        public abstract Builder sortOrderInListNoProgram(Integer sortOrderInListNoProgram);
-
-        public abstract Builder optionSet(ObjectWithUid optionSet);
-
-        public abstract Builder valueType(ValueType valueType);
-
-        public abstract Builder expression(String expression);
-
-        public abstract Builder aggregationType(AggregationType aggregationType);
-
-        public abstract Builder programScope(Boolean programScope);
-
-        public abstract Builder displayInListNoProgram(Boolean displayInListNoProgram);
-
-        public abstract Builder generated(Boolean generated);
-
-        public abstract Builder displayOnVisitSchedule(Boolean displayOnVisitSchedule);
-
-        public abstract Builder confidential(Boolean confidential);
-
-        public abstract Builder orgUnitScope(Boolean orgUnitScope);
-
-        public abstract Builder unique(Boolean unique);
-
-        public abstract Builder inherit(Boolean inherit);
-
-        public abstract Builder fieldMask(String fieldMask);
-
-        public abstract Builder style(ObjectStyle style);
-
-        public abstract Builder access(Access access);
-
-        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
-
-        public abstract Builder formName(String formName);
-
-        public abstract Builder displayFormName(String displayFormName);
-
-        public abstract Builder preferredSearchOperator(TrackerSearchOperator preferredSearchOperator);
-
-        public abstract Builder blockedSearchOperators(List<TrackerSearchOperator> blockedSearchOperators);
-
-        public abstract Builder minCharactersToSearch(Integer minCharactersToSearch);
-
-        abstract TrackedEntityAttribute autoBuild();
-
-        // Auxiliary fields
-        abstract Access access();
-
-        abstract ObjectStyle style();
-
-        public TrackedEntityAttribute build() {
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
+            .style(ObjectStyle())
     }
 }

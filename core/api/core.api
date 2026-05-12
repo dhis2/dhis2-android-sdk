@@ -11121,19 +11121,30 @@ public final class org/hisp/dhis/android/core/settings/SynchronizationSettingsBu
 	public final fun from (Lorg/hisp/dhis/android/core/settings/SynchronizationSettings;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/SystemSetting : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
-	public abstract fun key ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
-	public abstract fun value ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/settings/SystemSetting : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/SystemSetting$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/SystemSetting;Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/SystemSetting;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun key ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/SystemSetting$Builder {
+public final class org/hisp/dhis/android/core/settings/SystemSetting$Builder : org/hisp/dhis/android/core/settings/SystemSettingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/SystemSetting;
-	public abstract fun key (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/SystemSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey : java/lang/Enum {
@@ -11144,8 +11155,21 @@ public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSetti
 	public static final field DEFAULT_BASE_MAP Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field FLAG Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static final field STYLE Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+}
+
+public class org/hisp/dhis/android/core/settings/SystemSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/SystemSettingBuilder$Companion;
+	public fun <init> ()V
+	public final fun build ()Lorg/hisp/dhis/android/core/settings/SystemSetting;
+	public final fun key (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/SystemSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/SystemSetting;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/SystemSettingCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {

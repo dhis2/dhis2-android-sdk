@@ -26,35 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.settings.internal.SettingsAppDataStoreVersion
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserSettings implements CoreObject {
-
-    @Nullable
-    public abstract String keyUiLocale();
-
-    @Nullable
-    public abstract String keyDbLocale();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_UserSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder keyUiLocale(String keyUiLocale);
-
-        public abstract Builder keyDbLocale(String keyDbLocale);
-
-        public abstract UserSettings build();
-    }
-}
+internal data class SettingsAppInfo(
+    val dataStoreVersion: SettingsAppDataStoreVersion,
+    val androidSettingsVersion: String?,
+)

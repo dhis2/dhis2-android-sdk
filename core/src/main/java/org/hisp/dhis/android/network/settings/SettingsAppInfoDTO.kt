@@ -38,9 +38,9 @@ internal data class SettingsAppInfoDTO(
     val androidSettingsVersion: String?,
 ) {
     fun toDomain(): SettingsAppInfo {
-        return SettingsAppInfo.builder()
-            .dataStoreVersion(SettingsAppDataStoreVersion.from(dataStoreVersion))
-            .androidSettingsVersion(androidSettingsVersion)
-            .build()
+        return SettingsAppInfo(
+            dataStoreVersion = SettingsAppDataStoreVersion.from(dataStoreVersion),
+            androidSettingsVersion = androidSettingsVersion,
+        )
     }
 }

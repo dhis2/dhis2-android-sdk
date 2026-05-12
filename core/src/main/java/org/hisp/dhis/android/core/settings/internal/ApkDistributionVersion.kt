@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.settings.internal
 
 internal data class ApkDistributionVersion(
-    val version: String?,
-    val downloadURL: String?,
+    val version: String,
+    val downloadURL: String,
     val isDefault: Boolean?,
     val userGroups: List<String>?,
 )

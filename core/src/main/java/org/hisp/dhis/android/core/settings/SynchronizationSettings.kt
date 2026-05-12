@@ -26,52 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SynchronizationSettings(
+    val dataSync: DataSyncPeriod?,
+    val metadataSync: MetadataSyncPeriod?,
+    val trackerImporterVersion: TrackerImporterVersion?,
+    val trackerExporterVersion: TrackerExporterVersion?,
+    val dataSetSettings: DataSetSettings?,
+    val programSettings: ProgramSettings?,
+    val fileMaxLengthBytes: Int?,
+) : CoreObject {
+    fun dataSync(): DataSyncPeriod? = dataSync
+    fun metadataSync(): MetadataSyncPeriod? = metadataSync
+    fun trackerImporterVersion(): TrackerImporterVersion? = trackerImporterVersion
+    fun trackerExporterVersion(): TrackerExporterVersion? = trackerExporterVersion
+    fun dataSetSettings(): DataSetSettings? = dataSetSettings
+    fun programSettings(): ProgramSettings? = programSettings
+    fun fileMaxLengthBytes(): Int? = fileMaxLengthBytes
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = SynchronizationSettingsBuilder.from(this)
 
-import java.util.Date;
+    class Builder : SynchronizationSettingsBuilder()
 
-@AutoValue
-public abstract class DataSetSetting implements CoreObject {
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract Integer periodDSDownload();
-
-    @Nullable
-    public abstract Integer periodDSDBTrimming();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract Builder periodDSDownload(Integer periodDSDownload);
-
-        public abstract Builder periodDSDBTrimming(Integer periodDSDBTrimming);
-
-        public abstract DataSetSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

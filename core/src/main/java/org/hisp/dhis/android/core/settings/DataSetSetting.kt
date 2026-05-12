@@ -26,49 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetSetting(
+    val uid: String?,
+    val name: String?,
+    val lastUpdated: Date?,
+    val periodDSDownload: Int?,
+    val periodDSDBTrimming: Int?,
+) : CoreObject {
+    fun uid(): String? = uid
+    fun name(): String? = name
+    fun lastUpdated(): Date? = lastUpdated
+    fun periodDSDownload(): Int? = periodDSDownload
+    fun periodDSDBTrimming(): Int? = periodDSDBTrimming
 
-import java.util.Collections;
-import java.util.Map;
+    fun toBuilder(): Builder = DataSetSettingBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramSettings {
+    class Builder : DataSetSettingBuilder()
 
-    @Nullable
-    public abstract ProgramSetting globalSettings();
-
-    public abstract Map<String, ProgramSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder()
-                .globalSettings(ProgramSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
-
-        abstract ProgramSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, ProgramSetting> specificSettings();
-
-        public ProgramSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

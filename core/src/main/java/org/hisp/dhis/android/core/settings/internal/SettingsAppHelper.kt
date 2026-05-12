@@ -62,7 +62,7 @@ internal object SettingsAppHelper {
     }
 
     fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
-        return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
+        return programSettings.specificSettings().values + programSettings.globalSettings()
     }
 
     fun getFilterSettingsList(appearanceSettings: AppearanceSettings): List<FilterSetting> {

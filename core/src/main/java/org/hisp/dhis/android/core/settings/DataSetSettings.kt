@@ -25,33 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
-import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@Singleton(binds = [DataSetSettingsObjectRepository::class])
-class DataSetSettingsObjectRepository internal constructor(
-    private val store: DataSetSettingStore,
-    dataSetSettingCall: DataSetSettingCall,
-) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>(dataSetSettingCall),
-    ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
-    override suspend fun getInternal(): DataSetSettings? {
-        val settings = store.selectAll()
-        return if (settings.isEmpty()) {
-            null
-        } else {
-            val specifics = settings
-                .filter { it.uid != null }
-                .associateBy { it.uid!! }
+@ModelBuilder
+data class DataSetSettings(
+    val globalSettings: DataSetSetting,
+    val specificSettings: Map<String, DataSetSetting>,
+) {
+    fun globalSettings(): DataSetSetting = globalSettings
+    fun specificSettings(): Map<String, DataSetSetting> = specificSettings
 
-            DataSetSettings.builder()
-                .globalSettings(settings.find { it.uid() == null } ?: DataSetSetting.builder().build())
-                .specificSettings(specifics)
-                .build()
-        }
+    fun toBuilder(): Builder = DataSetSettingsBuilder.from(this)
+
+    class Builder : DataSetSettingsBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .globalSettings(DataSetSetting.builder().build())
+            .specificSettings(emptyMap())
     }
 }

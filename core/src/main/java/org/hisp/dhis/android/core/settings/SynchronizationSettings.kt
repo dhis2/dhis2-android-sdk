@@ -58,5 +58,7 @@ data class SynchronizationSettings(
     companion object {
         @JvmStatic
         fun builder(): Builder = Builder()
+            .dataSetSettings(DataSetSettings.builder().build())
+            .programSettings(ProgramSettings.builder().build())
     }
 }

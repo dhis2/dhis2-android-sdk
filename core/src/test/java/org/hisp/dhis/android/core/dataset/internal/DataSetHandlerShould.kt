@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
 import org.hisp.dhis.android.core.dataset.Section
 import org.hisp.dhis.android.core.indicator.internal.DataSetIndicatorLinkHandler
 import org.junit.Before
@@ -99,7 +98,7 @@ class DataSetHandlerShould {
 
         dataSets = mutableListOf(dataSet)
         sections = mutableListOf(section)
-        whenever(DataSetInternalAccessor.accessSections(dataSet)).thenReturn(sections)
+        whenever(dataSet.sections()).thenReturn(sections)
 
         compulsoryDataElementOperands = mutableListOf(compulsoryDataElementOperand)
         whenever(dataSet.compulsoryDataElementOperands()).thenReturn(compulsoryDataElementOperands)

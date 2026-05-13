@@ -88,6 +88,7 @@ class ModelBuilderProcessor(
                 ClassField(
                     name = field.simpleName.asString(),
                     type = field.type.resolve(),
+                    isInternal = field.modifiers.contains(Modifier.INTERNAL),
                 )
             }
 
@@ -119,9 +120,11 @@ class ModelBuilderProcessor(
                 fields.joinToString("\n                ") { field ->
                     val name = field.name
                     val type = field.type.toString()
-                    val optOverride = if (overridenFields.contains(name)) "override " else ""
+                    val isOverride = overridenFields.contains(name)
+                    val optOverride = if (isOverride) "override " else ""
+                    val optInternal = if (field.isInternal && !isOverride) "internal " else ""
 
-                    "${optOverride}fun $name ($name: $type): $innerBuilderName = " +
+                    "${optInternal}${optOverride}fun $name ($name: $type): $innerBuilderName = " +
                             "this.also { this.$name = $name } as $innerBuilderName"
                 }
             }
@@ -203,4 +206,5 @@ data class BaseClass(
 data class ClassField(
     val name: String,
     val type: KSType,
+    val isInternal: Boolean = false,
 )

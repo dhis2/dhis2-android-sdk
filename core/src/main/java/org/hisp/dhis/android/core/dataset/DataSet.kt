@@ -73,7 +73,7 @@ data class DataSet(
     val workflow: ObjectWithUid?,
     val dataSetElements: List<DataSetElement>?,
     val indicators: List<Indicator>?,
-    val sections: List<Section>?,
+    internal val sections: List<Section>?,
     val compulsoryDataElementOperands: List<DataElementOperand>?,
     val dataInputPeriods: List<DataInputPeriod>?,
     val displayOptions: DataSetDisplayOptions?,
@@ -99,7 +99,7 @@ data class DataSet(
     fun workflow(): ObjectWithUid? = workflow
     fun dataSetElements(): List<DataSetElement>? = dataSetElements
     fun indicators(): List<Indicator>? = indicators
-    fun sections(): List<Section>? = sections
+    internal fun sections(): List<Section>? = sections
     fun compulsoryDataElementOperands(): List<DataElementOperand>? = compulsoryDataElementOperands
     fun dataInputPeriods(): List<DataInputPeriod>? = dataInputPeriods
     fun displayOptions(): DataSetDisplayOptions? = displayOptions

@@ -25,33 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
-import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall
-import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-@Singleton(binds = [DataSetSettingsObjectRepository::class])
-class DataSetSettingsObjectRepository internal constructor(
-    private val store: DataSetSettingStore,
-    dataSetSettingCall: DataSetSettingCall,
-) : ReadOnlyAnyObjectWithDownloadRepositoryImpl<DataSetSettings>(dataSetSettingCall),
-    ReadOnlyWithDownloadObjectRepository<DataSetSettings> {
-    override suspend fun getInternal(): DataSetSettings? {
-        val settings = store.selectAll()
-        return if (settings.isEmpty()) {
-            null
-        } else {
-            val specifics = settings
-                .filter { it.uid != null }
-                .associateBy { it.uid!! }
+@ModelBuilder
+data class SynchronizationSettings(
+    val dataSync: DataSyncPeriod?,
+    val metadataSync: MetadataSyncPeriod?,
+    val trackerImporterVersion: TrackerImporterVersion?,
+    val trackerExporterVersion: TrackerExporterVersion?,
+    val dataSetSettings: DataSetSettings?,
+    val programSettings: ProgramSettings?,
+    val fileMaxLengthBytes: Int?,
+) : CoreObject {
+    fun dataSync(): DataSyncPeriod? = dataSync
+    fun metadataSync(): MetadataSyncPeriod? = metadataSync
+    fun trackerImporterVersion(): TrackerImporterVersion? = trackerImporterVersion
+    fun trackerExporterVersion(): TrackerExporterVersion? = trackerExporterVersion
+    fun dataSetSettings(): DataSetSettings? = dataSetSettings
+    fun programSettings(): ProgramSettings? = programSettings
+    fun fileMaxLengthBytes(): Int? = fileMaxLengthBytes
 
-            DataSetSettings.builder()
-                .globalSettings(settings.find { it.uid() == null } ?: DataSetSetting.builder().build())
-                .specificSettings(specifics)
-                .build()
-        }
+    fun toBuilder(): Builder = SynchronizationSettingsBuilder.from(this)
+
+    class Builder : SynchronizationSettingsBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .dataSetSettings(DataSetSettings.builder().build())
+            .programSettings(ProgramSettings.builder().build())
     }
 }

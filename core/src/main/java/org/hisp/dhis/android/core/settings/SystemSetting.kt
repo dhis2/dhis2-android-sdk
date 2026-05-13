@@ -26,49 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SystemSetting(
+    val key: SystemSettingKey,
+    val value: String?,
+) : CoreObject {
 
-import java.util.Collections;
-import java.util.Map;
+    enum class SystemSettingKey {
+        FLAG,
 
-@AutoValue
-public abstract class ProgramSettings {
-
-    @Nullable
-    public abstract ProgramSetting globalSettings();
-
-    public abstract Map<String, ProgramSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder()
-                .globalSettings(ProgramSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
+        @Deprecated("", level = DeprecationLevel.WARNING)
+        STYLE,
+        DEFAULT_BASE_MAP,
+        BING_BASE_MAP,
+        ANALYTICS_FINANCIAL_YEAR_START,
+        ANALYTICS_WEEK_START,
+        CUSTOM_COLOR,
     }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
+    fun key(): SystemSettingKey = key
+    fun value(): String? = value
 
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
+    fun toBuilder(): Builder = SystemSettingBuilder.from(this)
 
-        abstract ProgramSettings autoBuild();
+    class Builder : SystemSettingBuilder()
 
-        //Auxiliary fields
-        abstract Map<String, ProgramSetting> specificSettings();
-
-        public ProgramSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

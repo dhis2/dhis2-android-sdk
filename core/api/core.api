@@ -5946,7 +5946,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/an
 	public final fun component28 ()Ljava/util/List;
 	public final fun component29 ()Ljava/util/List;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun component30 ()Ljava/util/List;
 	public final fun component31 ()Ljava/util/List;
 	public final fun component32 ()Ljava/util/List;
 	public final fun component33 ()Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions;
@@ -6000,7 +5999,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/an
 	public final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	public final fun getRenderAsTabs ()Ljava/lang/Boolean;
 	public final fun getRenderHorizontally ()Ljava/lang/Boolean;
-	public final fun getSections ()Ljava/util/List;
 	public fun getShortName ()Ljava/lang/String;
 	public final fun getSkipOffline ()Ljava/lang/Boolean;
 	public fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
@@ -6020,7 +6018,6 @@ public final class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/an
 	public final fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	public final fun renderAsTabs ()Ljava/lang/Boolean;
 	public final fun renderHorizontally ()Ljava/lang/Boolean;
-	public final fun sections ()Ljava/util/List;
 	public fun shortName ()Ljava/lang/String;
 	public final fun skipOffline ()Ljava/lang/Boolean;
 	public fun style ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
@@ -6123,7 +6120,6 @@ public class org/hisp/dhis/android/core/dataset/DataSetBuilder : org/hisp/dhis/a
 	public final fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public final fun renderAsTabs (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public final fun renderHorizontally (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
-	public final fun sections (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	protected final fun setAccess (Lorg/hisp/dhis/android/core/common/Access;)V
 	protected final fun setCategoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
 	protected final fun setCode (Ljava/lang/String;)V
@@ -9578,7 +9574,6 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun attributeValues ()Ljava/util/List;
 	public static final fun builder ()Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public final fun categoryMappings ()Ljava/util/List;
 	public fun code ()Ljava/lang/String;
 	public final fun completeEventsExpiryDays ()Ljava/lang/Integer;
 	public final fun component1 ()Ljava/lang/String;
@@ -9598,19 +9593,16 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun component22 ()Ljava/lang/Boolean;
 	public final fun component23 ()Ljava/lang/Boolean;
 	public final fun component24 ()Lorg/hisp/dhis/android/core/program/ProgramType;
-	public final fun component25 ()Ljava/util/List;
 	public final fun component26 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public final fun component27 ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;
 	public final fun component28 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public final fun component29 ()Lorg/hisp/dhis/android/core/common/Access;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun component30 ()Ljava/util/List;
 	public final fun component31 ()Ljava/lang/Integer;
 	public final fun component32 ()Ljava/lang/Integer;
 	public final fun component33 ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	public final fun component34 ()Ljava/lang/Integer;
 	public final fun component35 ()Ljava/lang/Integer;
-	public final fun component36 ()Ljava/util/List;
 	public final fun component37 ()Lorg/hisp/dhis/android/core/common/FeatureType;
 	public final fun component38 ()Lorg/hisp/dhis/android/core/program/AccessLevel;
 	public final fun component39 ()Ljava/lang/String;
@@ -9624,7 +9616,6 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun component46 ()Ljava/lang/String;
 	public final fun component47 ()Ljava/util/List;
 	public final fun component48 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public final fun component49 ()Ljava/util/List;
 	public final fun component5 ()Ljava/util/Date;
 	public final fun component50 ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
 	public final fun component6 ()Ljava/util/Date;
@@ -9665,7 +9656,6 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun getAccessLevel ()Lorg/hisp/dhis/android/core/program/AccessLevel;
 	public final fun getAttributeValues ()Ljava/util/List;
 	public final fun getCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public final fun getCategoryMappings ()Ljava/util/List;
 	public fun getCode ()Ljava/lang/String;
 	public final fun getCompleteEventsExpiryDays ()Ljava/lang/Integer;
 	public fun getCreated ()Ljava/util/Date;
@@ -9697,9 +9687,6 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun getMinAttributesRequiredToSearch ()Ljava/lang/Integer;
 	public fun getName ()Ljava/lang/String;
 	public final fun getOnlyEnrollOnce ()Ljava/lang/Boolean;
-	public final fun getProgramRuleVariables ()Ljava/util/List;
-	public final fun getProgramSections ()Ljava/util/List;
-	public final fun getProgramTrackedEntityAttributes ()Ljava/util/List;
 	public final fun getProgramType ()Lorg/hisp/dhis/android/core/program/ProgramType;
 	public final fun getRegistration ()Ljava/lang/Boolean;
 	public final fun getRelatedProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -9721,10 +9708,7 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun noteLabel ()Ljava/lang/String;
 	public final fun onlyEnrollOnce ()Ljava/lang/Boolean;
 	public final fun orgUnitLabel ()Ljava/lang/String;
-	public final fun programRuleVariables ()Ljava/util/List;
-	public final fun programSections ()Ljava/util/List;
 	public final fun programStageLabel ()Ljava/lang/String;
-	public final fun programTrackedEntityAttributes ()Ljava/util/List;
 	public final fun programType ()Lorg/hisp/dhis/android/core/program/ProgramType;
 	public final fun registration ()Ljava/lang/Boolean;
 	public final fun relatedProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -9773,7 +9757,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	public final fun attributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/program/Program;
 	public final fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/Program$Builder;
-	public final fun categoryMappings (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun completeEventsExpiryDays (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/Program$Builder;
@@ -9868,9 +9851,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun onlyEnrollOnce (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/Program$Builder;
-	public final fun programRuleVariables (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/Program$Builder;
-	public final fun programSections (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/Program$Builder;
-	public final fun programTrackedEntityAttributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun programType (Lorg/hisp/dhis/android/core/program/ProgramType;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun registration (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun relatedProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/Program$Builder;

@@ -83,10 +83,12 @@ data class OrganisationUnit(
 
     class Builder : OrganisationUnitBuilder() {
         @Throws(ParseException::class)
+        @Deprecated(message = "Use openingDate(Date) instead", ReplaceWith("openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr))"))
         fun openingDate(openingDateStr: String): Builder =
             openingDate(BaseIdentifiableObject.DATE_FORMAT.parse(openingDateStr))
 
         @Throws(ParseException::class)
+        @Deprecated(message = "Use closedDate(Date) instead", ReplaceWith("closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr))"))
         fun closedDate(closedDateStr: String): Builder =
             closedDate(BaseIdentifiableObject.DATE_FORMAT.parse(closedDateStr))
     }

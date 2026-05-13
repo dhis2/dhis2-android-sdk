@@ -12212,17 +12212,41 @@ public class org/hisp/dhis/android/core/settings/GeneralSettingsBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/GeneralSettingsBuilder$Companion;
 	public fun <init> ()V
 	public final fun allowScreenCapture (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/GeneralSettings;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/GeneralSettings;
 	public final fun bypassDHIS2VersionCheck (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
-	public final fun dataSync (Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun encryptDB (Z)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun experimentalFeatures (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
+	protected final fun getAllowScreenCapture ()Ljava/lang/Boolean;
+	protected final fun getBypassDHIS2VersionCheck ()Ljava/lang/Boolean;
+	protected final fun getDataSync ()Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
+	protected final fun getEncryptDB ()Z
+	protected final fun getExperimentalFeatures ()Ljava/util/List;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getMatomoID ()Ljava/lang/Integer;
+	protected final fun getMatomoURL ()Ljava/lang/String;
+	protected final fun getMessageOfTheDay ()Ljava/lang/String;
+	protected final fun getMetadataSync ()Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
+	protected final fun getReservedValues ()Ljava/lang/Integer;
+	protected final fun getSmsGateway ()Ljava/lang/String;
+	protected final fun getSmsResultSender ()Ljava/lang/String;
 	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun matomoID (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun matomoURL (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun messageOfTheDay (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
-	public final fun metadataSync (Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun reservedValues (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
+	protected final fun setAllowScreenCapture (Ljava/lang/Boolean;)V
+	protected final fun setBypassDHIS2VersionCheck (Ljava/lang/Boolean;)V
+	protected final fun setDataSync (Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;)V
+	protected final fun setEncryptDB (Z)V
+	protected final fun setExperimentalFeatures (Ljava/util/List;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setMatomoID (Ljava/lang/Integer;)V
+	protected final fun setMatomoURL (Ljava/lang/String;)V
+	protected final fun setMessageOfTheDay (Ljava/lang/String;)V
+	protected final fun setMetadataSync (Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;)V
+	protected final fun setReservedValues (Ljava/lang/Integer;)V
+	protected final fun setSmsGateway (Ljava/lang/String;)V
+	protected final fun setSmsResultSender (Ljava/lang/String;)V
 	public final fun smsGateway (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	public final fun smsResultSender (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 }
@@ -12274,9 +12298,14 @@ public final class org/hisp/dhis/android/core/settings/LatestAppVersion$Companio
 
 public class org/hisp/dhis/android/core/settings/LatestAppVersionBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/LatestAppVersionBuilder$Companion;
+	protected field version Ljava/lang/String;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/LatestAppVersion;
 	public final fun downloadURL (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LatestAppVersion$Builder;
+	protected final fun getDownloadURL ()Ljava/lang/String;
+	protected final fun getVersion ()Ljava/lang/String;
+	protected final fun setDownloadURL (Ljava/lang/String;)V
+	protected final fun setVersion (Ljava/lang/String;)V
 	public final fun version (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LatestAppVersion$Builder;
 }
 
@@ -12592,9 +12621,13 @@ public final class org/hisp/dhis/android/core/settings/UserSettings$Companion {
 public class org/hisp/dhis/android/core/settings/UserSettingsBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/UserSettingsBuilder$Companion;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/UserSettings;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/UserSettings;
+	protected final fun getKeyDbLocale ()Ljava/lang/String;
+	protected final fun getKeyUiLocale ()Ljava/lang/String;
 	public final fun keyDbLocale (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/UserSettings$Builder;
 	public final fun keyUiLocale (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/UserSettings$Builder;
+	protected final fun setKeyDbLocale (Ljava/lang/String;)V
+	protected final fun setKeyUiLocale (Ljava/lang/String;)V
 }
 
 public final class org/hisp/dhis/android/core/settings/UserSettingsBuilder$Companion {

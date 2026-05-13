@@ -69,18 +69,18 @@ data class Program(
     val useFirstStageDuringRegistration: Boolean?,
     val displayFrontPageList: Boolean?,
     val programType: ProgramType?,
-    val programTrackedEntityAttributes: List<ProgramTrackedEntityAttribute>?,
+    internal val programTrackedEntityAttributes: List<ProgramTrackedEntityAttribute>?,
     val relatedProgram: ObjectWithUid?,
     val trackedEntityType: TrackedEntityType?,
     val categoryCombo: ObjectWithUid,
     val access: Access,
-    val programRuleVariables: List<ProgramRuleVariable>?,
+    internal val programRuleVariables: List<ProgramRuleVariable>?,
     val expiryDays: Int?,
     val completeEventsExpiryDays: Int?,
     val expiryPeriodType: PeriodType?,
     val minAttributesRequiredToSearch: Int?,
     val maxTeiCountToReturn: Int?,
-    val programSections: List<ProgramSection>?,
+    internal val programSections: List<ProgramSection>?,
     val featureType: FeatureType?,
     val accessLevel: AccessLevel?,
     val displayEnrollmentLabel: String?,
@@ -93,7 +93,7 @@ data class Program(
     val displayEventLabel: String?,
     val attributeValues: List<AttributeValue>?,
     val enrollmentCategoryCombo: ObjectWithUid,
-    val categoryMappings: List<CategoryMapping>?,
+    internal val categoryMappings: List<CategoryMapping>?,
     override val style: ObjectStyle,
 ) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
@@ -116,18 +116,18 @@ data class Program(
     fun useFirstStageDuringRegistration(): Boolean? = useFirstStageDuringRegistration
     fun displayFrontPageList(): Boolean? = displayFrontPageList
     fun programType(): ProgramType? = programType
-    fun programTrackedEntityAttributes(): List<ProgramTrackedEntityAttribute>? = programTrackedEntityAttributes
+    internal fun programTrackedEntityAttributes(): List<ProgramTrackedEntityAttribute>? = programTrackedEntityAttributes
     fun relatedProgram(): ObjectWithUid? = relatedProgram
     fun trackedEntityType(): TrackedEntityType? = trackedEntityType
     fun categoryCombo(): ObjectWithUid = categoryCombo
     fun access(): Access = access
-    fun programRuleVariables(): List<ProgramRuleVariable>? = programRuleVariables
+    internal fun programRuleVariables(): List<ProgramRuleVariable>? = programRuleVariables
     fun expiryDays(): Int? = expiryDays
     fun completeEventsExpiryDays(): Int? = completeEventsExpiryDays
     fun expiryPeriodType(): PeriodType? = expiryPeriodType
     fun minAttributesRequiredToSearch(): Int? = minAttributesRequiredToSearch
     fun maxTeiCountToReturn(): Int? = maxTeiCountToReturn
-    fun programSections(): List<ProgramSection>? = programSections
+    internal fun programSections(): List<ProgramSection>? = programSections
     fun featureType(): FeatureType? = featureType
     fun accessLevel(): AccessLevel? = accessLevel
 
@@ -165,7 +165,7 @@ data class Program(
 
     fun attributeValues(): List<AttributeValue>? = attributeValues
     fun enrollmentCategoryCombo(): ObjectWithUid = enrollmentCategoryCombo
-    fun categoryMappings(): List<CategoryMapping>? = categoryMappings
+    internal fun categoryMappings(): List<CategoryMapping>? = categoryMappings
 
     fun toBuilder(): Builder = ProgramBuilder.from(this)
 

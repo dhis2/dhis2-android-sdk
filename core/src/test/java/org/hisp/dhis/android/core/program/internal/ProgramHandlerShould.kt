@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute
@@ -123,10 +122,10 @@ class ProgramHandlerShould {
 
         programRuleVariables = listOf(programRuleVariable)
 
-        whenever(ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program))
+        whenever(program.programTrackedEntityAttributes())
             .thenReturn(programTrackedEntityAttributes)
-        whenever(ProgramInternalAccessor.accessProgramRuleVariables(program)).thenReturn(programRuleVariables)
-        whenever(ProgramInternalAccessor.accessProgramSections(program)).thenReturn(programSections)
+        whenever(program.programRuleVariables()).thenReturn(programRuleVariables)
+        whenever(program.programSections()).thenReturn(programSections)
         whenever(program.access()).thenReturn(access)
         whenever(access.data()).thenReturn(dataAccess)
         whenever(dataAccess.read()).thenReturn(true)

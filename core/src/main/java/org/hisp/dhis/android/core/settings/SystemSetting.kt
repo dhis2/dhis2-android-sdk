@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 @ModelBuilder
 data class SystemSetting(
-    val key: SystemSettingKey?,
+    val key: SystemSettingKey,
     val value: String?,
 ) : CoreObject {
 
@@ -49,7 +49,7 @@ data class SystemSetting(
         CUSTOM_COLOR,
     }
 
-    fun key(): SystemSettingKey? = key
+    fun key(): SystemSettingKey = key
     fun value(): String? = value
 
     fun toBuilder(): Builder = SystemSettingBuilder.from(this)

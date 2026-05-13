@@ -26,51 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CompletionSpinnerSetting(
+    val globalSettings: CompletionSpinner?,
+    val specificSettings: Map<String, CompletionSpinner>?,
+) {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun globalSettings(): CompletionSpinner? = globalSettings
+    fun specificSettings(): Map<String, CompletionSpinner>? = specificSettings
 
-@AutoValue
-public abstract class FilterSetting implements CoreObject {
+    fun toBuilder(): Builder = CompletionSpinnerSettingBuilder.from(this)
 
-    @Nullable
-    public abstract String scope();
+    class Builder : CompletionSpinnerSettingBuilder()
 
-    @Nullable
-    public abstract String filterType();
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract Boolean sort();
-
-    @Nullable
-    public abstract Boolean filter();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_FilterSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder scope(String scope);
-
-        public abstract Builder filterType(String filterType);
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder sort(Boolean sort);
-
-        public abstract Builder filter(Boolean filter);
-
-        public abstract FilterSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

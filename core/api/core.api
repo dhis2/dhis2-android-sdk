@@ -11694,23 +11694,53 @@ public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutriti
 	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
-	public abstract fun completionSpinner ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
-	public abstract fun dataSetConfiguration ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
-	public abstract fun filterSorting ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
-	public abstract fun programConfiguration ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+public final class org/hisp/dhis/android/core/settings/AppearanceSettings {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/settings/FilterSorting;Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	public final fun completionSpinner ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public final fun copy (Lorg/hisp/dhis/android/core/settings/FilterSorting;Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AppearanceSettings;Lorg/hisp/dhis/android/core/settings/FilterSorting;Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
+	public final fun dataSetConfiguration ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filterSorting ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public final fun getDataSetConfiguration ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public final fun getFilterSorting ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public final fun getProgramConfiguration ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public fun hashCode ()I
+	public final fun programConfiguration ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AppearanceSettings$Builder {
+public final class org/hisp/dhis/android/core/settings/AppearanceSettings$Builder : org/hisp/dhis/android/core/settings/AppearanceSettingsBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
-	public abstract fun completionSpinner (Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
-	public abstract fun dataSetConfiguration (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
-	public abstract fun filterSorting (Lorg/hisp/dhis/android/core/settings/FilterSorting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
-	public abstract fun programConfiguration (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AppearanceSettings$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AppearanceSettingsBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AppearanceSettingsBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AppearanceSettings;
+	public final fun dataSetConfiguration (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	public final fun filterSorting (Lorg/hisp/dhis/android/core/settings/FilterSorting;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	protected final fun getDataSetConfiguration ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	protected final fun getFilterSorting ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	protected final fun getProgramConfiguration ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public final fun programConfiguration (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
+	protected final fun setDataSetConfiguration (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)V
+	protected final fun setFilterSorting (Lorg/hisp/dhis/android/core/settings/FilterSorting;)V
+	protected final fun setProgramConfiguration (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/AppearanceSettingsBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AppearanceSettings;)Lorg/hisp/dhis/android/core/settings/AppearanceSettings$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AppearanceSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
@@ -11737,34 +11767,88 @@ public final class org/hisp/dhis/android/core/settings/ChartType : java/lang/Enu
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/ChartType;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/CompletionSpinner : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
-	public abstract fun uid ()Ljava/lang/String;
-	public abstract fun visible ()Ljava/lang/Boolean;
+public final class org/hisp/dhis/android/core/settings/CompletionSpinner : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Companion;
+	public fun <init> (Ljava/lang/String;Z)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun copy (Ljava/lang/String;Z)Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;Ljava/lang/String;ZILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getUid ()Ljava/lang/String;
+	public final fun getVisible ()Z
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun uid ()Ljava/lang/String;
+	public final fun visible ()Z
 }
 
-public abstract class org/hisp/dhis/android/core/settings/CompletionSpinner$Builder {
+public final class org/hisp/dhis/android/core/settings/CompletionSpinner$Builder : org/hisp/dhis/android/core/settings/CompletionSpinnerBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
-	public abstract fun visible (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/CompletionSpinnerSetting {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
-	public abstract fun globalSettings ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
-	public abstract fun specificSettings ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+public final class org/hisp/dhis/android/core/settings/CompletionSpinner$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder {
+public class org/hisp/dhis/android/core/settings/CompletionSpinnerBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/CompletionSpinnerBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
-	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
-	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getVisible ()Z
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setVisible (Z)V
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
+	public final fun visible (Z)Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CompletionSpinnerBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;)Lorg/hisp/dhis/android/core/settings/CompletionSpinner$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CompletionSpinnerSetting {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;Lorg/hisp/dhis/android/core/settings/CompletionSpinner;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	public fun hashCode ()I
+	public final fun specificSettings ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder : org/hisp/dhis/android/core/settings/CompletionSpinnerSettingBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/CompletionSpinnerSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSettingBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;
+	protected final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/CompletionSpinner;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+	protected final fun setGlobalSettings (Lorg/hisp/dhis/android/core/settings/CompletionSpinner;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
+	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/CompletionSpinnerSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting;)Lorg/hisp/dhis/android/core/settings/CompletionSpinnerSetting$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/settings/CustomIntent : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -11958,36 +12042,94 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntents$Builder 
 	public abstract fun customIntents (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/CustomIntents$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-	public abstract fun disableManualLocation ()Ljava/lang/Boolean;
-	public abstract fun minimumLocationAccuracy ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Integer;
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public final fun disableManualLocation ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDisableManualLocation ()Ljava/lang/Boolean;
+	public final fun getMinimumLocationAccuracy ()Ljava/lang/Integer;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun minimumLocationAccuracy ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder {
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder : org/hisp/dhis/android/core/settings/DataSetConfigurationSettingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
-	public abstract fun disableManualLocation (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-	public abstract fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
-	public abstract fun globalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
-	public abstract fun specificSettings ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder {
+public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettingBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
-	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
-	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public final fun disableManualLocation (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	protected final fun getDisableManualLocation ()Ljava/lang/Boolean;
+	protected final fun getMinimumLocationAccuracy ()Ljava/lang/Integer;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+	protected final fun setDisableManualLocation (Ljava/lang/Boolean;)V
+	protected final fun setMinimumLocationAccuracy (Ljava/lang/Integer;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	public fun hashCode ()I
+	public final fun specificSettings ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder : org/hisp/dhis/android/core/settings/DataSetConfigurationSettingsBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingsBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettingsBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;
+	protected final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+	protected final fun setGlobalSettings (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSetting;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
+	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetConfigurationSettingsBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/DataSetConfigurationSettings$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSetFilter : java/lang/Enum {
@@ -12006,19 +12148,48 @@ public final class org/hisp/dhis/android/core/settings/DataSetFilter : java/lang
 public final class org/hisp/dhis/android/core/settings/DataSetFilter$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetFilters {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
-	public abstract fun globalSettings ()Ljava/util/Map;
-	public abstract fun specificSettings ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+public final class org/hisp/dhis/android/core/settings/DataSetFilters {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetFilters$Companion;
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/Map;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/DataSetFilters;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGlobalSettings ()Ljava/util/Map;
+	public final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings ()Ljava/util/Map;
+	public fun hashCode ()I
+	public final fun specificSettings ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/DataSetFilters$Builder {
+public final class org/hisp/dhis/android/core/settings/DataSetFilters$Builder : org/hisp/dhis/android/core/settings/DataSetFiltersBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
-	public abstract fun globalSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
-	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetFilters$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/DataSetFiltersBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetFiltersBuilder$Companion;
+	protected field globalSettings Ljava/util/Map;
+	protected field specificSettings Ljava/util/Map;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	protected final fun getGlobalSettings ()Ljava/util/Map;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+	protected final fun setGlobalSettings (Ljava/util/Map;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
+	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/DataSetFiltersBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/DataSetFilters;)Lorg/hisp/dhis/android/core/settings/DataSetFilters$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/DataSetSetting : org/hisp/dhis/android/core/common/CoreObject {
@@ -12059,11 +12230,21 @@ public final class org/hisp/dhis/android/core/settings/DataSetSetting$Companion 
 public class org/hisp/dhis/android/core/settings/DataSetSettingBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetSettingBuilder$Companion;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSetting;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSetting;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getPeriodDSDBTrimming ()Ljava/lang/Integer;
+	protected final fun getPeriodDSDownload ()Ljava/lang/Integer;
+	protected final fun getUid ()Ljava/lang/String;
 	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 	public final fun periodDSDBTrimming (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 	public final fun periodDSDownload (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setPeriodDSDBTrimming (Ljava/lang/Integer;)V
+	protected final fun setPeriodDSDownload (Ljava/lang/Integer;)V
+	protected final fun setUid (Ljava/lang/String;)V
 	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DataSetSetting$Builder;
 }
 
@@ -12099,9 +12280,15 @@ public final class org/hisp/dhis/android/core/settings/DataSetSettings$Companion
 
 public class org/hisp/dhis/android/core/settings/DataSetSettingsBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/DataSetSettingsBuilder$Companion;
+	protected field globalSettings Lorg/hisp/dhis/android/core/settings/DataSetSetting;
+	protected field specificSettings Ljava/util/Map;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
+	protected final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/DataSetSetting;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
 	public final fun globalSettings (Lorg/hisp/dhis/android/core/settings/DataSetSetting;)Lorg/hisp/dhis/android/core/settings/DataSetSettings$Builder;
+	protected final fun setGlobalSettings (Lorg/hisp/dhis/android/core/settings/DataSetSetting;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
 	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/DataSetSettings$Builder;
 }
 
@@ -12155,42 +12342,115 @@ public final class org/hisp/dhis/android/core/settings/ExperimentalFeature : jav
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/ExperimentalFeature;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/FilterSetting : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun filter ()Ljava/lang/Boolean;
-	public abstract fun filterType ()Ljava/lang/String;
-	public abstract fun scope ()Ljava/lang/String;
-	public abstract fun sort ()Ljava/lang/Boolean;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/settings/FilterSetting : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/FilterSetting$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun component5 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/FilterSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/FilterSetting;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/FilterSetting;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filter ()Ljava/lang/Boolean;
+	public final fun filterType ()Ljava/lang/String;
+	public final fun getFilter ()Ljava/lang/Boolean;
+	public final fun getFilterType ()Ljava/lang/String;
+	public final fun getScope ()Ljava/lang/String;
+	public final fun getSort ()Ljava/lang/Boolean;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun scope ()Ljava/lang/String;
+	public final fun sort ()Ljava/lang/Boolean;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/FilterSetting$Builder {
+public final class org/hisp/dhis/android/core/settings/FilterSetting$Builder : org/hisp/dhis/android/core/settings/FilterSettingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/FilterSetting;
-	public abstract fun filter (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun filterType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun scope (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun sort (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/FilterSorting {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
-	public abstract fun dataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
-	public abstract fun home ()Ljava/util/Map;
-	public abstract fun programSettings ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+public final class org/hisp/dhis/android/core/settings/FilterSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/FilterSorting$Builder {
+public class org/hisp/dhis/android/core/settings/FilterSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/FilterSettingBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
-	public abstract fun dataSetSettings (Lorg/hisp/dhis/android/core/settings/DataSetFilters;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
-	public abstract fun home (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
-	public abstract fun programSettings (Lorg/hisp/dhis/android/core/settings/ProgramFilters;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/FilterSetting;
+	public final fun filter (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	public final fun filterType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	protected final fun getFilter ()Ljava/lang/Boolean;
+	protected final fun getFilterType ()Ljava/lang/String;
+	protected final fun getScope ()Ljava/lang/String;
+	protected final fun getSort ()Ljava/lang/Boolean;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun scope (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	protected final fun setFilter (Ljava/lang/Boolean;)V
+	protected final fun setFilterType (Ljava/lang/String;)V
+	protected final fun setScope (Ljava/lang/String;)V
+	protected final fun setSort (Ljava/lang/Boolean;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun sort (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/FilterSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/FilterSetting;)Lorg/hisp/dhis/android/core/settings/FilterSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/FilterSorting {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/FilterSorting$Companion;
+	public fun <init> (Ljava/util/Map;Lorg/hisp/dhis/android/core/settings/DataSetFilters;Lorg/hisp/dhis/android/core/settings/ProgramFilters;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public final fun copy (Ljava/util/Map;Lorg/hisp/dhis/android/core/settings/DataSetFilters;Lorg/hisp/dhis/android/core/settings/ProgramFilters;)Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/FilterSorting;Ljava/util/Map;Lorg/hisp/dhis/android/core/settings/DataSetFilters;Lorg/hisp/dhis/android/core/settings/ProgramFilters;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public final fun dataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	public final fun getHome ()Ljava/util/Map;
+	public final fun getProgramSettings ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public fun hashCode ()I
+	public final fun home ()Ljava/util/Map;
+	public final fun programSettings ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/FilterSorting$Builder : org/hisp/dhis/android/core/settings/FilterSortingBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/FilterSorting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/FilterSortingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/FilterSortingBuilder$Companion;
+	protected field dataSetSettings Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	protected field home Ljava/util/Map;
+	protected field programSettings Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/FilterSorting;
+	public final fun dataSetSettings (Lorg/hisp/dhis/android/core/settings/DataSetFilters;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	protected final fun getDataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetFilters;
+	protected final fun getHome ()Ljava/util/Map;
+	protected final fun getProgramSettings ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public final fun home (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	public final fun programSettings (Lorg/hisp/dhis/android/core/settings/ProgramFilters;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
+	protected final fun setDataSetSettings (Lorg/hisp/dhis/android/core/settings/DataSetFilters;)V
+	protected final fun setHome (Ljava/util/Map;)V
+	protected final fun setProgramSettings (Lorg/hisp/dhis/android/core/settings/ProgramFilters;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/FilterSortingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/FilterSorting;)Lorg/hisp/dhis/android/core/settings/FilterSorting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/GeneralSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
@@ -12396,48 +12656,130 @@ public final class org/hisp/dhis/android/core/settings/MetadataSyncPeriod : java
 public final class org/hisp/dhis/android/core/settings/MetadataSyncPeriod$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun completionSpinner ()Ljava/lang/Boolean;
-	public abstract fun disableCollapsibleSections ()Ljava/lang/Boolean;
-	public abstract fun disableManualLocation ()Ljava/lang/Boolean;
-	public abstract fun disableReferrals ()Ljava/lang/Boolean;
-	public abstract fun itemHeader ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
-	public abstract fun minimumLocationAccuracy ()Ljava/lang/Integer;
-	public abstract fun optionalSearch ()Ljava/lang/Boolean;
-	public abstract fun quickActions ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun completionSpinner ()Ljava/lang/Boolean;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Boolean;
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun component5 ()Ljava/lang/Boolean;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	public final fun component7 ()Ljava/lang/Integer;
+	public final fun component8 ()Ljava/lang/Boolean;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public final fun disableCollapsibleSections ()Ljava/lang/Boolean;
+	public final fun disableManualLocation ()Ljava/lang/Boolean;
+	public final fun disableReferrals ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCompletionSpinner ()Ljava/lang/Boolean;
+	public final fun getDisableCollapsibleSections ()Ljava/lang/Boolean;
+	public final fun getDisableManualLocation ()Ljava/lang/Boolean;
+	public final fun getDisableReferrals ()Ljava/lang/Boolean;
+	public final fun getItemHeader ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	public final fun getMinimumLocationAccuracy ()Ljava/lang/Integer;
+	public final fun getOptionalSearch ()Ljava/lang/Boolean;
+	public final fun getQuickActions ()Ljava/util/List;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun itemHeader ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	public final fun minimumLocationAccuracy ()Ljava/lang/Integer;
+	public final fun optionalSearch ()Ljava/lang/Boolean;
+	public final fun quickActions ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder {
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder : org/hisp/dhis/android/core/settings/ProgramConfigurationSettingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
-	public abstract fun completionSpinner (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun disableCollapsibleSections (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun disableManualLocation (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun disableReferrals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun itemHeader (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun optionalSearch (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun quickActions (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
-	public abstract fun globalSettings ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
-	public abstract fun specificSettings ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder {
+public class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettingBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
-	public abstract fun globalSettings (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
-	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public final fun completionSpinner (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun disableCollapsibleSections (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun disableManualLocation (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun disableReferrals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	protected final fun getCompletionSpinner ()Ljava/lang/Boolean;
+	protected final fun getDisableCollapsibleSections ()Ljava/lang/Boolean;
+	protected final fun getDisableManualLocation ()Ljava/lang/Boolean;
+	protected final fun getDisableReferrals ()Ljava/lang/Boolean;
+	protected final fun getItemHeader ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	protected final fun getMinimumLocationAccuracy ()Ljava/lang/Integer;
+	protected final fun getOptionalSearch ()Ljava/lang/Boolean;
+	protected final fun getQuickActions ()Ljava/util/List;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun itemHeader (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun minimumLocationAccuracy (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun optionalSearch (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	public final fun quickActions (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+	protected final fun setCompletionSpinner (Ljava/lang/Boolean;)V
+	protected final fun setDisableCollapsibleSections (Ljava/lang/Boolean;)V
+	protected final fun setDisableManualLocation (Ljava/lang/Boolean;)V
+	protected final fun setDisableReferrals (Ljava/lang/Boolean;)V
+	protected final fun setItemHeader (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)V
+	protected final fun setMinimumLocationAccuracy (Ljava/lang/Integer;)V
+	protected final fun setOptionalSearch (Ljava/lang/Boolean;)V
+	protected final fun setQuickActions (Ljava/util/List;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	public fun hashCode ()I
+	public final fun specificSettings ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder : org/hisp/dhis/android/core/settings/ProgramConfigurationSettingsBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingsBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettingsBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;
+	protected final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+	protected final fun setGlobalSettings (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
+	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramConfigurationSettingsBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSettings$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/ProgramFilter : java/lang/Enum {
@@ -12460,32 +12802,84 @@ public final class org/hisp/dhis/android/core/settings/ProgramFilter : java/lang
 public final class org/hisp/dhis/android/core/settings/ProgramFilter$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramFilters {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
-	public abstract fun globalSettings ()Ljava/util/Map;
-	public abstract fun specificSettings ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+public final class org/hisp/dhis/android/core/settings/ProgramFilters {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramFilters$Companion;
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/Map;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/ProgramFilters;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGlobalSettings ()Ljava/util/Map;
+	public final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings ()Ljava/util/Map;
+	public fun hashCode ()I
+	public final fun specificSettings ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramFilters$Builder {
+public final class org/hisp/dhis/android/core/settings/ProgramFilters$Builder : org/hisp/dhis/android/core/settings/ProgramFiltersBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
-	public abstract fun globalSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
-	public abstract fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramItemHeader {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
-	public abstract fun programIndicator ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+public final class org/hisp/dhis/android/core/settings/ProgramFilters$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/ProgramItemHeader$Builder {
+public class org/hisp/dhis/android/core/settings/ProgramFiltersBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramFiltersBuilder$Companion;
+	protected field globalSettings Ljava/util/Map;
+	protected field specificSettings Ljava/util/Map;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
-	public abstract fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramFilters;
+	protected final fun getGlobalSettings ()Ljava/util/Map;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
+	public final fun globalSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+	protected final fun setGlobalSettings (Ljava/util/Map;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
+	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramFiltersBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/ProgramFilters;)Lorg/hisp/dhis/android/core/settings/ProgramFilters$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramItemHeader {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProgramIndicator ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun programIndicator ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramItemHeader$Builder : org/hisp/dhis/android/core/settings/ProgramItemHeaderBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramItemHeader$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/ProgramItemHeaderBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramItemHeaderBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;
+	protected final fun getProgramIndicator ()Ljava/lang/String;
+	public final fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
+	protected final fun setProgramIndicator (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/ProgramItemHeaderBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/ProgramItemHeader;)Lorg/hisp/dhis/android/core/settings/ProgramItemHeader$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/ProgramSetting : org/hisp/dhis/android/core/common/CoreObject {
@@ -12565,7 +12959,7 @@ public final class org/hisp/dhis/android/core/settings/ProgramSetting$Companion 
 public class org/hisp/dhis/android/core/settings/ProgramSettingBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramSettingBuilder$Companion;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/ProgramSetting;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramSetting;
 	public final fun enrollmentDBTrimming (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun enrollmentDateDBTrimming (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun enrollmentDateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
@@ -12575,8 +12969,44 @@ public class org/hisp/dhis/android/core/settings/ProgramSettingBuilder {
 	public final fun eventsDBTrimming (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun eventsDownload (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
+	protected final fun getEnrollmentDBTrimming ()Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
+	protected final fun getEnrollmentDateDBTrimming ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	protected final fun getEnrollmentDateDownload ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	protected final fun getEnrollmentDownload ()Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
+	protected final fun getEventDateDBTrimming ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	protected final fun getEventDateDownload ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	protected final fun getEventsDBTrimming ()Ljava/lang/Integer;
+	protected final fun getEventsDownload ()Ljava/lang/Integer;
+	protected final fun getFilters ()Ljava/util/List;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getSettingDBTrimming ()Lorg/hisp/dhis/android/core/settings/LimitScope;
+	protected final fun getSettingDownload ()Lorg/hisp/dhis/android/core/settings/LimitScope;
+	protected final fun getTeiDBTrimming ()Ljava/lang/Integer;
+	protected final fun getTeiDownload ()Ljava/lang/Integer;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getUpdateDBTrimming ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	protected final fun getUpdateDownload ()Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
+	protected final fun setEnrollmentDBTrimming (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)V
+	protected final fun setEnrollmentDateDBTrimming (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
+	protected final fun setEnrollmentDateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
+	protected final fun setEnrollmentDownload (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)V
+	protected final fun setEventDateDBTrimming (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
+	protected final fun setEventDateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
+	protected final fun setEventsDBTrimming (Ljava/lang/Integer;)V
+	protected final fun setEventsDownload (Ljava/lang/Integer;)V
+	protected final fun setFilters (Ljava/util/List;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setSettingDBTrimming (Lorg/hisp/dhis/android/core/settings/LimitScope;)V
+	protected final fun setSettingDownload (Lorg/hisp/dhis/android/core/settings/LimitScope;)V
+	protected final fun setTeiDBTrimming (Ljava/lang/Integer;)V
+	protected final fun setTeiDownload (Ljava/lang/Integer;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setUpdateDBTrimming (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
+	protected final fun setUpdateDownload (Lorg/hisp/dhis/android/core/settings/DownloadPeriod;)V
 	public final fun settingDBTrimming (Lorg/hisp/dhis/android/core/settings/LimitScope;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun settingDownload (Lorg/hisp/dhis/android/core/settings/LimitScope;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
 	public final fun teiDBTrimming (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/ProgramSetting$Builder;
@@ -12618,9 +13048,15 @@ public final class org/hisp/dhis/android/core/settings/ProgramSettings$Companion
 
 public class org/hisp/dhis/android/core/settings/ProgramSettingsBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/ProgramSettingsBuilder$Companion;
+	protected field globalSettings Lorg/hisp/dhis/android/core/settings/ProgramSetting;
+	protected field specificSettings Ljava/util/Map;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
+	protected final fun getGlobalSettings ()Lorg/hisp/dhis/android/core/settings/ProgramSetting;
+	protected final fun getSpecificSettings ()Ljava/util/Map;
 	public final fun globalSettings (Lorg/hisp/dhis/android/core/settings/ProgramSetting;)Lorg/hisp/dhis/android/core/settings/ProgramSettings$Builder;
+	protected final fun setGlobalSettings (Lorg/hisp/dhis/android/core/settings/ProgramSetting;)V
+	protected final fun setSpecificSettings (Ljava/util/Map;)V
 	public final fun specificSettings (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/ProgramSettings$Builder;
 }
 
@@ -12631,17 +13067,41 @@ public final class org/hisp/dhis/android/core/settings/ProgramSettingsBuilder$Co
 public final class org/hisp/dhis/android/core/settings/ProgramSettingsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 }
 
-public abstract class org/hisp/dhis/android/core/settings/QuickAction {
-	public fun <init> ()V
-	public abstract fun actionId ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+public final class org/hisp/dhis/android/core/settings/QuickAction {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/QuickAction$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun actionId ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/QuickAction;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/QuickAction;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getActionId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/QuickAction$Builder {
+public final class org/hisp/dhis/android/core/settings/QuickAction$Builder : org/hisp/dhis/android/core/settings/QuickActionBuilder {
 	public fun <init> ()V
-	public abstract fun actionId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/QuickAction;
+}
+
+public final class org/hisp/dhis/android/core/settings/QuickAction$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/QuickActionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/QuickActionBuilder$Companion;
+	protected field actionId Ljava/lang/String;
+	public fun <init> ()V
+	public final fun actionId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/QuickAction;
+	protected final fun getActionId ()Ljava/lang/String;
+	protected final fun setActionId (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/QuickActionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/QuickAction;)Lorg/hisp/dhis/android/core/settings/QuickAction$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/settings/SettingModule {
@@ -12705,12 +13165,26 @@ public final class org/hisp/dhis/android/core/settings/SynchronizationSettings$C
 public class org/hisp/dhis/android/core/settings/SynchronizationSettingsBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/SynchronizationSettingsBuilder$Companion;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/SynchronizationSettings;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/SynchronizationSettings;
 	public final fun dataSetSettings (Lorg/hisp/dhis/android/core/settings/DataSetSettings;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 	public final fun dataSync (Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 	public final fun fileMaxLengthBytes (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
+	protected final fun getDataSetSettings ()Lorg/hisp/dhis/android/core/settings/DataSetSettings;
+	protected final fun getDataSync ()Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
+	protected final fun getFileMaxLengthBytes ()Ljava/lang/Integer;
+	protected final fun getMetadataSync ()Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
+	protected final fun getProgramSettings ()Lorg/hisp/dhis/android/core/settings/ProgramSettings;
+	protected final fun getTrackerExporterVersion ()Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;
+	protected final fun getTrackerImporterVersion ()Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;
 	public final fun metadataSync (Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 	public final fun programSettings (Lorg/hisp/dhis/android/core/settings/ProgramSettings;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
+	protected final fun setDataSetSettings (Lorg/hisp/dhis/android/core/settings/DataSetSettings;)V
+	protected final fun setDataSync (Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;)V
+	protected final fun setFileMaxLengthBytes (Ljava/lang/Integer;)V
+	protected final fun setMetadataSync (Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;)V
+	protected final fun setProgramSettings (Lorg/hisp/dhis/android/core/settings/ProgramSettings;)V
+	protected final fun setTrackerExporterVersion (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)V
+	protected final fun setTrackerImporterVersion (Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;)V
 	public final fun trackerExporterVersion (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 	public final fun trackerImporterVersion (Lorg/hisp/dhis/android/core/tracker/TrackerImporterVersion;)Lorg/hisp/dhis/android/core/settings/SynchronizationSettings$Builder;
 }
@@ -12760,9 +13234,14 @@ public final class org/hisp/dhis/android/core/settings/SystemSetting$SystemSetti
 
 public class org/hisp/dhis/android/core/settings/SystemSettingBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/settings/SystemSettingBuilder$Companion;
+	protected field key Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
 	public fun <init> ()V
-	public final fun build ()Lorg/hisp/dhis/android/core/settings/SystemSetting;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/SystemSetting;
+	protected final fun getKey ()Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;
+	protected final fun getValue ()Ljava/lang/String;
 	public final fun key (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
+	protected final fun setKey (Lorg/hisp/dhis/android/core/settings/SystemSetting$SystemSettingKey;)V
+	protected final fun setValue (Ljava/lang/String;)V
 	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/SystemSetting$Builder;
 }
 

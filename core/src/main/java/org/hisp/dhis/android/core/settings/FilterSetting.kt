@@ -26,35 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class FilterSetting(
+    val scope: String?,
+    val filterType: String?,
+    val uid: String?,
+    val sort: Boolean?,
+    val filter: Boolean?,
+) : CoreObject {
 
-import java.util.Map;
+    fun scope(): String? = scope
+    fun filterType(): String? = filterType
+    fun uid(): String? = uid
+    fun sort(): Boolean? = sort
+    fun filter(): Boolean? = filter
 
-@AutoValue
-public abstract class ProgramConfigurationSettings {
+    fun toBuilder(): Builder = FilterSettingBuilder.from(this)
 
-    @Nullable
-    public abstract ProgramConfigurationSetting globalSettings();
+    class Builder : FilterSettingBuilder()
 
-    @Nullable
-    public abstract Map<String, ProgramConfigurationSetting> specificSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramConfigurationSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramConfigurationSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramConfigurationSetting> specificSettings);
-
-        public abstract ProgramConfigurationSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

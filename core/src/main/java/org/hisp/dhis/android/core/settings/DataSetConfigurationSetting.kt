@@ -26,28 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetConfigurationSetting(
+    val uid: String?,
+    val minimumLocationAccuracy: Int?,
+    val disableManualLocation: Boolean?,
+) : CoreObject {
 
-@AutoValue
-public abstract class QuickAction {
+    fun uid(): String? = uid
+    fun minimumLocationAccuracy(): Int? = minimumLocationAccuracy
+    fun disableManualLocation(): Boolean? = disableManualLocation
 
-    @NonNull
-    public abstract String actionId();
+    fun toBuilder(): Builder = DataSetConfigurationSettingBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : DataSetConfigurationSettingBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_QuickAction.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder actionId(String uid);
-
-        public abstract QuickAction build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

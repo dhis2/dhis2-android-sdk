@@ -26,35 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramConfigurationSetting(
+    val uid: String?,
+    val completionSpinner: Boolean?,
+    val optionalSearch: Boolean?,
+    val disableReferrals: Boolean?,
+    val disableCollapsibleSections: Boolean?,
+    val itemHeader: ProgramItemHeader?,
+    val minimumLocationAccuracy: Int?,
+    val disableManualLocation: Boolean?,
+    val quickActions: List<QuickAction>?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun uid(): String? = uid
+    fun completionSpinner(): Boolean? = completionSpinner
+    fun optionalSearch(): Boolean? = optionalSearch
+    fun disableReferrals(): Boolean? = disableReferrals
+    fun disableCollapsibleSections(): Boolean? = disableCollapsibleSections
+    fun itemHeader(): ProgramItemHeader? = itemHeader
+    fun minimumLocationAccuracy(): Int? = minimumLocationAccuracy
+    fun disableManualLocation(): Boolean? = disableManualLocation
+    fun quickActions(): List<QuickAction>? = quickActions
 
-@AutoValue
-public abstract class CompletionSpinner implements CoreObject {
+    fun toBuilder(): Builder = ProgramConfigurationSettingBuilder.from(this)
 
-    @Nullable
-    public abstract String uid();
+    class Builder : ProgramConfigurationSettingBuilder()
 
-    public abstract Boolean visible();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CompletionSpinner.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder visible(Boolean visible);
-
-        public abstract CompletionSpinner build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

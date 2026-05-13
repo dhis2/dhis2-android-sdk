@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,28 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.core.settings
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.settings.AppearanceSettings
-import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@Serializable
-internal data class AppearanceSettingsDTO(
-    val filterSorting: FilterSortingDTO?,
-    val programConfiguration: ProgramConfigurationSettingsDTO?,
-    val dataSetConfiguration: DataSetConfigurationSettingsDTO?,
-    val completionSpinner: CompletionSpinnerSettingDTO?,
+@ModelBuilder
+data class DataSetFilters(
+    val globalSettings: Map<DataSetFilter, FilterSetting>,
+    val specificSettings: Map<String, Map<DataSetFilter, FilterSetting>>,
 ) {
-    fun toDomain(): AppearanceSettings {
-        return AppearanceSettings.builder()
-            .filterSorting(filterSorting?.toDomain())
-            .programConfiguration(
-                programConfiguration?.toDomain() ?: AppearanceSettingsHelper.completionSpinnerToProgram(
-                    completionSpinner?.toDomain(),
-                ),
-            )
-            .dataSetConfiguration(dataSetConfiguration?.toDomain())
-            .build()
+
+    fun globalSettings(): Map<DataSetFilter, FilterSetting> = globalSettings
+    fun specificSettings(): Map<String, Map<DataSetFilter, FilterSetting>> = specificSettings
+
+    fun toBuilder(): Builder = DataSetFiltersBuilder.from(this)
+
+    class Builder : DataSetFiltersBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

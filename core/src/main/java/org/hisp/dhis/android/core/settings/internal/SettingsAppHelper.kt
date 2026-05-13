@@ -77,7 +77,7 @@ internal object SettingsAppHelper {
         return result
     }
 
-    private fun getHomeFilters(filters: MutableMap<HomeFilter, FilterSetting>) = filters.map { entry ->
+    private fun getHomeFilters(filters: Map<HomeFilter, FilterSetting>) = filters.map { entry ->
         entry.value.toBuilder()
             .scope(HomeFilter::class.simpleName!!)
             .filterType(entry.key.name)

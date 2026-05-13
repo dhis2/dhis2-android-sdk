@@ -26,29 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramFilters(
+    val globalSettings: Map<ProgramFilter, FilterSetting>,
+    val specificSettings: Map<String, Map<ProgramFilter, FilterSetting>>,
+) {
 
-@AutoValue
-public abstract class ProgramItemHeader {
+    fun globalSettings(): Map<ProgramFilter, FilterSetting> = globalSettings
+    fun specificSettings(): Map<String, Map<ProgramFilter, FilterSetting>> = specificSettings
 
-    @Nullable
-    public abstract String programIndicator();
+    fun toBuilder(): Builder = ProgramFiltersBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : ProgramFiltersBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_ProgramItemHeader.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programIndicator(String programIndicator);
-
-        public abstract ProgramItemHeader build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

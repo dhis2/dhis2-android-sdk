@@ -26,36 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetConfigurationSettings(
+    val globalSettings: DataSetConfigurationSetting?,
+    val specificSettings: Map<String, DataSetConfigurationSetting>?,
+) {
 
-import java.util.Map;
+    fun globalSettings(): DataSetConfigurationSetting? = globalSettings
+    fun specificSettings(): Map<String, DataSetConfigurationSetting>? = specificSettings
 
-@AutoValue
-public abstract class DataSetConfigurationSettings {
+    fun toBuilder(): Builder = DataSetConfigurationSettingsBuilder.from(this)
 
-    @Nullable
-    public abstract DataSetConfigurationSetting globalSettings();
+    class Builder : DataSetConfigurationSettingsBuilder()
 
-    @Nullable
-    public abstract Map<String, DataSetConfigurationSetting> specificSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetConfigurationSettings.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetConfigurationSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetConfigurationSetting> specificSettings);
-
-        public abstract DataSetConfigurationSettings build();
-    }
-
 }

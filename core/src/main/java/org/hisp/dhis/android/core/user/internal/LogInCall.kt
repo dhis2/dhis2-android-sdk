@@ -72,7 +72,7 @@ internal class LogInCall(
 
         val oauth2State = oauth2StateSecureStore.get(trimmedServerUrl!!, username!!)
         return if (oauth2State != null) {
-            logInWithOAuth2State(trimmedServerUrl, username, oauth2State)
+            logInWithOAuth2State(trimmedServerUrl, username, password, oauth2State)
         } else {
             exceptions.throwExceptionIfPasswordNull(password)
             logInWithPassword(trimmedServerUrl, username, password)
@@ -82,9 +82,10 @@ internal class LogInCall(
     private suspend fun logInWithOAuth2State(
         serverUrl: String,
         username: String,
+        pin: String?,
         state: OAuth2State,
     ): User {
-        val credentials = Credentials(username, serverUrl, null, null, state)
+        val credentials = Credentials(username, serverUrl, pin, null, state)
         return try {
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 networkHandler.authenticate("Bearer ${state.accessToken!!}")
@@ -154,6 +155,9 @@ internal class LogInCall(
 
         return coroutineAPICallExecutor.wrapTransactionallyRoom {
             try {
+                if (credentials.oauth2State != null) {
+                    verifyPinAgainstStoredHash(credentials)
+                }
                 val authenticatedUser = AuthenticatedUser.builder()
                     .user(user.uid())
                     .hash(credentials.getHash())
@@ -169,6 +173,13 @@ internal class LogInCall(
                 userIdStore.remove()
                 throw e
             }
+        }
+    }
+
+    private suspend fun verifyPinAgainstStoredHash(credentials: Credentials) {
+        val existing = authenticatedUserStore.selectFirst() ?: return
+        if (existing.hash() != credentials.getHash()) {
+            throw exceptions.badCredentialsError()
         }
     }
 

@@ -12772,12 +12772,14 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
+	public abstract fun changePin-gIAlu-s (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun getClientId ()Ljava/lang/String;
 	public abstract fun isDeviceRegistered ()Z
 	public abstract fun isLoggedIn ()Z
 	public abstract fun logOutObservable ()Lio/reactivex/Observable;
 	public abstract fun resetRegistration ()V
 	public abstract fun rxLogOutObservable ()Lio/reactivex/Observable;
+	public abstract fun setPin-IoAF18A (Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

@@ -264,6 +264,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun route_to_oauth2_path_with_bearer_when_state_exists_for_account() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(authenticatedUser.hash()).thenReturn(null)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
         whenever(
             userNetworkHandler.authenticate(credentialsCaptor.capture()),
@@ -279,6 +280,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun persist_credentials_with_oauth2_state_and_null_password_after_oauth2_login() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(authenticatedUser.hash()).thenReturn(null)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, null, SERVER_URL)
@@ -286,6 +288,19 @@ class LogInCallUnitShould : BaseCallShould() {
         verify(credentialsSecureStore).set(
             Credentials(USERNAME, SERVER_URL, null, null, state),
         )
+    }
+
+    @Test
+    fun reject_oauth2_login_when_pin_does_not_match_stored_hash() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        // Stored hash corresponds to a different PIN.
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
     }
 
     @Test

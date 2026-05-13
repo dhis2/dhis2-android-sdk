@@ -88,6 +88,7 @@ class ModelBuilderProcessor(
                 ClassField(
                     name = field.simpleName.asString(),
                     type = field.type.resolve(),
+                    isInternal = field.modifiers.contains(Modifier.INTERNAL),
                 )
             }
 
@@ -119,14 +120,16 @@ class ModelBuilderProcessor(
                 fields.joinToString("\n                ") { field ->
                     val name = field.name
                     val type = field.type.toString()
-                    val optOverride = if (overridenFields.contains(name)) "override " else ""
+                    val isOverride = overridenFields.contains(name)
+                    val optOverride = if (isOverride) "override " else ""
+                    val optInternal = if (field.isInternal && !isOverride) "internal " else ""
 
-                    "${optOverride}fun $name ($name: $type): $innerBuilderName = " +
+                    "${optInternal}${optOverride}fun $name ($name: $type): $innerBuilderName = " +
                             "this.also { this.$name = $name } as $innerBuilderName"
                 }
             }
                 
-                fun build(): $className {
+                open fun build(): $className {
                     return $className(
                         ${
                 fields.joinToString("\n                        ") { field ->
@@ -165,9 +168,9 @@ class ModelBuilderProcessor(
         val isNotNull = !field.type.isMarkedNullable
 
         return when {
-            isNotNull && isPrimitive -> "private var ${field.name} by Delegates.notNull<${field.type}>()"
-            isNotNull -> "private lateinit var ${field.name}: ${field.type}"
-            else -> "private var ${field.name}: ${field.type} = null"
+            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<${field.type}>()"
+            isNotNull -> "protected lateinit var ${field.name}: ${field.type}"
+            else -> "protected var ${field.name}: ${field.type} = null"
         }
     }
 
@@ -203,4 +206,5 @@ data class BaseClass(
 data class ClassField(
     val name: String,
     val type: KSType,
+    val isInternal: Boolean = false,
 )

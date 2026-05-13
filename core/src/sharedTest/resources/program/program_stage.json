@@ -15,7 +15,6 @@
   "repeatable": false,
   "featureType": "POINT",
   "enableUserAssignment": "true",
-  "captureCoordinates": true,
   "formType": "DEFAULT",
   "dueDateLabel": "Due date",
   "programStageLabel": "ProgramStage Label",

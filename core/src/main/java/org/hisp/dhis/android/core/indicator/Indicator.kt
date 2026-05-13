@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,58 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedentitytype
+package org.hisp.dhis.android.core.indicator
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.AccessDTO
-import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
-import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-@Serializable
-internal data class TrackedEntityTypeDTO(
-    override val id: String,
+@ModelBuilder
+data class Indicator(
+    override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
-    override val created: String?,
-    override val lastUpdated: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
     override val deleted: Boolean?,
     override val shortName: String?,
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    val trackedEntityTypeAttributes: List<TrackedEntityTypeAttributeDTO>?,
-    val featureType: String?,
-    val access: AccessDTO?,
-    val style: ObjectWithStyleDTO?,
-) : BaseNameableObjectDTO {
-    fun toDomain(): TrackedEntityType {
-        return TrackedEntityType.builder().apply {
-            applyBaseNameableFields(this@TrackedEntityTypeDTO)
-            trackedEntityTypeAttributes?.let { trackedEntityTypeAttributes(it.map { it.toDomain() }) }
-            featureType?.let { featureType(FeatureType.valueOf(it)) }
-            access?.let { access(it.toDomain()) }
-            style?.let { style(it.toDomain()) }
-        }.build()
+    val annualized: Boolean?,
+    val indicatorType: ObjectWithUid?,
+    val numerator: String?,
+    val numeratorDescription: String?,
+    val denominator: String?,
+    val denominatorDescription: String?,
+    val url: String?,
+    val decimals: Int?,
+    val legendSets: List<ObjectWithUid>?,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+
+    fun annualized(): Boolean? = annualized
+    fun indicatorType(): ObjectWithUid? = indicatorType
+    fun numerator(): String? = numerator
+    fun numeratorDescription(): String? = numeratorDescription
+    fun denominator(): String? = denominator
+    fun denominatorDescription(): String? = denominatorDescription
+    fun url(): String? = url
+    fun decimals(): Int? = decimals
+    fun legendSets(): List<ObjectWithUid>? = legendSets
+
+    fun toBuilder(): Builder = IndicatorBuilder.from(this)
+
+    class Builder : IndicatorBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }
-
-@Serializable
-internal class TrackedEntityTypePayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("trackedEntityTypes") override val items: List<TrackedEntityTypeDTO>,
-) : PayloadJson<TrackedEntityTypeDTO>(pager, items)

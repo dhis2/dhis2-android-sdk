@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
@@ -70,7 +69,7 @@ internal class FileResourceRoutine(
 
         val trackedEntityAttributesUids = trackedEntityAttributeCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .suspendGet().map(TrackedEntityAttribute::uid)
+            .suspendGet().map { it.uid() }
 
         val trackedEntityDataValues = trackedEntityDataValueCollectionRepository
             .byDataElement().`in`(dataElementsUids)

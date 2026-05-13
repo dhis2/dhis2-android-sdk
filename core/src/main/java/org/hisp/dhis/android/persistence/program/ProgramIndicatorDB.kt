@@ -86,7 +86,7 @@ internal data class ProgramIndicatorDB(
 
 internal fun ProgramIndicator.toDB(): ProgramIndicatorDB {
     return ProgramIndicatorDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

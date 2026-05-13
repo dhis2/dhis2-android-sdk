@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.trackedentitytype
+package org.hisp.dhis.android.core.validation
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.dto.AccessDTO
-import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
-import org.hisp.dhis.android.network.common.dto.PagerDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
-@Serializable
-internal data class TrackedEntityTypeDTO(
-    override val id: String,
+@ModelBuilder
+data class ValidationRule(
+    override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
-    override val created: String?,
-    override val lastUpdated: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
     override val deleted: Boolean?,
     override val shortName: String?,
     override val displayShortName: String?,
     override val description: String?,
     override val displayDescription: String?,
-    val trackedEntityTypeAttributes: List<TrackedEntityTypeAttributeDTO>?,
-    val featureType: String?,
-    val access: AccessDTO?,
-    val style: ObjectWithStyleDTO?,
-) : BaseNameableObjectDTO {
-    fun toDomain(): TrackedEntityType {
-        return TrackedEntityType.builder().apply {
-            applyBaseNameableFields(this@TrackedEntityTypeDTO)
-            trackedEntityTypeAttributes?.let { trackedEntityTypeAttributes(it.map { it.toDomain() }) }
-            featureType?.let { featureType(FeatureType.valueOf(it)) }
-            access?.let { access(it.toDomain()) }
-            style?.let { style(it.toDomain()) }
-        }.build()
+    val instruction: String?,
+    val importance: ValidationRuleImportance?,
+    val operator: ValidationRuleOperator?,
+    val periodType: PeriodType?,
+    val skipFormValidation: Boolean?,
+    val leftSide: ValidationRuleExpression,
+    val rightSide: ValidationRuleExpression,
+    val organisationUnitLevels: List<Int>,
+) : BaseNameableObjectKt, CoreObject {
+
+    fun instruction(): String? = instruction
+    fun importance(): ValidationRuleImportance? = importance
+    fun operator(): ValidationRuleOperator? = operator
+    fun periodType(): PeriodType? = periodType
+    fun skipFormValidation(): Boolean? = skipFormValidation
+    fun leftSide(): ValidationRuleExpression = leftSide
+    fun rightSide(): ValidationRuleExpression = rightSide
+    fun organisationUnitLevels(): List<Int> = organisationUnitLevels
+
+    fun toBuilder(): Builder = ValidationRuleBuilder.from(this)
+
+    class Builder : ValidationRuleBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }
-
-@Serializable
-internal class TrackedEntityTypePayload(
-    override val pager: PagerDTO? = null,
-    @SerialName("trackedEntityTypes") override val items: List<TrackedEntityTypeDTO>,
-) : PayloadJson<TrackedEntityTypeDTO>(pager, items)

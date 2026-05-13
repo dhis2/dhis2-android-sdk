@@ -25,43 +25,52 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class CategoryOption(
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val startDate: Date?,
+    val endDate: Date?,
+    val access: Access = defaultAccess(),
+    val organisationUnits: List<ObjectWithUid>?,
+) : BaseNameableObjectKt, CoreObject {
+    fun startDate(): Date? = startDate
 
-public abstract class BaseNameableObAuVa implements BaseNameableObject {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
+    fun endDate(): Date? = endDate
 
-    @Nullable
-    @Override
-    public abstract String shortName();
+    fun access(): Access = access
 
-    @Nullable
-    @Override
-    public abstract String displayShortName();
+    /**
+     * This method only return results in versions greater or equal to 2.37.
+     */
+    fun organisationUnits(): List<ObjectWithUid>? = organisationUnits
 
-    @Nullable
-    @Override
-    public abstract String description();
+    fun toBuilder(): Builder = CategoryOptionBuilder.from(this)
 
-    @Nullable
-    @Override
-    public abstract String displayDescription();
+    class Builder : CategoryOptionBuilder()
 
-    public abstract static class Builder<T extends Builder<T>>
-            extends BaseIdentifiableObAuVa.Builder<T>
-            implements BaseNameableObject.Builder<T> {
-
-        public abstract T shortName(@Nullable String shortName);
-
-        public abstract T displayShortName(@Nullable String displayShortName);
-
-        public abstract T description(@Nullable String description);
-
-        public abstract T displayDescription(@Nullable String displayDescription);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
     }
 }

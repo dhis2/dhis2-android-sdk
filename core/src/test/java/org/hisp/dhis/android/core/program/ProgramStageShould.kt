@@ -58,7 +58,6 @@ internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
         assertThat(programStage.allowGenerateNextVisit()).isFalse()
         assertThat(programStage.autoGenerateEvent()).isTrue()
         assertThat(programStage.blockEntryForm()).isFalse()
-        assertThat(programStage.captureCoordinates()).isTrue()
         assertThat(programStage.displayGenerateEventBox()).isFalse()
         assertThat(programStage.displayExecutionDateLabel()).isNull()
         assertThat(programStage.displayDueDateLabel()).isEqualTo("Due date")

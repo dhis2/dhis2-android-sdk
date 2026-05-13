@@ -69,13 +69,6 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
     @Nullable
     public abstract Boolean repeatable();
 
-    /**
-     * @deprecated since 2.29, replaced by {@link #featureType()}
-     */
-    @Deprecated
-    @Nullable
-    abstract Boolean captureCoordinates();
-
     @Nullable
     public abstract FeatureType featureType();
 
@@ -197,11 +190,6 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
 
         public abstract Builder repeatable(Boolean repeatable);
 
-        /**
-         * @deprecated since 2.29, replaced by {@link #featureType(FeatureType featureType)}
-         */
-        abstract Builder captureCoordinates(Boolean captureCoordinates);
-
         public abstract Builder featureType(FeatureType featureType);
 
         public abstract Builder formType(FormType formType);
@@ -263,10 +251,6 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
         abstract ProgramStage autoBuild();
 
         // Auxiliary fields
-        abstract Boolean captureCoordinates();
-
-        abstract FeatureType featureType();
-
         abstract Access access();
 
         abstract ObjectStyle style();
@@ -274,14 +258,6 @@ public abstract class ProgramStage extends BaseIdentifiableObAuVa
         abstract Boolean enableUserAssignment();
 
         public ProgramStage build() {
-            if (featureType() == null) {
-                if (captureCoordinates() != null) {
-                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
-                }
-            } else {
-                captureCoordinates(featureType() != FeatureType.NONE);
-            }
-
             try {
                 if (access() == null) {
                     access(AccessHelper.defaultAccess());

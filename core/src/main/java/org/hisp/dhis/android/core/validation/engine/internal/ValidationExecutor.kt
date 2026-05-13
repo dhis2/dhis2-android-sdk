@@ -107,7 +107,7 @@ internal class ValidationExecutor(private val expressionService: ExpressionServi
                 if (leftSideValue == null || rightSideValue == null) {
                     false
                 } else {
-                    val test = "$leftSideValue ${rule.operator().mathematicalOperator} $rightSideValue"
+                    val test = "$leftSideValue ${rule.operator()!!.mathematicalOperator} $rightSideValue"
                     !(expressionService.getExpressionValue(test) as Boolean)
                 }
             }

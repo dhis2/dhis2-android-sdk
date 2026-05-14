@@ -26,32 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.Map;
+@ModelBuilder
+data class CompletionSpinner(
+    val uid: String?,
+    val visible: Boolean,
+) : CoreObject {
 
-@AutoValue
-public abstract class DataSetFilters {
+    fun uid(): String? = uid
+    fun visible(): Boolean = visible
 
-    public abstract Map<DataSetFilter, FilterSetting> globalSettings();
+    fun toBuilder(): Builder = CompletionSpinnerBuilder.from(this)
 
-    public abstract Map<String, Map<DataSetFilter, FilterSetting>> specificSettings();
+    class Builder : CompletionSpinnerBuilder()
 
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetFilters.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder globalSettings(Map<DataSetFilter, FilterSetting> globalSettings);
-
-        public abstract Builder specificSettings(Map<String, Map<DataSetFilter, FilterSetting>> specificSettings);
-
-        public abstract DataSetFilters build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

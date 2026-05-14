@@ -26,35 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class FilterSorting(
+    val home: Map<HomeFilter, FilterSetting>,
+    val dataSetSettings: DataSetFilters,
+    val programSettings: ProgramFilters,
+) {
 
-import java.util.Map;
+    fun home(): Map<HomeFilter, FilterSetting> = home
+    fun dataSetSettings(): DataSetFilters = dataSetSettings
+    fun programSettings(): ProgramFilters = programSettings
 
-@AutoValue
-public abstract class CompletionSpinnerSetting {
+    fun toBuilder(): Builder = FilterSortingBuilder.from(this)
 
-    @Nullable
-    public abstract CompletionSpinner globalSettings();
+    class Builder : FilterSortingBuilder()
 
-    @Nullable
-    public abstract Map<String, CompletionSpinner> specificSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CompletionSpinnerSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(CompletionSpinner globalSettings);
-
-        public abstract Builder specificSettings(Map<String, CompletionSpinner> specificSettings);
-
-        public abstract CompletionSpinnerSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import java.util.Map;
+@ModelBuilder
+data class ProgramConfigurationSettings(
+    val globalSettings: ProgramConfigurationSetting?,
+    val specificSettings: Map<String, ProgramConfigurationSetting>?,
+) {
 
-@AutoValue
-public abstract class FilterSorting {
+    fun globalSettings(): ProgramConfigurationSetting? = globalSettings
+    fun specificSettings(): Map<String, ProgramConfigurationSetting>? = specificSettings
 
-    public abstract Map<HomeFilter, FilterSetting> home();
+    fun toBuilder(): Builder = ProgramConfigurationSettingsBuilder.from(this)
 
-    public abstract DataSetFilters dataSetSettings();
+    class Builder : ProgramConfigurationSettingsBuilder()
 
-    public abstract ProgramFilters programSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_FilterSorting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder home(Map<HomeFilter, FilterSetting> home);
-
-        public abstract Builder dataSetSettings(DataSetFilters dataSetSettings);
-
-        public abstract Builder programSettings(ProgramFilters programSettings);
-
-        public abstract FilterSorting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

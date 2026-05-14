@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,45 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class ProgramItemHeader(
+    val programIndicator: String?,
+) {
 
-import com.google.auto.value.AutoValue;
+    fun programIndicator(): String? = programIndicator
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun toBuilder(): Builder = ProgramItemHeaderBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetConfigurationSetting implements CoreObject, ObjectWithUidInterface {
+    class Builder : ProgramItemHeaderBuilder()
 
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract Integer minimumLocationAccuracy();
-
-    @Nullable
-    public abstract Boolean disableManualLocation();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetConfigurationSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
-
-        public abstract Builder disableManualLocation(Boolean disableManualLocation);
-
-        public abstract DataSetConfigurationSetting build();
-
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

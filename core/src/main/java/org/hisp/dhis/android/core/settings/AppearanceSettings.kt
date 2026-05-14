@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.programToCompletionSpinner
 
-import java.util.Map;
+@ModelBuilder
+data class AppearanceSettings(
+    val filterSorting: FilterSorting?,
+    val programConfiguration: ProgramConfigurationSettings?,
+    val dataSetConfiguration: DataSetConfigurationSettings?,
+) {
 
-@AutoValue
-public abstract class ProgramFilters {
+    fun filterSorting(): FilterSorting? = filterSorting
+    fun programConfiguration(): ProgramConfigurationSettings? = programConfiguration
+    fun dataSetConfiguration(): DataSetConfigurationSettings? = dataSetConfiguration
 
-    public abstract Map<ProgramFilter, FilterSetting> globalSettings();
+    @Deprecated("Use programConfiguration instead")
+    fun completionSpinner(): CompletionSpinnerSetting = programToCompletionSpinner(programConfiguration)
 
-    public abstract Map<String, Map<ProgramFilter, FilterSetting>> specificSettings();
+    fun toBuilder(): Builder = AppearanceSettingsBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : AppearanceSettingsBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_ProgramFilters.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder globalSettings(Map<ProgramFilter, FilterSetting> globalSettings);
-
-        public abstract Builder specificSettings(Map<String, Map<ProgramFilter, FilterSetting>> specificSettings);
-
-        public abstract ProgramFilters build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

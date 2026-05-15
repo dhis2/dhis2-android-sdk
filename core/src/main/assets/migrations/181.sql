@@ -11,3 +11,13 @@ CREATE TABLE CategoryMapping(uid TEXT NOT NULL, program TEXT NOT NULL, categoryI
 
 # Create CategoryOptionMapping table
 CREATE TABLE CategoryOptionMapping(categoryMapping TEXT NOT NULL, optionId TEXT NOT NULL, filter TEXT NOT NULL, PRIMARY KEY(categoryMapping, optionId), FOREIGN KEY(categoryMapping) REFERENCES CategoryMapping(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+
+# Uppercase ValidationRule.operator values to match new enum names (ANDROSDK-2298)
+UPDATE ValidationRule SET operator = 'EQUAL_TO' WHERE operator = 'equal_to';
+UPDATE ValidationRule SET operator = 'NOT_EQUAL_TO' WHERE operator = 'not_equal_to';
+UPDATE ValidationRule SET operator = 'GREATER_THAN' WHERE operator = 'greater_than';
+UPDATE ValidationRule SET operator = 'GREATER_THAN_OR_EQUAL_TO' WHERE operator = 'greater_than_or_equal_to';
+UPDATE ValidationRule SET operator = 'LESS_THAN' WHERE operator = 'less_than';
+UPDATE ValidationRule SET operator = 'LESS_THAN_OR_EQUAL_TO' WHERE operator = 'less_than_or_equal_to';
+UPDATE ValidationRule SET operator = 'COMPULSORY_PAIR' WHERE operator = 'compulsory_pair';
+UPDATE ValidationRule SET operator = 'EXCLUSIVE_PAIR' WHERE operator = 'exclusive_pair';

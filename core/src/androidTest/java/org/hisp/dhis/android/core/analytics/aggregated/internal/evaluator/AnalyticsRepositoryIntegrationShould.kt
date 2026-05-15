@@ -35,8 +35,14 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.AggregationType
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
+import org.hisp.dhis.android.core.program.CategoryMapping
+import org.hisp.dhis.android.core.program.CategoryOptionMapping
+import org.hisp.dhis.android.core.program.internal.CategoryMappingStore
+import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
+import org.hisp.dhis.android.core.program.internal.ProgramIndicatorStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -100,6 +106,69 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods.size).isEqualTo(2)
         assertThat(valuePeriods[0]).isEqualTo("2021")
         assertThat(valuePeriods[1]).isEqualTo("2022")
+    }
+
+    @Test
+    fun evaluate_program_indicator_disaggregation() = runTest {
+        val programIndicatorStore: ProgramIndicatorStore = koin.get()
+        val categoryMappingStore: CategoryMappingStore = koin.get()
+        val categoryOptionMappingStore: CategoryOptionMappingStore = koin.get()
+
+        val originalProgramIndicator = programIndicatorStore.selectByUid("GSae40Fyppf")!!
+        val programUid = originalProgramIndicator.program()!!.uid()
+
+        val genderCategoryUid = "cX5k9anHEHd"
+        val femaleOptionUid = "apsOixVZlf1"
+        val maleOptionUid = "jRbMi0aBjYn"
+        val birthsCategoryComboUid = "m2jTvAj5kkm"
+        val mappingUid = "genderMappingForGSae40Fyppf"
+
+        val genderMapping = CategoryMapping.builder()
+            .uid(mappingUid)
+            .program(programUid)
+            .categoryId(genderCategoryUid)
+            .mappingName("standard Gender mapping")
+            .optionMappings(emptyList())
+            .build()
+        categoryMappingStore.insertIfNotExists(genderMapping)
+
+        val femaleOptionMapping = CategoryOptionMapping.builder()
+            .categoryMapping(mappingUid)
+            .optionId(femaleOptionUid)
+            .filter("1 == 1")
+            .build()
+        val maleOptionMapping = CategoryOptionMapping.builder()
+            .categoryMapping(mappingUid)
+            .optionId(maleOptionUid)
+            .filter("1 == 1")
+            .build()
+        categoryOptionMappingStore.insertIfNotExists(femaleOptionMapping)
+        categoryOptionMappingStore.insertIfNotExists(maleOptionMapping)
+
+        val disaggregatedProgramIndicator = originalProgramIndicator.toBuilder()
+            .categoryCombo(ObjectWithUid.create(birthsCategoryComboUid))
+            .categoryMappingIds(listOf(mappingUid))
+            .build()
+        programIndicatorStore.updateOrInsert(disaggregatedProgramIndicator)
+
+        try {
+            val result = d2.analyticsModule().analytics()
+                .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("GSae40Fyppf"))
+                .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+                .withDimension(DimensionItem.CategoryItem(genderCategoryUid, femaleOptionUid))
+                .withDimension(DimensionItem.CategoryItem(genderCategoryUid, maleOptionUid))
+                .blockingEvaluate()
+                .getOrThrow()
+
+            val valueDimensions = result.values.map { it.dimensions }
+            assertThat(valueDimensions.size).isEqualTo(2)
+            assertThat(valueDimensions.any { femaleOptionUid in it }).isTrue()
+            assertThat(valueDimensions.any { maleOptionUid in it }).isTrue()
+        } finally {
+            programIndicatorStore.updateOrInsert(originalProgramIndicator)
+            categoryOptionMappingStore.deleteLinksForMasterUid(mappingUid)
+            categoryMappingStore.deleteLinksForMasterUid(programUid)
+        }
     }
 
     @Test

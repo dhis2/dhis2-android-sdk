@@ -25,26 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.validation
 
-package org.hisp.dhis.android.core.validation;
+enum class ValidationRuleOperator(val mathematicalOperator: String, val apiName: String) {
+    EQUAL_TO("==", "equal_to"),
+    NOT_EQUAL_TO("!=", "not_equal_to"),
+    GREATER_THAN(">", "greater_than"),
+    GREATER_THAN_OR_EQUAL_TO(">=", "greater_than_or_equal_to"),
+    LESS_THAN("<", "less_than"),
+    LESS_THAN_OR_EQUAL_TO("<=", "less_than_or_equal_to"),
+    COMPULSORY_PAIR("[compulsory pair]", "compulsory_pair"),
+    EXCLUSIVE_PAIR("[exclusive pair]", "exclusive_pair"),
+    ;
 
-public enum ValidationRuleOperator {
-    equal_to("=="),
-    not_equal_to("!="),
-    greater_than(">"),
-    greater_than_or_equal_to(">="),
-    less_than("<"),
-    less_than_or_equal_to("<="),
-    compulsory_pair("[compulsory pair]"),
-    exclusive_pair("[exclusive pair]");
-
-    private final String mathematicalOperator;
-
-    ValidationRuleOperator(String mathematicalOperator) {
-        this.mathematicalOperator = mathematicalOperator;
-    }
-
-    public String getMathematicalOperator() {
-        return mathematicalOperator;
+    companion object {
+        fun fromApiName(apiName: String): ValidationRuleOperator? {
+            return entries.firstOrNull { it.apiName == apiName }
+        }
     }
 }

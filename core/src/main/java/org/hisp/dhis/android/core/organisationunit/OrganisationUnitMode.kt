@@ -25,28 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit
 
 /**
  * Defines the selection of organisation units.
  *
- * <ul>
- * <li>SELECTED: specified units only.</li>
- * <li>CHILDREN: immediate children of specified units, including specified units.</li>
- * <li>DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.</li>
- * <li>ACCESSIBLE: all organisation units accessible by the user (search scope).</li>
- * <li>ALL: all units in system.</li>
- * </ul>
+ *
+ *  * SELECTED: specified units only.
+ *  * CHILDREN: immediate children of specified units, including specified units.
+ *  * DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.
+ *  * ACCESSIBLE: all organisation units accessible by the user (search scope).
+ *  * ALL: all units in system.
+ *
  *
  * @author Lars Helge Overland
  */
-
-public enum OrganisationUnitMode {
+enum class OrganisationUnitMode {
     SELECTED,
     CHILDREN,
     DESCENDANTS,
     ACCESSIBLE,
     CAPTURE,
-    ALL
+    ALL,
 }

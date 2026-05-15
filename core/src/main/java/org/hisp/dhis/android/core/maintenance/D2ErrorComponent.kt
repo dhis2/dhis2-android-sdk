@@ -25,11 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.maintenance;
-
-public enum D2ErrorComponent {
+enum class D2ErrorComponent {
     Server,
     SDK,
-    Database
+    Database,
 }

@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-public enum CustomIntentActionType {
+enum class CustomIntentActionType {
     DATA_ENTRY,
-    SEARCH
+    SEARCH,
 }

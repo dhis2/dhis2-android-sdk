@@ -25,14 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
-
-public enum ProgramRuleVariableSourceType {
+enum class ProgramRuleVariableSourceType {
     DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE,
     DATAELEMENT_NEWEST_EVENT_PROGRAM,
     DATAELEMENT_CURRENT_EVENT,
     DATAELEMENT_PREVIOUS_EVENT,
     CALCULATED_VALUE,
-    TEI_ATTRIBUTE
+    TEI_ATTRIBUTE,
 }

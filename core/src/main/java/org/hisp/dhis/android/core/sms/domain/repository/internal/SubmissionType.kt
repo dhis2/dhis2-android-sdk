@@ -25,24 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository.internal
 
-package org.hisp.dhis.android.core.sms.domain.repository.internal;
-
-public enum SubmissionType {
+enum class SubmissionType(text: String) {
     SIMPLE_EVENT("simple"),
     TRACKER_EVENT("tracker"),
     ENROLLMENT("enrollment"),
     DATA_SET("dataset"),
     RELATIONSHIP("relationship"),
-    DELETION("deletion");
+    DELETION("deletion"),
+    ;
 
-    private final String text;
+    val text: String?
 
-    SubmissionType(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
+    init {
+        this.text = text
     }
 }

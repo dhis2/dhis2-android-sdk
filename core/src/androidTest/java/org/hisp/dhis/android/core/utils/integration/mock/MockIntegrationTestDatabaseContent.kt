@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.utils.integration.mock;
-
-public enum MockIntegrationTestDatabaseContent {
+enum class MockIntegrationTestDatabaseContent {
     EmptyEnqueable,
     EmptyDispatcher,
     FullDispatcher,

@@ -80,7 +80,8 @@ class ModelBuilderProcessor(
             val baseClass = baseClasses.find { baseClass ->
                 symbol.getAllSuperTypes().any { it.declaration.simpleName.asString() == baseClass.name }
             }
-            val implementationClass = baseClass?.let { ": ${baseClass.builder}.Builder<$builderName> " } ?: ""
+            val implementationClass =
+                baseClass?.let { ": ${baseClass.builder}.Builder<$innerBuilderName> " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
             val visibilityModifier = if (symbol.modifiers.contains(Modifier.INTERNAL)) "internal " else ""
 

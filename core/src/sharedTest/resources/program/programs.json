@@ -113,6 +113,23 @@
             "id": "b0vcadVrn08"
           }
         }
+      ],
+      "categoryMappings": [
+        {
+          "id": "genderMappingForGSae40Fyppf",
+          "categoryId": "cX5k9anHEHd",
+          "mappingName": "standard Gender mapping",
+          "optionMappings": [
+            {
+              "optionId": "apsOixVZlf1",
+              "filter": "1 == 1"
+            },
+            {
+              "optionId": "jRbMi0aBjYn",
+              "filter": "1 == 1"
+            }
+          ]
+        }
       ]
     },
     {

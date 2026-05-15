@@ -64,7 +64,7 @@ class ValidationRuleRepositoryMockIntegrationShould : BaseMockIntegrationTestFul
     @Test
     fun filter_by_operator() {
         val validationRule = d2.validationModule().validationRules()
-            .byOperator().eq(ValidationRuleOperator.less_than)
+            .byOperator().eq(ValidationRuleOperator.LESS_THAN)
             .blockingGet()
 
         assertThat(validationRule.size).isEqualTo(1)

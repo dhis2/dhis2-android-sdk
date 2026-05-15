@@ -68,7 +68,7 @@ internal data class ValidationRuleDTO(
                 .applyBaseNameableFields(this)
                 .instruction(instruction)
                 .importance(ValidationRuleImportance.valueOf(importance))
-                .operator(ValidationRuleOperator.valueOf(operator))
+                .operator(ValidationRuleOperator.fromApiName(operator))
                 .periodType(PeriodType.valueOf(periodType))
                 .skipFormValidation(skipFormValidation)
                 .leftSide(leftSide.toDomain())

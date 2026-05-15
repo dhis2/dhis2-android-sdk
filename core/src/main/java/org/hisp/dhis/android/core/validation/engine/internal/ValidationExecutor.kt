@@ -87,8 +87,8 @@ internal class ValidationExecutor(private val expressionService: ExpressionServi
 
     private fun isViolation(rule: ValidationRule, leftSide: Double?, rightSide: Double?): Boolean {
         return when (rule.operator()) {
-            ValidationRuleOperator.compulsory_pair -> leftSide == null != (rightSide == null)
-            ValidationRuleOperator.exclusive_pair -> leftSide != null && rightSide != null
+            ValidationRuleOperator.COMPULSORY_PAIR -> leftSide == null != (rightSide == null)
+            ValidationRuleOperator.EXCLUSIVE_PAIR -> leftSide != null && rightSide != null
             else -> {
                 val leftSideValue = leftSide
                     ?: if (rule.leftSide().missingValueStrategy() == MissingValueStrategy.NEVER_SKIP) {

@@ -103,7 +103,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            DateUtils.addMonths(Date(), -period.months)
+            DateUtils.addMonths(Date(), -period.months!!)
         }
     }
 

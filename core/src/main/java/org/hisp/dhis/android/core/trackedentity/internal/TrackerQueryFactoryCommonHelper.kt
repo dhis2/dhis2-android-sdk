@@ -231,7 +231,7 @@ internal class TrackerQueryFactoryCommonHelper(
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            val startDate = DateUtils.addMonths(Date(), -period.months)
+            val startDate = DateUtils.addMonths(Date(), -period.months!!)
             DateUtils.DATE_FORMAT.format(startDate)
         }
     }

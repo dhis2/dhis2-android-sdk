@@ -1845,6 +1845,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/intern
 public final class org/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType : java/lang/Enum {
 	public static final field ASC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
 	public static final field DESC Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/arch/db/sqlorder/internal/SQLOrderType;
 }
@@ -3823,6 +3824,7 @@ public final class org/hisp/dhis/android/core/common/AssignedUserMode : java/lan
 	public static final field CURRENT Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public static final field NONE Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public static final field PROVIDED Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 }
@@ -4192,6 +4194,7 @@ public final class org/hisp/dhis/android/core/common/DateFilterPeriodBuilder$Com
 public final class org/hisp/dhis/android/core/common/DatePeriodType : java/lang/Enum {
 	public static final field ABSOLUTE Lorg/hisp/dhis/android/core/common/DatePeriodType;
 	public static final field RELATIVE Lorg/hisp/dhis/android/core/common/DatePeriodType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/DatePeriodType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/DatePeriodType;
 }
@@ -4341,9 +4344,10 @@ public final class org/hisp/dhis/android/core/common/FormType : java/lang/Enum {
 	public static final field DEFAULT Lorg/hisp/dhis/android/core/common/FormType;
 	public static final field SECTION Lorg/hisp/dhis/android/core/common/FormType;
 	public static final field SECTION_MULTIORG Lorg/hisp/dhis/android/core/common/FormType;
-	public fun isCustom ()Z
-	public fun isDefault ()Z
-	public fun isSection ()Z
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isCustom ()Z
+	public final fun isDefault ()Z
+	public final fun isSection ()Z
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FormType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/FormType;
 }
@@ -4758,6 +4762,7 @@ public final class org/hisp/dhis/android/core/common/ValueTypeRenderingType : ja
 	public static final field VALUE Lorg/hisp/dhis/android/core/common/ValueTypeRenderingType;
 	public static final field VERTICAL_CHECKBOXES Lorg/hisp/dhis/android/core/common/ValueTypeRenderingType;
 	public static final field VERTICAL_RADIOBUTTONS Lorg/hisp/dhis/android/core/common/ValueTypeRenderingType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/ValueTypeRenderingType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/ValueTypeRenderingType;
 }
@@ -5547,6 +5552,7 @@ public final class org/hisp/dhis/android/core/dataapproval/DataApprovalState : j
 	public static final field UNAPPROVED_ELSEWHERE Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 	public static final field UNAPPROVED_READY Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 	public static final field UNAPPROVED_WAITING Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 	public static fun values ()[Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
 }
@@ -7175,6 +7181,7 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentStatus : java
 	public static final field ACTIVE Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 	public static final field CANCELLED Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 	public static final field COMPLETED Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 }
@@ -7477,6 +7484,7 @@ public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum
 	public static final field SCHEDULE Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static final field SKIPPED Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static final field VISITED Lorg/hisp/dhis/android/core/event/EventStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/event/EventStatus;
 }
@@ -7920,6 +7928,7 @@ public final class org/hisp/dhis/android/core/imports/ImportStatus : java/lang/E
 	public static final field ERROR Lorg/hisp/dhis/android/core/imports/ImportStatus;
 	public static final field SUCCESS Lorg/hisp/dhis/android/core/imports/ImportStatus;
 	public static final field WARNING Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/ImportStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/imports/ImportStatus;
 }
@@ -8439,6 +8448,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field USER_ACCOUNT_LOCKED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field VALUES_RESERVATION_TOOK_TOO_LONG Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field VALUE_CANT_BE_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static fun values ()[Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 }
@@ -8456,6 +8466,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorComponent : jav
 	public static final field Database Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 	public static final field SDK Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 	public static final field Server Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 	public static fun values ()[Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 }
@@ -9176,6 +9187,7 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitM
 	public static final field CHILDREN Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
 	public static final field DESCENDANTS Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
 	public static final field SELECTED Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
 	public static fun values ()[Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
 }
@@ -10283,6 +10295,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleActionType : ja
 	public static final field SHOWOPTIONGROUP Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
 	public static final field SHOWWARNING Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
 	public static final field WARNINGONCOMPLETE Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;
 }
@@ -10334,6 +10347,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleVariableSourceT
 	public static final field DATAELEMENT_NEWEST_EVENT_PROGRAM_STAGE Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 	public static final field DATAELEMENT_PREVIOUS_EVENT Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 	public static final field TEI_ATTRIBUTE Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 }
@@ -10785,6 +10799,7 @@ public final class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttrib
 public final class org/hisp/dhis/android/core/program/ProgramType : java/lang/Enum {
 	public static final field WITHOUT_REGISTRATION Lorg/hisp/dhis/android/core/program/ProgramType;
 	public static final field WITH_REGISTRATION Lorg/hisp/dhis/android/core/program/ProgramType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/ProgramType;
 }
@@ -10806,6 +10821,7 @@ public final class org/hisp/dhis/android/core/program/SectionRenderingType : jav
 	public static final field LISTING Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 	public static final field MATRIX Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 	public static final field SEQUENTIAL Lorg/hisp/dhis/android/core/program/SectionRenderingType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 }
@@ -11111,6 +11127,7 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipEntityTyp
 	public static final field PROGRAM_INSTANCE Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
 	public static final field PROGRAM_STAGE_INSTANCE Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
 	public static final field TRACKED_ENTITY_INSTANCE Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
 }
@@ -11879,6 +11896,7 @@ public abstract class org/hisp/dhis/android/core/settings/CustomIntent$Builder {
 public final class org/hisp/dhis/android/core/settings/CustomIntentActionType : java/lang/Enum {
 	public static final field DATA_ENTRY Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
 	public static final field SEARCH Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/CustomIntentActionType;
 }
@@ -12317,21 +12335,31 @@ public final class org/hisp/dhis/android/core/settings/DataSyncPeriod$Companion 
 
 public final class org/hisp/dhis/android/core/settings/DownloadPeriod : java/lang/Enum {
 	public static final field ANY Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/DownloadPeriod$Companion;
 	public static final field LAST_12_MONTHS Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public static final field LAST_3_MONTHS Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public static final field LAST_MONTH Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
-	public static fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
-	public fun getMonths ()Ljava/lang/Integer;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getMonths ()Ljava/lang/Integer;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
 }
 
+public final class org/hisp/dhis/android/core/settings/DownloadPeriod$Companion {
+	public final fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/DownloadPeriod;
+}
+
 public final class org/hisp/dhis/android/core/settings/EnrollmentScope : java/lang/Enum {
 	public static final field ALL Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/EnrollmentScope$Companion;
 	public static final field ONLY_ACTIVE Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
-	public static fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
+}
+
+public final class org/hisp/dhis/android/core/settings/EnrollmentScope$Companion {
+	public final fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
 }
 
 public final class org/hisp/dhis/android/core/settings/ExperimentalFeature : java/lang/Enum {
@@ -12631,13 +12659,18 @@ public final class org/hisp/dhis/android/core/settings/LatestAppVersionObjectRep
 
 public final class org/hisp/dhis/android/core/settings/LimitScope : java/lang/Enum {
 	public static final field ALL_ORG_UNITS Lorg/hisp/dhis/android/core/settings/LimitScope;
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/LimitScope$Companion;
 	public static final field GLOBAL Lorg/hisp/dhis/android/core/settings/LimitScope;
 	public static final field PER_ORG_UNIT Lorg/hisp/dhis/android/core/settings/LimitScope;
 	public static final field PER_OU_AND_PROGRAM Lorg/hisp/dhis/android/core/settings/LimitScope;
 	public static final field PER_PROGRAM Lorg/hisp/dhis/android/core/settings/LimitScope;
-	public static fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LimitScope;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LimitScope;
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/LimitScope;
+}
+
+public final class org/hisp/dhis/android/core/settings/LimitScope$Companion {
+	public final fun forName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/LimitScope;
 }
 
 public final class org/hisp/dhis/android/core/settings/MetadataSyncPeriod : java/lang/Enum {
@@ -13648,7 +13681,8 @@ public final class org/hisp/dhis/android/core/sms/domain/repository/internal/Sub
 	public static final field RELATIONSHIP Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
 	public static final field SIMPLE_EVENT Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
 	public static final field TRACKER_EVENT Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
-	public fun getText ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getText ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
 }
@@ -15833,6 +15867,7 @@ public final class org/hisp/dhis/android/core/validation/MissingValueStrategy : 
 	public static final field NEVER_SKIP Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
 	public static final field SKIP_IF_ALL_VALUES_MISSING Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
 	public static final field SKIP_IF_ANY_VALUE_MISSING Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
 	public static fun values ()[Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
 }
@@ -16042,22 +16077,30 @@ public final class org/hisp/dhis/android/core/validation/ValidationRuleImportanc
 	public static final field HIGH Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
 	public static final field LOW Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
 	public static final field MEDIUM Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
 	public static fun values ()[Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;
 }
 
 public final class org/hisp/dhis/android/core/validation/ValidationRuleOperator : java/lang/Enum {
-	public static final field compulsory_pair Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field equal_to Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field exclusive_pair Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field greater_than Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field greater_than_or_equal_to Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field less_than Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field less_than_or_equal_to Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public static final field not_equal_to Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
-	public fun getMathematicalOperator ()Ljava/lang/String;
+	public static final field COMPULSORY_PAIR Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator$Companion;
+	public static final field EQUAL_TO Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field EXCLUSIVE_PAIR Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field GREATER_THAN Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field GREATER_THAN_OR_EQUAL_TO Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field LESS_THAN Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field LESS_THAN_OR_EQUAL_TO Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public static final field NOT_EQUAL_TO Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+	public final fun getApiName ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getMathematicalOperator ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
 	public static fun values ()[Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
+}
+
+public final class org/hisp/dhis/android/core/validation/ValidationRuleOperator$Companion {
+	public final fun fromApiName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;
 }
 
 public abstract interface class org/hisp/dhis/android/core/validation/engine/ValidationEngine {

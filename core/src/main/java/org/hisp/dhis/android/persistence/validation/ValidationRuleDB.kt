@@ -47,7 +47,7 @@ internal data class ValidationRuleDB(
             applyBaseNameableFields(this@ValidationRuleDB)
             instruction(instruction)
             importance(importance?.let { ValidationRuleImportance.valueOf(it) })
-            operator(operator?.let { ValidationRuleOperator.fromApiName(it) })
+            operator(operator?.let { ValidationRuleOperator.valueOf(it) })
             periodType(periodType?.let { PeriodType.valueOf(it) })
             skipFormValidation(skipFormValidation)
             leftSide(
@@ -83,7 +83,7 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         displayDescription = displayDescription(),
         instruction = instruction(),
         importance = importance()?.name,
-        operator = operator()?.apiName,
+        operator = operator()?.name,
         periodType = periodType()?.name,
         skipFormValidation = skipFormValidation(),
         leftSideExpression = leftSide().expression(),

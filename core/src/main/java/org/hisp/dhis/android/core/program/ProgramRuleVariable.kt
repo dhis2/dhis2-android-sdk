@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,58 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramRuleVariable(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val useCodeForOptionSet: Boolean?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val dataElement: ObjectWithUid?,
+    val trackedEntityAttribute: ObjectWithUid?,
+    val programRuleVariableSourceType: ProgramRuleVariableSourceType?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun useCodeForOptionSet(): Boolean? = useCodeForOptionSet
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun trackedEntityAttribute(): ObjectWithUid? = trackedEntityAttribute
+    fun programRuleVariableSourceType(): ProgramRuleVariableSourceType? = programRuleVariableSourceType
 
-@AutoValue
-public abstract class ProgramRuleVariable extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ProgramRuleVariableBuilder.from(this)
 
-    @Nullable
-    public abstract Boolean useCodeForOptionSet();
+    class Builder : ProgramRuleVariableBuilder()
 
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid trackedEntityAttribute();
-
-    @Nullable
-    public abstract ProgramRuleVariableSourceType programRuleVariableSourceType();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramRuleVariable.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder useCodeForOptionSet(Boolean useCodeForOptionSet);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
-
-        public abstract Builder programRuleVariableSourceType(
-                ProgramRuleVariableSourceType programRuleVariableSourceType);
-
-        public abstract ProgramRuleVariable build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

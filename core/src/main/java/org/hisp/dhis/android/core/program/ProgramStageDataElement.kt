@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,75 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueTypeRendering
+import org.hisp.dhis.android.core.dataelement.DataElement
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageDataElement(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val displayInReports: Boolean?,
+    val compulsory: Boolean?,
+    val allowProvidedElsewhere: Boolean?,
+    val sortOrder: Int?,
+    val allowFutureDate: Boolean?,
+    internal val fullDataElement: DataElement?,
+    val dataElement: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val renderType: ValueTypeRendering?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueTypeRendering;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+    fun displayInReports(): Boolean? = displayInReports
+    fun compulsory(): Boolean? = compulsory
+    fun allowProvidedElsewhere(): Boolean? = allowProvidedElsewhere
+    fun sortOrder(): Int? = sortOrder
+    fun allowFutureDate(): Boolean? = allowFutureDate
+    internal fun fullDataElement(): DataElement? = fullDataElement
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun programStage(): ObjectWithUid? = programStage
+    fun renderType(): ValueTypeRendering? = renderType
 
-@AutoValue
-public abstract class ProgramStageDataElement extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ProgramStageDataElementBuilder.from(this)
 
-    @Nullable
-    public abstract Boolean displayInReports();
+    class Builder : ProgramStageDataElementBuilder()
 
-    @Nullable
-    public abstract Boolean compulsory();
-
-    @Nullable
-    public abstract Boolean allowProvidedElsewhere();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    @Nullable
-    public abstract Boolean allowFutureDate();
-
-    @Nullable
-    abstract DataElement fullDataElement();
-
-    @Nullable
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract ValueTypeRendering renderType();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageDataElement.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder displayInReports(Boolean displayInReports);
-
-        public abstract Builder compulsory(Boolean compulsory);
-
-        public abstract Builder allowProvidedElsewhere(Boolean allowProvidedElsewhere);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder allowFutureDate(Boolean allowFutureDate);
-
-        abstract Builder fullDataElement(DataElement fullDataElement);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder renderType(ValueTypeRendering renderType);
-
-        public abstract ProgramStageDataElement build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

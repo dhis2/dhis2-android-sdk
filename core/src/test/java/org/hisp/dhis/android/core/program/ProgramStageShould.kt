@@ -69,7 +69,7 @@ internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
         assertThat(programStage.repeatable()).isFalse()
         assertThat(programStage.reportDateToUse()).isEqualTo("false")
         assertThat(programStage.standardInterval()).isNull()
-        assertThat(ProgramStageInternalAccessor.accessProgramStageSections(programStage)).isEmpty()
+        assertThat(programStage.programStageSections()).isEmpty()
         assertThat(programStage.periodType()).isEqualTo(PeriodType.Monthly)
         assertThat(programStage.remindCompleted()).isFalse()
         assertThat(programStage.validationStrategy()).isEqualTo(ValidationStrategy.ON_UPDATE_AND_INSERT)
@@ -78,7 +78,7 @@ internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
         assertThat(programStage.displayProgramStageLabel()).isEqualTo("ProgramStage Label")
         assertThat(programStage.displayEventLabel()).isEqualTo("Event Label")
 
-        val dataElements = ProgramStageInternalAccessor.accessProgramStageDataElements(programStage)
+        val dataElements = programStage.programStageDataElements()
         assertThat(dataElements?.get(0)?.uid()).isEqualTo("EQCf1l2Mdr8")
         assertThat(dataElements?.get(1)?.uid()).isEqualTo("muxw4SGzUwJ")
         assertThat(dataElements?.get(2)?.uid()).isEqualTo("KWybjio9UZT")

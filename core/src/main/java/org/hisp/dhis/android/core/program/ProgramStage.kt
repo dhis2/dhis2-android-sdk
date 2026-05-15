@@ -1,282 +1,161 @@
-package org.hisp.dhis.android.core.program;
+/*
+ *  Copyright (c) 2004-2026, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.program
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValidationStrategy
+import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.FormType;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValidationStrategy;
-import org.hisp.dhis.android.core.period.PeriodType;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class ProgramStage(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val description: String?,
+    val displayDescription: String?,
+    val displayExecutionDateLabel: String?,
+    val displayDueDateLabel: String?,
+    val allowGenerateNextVisit: Boolean?,
+    val validCompleteOnly: Boolean?,
+    val reportDateToUse: String?,
+    val openAfterEnrollment: Boolean?,
+    val repeatable: Boolean?,
+    val featureType: FeatureType?,
+    val formType: FormType?,
+    val displayGenerateEventBox: Boolean?,
+    val generatedByEnrollmentDate: Boolean?,
+    val autoGenerateEvent: Boolean?,
+    val sortOrder: Int?,
+    val hideDueDate: Boolean?,
+    val blockEntryForm: Boolean?,
+    val minDaysFromStart: Int?,
+    val standardInterval: Int?,
+    val enableUserAssignment: Boolean?,
+    internal val programStageSections: List<ProgramStageSection>?,
+    internal val programStageDataElements: List<ProgramStageDataElement>?,
+    val periodType: PeriodType?,
+    val program: ObjectWithUid?,
+    val access: Access,
+    val remindCompleted: Boolean?,
+    val validationStrategy: ValidationStrategy?,
+    val displayProgramStageLabel: String?,
+    val displayEventLabel: String?,
+    val attributeValues: List<AttributeValue>?,
+    override val style: ObjectStyle,
+) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import java.util.List;
+    fun description(): String? = description
+    fun displayDescription(): String? = displayDescription
 
-@AutoValue
-@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
-public abstract class ProgramStage extends BaseIdentifiableObAuVa
-        implements ObjectWithStyle, CoreObject {
+    @Deprecated("since v41, replaced by displayExecutionDateLabel()")
+    fun executionDateLabel(): String? = displayExecutionDateLabel
+    fun displayExecutionDateLabel(): String? = displayExecutionDateLabel
 
-    @Nullable
-    public abstract String description();
+    @Deprecated("since v41, replaced by displayDueDateLabel()")
+    fun dueDateLabel(): String? = displayDueDateLabel
+    fun displayDueDateLabel(): String? = displayDueDateLabel
 
-    @Nullable
-    public abstract String displayDescription();
+    fun allowGenerateNextVisit(): Boolean? = allowGenerateNextVisit
+    fun validCompleteOnly(): Boolean? = validCompleteOnly
+    fun reportDateToUse(): String? = reportDateToUse
+    fun openAfterEnrollment(): Boolean? = openAfterEnrollment
+    fun repeatable(): Boolean? = repeatable
+    fun featureType(): FeatureType? = featureType
+    fun formType(): FormType? = formType
+    fun displayGenerateEventBox(): Boolean? = displayGenerateEventBox
+    fun generatedByEnrollmentDate(): Boolean? = generatedByEnrollmentDate
+    fun autoGenerateEvent(): Boolean? = autoGenerateEvent
+    fun sortOrder(): Int? = sortOrder
+    fun hideDueDate(): Boolean? = hideDueDate
+    fun blockEntryForm(): Boolean? = blockEntryForm
+    fun minDaysFromStart(): Int? = minDaysFromStart
+    fun standardInterval(): Int? = standardInterval
+    fun enableUserAssignment(): Boolean? = enableUserAssignment
+    internal fun programStageSections(): List<ProgramStageSection>? = programStageSections
+    internal fun programStageDataElements(): List<ProgramStageDataElement>? = programStageDataElements
+    fun periodType(): PeriodType? = periodType
+    fun program(): ObjectWithUid? = program
+    fun access(): Access = access
+    fun remindCompleted(): Boolean? = remindCompleted
+    fun validationStrategy(): ValidationStrategy? = validationStrategy
 
-    /**
-     * @deprecated since v41, replaced by {@link #displayExecutionDateLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String executionDateLabel() {
-        return displayExecutionDateLabel();
+    @Deprecated("since v41, replaced by displayProgramStageLabel()")
+    fun programStageLabel(): String? = displayProgramStageLabel
+    fun displayProgramStageLabel(): String? = displayProgramStageLabel
+
+    @Deprecated("since v41, replaced by displayEventLabel()")
+    fun eventLabel(): String? = displayEventLabel
+    fun displayEventLabel(): String? = displayEventLabel
+
+    fun attributeValues(): List<AttributeValue>? = attributeValues
+
+    fun toBuilder(): Builder = ProgramStageBuilder.from(this)
+
+    class Builder : ProgramStageBuilder() {
+        @Deprecated("replaced by displayExecutionDateLabel(String)")
+        fun executionDateLabel(executionDateLabel: String?): Builder =
+            displayExecutionDateLabel(executionDateLabel)
+
+        @Deprecated("replaced by displayDueDateLabel(String)")
+        fun dueDateLabel(dueDateLabel: String?): Builder =
+            displayDueDateLabel(dueDateLabel)
+
+        @Deprecated("replaced by displayProgramStageLabel(String)")
+        fun programStageLabel(programStageLabel: String?): Builder =
+            displayProgramStageLabel(programStageLabel)
+
+        @Deprecated("replaced by displayEventLabel(String)")
+        fun eventLabel(eventLabel: String?): Builder =
+            displayEventLabel(eventLabel)
     }
 
-    @Nullable
-    public abstract String displayExecutionDateLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayDueDateLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String dueDateLabel() {
-        return displayDueDateLabel();
-    }
-
-    @Nullable
-    public abstract String displayDueDateLabel();
-
-    @Nullable
-    public abstract Boolean allowGenerateNextVisit();
-
-    @Nullable
-    public abstract Boolean validCompleteOnly();
-
-    @Nullable
-    public abstract String reportDateToUse();
-
-    @Nullable
-    public abstract Boolean openAfterEnrollment();
-
-    @Nullable
-    public abstract Boolean repeatable();
-
-    @Nullable
-    public abstract FeatureType featureType();
-
-    @Nullable
-    public abstract FormType formType();
-
-    @Nullable
-    public abstract Boolean displayGenerateEventBox();
-
-    @Nullable
-    public abstract Boolean generatedByEnrollmentDate();
-
-    @Nullable
-    public abstract Boolean autoGenerateEvent();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    @Nullable
-    public abstract Boolean hideDueDate();
-
-    @Nullable
-    public abstract Boolean blockEntryForm();
-
-    @Nullable
-    public abstract Integer minDaysFromStart();
-
-    @Nullable
-    public abstract Integer standardInterval();
-
-    @Nullable
-    public abstract Boolean enableUserAssignment();
-
-    @Nullable
-    abstract List<ProgramStageSection> programStageSections();
-
-    @Nullable
-    abstract List<ProgramStageDataElement> programStageDataElements();
-
-    @Nullable
-    public abstract PeriodType periodType();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    public abstract Access access();
-
-    @Nullable
-    public abstract Boolean remindCompleted();
-
-    @Nullable
-    public abstract ValidationStrategy validationStrategy();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String programStageLabel() {
-        return displayProgramStageLabel();
-    }
-
-    @Nullable
-    public abstract String displayProgramStageLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayEventLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String eventLabel() {
-        return displayEventLabel();
-    }
-
-    @Nullable
-    public abstract String displayEventLabel();
-
-    @Nullable
-    public abstract List<AttributeValue> attributeValues();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStage.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder description(String description);
-
-        public abstract Builder displayDescription(String displayDescription);
-
-        /**
-         * @deprecated since v41, replaced by {@link #displayExecutionDateLabel(String displayExecutionDateLabel)}
-         */
-        public Builder executionDateLabel(String executionDateLabel) {
-            return displayExecutionDateLabel(executionDateLabel);
-        }
-
-        public abstract Builder displayExecutionDateLabel(String displayExecutionDateLabel);
-
-        /**
-         * @deprecated since v41, replaced by {@link #displayDueDateLabel(String displayDueDateLabel)}
-         */
-        public Builder dueDateLabel(String dueDateLabel) {
-            return displayDueDateLabel(dueDateLabel);
-        }
-
-        public abstract Builder displayDueDateLabel(String displayDueDateLabel);
-
-        public abstract Builder allowGenerateNextVisit(Boolean allowGenerateNextVisit);
-
-        public abstract Builder validCompleteOnly(Boolean validCompleteOnly);
-
-        public abstract Builder reportDateToUse(String reportDateToUse);
-
-        public abstract Builder openAfterEnrollment(Boolean openAfterEnrollment);
-
-        public abstract Builder repeatable(Boolean repeatable);
-
-        public abstract Builder featureType(FeatureType featureType);
-
-        public abstract Builder formType(FormType formType);
-
-        public abstract Builder displayGenerateEventBox(Boolean displayGenerateEventBox);
-
-        public abstract Builder generatedByEnrollmentDate(Boolean generatedByEnrollmentDate);
-
-        public abstract Builder autoGenerateEvent(Boolean autoGenerateEvent);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder hideDueDate(Boolean hideDueDate);
-
-        public abstract Builder blockEntryForm(Boolean blockEntryForm);
-
-        public abstract Builder minDaysFromStart(Integer minDaysFromStart);
-
-        public abstract Builder standardInterval(Integer standardInterval);
-
-        public abstract Builder enableUserAssignment(Boolean enableUserAssignment);
-
-        abstract Builder programStageSections(List<ProgramStageSection> programStageSections);
-
-        abstract Builder programStageDataElements(List<ProgramStageDataElement> programStageDataElements);
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder access(Access access);
-
-        public abstract Builder remindCompleted(Boolean remindCompleted);
-
-        public abstract Builder validationStrategy(ValidationStrategy validationStrategy);
-
-        /**
-         * @deprecated since v41, replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel)}
-         */
-        public Builder programStageLabel(String programStageLabel) {
-            return displayProgramStageLabel(programStageLabel);
-        }
-
-        public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
-
-        /**
-         * @deprecated since v41, replaced by {@link #displayEventLabel(String displayEventLabel)}
-         */
-        public Builder eventLabel(String eventLabel) {
-            return displayEventLabel(eventLabel);
-        }
-
-        public abstract Builder displayEventLabel(String displayEventLabel);
-
-        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract ProgramStage autoBuild();
-
-        // Auxiliary fields
-        abstract Access access();
-
-        abstract ObjectStyle style();
-
-        abstract Boolean enableUserAssignment();
-
-        public ProgramStage build() {
-            try {
-                if (access() == null) {
-                    access(AccessHelper.defaultAccess());
-                }
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            if (enableUserAssignment() == null) {
-                enableUserAssignment(false);
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
+            .style(ObjectStyle())
+            .enableUserAssignment(false)
     }
 }

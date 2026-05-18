@@ -26,44 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsTeiWHONutritionGender(
+    val attribute: String,
+    val values: AnalyticsTeiWHONutritionGenderValues,
+) {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun attribute(): String = attribute
+    fun values(): AnalyticsTeiWHONutritionGenderValues = values
 
-@AutoValue
-public abstract class AnalyticsTeiDataElement implements CoreObject {
+    fun toBuilder(): Builder = AnalyticsTeiWHONutritionGenderBuilder.from(this)
 
-    @Nullable
-    public abstract String teiSetting();
+    class Builder : AnalyticsTeiWHONutritionGenderBuilder()
 
-    @Nullable
-    public abstract WHONutritionComponent whoComponent();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String dataElement();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiDataElement.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder whoComponent(WHONutritionComponent component);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract AnalyticsTeiDataElement build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

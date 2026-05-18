@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsSettings(
+    val tei: List<AnalyticsTeiSetting>,
+    val dhisVisualizations: AnalyticsDhisVisualizationsSetting,
+) {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun tei(): List<AnalyticsTeiSetting> = tei
+    fun dhisVisualizations(): AnalyticsDhisVisualizationsSetting = dhisVisualizations
 
-@AutoValue
-public abstract class AnalyticsTeiAttribute implements CoreObject {
+    fun toBuilder(): Builder = AnalyticsSettingsBuilder.from(this)
 
-    @Nullable
-    public abstract String teiSetting();
+    class Builder : AnalyticsSettingsBuilder()
 
-    @Nullable
-    public abstract WHONutritionComponent whoComponent();
-
-    public abstract String attribute();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiAttribute.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder whoComponent(WHONutritionComponent component);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract AnalyticsTeiAttribute build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

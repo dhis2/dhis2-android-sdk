@@ -25,34 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.settings.internal
+interface ObjectWithUidInterfaceKt : ObjectWithUidInterface {
+    val uid: String
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationStoreImpl
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationTableInfo
-import org.junit.runner.RunWith
-
-@RunWith(D2JunitRunner::class)
-class AnalyticsDhisVisualizationStoreIntegrationShould :
-    ObjectStoreAbstractIntegrationShould<AnalyticsDhisVisualization>(
-        AnalyticsDhisVisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
-        AnalyticsDhisVisualizationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get(),
-    ) {
-    override fun buildObject(): AnalyticsDhisVisualization {
-        return AnalyticsSettingsSamples.analyticsDhisVisualization
-    }
-
-    override fun buildObjectWithNullableFields(): AnalyticsDhisVisualization {
-        return buildObject().toBuilder()
-            .scopeUid(null)
-            .timestamp(null)
-            .name(null)
-            .build()
-    }
+    override fun uid(): String
 }

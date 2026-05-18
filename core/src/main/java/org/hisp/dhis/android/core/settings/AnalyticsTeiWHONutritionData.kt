@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.Collections;
-import java.util.List;
+@ModelBuilder
+data class AnalyticsTeiWHONutritionData(
+    val teiSetting: String,
+    val chartType: WHONutritionChartType,
+    val gender: AnalyticsTeiWHONutritionGender,
+    val x: AnalyticsTeiWHONutritionItem?,
+    val y: AnalyticsTeiWHONutritionItem?,
+) : CoreObject {
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionItem {
+    fun teiSetting(): String = teiSetting
+    fun chartType(): WHONutritionChartType = chartType
+    fun gender(): AnalyticsTeiWHONutritionGender = gender
+    fun x(): AnalyticsTeiWHONutritionItem? = x
+    fun y(): AnalyticsTeiWHONutritionItem? = y
 
-    public abstract List<AnalyticsTeiDataElement> dataElements();
+    fun toBuilder(): Builder = AnalyticsTeiWHONutritionDataBuilder.from(this)
 
-    public abstract List<AnalyticsTeiIndicator> indicators();
+    class Builder : AnalyticsTeiWHONutritionDataBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionItem.Builder()
-                .dataElements(Collections.emptyList())
-                .indicators(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataElements(List<AnalyticsTeiDataElement> dataElements);
-
-        public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
-
-        public abstract AnalyticsTeiWHONutritionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

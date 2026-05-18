@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiData
@@ -163,54 +161,19 @@ internal object SettingsAppHelper {
 
         analyticsSettings.dhisVisualizations()?.let { visualizationsSetting ->
 
-            getHomeVisualizations(visualizationsSetting.home())?.let { result.addAll(it) }
+            visualizationsSetting.home()?.flatMap { it.visualizations() }?.let { result.addAll(it) }
 
-            getProgramVisualizations(visualizationsSetting.program())?.let { result.addAll(it) }
+            visualizationsSetting.program()?.values
+                ?.flatMap { list -> list.flatMap { it.visualizations() } }
+                ?.let { result.addAll(it) }
 
-            getDataSetVisualizations(visualizationsSetting.dataSet())?.let { result.addAll(it) }
+            visualizationsSetting.dataSet()?.values
+                ?.flatMap { list -> list.flatMap { it.visualizations() } }
+                ?.let { result.addAll(it) }
         }
 
         return result
     }
-
-    private fun getHomeVisualizations(analyticsDhisVisualizationsGroups: List<AnalyticsDhisVisualizationsGroup>?) =
-        analyticsDhisVisualizationsGroups?.flatMap { group ->
-            group.visualizations().map { visualization ->
-                visualization.toBuilder()
-                    .groupUid(group.id())
-                    .groupName(group.name())
-                    .scope(AnalyticsDhisVisualizationScope.HOME)
-                    .build()
-            }
-        }
-
-    private fun getProgramVisualizations(programVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
-        programVisualizations?.flatMap { entry ->
-            entry.value.flatMap { group ->
-                group.visualizations().map { visualization ->
-                    visualization.toBuilder()
-                        .groupUid(group.id())
-                        .groupName(group.name())
-                        .scope(AnalyticsDhisVisualizationScope.PROGRAM)
-                        .scopeUid(entry.key)
-                        .build()
-                }
-            }
-        }
-
-    private fun getDataSetVisualizations(dataSetVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
-        dataSetVisualizations?.flatMap { entry ->
-            entry.value.flatMap { group ->
-                group.visualizations().map { visualization ->
-                    visualization.toBuilder()
-                        .groupUid(group.id())
-                        .groupName(group.name())
-                        .scope(AnalyticsDhisVisualizationScope.DATA_SET)
-                        .scopeUid(entry.key)
-                        .build()
-                }
-            }
-        }
 
     @JvmStatic
     fun buildAnalyticsTeiSettings(

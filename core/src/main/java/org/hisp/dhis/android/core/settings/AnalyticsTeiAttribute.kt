@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationStoreImpl
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationTableInfo
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-@RunWith(D2JunitRunner::class)
-class AnalyticsDhisVisualizationStoreIntegrationShould :
-    ObjectStoreAbstractIntegrationShould<AnalyticsDhisVisualization>(
-        AnalyticsDhisVisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
-        AnalyticsDhisVisualizationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get(),
-    ) {
-    override fun buildObject(): AnalyticsDhisVisualization {
-        return AnalyticsSettingsSamples.analyticsDhisVisualization
-    }
+@ModelBuilder
+data class AnalyticsTeiAttribute(
+    val teiSetting: String,
+    val whoComponent: WHONutritionComponent?,
+    val attribute: String,
+) : CoreObject {
 
-    override fun buildObjectWithNullableFields(): AnalyticsDhisVisualization {
-        return buildObject().toBuilder()
-            .scopeUid(null)
-            .timestamp(null)
-            .name(null)
-            .build()
+    fun teiSetting(): String = teiSetting
+    fun whoComponent(): WHONutritionComponent? = whoComponent
+    fun attribute(): String = attribute
+
+    fun toBuilder(): Builder = AnalyticsTeiAttributeBuilder.from(this)
+
+    class Builder : AnalyticsTeiAttributeBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -46,7 +46,7 @@ internal data class AnalyticsTeiAttributeDB(
 
 internal fun AnalyticsTeiAttribute.toDB(): AnalyticsTeiAttributeDB {
     return AnalyticsTeiAttributeDB(
-        teiSetting = teiSetting()!!,
+        teiSetting = teiSetting(),
         whoComponent = whoComponent()?.name,
         attribute = attribute(),
     )

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,48 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsTeiDataElement(
+    val teiSetting: String,
+    val whoComponent: WHONutritionComponent?,
+    val programStage: String?,
+    val dataElement: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun teiSetting(): String = teiSetting
+    fun whoComponent(): WHONutritionComponent? = whoComponent
+    fun programStage(): String? = programStage
+    fun dataElement(): String = dataElement
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionData implements CoreObject {
+    fun toBuilder(): Builder = AnalyticsTeiDataElementBuilder.from(this)
 
-    @Nullable
-    public abstract String teiSetting();
+    class Builder : AnalyticsTeiDataElementBuilder()
 
-    public abstract WHONutritionChartType chartType();
-
-    public abstract AnalyticsTeiWHONutritionGender gender();
-
-    @Nullable
-    public abstract AnalyticsTeiWHONutritionItem x();
-
-    @Nullable
-    public abstract AnalyticsTeiWHONutritionItem y();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionData.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder chartType(WHONutritionChartType chartType);
-
-        public abstract Builder gender(AnalyticsTeiWHONutritionGender gender);
-
-        public abstract Builder x(AnalyticsTeiWHONutritionItem x);
-
-        public abstract Builder y(AnalyticsTeiWHONutritionItem y);
-
-        public abstract AnalyticsTeiWHONutritionData build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

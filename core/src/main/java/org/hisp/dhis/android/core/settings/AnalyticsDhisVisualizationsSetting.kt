@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsDhisVisualizationsSetting(
+    val home: List<AnalyticsDhisVisualizationsGroup>,
+    val program: Map<String, List<AnalyticsDhisVisualizationsGroup>>,
+    val dataSet: Map<String, List<AnalyticsDhisVisualizationsGroup>>,
+) {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun home(): List<AnalyticsDhisVisualizationsGroup> = home
+    fun program(): Map<String, List<AnalyticsDhisVisualizationsGroup>> = program
+    fun dataSet(): Map<String, List<AnalyticsDhisVisualizationsGroup>> = dataSet
 
-@AutoValue
-public abstract class AnalyticsTeiIndicator implements CoreObject {
+    fun toBuilder(): Builder = AnalyticsDhisVisualizationsSettingBuilder.from(this)
 
-    @Nullable
-    public abstract String teiSetting();
+    class Builder : AnalyticsDhisVisualizationsSettingBuilder()
 
-    @Nullable
-    public abstract WHONutritionComponent whoComponent();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String indicator();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiIndicator.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder whoComponent(WHONutritionComponent component);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder indicator(String indicator);
-
-        public abstract AnalyticsTeiIndicator build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

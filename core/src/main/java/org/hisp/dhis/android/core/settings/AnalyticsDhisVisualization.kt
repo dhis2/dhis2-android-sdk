@@ -26,48 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import java.util.Collections;
-import java.util.List;
+@ModelBuilder
+data class AnalyticsDhisVisualization(
+    override val uid: String,
+    val scopeUid: String?,
+    val groupUid: String,
+    val groupName: String,
+    val scope: AnalyticsDhisVisualizationScope,
+    val name: String?,
+    val timestamp: String?,
+    val type: AnalyticsDhisVisualizationType,
+) : CoreObject, ObjectWithUidInterfaceKt {
 
-@AutoValue
-public abstract class AnalyticsSettings {
+    override fun uid(): String = uid
+    fun scopeUid(): String? = scopeUid
+    fun groupUid(): String = groupUid
+    fun groupName(): String = groupName
+    fun scope(): AnalyticsDhisVisualizationScope = scope
+    fun name(): String? = name
+    fun timestamp(): String? = timestamp
+    fun type(): AnalyticsDhisVisualizationType = type
 
-    public abstract List<AnalyticsTeiSetting> tei();
+    fun toBuilder(): Builder = AnalyticsDhisVisualizationBuilder.from(this)
 
-    public abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
+    class Builder : AnalyticsDhisVisualizationBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder tei(List<AnalyticsTeiSetting> tei);
-
-        public abstract Builder dhisVisualizations(AnalyticsDhisVisualizationsSetting dhisVisualizations);
-
-        public abstract AnalyticsSettings autoBuild();
-
-        //Auxiliary fields
-        abstract AnalyticsDhisVisualizationsSetting dhisVisualizations();
-
-        public AnalyticsSettings build() {
-            try {
-                dhisVisualizations();
-            } catch (IllegalStateException e) {
-                dhisVisualizations(AnalyticsDhisVisualizationsSetting.builder()
-                        .home(Collections.emptyList())
-                        .program(Collections.emptyMap())
-                        .dataSet(Collections.emptyMap())
-                        .build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -4536,6 +4536,11 @@ public abstract interface class org/hisp/dhis/android/core/common/ObjectWithUidI
 	public abstract fun uid ()Ljava/lang/String;
 }
 
+public abstract interface class org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt : org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+	public abstract fun getUid ()Ljava/lang/String;
+	public abstract fun uid ()Ljava/lang/String;
+}
+
 public final class org/hisp/dhis/android/core/common/RelativeOrganisationUnit : java/lang/Enum {
 	public static final field USER_ORGUNIT Lorg/hisp/dhis/android/core/common/RelativeOrganisationUnit;
 	public static final field USER_ORGUNIT_CHILDREN Lorg/hisp/dhis/android/core/common/RelativeOrganisationUnit;
@@ -11822,31 +11827,87 @@ public abstract interface class org/hisp/dhis/android/core/server/ServerModule {
 	public abstract fun suspendCheckServerUrl (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun groupName ()Ljava/lang/String;
-	public abstract fun groupUid ()Ljava/lang/String;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun scope ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
-	public abstract fun scopeUid ()Ljava/lang/String;
-	public abstract fun timestamp ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGroupName ()Ljava/lang/String;
+	public final fun getGroupUid ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getScope ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
+	public final fun getScopeUid ()Ljava/lang/String;
+	public final fun getTimestamp ()Ljava/lang/String;
+	public final fun getType ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
+	public fun getUid ()Ljava/lang/String;
+	public final fun groupName ()Ljava/lang/String;
+	public final fun groupUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun name ()Ljava/lang/String;
+	public final fun scope ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
+	public final fun scopeUid ()Ljava/lang/String;
+	public final fun timestamp ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder : org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
-	public abstract fun groupName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun groupUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun scope (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun scopeUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun timestamp (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationBuilder$Companion;
+	protected field groupName Ljava/lang/String;
+	protected field groupUid Ljava/lang/String;
+	protected field scope Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
+	protected field type Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;
+	protected final fun getGroupName ()Ljava/lang/String;
+	protected final fun getGroupUid ()Ljava/lang/String;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getScope ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;
+	protected final fun getScopeUid ()Ljava/lang/String;
+	protected final fun getTimestamp ()Ljava/lang/String;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun groupName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun groupUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun scope (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun scopeUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	protected final fun setGroupName (Ljava/lang/String;)V
+	protected final fun setGroupUid (Ljava/lang/String;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setScope (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope;)V
+	protected final fun setScopeUid (Ljava/lang/String;)V
+	protected final fun setTimestamp (Ljava/lang/String;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun timestamp (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualization$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationScope : java/lang/Enum {
@@ -11866,42 +11927,110 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizatio
 	public static fun values ()[Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationType;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
-	public abstract fun id ()Ljava/lang/String;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
-	public abstract fun visualizations ()Ljava/util/List;
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getVisualizations ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun id ()Ljava/lang/String;
+	public final fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun visualizations ()Ljava/util/List;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder : org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroupBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;
-	public abstract fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
-	public abstract fun visualizations (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroupBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroupBuilder$Companion;
+	protected field id Ljava/lang/String;
+	protected field name Ljava/lang/String;
+	protected field visualizations Ljava/util/List;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;
+	protected final fun getId ()Ljava/lang/String;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getVisualizations ()Ljava/util/List;
+	public final fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+	protected final fun setId (Ljava/lang/String;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setVisualizations (Ljava/util/List;)V
+	public final fun visualizations (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroupBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsGroup$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsHelperKt {
 	public static final fun generateGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
-	public abstract fun dataSet ()Ljava/util/Map;
-	public abstract fun home ()Ljava/util/List;
-	public abstract fun program ()Ljava/util/Map;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/Map;Ljava/util/Map;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun component3 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/List;Ljava/util/Map;Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;Ljava/util/List;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public final fun dataSet ()Ljava/util/Map;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSet ()Ljava/util/Map;
+	public final fun getHome ()Ljava/util/List;
+	public final fun getProgram ()Ljava/util/Map;
+	public fun hashCode ()I
+	public final fun home ()Ljava/util/List;
+	public final fun program ()Ljava/util/Map;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder : org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
-	public abstract fun dataSet (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
-	public abstract fun home (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
-	public abstract fun program (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingBuilder$Companion;
+	protected field dataSet Ljava/util/Map;
+	protected field home Ljava/util/List;
+	protected field program Ljava/util/Map;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public final fun dataSet (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+	protected final fun getDataSet ()Ljava/util/Map;
+	protected final fun getHome ()Ljava/util/List;
+	protected final fun getProgram ()Ljava/util/Map;
+	public final fun home (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+	public final fun program (Ljava/util/Map;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
+	protected final fun setDataSet (Ljava/util/Map;)V
+	protected final fun setHome (Ljava/util/List;)V
+	protected final fun setProgram (Ljava/util/Map;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
@@ -11920,120 +12049,350 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsSettingObjectRep
 	public final fun visualizationsSettings ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsSettings {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
-	public abstract fun dhisVisualizations ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
-	public abstract fun tei ()Ljava/util/List;
+public final class org/hisp/dhis/android/core/settings/AnalyticsSettings {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Companion;
+	public fun <init> (Ljava/util/List;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public final fun copy (Ljava/util/List;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;Ljava/util/List;Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;
+	public final fun dhisVisualizations ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDhisVisualizations ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	public final fun getTei ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun tei ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsSettings$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsSettings$Builder : org/hisp/dhis/android/core/settings/AnalyticsSettingsBuilder {
 	public fun <init> ()V
-	public abstract fun autoBuild ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsSettings$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsSettingsBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsSettingsBuilder$Companion;
+	protected field dhisVisualizations Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	protected field tei Ljava/util/List;
+	public fun <init> ()V
 	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;
-	public abstract fun dhisVisualizations (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
-	public abstract fun tei (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
+	public final fun dhisVisualizations (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
+	protected final fun getDhisVisualizations ()Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;
+	protected final fun getTei ()Ljava/util/List;
+	protected final fun setDhisVisualizations (Lorg/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSetting;)V
+	protected final fun setTei (Ljava/util/List;)V
+	public final fun tei (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attribute ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
-	public abstract fun teiSetting ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
-	public abstract fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+public final class org/hisp/dhis/android/core/settings/AnalyticsSettingsBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsSettings;)Lorg/hisp/dhis/android/core/settings/AnalyticsSettings$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder {
-	public fun <init> ()V
-	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
-	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
-	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;)V
+	public final fun attribute ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttribute ()Ljava/lang/String;
+	public final fun getTeiSetting ()Ljava/lang/String;
+	public final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public fun hashCode ()I
+	public final fun teiSetting ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData {
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiAttributeBuilder {
 	public fun <init> ()V
-	public abstract fun attributes ()Ljava/util/List;
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
-	public abstract fun dataElements ()Ljava/util/List;
-	public abstract fun indicators ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder {
-	public fun <init> ()V
-	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
-	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
-	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement : org/hisp/dhis/android/core/common/CoreObject {
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiAttributeBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttributeBuilder$Companion;
+	protected field attribute Ljava/lang/String;
+	protected field teiSetting Ljava/lang/String;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun programStage ()Ljava/lang/String;
-	public abstract fun teiSetting ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public abstract fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;
+	protected final fun getAttribute ()Ljava/lang/String;
+	protected final fun getTeiSetting ()Ljava/lang/String;
+	protected final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	protected final fun setAttribute (Ljava/lang/String;)V
+	protected final fun setTeiSetting (Ljava/lang/String;)V
+	protected final fun setWhoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)V
+	public final fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
+	public final fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
-	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiAttributeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiAttribute$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public abstract fun indicator ()Ljava/lang/String;
-	public abstract fun programStage ()Ljava/lang/String;
-	public abstract fun teiSetting ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public abstract fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiData {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun attributes ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public final fun dataElements ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributes ()Ljava/util/List;
+	public final fun getDataElements ()Ljava/util/List;
+	public final fun getIndicators ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun indicators ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiDataBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
-	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
-	public abstract fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun data ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun period ()Lorg/hisp/dhis/android/core/period/PeriodType;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun programStage ()Ljava/lang/String;
-	public abstract fun shortName ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/settings/ChartType;
-	public abstract fun uid ()Ljava/lang/String;
-	public abstract fun whoNutritionData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiData$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder {
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiDataBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataBuilder$Companion;
+	protected field attributes Ljava/util/List;
+	protected field dataElements Ljava/util/List;
+	protected field indicators Ljava/util/List;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;
-	public abstract fun data (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun period (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/settings/ChartType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
-	public abstract fun whoNutritionData (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public final fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+	protected final fun getAttributes ()Ljava/util/List;
+	protected final fun getDataElements ()Ljava/util/List;
+	protected final fun getIndicators ()Ljava/util/List;
+	public final fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+	protected final fun setAttributes (Ljava/util/List;)V
+	protected final fun setDataElements (Ljava/util/List;)V
+	protected final fun setIndicators (Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
+	public final fun dataElement ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public final fun getTeiSetting ()Ljava/lang/String;
+	public final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public fun hashCode ()I
+	public final fun programStage ()Ljava/lang/String;
+	public final fun teiSetting ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiDataElementBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElementBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElementBuilder$Companion;
+	protected field dataElement Ljava/lang/String;
+	protected field teiSetting Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	protected final fun getTeiSetting ()Ljava/lang/String;
+	protected final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+	protected final fun setTeiSetting (Ljava/lang/String;)V
+	protected final fun setWhoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)V
+	public final fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+	public final fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiDataElementBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiDataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndicator ()Ljava/lang/String;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public final fun getTeiSetting ()Ljava/lang/String;
+	public final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public fun hashCode ()I
+	public final fun indicator ()Ljava/lang/String;
+	public final fun programStage ()Ljava/lang/String;
+	public final fun teiSetting ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun whoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorBuilder$Companion;
+	protected field indicator Ljava/lang/String;
+	protected field teiSetting Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;
+	protected final fun getIndicator ()Ljava/lang/String;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	protected final fun getTeiSetting ()Ljava/lang/String;
+	protected final fun getWhoComponent ()Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;
+	public final fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+	protected final fun setIndicator (Ljava/lang/String;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+	protected final fun setTeiSetting (Ljava/lang/String;)V
+	protected final fun setWhoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)V
+	public final fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+	public final fun whoComponent (Lorg/hisp/dhis/android/core/settings/WHONutritionComponent;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiIndicatorBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiIndicator$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/settings/ChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun component7 ()Lorg/hisp/dhis/android/core/settings/ChartType;
+	public final fun component8 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/settings/ChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/settings/ChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;
+	public final fun data ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPeriod ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun getProgram ()Ljava/lang/String;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public final fun getShortName ()Ljava/lang/String;
+	public final fun getType ()Lorg/hisp/dhis/android/core/settings/ChartType;
+	public final fun getUid ()Ljava/lang/String;
+	public final fun getWhoNutritionData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public fun hashCode ()I
+	public final fun name ()Ljava/lang/String;
+	public final fun period ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun program ()Ljava/lang/String;
+	public final fun programStage ()Ljava/lang/String;
+	public final fun shortName ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/settings/ChartType;
+	public fun uid ()Ljava/lang/String;
+	public final fun whoNutritionData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiSettingBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSettingBuilder$Companion;
+	protected field name Ljava/lang/String;
+	protected field program Ljava/lang/String;
+	protected field shortName Ljava/lang/String;
+	protected field type Lorg/hisp/dhis/android/core/settings/ChartType;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;
+	public final fun data (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	protected final fun getData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getPeriod ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	protected final fun getShortName ()Ljava/lang/String;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/settings/ChartType;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getWhoNutritionData ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun period (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	protected final fun setData (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiData;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setPeriod (Lorg/hisp/dhis/android/core/period/PeriodType;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+	protected final fun setShortName (Ljava/lang/String;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/settings/ChartType;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setWhoNutritionData (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)V
+	public final fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/settings/ChartType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+	public final fun whoNutritionData (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiSetting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -12046,69 +12405,199 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsTeiSettingCollec
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun chartType ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
-	public abstract fun gender ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
-	public abstract fun teiSetting ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun x ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
-	public abstract fun y ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	public final fun chartType ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun gender ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	public final fun getChartType ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
+	public final fun getGender ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	public final fun getTeiSetting ()Ljava/lang/String;
+	public final fun getX ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun getY ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public fun hashCode ()I
+	public final fun teiSetting ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun x ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun y ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
-	public abstract fun chartType (Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun gender (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun x (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
-	public abstract fun y (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender {
-	public fun <init> ()V
-	public abstract fun attribute ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
-	public abstract fun values ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder {
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataBuilder$Companion;
+	protected field chartType Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
+	protected field gender Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	protected field teiSetting Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
-	public abstract fun values (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;
+	public final fun chartType (Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	public final fun gender (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	protected final fun getChartType ()Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;
+	protected final fun getGender ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	protected final fun getTeiSetting ()Ljava/lang/String;
+	protected final fun getX ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	protected final fun getY ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	protected final fun setChartType (Lorg/hisp/dhis/android/core/settings/WHONutritionChartType;)V
+	protected final fun setGender (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;)V
+	protected final fun setTeiSetting (Ljava/lang/String;)V
+	protected final fun setX (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)V
+	protected final fun setY (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)V
+	public final fun teiSetting (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	public final fun x (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
+	public final fun y (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
-	public abstract fun female ()Ljava/lang/String;
-	public abstract fun male ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionDataBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionData$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
-	public abstract fun female (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
-	public abstract fun male (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)V
+	public final fun attribute ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;Ljava/lang/String;Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttribute ()Ljava/lang/String;
+	public final fun getValues ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun values ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem {
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderBuilder {
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
-	public abstract fun dataElements ()Ljava/util/List;
-	public abstract fun indicators ()Ljava/util/List;
 }
 
-public abstract class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder {
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderBuilder$Companion;
+	protected field attribute Ljava/lang/String;
+	protected field values Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
-	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
-	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+	public final fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;
+	protected final fun getAttribute ()Ljava/lang/String;
+	protected final fun getValues ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	protected final fun setAttribute (Ljava/lang/String;)V
+	protected final fun setValues (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)V
+	public final fun values (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGender$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun female ()Ljava/lang/String;
+	public final fun getFemale ()Ljava/lang/String;
+	public final fun getMale ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun male ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValuesBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValuesBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValuesBuilder$Companion;
+	protected field female Ljava/lang/String;
+	protected field male Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;
+	public final fun female (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+	protected final fun getFemale ()Ljava/lang/String;
+	protected final fun getMale ()Ljava/lang/String;
+	public final fun male (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+	protected final fun setFemale (Ljava/lang/String;)V
+	protected final fun setMale (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValuesBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionGenderValues$Builder;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun dataElements ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElements ()Ljava/util/List;
+	public final fun getIndicators ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun indicators ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder : org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItemBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+}
+
+public class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItemBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItemBuilder$Companion;
+	protected field dataElements Ljava/util/List;
+	protected field indicators Ljava/util/List;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;
+	public final fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+	protected final fun getDataElements ()Ljava/util/List;
+	protected final fun getIndicators ()Ljava/util/List;
+	public final fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
+	protected final fun setDataElements (Ljava/util/List;)V
+	protected final fun setIndicators (Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem;)Lorg/hisp/dhis/android/core/settings/AnalyticsTeiWHONutritionItem$Builder;
 }
 
 public final class org/hisp/dhis/android/core/settings/AppearanceSettings {

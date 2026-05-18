@@ -33,14 +33,6 @@ enum class EnrollmentScope {
     ;
 
     companion object {
-        fun forName(name: String?): EnrollmentScope? {
-            for (c in entries) {
-                if (c.name == name) {
-                    return c
-                }
-            }
-
-            return null
-        }
+        fun forName(name: String?): EnrollmentScope? = entries.find { it.name == name }
     }
 }

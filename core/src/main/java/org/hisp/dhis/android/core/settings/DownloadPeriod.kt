@@ -28,28 +28,14 @@
 package org.hisp.dhis.android.core.settings
 
 @Suppress("MagicNumber")
-enum class DownloadPeriod(months: Int?) {
+enum class DownloadPeriod(val months: Int?) {
     ANY(null),
     LAST_MONTH(1),
     LAST_3_MONTHS(3),
     LAST_12_MONTHS(12),
     ;
 
-    val months: Int?
-
-    init {
-        this.months = months
-    }
-
     companion object {
-        fun forName(name: String?): DownloadPeriod? {
-            for (c in entries) {
-                if (c.name == name) {
-                    return c
-                }
-            }
-
-            return null
-        }
+        fun forName(name: String?): DownloadPeriod? = entries.find { it.name == name }
     }
 }

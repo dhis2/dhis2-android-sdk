@@ -27,18 +27,11 @@
  */
 package org.hisp.dhis.android.core.sms.domain.repository.internal
 
-enum class SubmissionType(text: String) {
+enum class SubmissionType(val text: String) {
     SIMPLE_EVENT("simple"),
     TRACKER_EVENT("tracker"),
     ENROLLMENT("enrollment"),
     DATA_SET("dataset"),
     RELATIONSHIP("relationship"),
     DELETION("deletion"),
-    ;
-
-    val text: String?
-
-    init {
-        this.text = text
-    }
 }

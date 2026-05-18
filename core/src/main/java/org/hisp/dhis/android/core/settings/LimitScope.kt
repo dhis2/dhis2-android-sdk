@@ -36,14 +36,6 @@ enum class LimitScope {
     ;
 
     companion object {
-        fun forName(name: String?): LimitScope? {
-            for (c in entries) {
-                if (c.name == name) {
-                    return c
-                }
-            }
-
-            return null
-        }
+        fun forName(name: String?): LimitScope? = entries.find { it.name == name }
     }
 }

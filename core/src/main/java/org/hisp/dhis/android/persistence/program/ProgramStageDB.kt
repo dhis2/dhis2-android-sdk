@@ -105,7 +105,7 @@ internal data class ProgramStageDB(
 
 internal fun ProgramStage.toDB(): ProgramStageDB {
     return ProgramStageDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

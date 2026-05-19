@@ -30,8 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
@@ -49,11 +47,9 @@ internal object ProgramParentUidsHelper {
 
     private fun getOptionSetUidsForDataElements(uids: MutableSet<String>, programStages: List<ProgramStage>) {
         for (programStage in programStages) {
-            val programStageDataElements =
-                ProgramStageInternalAccessor.accessProgramStageDataElements(programStage) ?: continue
+            val programStageDataElements = programStage.programStageDataElements() ?: continue
             for (programStageDataElement in programStageDataElements) {
-                val dataElement =
-                    ProgramStageDataElementInternalAccessor.accessFullDataElement(programStageDataElement)
+                val dataElement = programStageDataElement.fullDataElement()
                 dataElement?.optionSet()?.let { uids.add(it.uid()) }
             }
         }

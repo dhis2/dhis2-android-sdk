@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,45 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.program
 
-internal object ProgramStageInternalAccessor {
-    @JvmStatic
-    fun accessProgramStageSections(programStage: ProgramStage): List<ProgramStageSection>? {
-        return programStage.programStageSections()
-    }
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-    @JvmStatic
-    fun accessProgramStageDataElements(programStage: ProgramStage): List<ProgramStageDataElement>? {
-        return programStage.programStageDataElements()
-    }
+@ModelBuilder
+data class ProgramRuleVariable(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val useCodeForOptionSet: Boolean?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val dataElement: ObjectWithUid?,
+    val trackedEntityAttribute: ObjectWithUid?,
+    val programRuleVariableSourceType: ProgramRuleVariableSourceType?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-    fun insertProgramStageSections(
-        builder: ProgramStage.Builder,
-        programStageSections: List<ProgramStageSection?>?,
-    ): ProgramStage.Builder {
-        return builder.programStageSections(programStageSections)
-    }
+    fun useCodeForOptionSet(): Boolean? = useCodeForOptionSet
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun trackedEntityAttribute(): ObjectWithUid? = trackedEntityAttribute
+    fun programRuleVariableSourceType(): ProgramRuleVariableSourceType? = programRuleVariableSourceType
 
-    fun insertProgramStageDataElements(
-        builder: ProgramStage.Builder,
-        programStageDataElements: List<ProgramStageDataElement?>?,
-    ): ProgramStage.Builder {
-        return builder.programStageDataElements(programStageDataElements)
+    fun toBuilder(): Builder = ProgramRuleVariableBuilder.from(this)
+
+    class Builder : ProgramRuleVariableBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

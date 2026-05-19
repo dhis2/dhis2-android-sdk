@@ -28,19 +28,50 @@
 
 package org.hisp.dhis.android.core.program
 
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueTypeRendering
 import org.hisp.dhis.android.core.dataelement.DataElement
+import java.util.Date
 
-internal object ProgramStageDataElementInternalAccessor {
+@ModelBuilder
+data class ProgramStageDataElement(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val displayInReports: Boolean?,
+    val compulsory: Boolean?,
+    val allowProvidedElsewhere: Boolean?,
+    val sortOrder: Int?,
+    val allowFutureDate: Boolean?,
+    internal val fullDataElement: DataElement?,
+    val dataElement: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val renderType: ValueTypeRendering?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-    @JvmStatic
-    fun accessFullDataElement(programStageDataElement: ProgramStageDataElement): DataElement? {
-        return programStageDataElement.fullDataElement()
-    }
+    fun displayInReports(): Boolean? = displayInReports
+    fun compulsory(): Boolean? = compulsory
+    fun allowProvidedElsewhere(): Boolean? = allowProvidedElsewhere
+    fun sortOrder(): Int? = sortOrder
+    fun allowFutureDate(): Boolean? = allowFutureDate
+    internal fun fullDataElement(): DataElement? = fullDataElement
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun programStage(): ObjectWithUid? = programStage
+    fun renderType(): ValueTypeRendering? = renderType
 
-    fun insertFullDataElement(
-        builder: ProgramStageDataElement.Builder,
-        dataElement: DataElement?,
-    ): ProgramStageDataElement.Builder {
-        return builder.fullDataElement(dataElement)
+    fun toBuilder(): Builder = ProgramStageDataElementBuilder.from(this)
+
+    class Builder : ProgramStageDataElementBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

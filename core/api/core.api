@@ -3169,7 +3169,7 @@ public class org/hisp/dhis/android/core/attribute/AttributeBuilder : org/hisp/dh
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public final fun constantAttribute (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/AttributeBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -3234,7 +3234,7 @@ public class org/hisp/dhis/android/core/attribute/AttributeBuilder : org/hisp/dh
 	protected final fun getValueType ()Lorg/hisp/dhis/android/core/common/ValueType;
 	public final fun indicatorAttribute (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public final fun indicatorGroupAttribute (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/AttributeBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -3588,7 +3588,7 @@ public class org/hisp/dhis/android/core/category/CategoryOptionBuilder : org/his
 	public fun build ()Lorg/hisp/dhis/android/core/category/CategoryOption;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -3618,7 +3618,7 @@ public class org/hisp/dhis/android/core/category/CategoryOptionBuilder : org/his
 	protected final fun getShortName ()Ljava/lang/String;
 	protected final fun getStartDate ()Ljava/util/Date;
 	protected final fun getUid ()Ljava/lang/String;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOptionBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/category/CategoryOption$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -5466,7 +5466,7 @@ public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/ConstantBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -5482,7 +5482,7 @@ public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis
 	protected final fun getUid ()Ljava/lang/String;
 	protected final fun getValue ()Ljava/lang/Double;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/ConstantBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -5660,7 +5660,7 @@ public class org/hisp/dhis/android/core/dataelement/DataElementBuilder : org/his
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElementBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -5701,7 +5701,7 @@ public class org/hisp/dhis/android/core/dataelement/DataElementBuilder : org/his
 	protected final fun getValueType ()Lorg/hisp/dhis/android/core/common/ValueType;
 	protected final fun getZeroIsSignificant ()Ljava/lang/Boolean;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElementBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
 	public final fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataelement/DataElement$Builder;
@@ -6058,7 +6058,7 @@ public class org/hisp/dhis/android/core/dataset/DataSetBuilder : org/hisp/dhis/a
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public final fun compulsoryDataElementOperands (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public final fun dataElementDecoration (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
@@ -6114,7 +6114,7 @@ public class org/hisp/dhis/android/core/dataset/DataSetBuilder : org/hisp/dhis/a
 	protected final fun getWorkflow ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public final fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
 	public final fun mobile (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSet$Builder;
@@ -8124,7 +8124,7 @@ public class org/hisp/dhis/android/core/indicator/IndicatorBuilder : org/hisp/dh
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/IndicatorBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public final fun decimals (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
@@ -8163,7 +8163,7 @@ public class org/hisp/dhis/android/core/indicator/IndicatorBuilder : org/hisp/dh
 	protected final fun getUrl ()Ljava/lang/String;
 	public final fun indicatorType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/IndicatorBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
 	public final fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/indicator/Indicator$Builder;
@@ -9046,7 +9046,7 @@ public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitBuilder
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public final fun dataSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
@@ -9084,7 +9084,7 @@ public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitBuilder
 	protected final fun getShortName ()Ljava/lang/String;
 	protected final fun getUid ()Ljava/lang/String;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
 	public final fun level (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
@@ -9773,7 +9773,7 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun completeEventsExpiryDays (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun dataEntryMethod (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/Program$Builder;
@@ -9855,7 +9855,7 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun getVersion ()Ljava/lang/Integer;
 	public final fun ignoreOverdueEvents (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun maxTeiCountToReturn (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/Program$Builder;
@@ -10083,7 +10083,7 @@ public class org/hisp/dhis/android/core/program/ProgramIndicatorBuilder : org/hi
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicatorBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public final fun decimals (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
@@ -10126,7 +10126,7 @@ public class org/hisp/dhis/android/core/program/ProgramIndicatorBuilder : org/hi
 	protected final fun getShortName ()Ljava/lang/String;
 	protected final fun getUid ()Ljava/lang/String;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicatorBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
 	public final fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramIndicator$Builder;
@@ -10308,27 +10308,124 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleCollectionRepos
 	public final fun withProgramRuleActions ()Lorg/hisp/dhis/android/core/program/ProgramRuleCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programRuleVariableSourceType ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun trackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun useCodeForOptionSet ()Ljava/lang/Boolean;
+public final class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/Boolean;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;
+	public fun created ()Ljava/util/Date;
+	public final fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramRuleVariableSourceType ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getUid ()Ljava/lang/String;
+	public final fun getUseCodeForOptionSet ()Ljava/lang/Boolean;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programRuleVariableSourceType ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun uid ()Ljava/lang/String;
+	public final fun useCodeForOptionSet ()Ljava/lang/Boolean;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramRuleVariable$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/program/ProgramRuleVariable$Builder : org/hisp/dhis/android/core/program/ProgramRuleVariableBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;
-	public abstract fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun programRuleVariableSourceType (Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun trackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
-	public abstract fun useCodeForOptionSet (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramRuleVariable$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+}
+
+public class org/hisp/dhis/android/core/program/ProgramRuleVariableBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRuleVariableBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public final fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramRuleVariableSourceType ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getUseCodeForOptionSet ()Ljava/lang/Boolean;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public final fun programRuleVariableSourceType (Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramRuleVariableSourceType (Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setTrackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setUseCodeForOptionSet (Ljava/lang/Boolean;)V
+	public final fun trackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+	public final fun useCodeForOptionSet (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramRuleVariableBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/program/ProgramRuleVariable;)Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
 }
 
 public final class org/hisp/dhis/android/core/program/ProgramRuleVariableCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -10406,80 +10503,276 @@ public final class org/hisp/dhis/android/core/program/ProgramSectionCollectionRe
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramSectionCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStage : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyle {
-	public fun <init> ()V
-	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun allowGenerateNextVisit ()Ljava/lang/Boolean;
-	public abstract fun attributeValues ()Ljava/util/List;
-	public abstract fun autoGenerateEvent ()Ljava/lang/Boolean;
-	public abstract fun blockEntryForm ()Ljava/lang/Boolean;
-	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun displayDueDateLabel ()Ljava/lang/String;
-	public abstract fun displayEventLabel ()Ljava/lang/String;
-	public abstract fun displayExecutionDateLabel ()Ljava/lang/String;
-	public abstract fun displayGenerateEventBox ()Ljava/lang/Boolean;
-	public abstract fun displayProgramStageLabel ()Ljava/lang/String;
-	public fun dueDateLabel ()Ljava/lang/String;
-	public abstract fun enableUserAssignment ()Ljava/lang/Boolean;
-	public fun eventLabel ()Ljava/lang/String;
-	public fun executionDateLabel ()Ljava/lang/String;
-	public abstract fun featureType ()Lorg/hisp/dhis/android/core/common/FeatureType;
-	public abstract fun formType ()Lorg/hisp/dhis/android/core/common/FormType;
-	public abstract fun generatedByEnrollmentDate ()Ljava/lang/Boolean;
-	public abstract fun hideDueDate ()Ljava/lang/Boolean;
-	public abstract fun minDaysFromStart ()Ljava/lang/Integer;
-	public abstract fun openAfterEnrollment ()Ljava/lang/Boolean;
-	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public fun programStageLabel ()Ljava/lang/String;
-	public abstract fun remindCompleted ()Ljava/lang/Boolean;
-	public abstract fun repeatable ()Ljava/lang/Boolean;
-	public abstract fun reportDateToUse ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun standardInterval ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun validCompleteOnly ()Ljava/lang/Boolean;
-	public abstract fun validationStrategy ()Lorg/hisp/dhis/android/core/common/ValidationStrategy;
+public final class org/hisp/dhis/android/core/program/ProgramStage : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStage$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/common/FormType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ValidationStrategy;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
+	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun allowGenerateNextVisit ()Ljava/lang/Boolean;
+	public final fun attributeValues ()Ljava/util/List;
+	public final fun autoGenerateEvent ()Ljava/lang/Boolean;
+	public final fun blockEntryForm ()Ljava/lang/Boolean;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Ljava/lang/Boolean;
+	public final fun component13 ()Ljava/lang/Boolean;
+	public final fun component14 ()Ljava/lang/String;
+	public final fun component15 ()Ljava/lang/Boolean;
+	public final fun component16 ()Ljava/lang/Boolean;
+	public final fun component17 ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public final fun component18 ()Lorg/hisp/dhis/android/core/common/FormType;
+	public final fun component19 ()Ljava/lang/Boolean;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component20 ()Ljava/lang/Boolean;
+	public final fun component21 ()Ljava/lang/Boolean;
+	public final fun component22 ()Ljava/lang/Integer;
+	public final fun component23 ()Ljava/lang/Boolean;
+	public final fun component24 ()Ljava/lang/Boolean;
+	public final fun component25 ()Ljava/lang/Integer;
+	public final fun component26 ()Ljava/lang/Integer;
+	public final fun component27 ()Ljava/lang/Boolean;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component30 ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun component31 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component32 ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun component33 ()Ljava/lang/Boolean;
+	public final fun component34 ()Lorg/hisp/dhis/android/core/common/ValidationStrategy;
+	public final fun component35 ()Ljava/lang/String;
+	public final fun component36 ()Ljava/lang/String;
+	public final fun component37 ()Ljava/util/List;
+	public final fun component38 ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/common/FormType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ValidationStrategy;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/program/ProgramStage;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/program/ProgramStage;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/common/FormType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ValidationStrategy;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/program/ProgramStage;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun description ()Ljava/lang/String;
+	public final fun displayDescription ()Ljava/lang/String;
+	public final fun displayDueDateLabel ()Ljava/lang/String;
+	public final fun displayEventLabel ()Ljava/lang/String;
+	public final fun displayExecutionDateLabel ()Ljava/lang/String;
+	public final fun displayGenerateEventBox ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public final fun displayProgramStageLabel ()Ljava/lang/String;
+	public final fun dueDateLabel ()Ljava/lang/String;
+	public final fun enableUserAssignment ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventLabel ()Ljava/lang/String;
+	public final fun executionDateLabel ()Ljava/lang/String;
+	public final fun featureType ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public final fun formType ()Lorg/hisp/dhis/android/core/common/FormType;
+	public final fun generatedByEnrollmentDate ()Ljava/lang/Boolean;
+	public final fun getAccess ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun getAllowGenerateNextVisit ()Ljava/lang/Boolean;
+	public final fun getAttributeValues ()Ljava/util/List;
+	public final fun getAutoGenerateEvent ()Ljava/lang/Boolean;
+	public final fun getBlockEntryForm ()Ljava/lang/Boolean;
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getDisplayDescription ()Ljava/lang/String;
+	public final fun getDisplayDueDateLabel ()Ljava/lang/String;
+	public final fun getDisplayEventLabel ()Ljava/lang/String;
+	public final fun getDisplayExecutionDateLabel ()Ljava/lang/String;
+	public final fun getDisplayGenerateEventBox ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getDisplayProgramStageLabel ()Ljava/lang/String;
+	public final fun getEnableUserAssignment ()Ljava/lang/Boolean;
+	public final fun getFeatureType ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	public final fun getFormType ()Lorg/hisp/dhis/android/core/common/FormType;
+	public final fun getGeneratedByEnrollmentDate ()Ljava/lang/Boolean;
+	public final fun getHideDueDate ()Ljava/lang/Boolean;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getMinDaysFromStart ()Ljava/lang/Integer;
+	public fun getName ()Ljava/lang/String;
+	public final fun getOpenAfterEnrollment ()Ljava/lang/Boolean;
+	public final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getRemindCompleted ()Ljava/lang/Boolean;
+	public final fun getRepeatable ()Ljava/lang/Boolean;
+	public final fun getReportDateToUse ()Ljava/lang/String;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public final fun getStandardInterval ()Ljava/lang/Integer;
+	public fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public fun getUid ()Ljava/lang/String;
+	public final fun getValidCompleteOnly ()Ljava/lang/Boolean;
+	public final fun getValidationStrategy ()Lorg/hisp/dhis/android/core/common/ValidationStrategy;
+	public fun hashCode ()I
+	public final fun hideDueDate ()Ljava/lang/Boolean;
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun minDaysFromStart ()Ljava/lang/Integer;
+	public fun name ()Ljava/lang/String;
+	public final fun openAfterEnrollment ()Ljava/lang/Boolean;
+	public final fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStageLabel ()Ljava/lang/String;
+	public final fun remindCompleted ()Ljava/lang/Boolean;
+	public final fun repeatable ()Ljava/lang/Boolean;
+	public final fun reportDateToUse ()Ljava/lang/String;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun standardInterval ()Ljava/lang/Integer;
+	public fun style ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+	public final fun validCompleteOnly ()Ljava/lang/Boolean;
+	public final fun validationStrategy ()Lorg/hisp/dhis/android/core/common/ValidationStrategy;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStage$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/program/ProgramStage$Builder : org/hisp/dhis/android/core/program/ProgramStageBuilder {
 	public fun <init> ()V
-	public abstract fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun allowGenerateNextVisit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun attributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun autoGenerateEvent (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun blockEntryForm (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun dueDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun eventLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun executionDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun programStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramStage$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+}
+
+public class org/hisp/dhis/android/core/program/ProgramStageBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStageBuilder$Companion;
+	protected field access Lorg/hisp/dhis/android/core/common/Access;
+	protected field style Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public final fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun allowGenerateNextVisit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun attributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun autoGenerateEvent (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun blockEntryForm (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/program/ProgramStage;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayDueDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayEventLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayExecutionDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayGenerateEventBox (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun displayProgramStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public fun dueDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun enableUserAssignment (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public fun eventLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public fun executionDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun featureType (Lorg/hisp/dhis/android/core/common/FeatureType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun formType (Lorg/hisp/dhis/android/core/common/FormType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun generatedByEnrollmentDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun hideDueDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun minDaysFromStart (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun openAfterEnrollment (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public fun programStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun remindCompleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun repeatable (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun reportDateToUse (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun standardInterval (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun validCompleteOnly (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
-	public abstract fun validationStrategy (Lorg/hisp/dhis/android/core/common/ValidationStrategy;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayDueDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayEventLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayExecutionDateLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayGenerateEventBox (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun displayProgramStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun enableUserAssignment (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun featureType (Lorg/hisp/dhis/android/core/common/FeatureType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun formType (Lorg/hisp/dhis/android/core/common/FormType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun generatedByEnrollmentDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	protected final fun getAccess ()Lorg/hisp/dhis/android/core/common/Access;
+	protected final fun getAllowGenerateNextVisit ()Ljava/lang/Boolean;
+	protected final fun getAttributeValues ()Ljava/util/List;
+	protected final fun getAutoGenerateEvent ()Ljava/lang/Boolean;
+	protected final fun getBlockEntryForm ()Ljava/lang/Boolean;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getDisplayDescription ()Ljava/lang/String;
+	protected final fun getDisplayDueDateLabel ()Ljava/lang/String;
+	protected final fun getDisplayEventLabel ()Ljava/lang/String;
+	protected final fun getDisplayExecutionDateLabel ()Ljava/lang/String;
+	protected final fun getDisplayGenerateEventBox ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getDisplayProgramStageLabel ()Ljava/lang/String;
+	protected final fun getEnableUserAssignment ()Ljava/lang/Boolean;
+	protected final fun getFeatureType ()Lorg/hisp/dhis/android/core/common/FeatureType;
+	protected final fun getFormType ()Lorg/hisp/dhis/android/core/common/FormType;
+	protected final fun getGeneratedByEnrollmentDate ()Ljava/lang/Boolean;
+	protected final fun getHideDueDate ()Ljava/lang/Boolean;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getMinDaysFromStart ()Ljava/lang/Integer;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getOpenAfterEnrollment ()Ljava/lang/Boolean;
+	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStageDataElements ()Ljava/util/List;
+	protected final fun getProgramStageSections ()Ljava/util/List;
+	protected final fun getRemindCompleted ()Ljava/lang/Boolean;
+	protected final fun getRepeatable ()Ljava/lang/Boolean;
+	protected final fun getReportDateToUse ()Ljava/lang/String;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getStandardInterval ()Ljava/lang/Integer;
+	protected final fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getValidCompleteOnly ()Ljava/lang/Boolean;
+	protected final fun getValidationStrategy ()Lorg/hisp/dhis/android/core/common/ValidationStrategy;
+	public final fun hideDueDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun minDaysFromStart (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun openAfterEnrollment (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun remindCompleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun repeatable (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun reportDateToUse (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	protected final fun setAccess (Lorg/hisp/dhis/android/core/common/Access;)V
+	protected final fun setAllowGenerateNextVisit (Ljava/lang/Boolean;)V
+	protected final fun setAttributeValues (Ljava/util/List;)V
+	protected final fun setAutoGenerateEvent (Ljava/lang/Boolean;)V
+	protected final fun setBlockEntryForm (Ljava/lang/Boolean;)V
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setDisplayDescription (Ljava/lang/String;)V
+	protected final fun setDisplayDueDateLabel (Ljava/lang/String;)V
+	protected final fun setDisplayEventLabel (Ljava/lang/String;)V
+	protected final fun setDisplayExecutionDateLabel (Ljava/lang/String;)V
+	protected final fun setDisplayGenerateEventBox (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setDisplayProgramStageLabel (Ljava/lang/String;)V
+	protected final fun setEnableUserAssignment (Ljava/lang/Boolean;)V
+	protected final fun setFeatureType (Lorg/hisp/dhis/android/core/common/FeatureType;)V
+	protected final fun setFormType (Lorg/hisp/dhis/android/core/common/FormType;)V
+	protected final fun setGeneratedByEnrollmentDate (Ljava/lang/Boolean;)V
+	protected final fun setHideDueDate (Ljava/lang/Boolean;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setMinDaysFromStart (Ljava/lang/Integer;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setOpenAfterEnrollment (Ljava/lang/Boolean;)V
+	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStageDataElements (Ljava/util/List;)V
+	protected final fun setProgramStageSections (Ljava/util/List;)V
+	protected final fun setRemindCompleted (Ljava/lang/Boolean;)V
+	protected final fun setRepeatable (Ljava/lang/Boolean;)V
+	protected final fun setReportDateToUse (Ljava/lang/String;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setStandardInterval (Ljava/lang/Integer;)V
+	protected final fun setStyle (Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setValidCompleteOnly (Ljava/lang/Boolean;)V
+	protected final fun setValidationStrategy (Lorg/hisp/dhis/android/core/common/ValidationStrategy;)V
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun standardInterval (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun style (Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun validCompleteOnly (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+	public final fun validationStrategy (Lorg/hisp/dhis/android/core/common/ValidationStrategy;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramStageBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/program/ProgramStage;)Lorg/hisp/dhis/android/core/program/ProgramStage$Builder;
 }
 
 public final class org/hisp/dhis/android/core/program/ProgramStageCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -10516,31 +10809,138 @@ public final class org/hisp/dhis/android/core/program/ProgramStageCollectionRepo
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramStageCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStageDataElement : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun allowFutureDate ()Ljava/lang/Boolean;
-	public abstract fun allowProvidedElsewhere ()Ljava/lang/Boolean;
-	public static fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun compulsory ()Ljava/lang/Boolean;
-	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun displayInReports ()Ljava/lang/Boolean;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun renderType ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+public final class org/hisp/dhis/android/core/program/ProgramStageDataElement : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)V
+	public final fun allowFutureDate ()Ljava/lang/Boolean;
+	public final fun allowProvidedElsewhere ()Ljava/lang/Boolean;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/Boolean;
+	public final fun component11 ()Ljava/lang/Integer;
+	public final fun component12 ()Ljava/lang/Boolean;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component15 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component16 ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/Boolean;
+	public final fun component9 ()Ljava/lang/Boolean;
+	public final fun compulsory ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ValueTypeRendering;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
+	public fun created ()Ljava/util/Date;
+	public final fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun displayInReports ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAllowFutureDate ()Ljava/lang/Boolean;
+	public final fun getAllowProvidedElsewhere ()Ljava/lang/Boolean;
+	public fun getCode ()Ljava/lang/String;
+	public final fun getCompulsory ()Ljava/lang/Boolean;
+	public fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDisplayInReports ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getRenderType ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun renderType ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/program/ProgramStageDataElement$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/program/ProgramStageDataElement$Builder : org/hisp/dhis/android/core/program/ProgramStageDataElementBuilder {
 	public fun <init> ()V
-	public abstract fun allowFutureDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun allowProvidedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
-	public abstract fun compulsory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun displayInReports (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun renderType (Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramStageDataElement$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+}
+
+public class org/hisp/dhis/android/core/program/ProgramStageDataElementBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStageDataElementBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public final fun allowFutureDate (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun allowProvidedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun compulsory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun displayInReports (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	protected final fun getAllowFutureDate ()Ljava/lang/Boolean;
+	protected final fun getAllowProvidedElsewhere ()Ljava/lang/Boolean;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCompulsory ()Ljava/lang/Boolean;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayInReports ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getFullDataElement ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getRenderType ()Lorg/hisp/dhis/android/core/common/ValueTypeRendering;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public final fun renderType (Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	protected final fun setAllowFutureDate (Ljava/lang/Boolean;)V
+	protected final fun setAllowProvidedElsewhere (Ljava/lang/Boolean;)V
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCompulsory (Ljava/lang/Boolean;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayInReports (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setFullDataElement (Lorg/hisp/dhis/android/core/dataelement/DataElement;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setRenderType (Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/program/ProgramStageDataElementBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/program/ProgramStageDataElement;)Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Builder;
 }
 
 public final class org/hisp/dhis/android/core/program/ProgramStageDataElementCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -10710,7 +11110,7 @@ public class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeBui
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -10744,7 +11144,7 @@ public class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeBui
 	protected final fun getTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	protected final fun getUid ()Ljava/lang/String;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
 	public final fun mandatory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Builder;
@@ -14119,7 +14519,7 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeBuil
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public final fun confidential (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -14175,7 +14575,7 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeBuil
 	protected final fun getValueType ()Lorg/hisp/dhis/android/core/common/ValueType;
 	public final fun inherit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
 	public final fun legendSets (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Builder;
@@ -14720,7 +15120,7 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeBuilder :
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -14750,7 +15150,7 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeBuilder :
 	protected final fun getTrackedEntityTypeAttributes ()Ljava/util/List;
 	protected final fun getUid ()Ljava/lang/String;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -15965,7 +16365,7 @@ public class org/hisp/dhis/android/core/validation/ValidationRuleBuilder : org/h
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleBuilder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -16000,7 +16400,7 @@ public class org/hisp/dhis/android/core/validation/ValidationRuleBuilder : org/h
 	public final fun importance (Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public final fun instruction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleBuilder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
 	public final fun leftSide (Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;)Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;

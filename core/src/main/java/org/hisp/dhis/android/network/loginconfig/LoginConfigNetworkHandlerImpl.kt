@@ -59,7 +59,7 @@ internal class LoginConfigNetworkHandlerImpl(
 
     override suspend fun oauthConfigFor(
         serverUrl: String,
-        oauthInfoPath: String
+        oauthInfoPath: String,
     ): OauthConfig {
         val oauthConfigDTO = coroutineAPICallExecutor.wrap {
             service.getOauthConfigFor(serverUrl, oauthInfoPath)

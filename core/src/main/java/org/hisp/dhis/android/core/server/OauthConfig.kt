@@ -25,45 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.loginconfig
+package org.hisp.dhis.android.core.server
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.server.LoginConfig
-import org.hisp.dhis.android.core.server.OauthConfig
-import org.hisp.dhis.android.core.server.internal.LoginConfigNetworkHandler
-import org.koin.core.annotation.Singleton
-
-@Singleton
-internal class LoginConfigNetworkHandlerImpl(
-    httpClient: HttpServiceClient,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : LoginConfigNetworkHandler {
-    private val service: LoginConfigService = LoginConfigService(httpClient)
-
-    override suspend fun loginConfigFor(serverUrl: String): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfigFor(serverUrl)
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
-    }
-
-    override suspend fun loginConfig(): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfig()
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
-    }
-
-    override suspend fun oauthConfigFor(
-        serverUrl: String,
-        oauthInfoPath: String
-    ): OauthConfig {
-        val oauthConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getOauthConfigFor(serverUrl, oauthInfoPath)
-        }.getOrThrow()
-        return oauthConfigDTO.toDomain()
-    }
-}
+data class OauthConfig(
+    val authorizationEndpoint: String? = null,
+    val jwksUri: String? = null,
+)

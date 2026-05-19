@@ -25,45 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.loginconfig
 
-import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.server.LoginConfig
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.server.OauthConfig
-import org.hisp.dhis.android.core.server.internal.LoginConfigNetworkHandler
-import org.koin.core.annotation.Singleton
 
-@Singleton
-internal class LoginConfigNetworkHandlerImpl(
-    httpClient: HttpServiceClient,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : LoginConfigNetworkHandler {
-    private val service: LoginConfigService = LoginConfigService(httpClient)
-
-    override suspend fun loginConfigFor(serverUrl: String): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfigFor(serverUrl)
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
-    }
-
-    override suspend fun loginConfig(): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfig()
-        }.getOrThrow()
-
-        return loginConfigDTO.toDomain()
-    }
-
-    override suspend fun oauthConfigFor(
-        serverUrl: String,
-        oauthInfoPath: String
-    ): OauthConfig {
-        val oauthConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getOauthConfigFor(serverUrl, oauthInfoPath)
-        }.getOrThrow()
-        return oauthConfigDTO.toDomain()
+@Serializable
+internal data class OauthConfigDTO(
+    @SerialName("authorization_endpoint") val authorizationEndpoint: String?,
+    @SerialName("jwks_uri") val jwksUri: String?,
+) {
+    fun toDomain(): OauthConfig {
+        return OauthConfig(
+            authorizationEndpoint = authorizationEndpoint,
+            jwksUri = jwksUri,
+        )
     }
 }

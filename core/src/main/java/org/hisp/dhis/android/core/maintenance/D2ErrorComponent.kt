@@ -25,24 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance
 
-package org.hisp.dhis.android.core.sms.domain.repository.internal;
-
-public enum SubmissionType {
-    SIMPLE_EVENT("simple"),
-    TRACKER_EVENT("tracker"),
-    ENROLLMENT("enrollment"),
-    DATA_SET("dataset"),
-    RELATIONSHIP("relationship"),
-    DELETION("deletion");
-
-    private final String text;
-
-    SubmissionType(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
+enum class D2ErrorComponent {
+    Server,
+    SDK,
+    Database,
 }

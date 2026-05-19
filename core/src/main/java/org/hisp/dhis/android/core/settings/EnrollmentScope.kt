@@ -25,11 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.program;
+enum class EnrollmentScope {
+    ALL,
+    ONLY_ACTIVE,
+    ;
 
-public enum SectionRenderingType {
-    LISTING,
-    SEQUENTIAL,
-    MATRIX
+    companion object {
+        fun forName(name: String?): EnrollmentScope? = entries.find { it.name == name }
+    }
 }

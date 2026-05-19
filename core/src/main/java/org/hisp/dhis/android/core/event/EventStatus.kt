@@ -25,9 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event
 
-package org.hisp.dhis.android.core.relationship;
+enum class EventStatus {
+    ACTIVE, COMPLETED, SCHEDULE, SKIPPED,
 
-public enum RelationshipEntityType {
-    PROGRAM_INSTANCE, PROGRAM_STAGE_INSTANCE, TRACKED_ENTITY_INSTANCE
+    @Deprecated("")
+    VISITED, OVERDUE
 }

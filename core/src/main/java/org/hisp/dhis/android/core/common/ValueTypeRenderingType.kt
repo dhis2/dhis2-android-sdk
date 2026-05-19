@@ -25,11 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.validation;
-
-public enum ValidationRuleImportance {
-    LOW,
-    MEDIUM,
-    HIGH
+enum class ValueTypeRenderingType {
+    DEFAULT,
+    DROPDOWN,
+    VERTICAL_RADIOBUTTONS,
+    HORIZONTAL_RADIOBUTTONS,
+    VERTICAL_CHECKBOXES,
+    HORIZONTAL_CHECKBOXES,
+    SHARED_HEADER_RADIOBUTTONS,
+    ICONS_AS_BUTTONS,
+    SPINNER,
+    ICON,
+    TOGGLE,
+    VALUE,
+    SLIDER,
+    LINEAR_SCALE,
+    AUTOCOMPLETE,
+    QR_CODE,
+    BAR_CODE,
+    GS1_DATAMATRIX,
+    CANVAS,
 }

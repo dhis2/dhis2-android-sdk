@@ -25,11 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.validation;
-
-public enum MissingValueStrategy {
-    NEVER_SKIP,
-    SKIP_IF_ANY_VALUE_MISSING,
-    SKIP_IF_ALL_VALUES_MISSING
+enum class ProgramType {
+    WITH_REGISTRATION, WITHOUT_REGISTRATION
 }

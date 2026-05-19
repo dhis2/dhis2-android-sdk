@@ -25,21 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
+enum class LimitScope {
+    ALL_ORG_UNITS,
+    GLOBAL,
+    PER_ORG_UNIT,
+    PER_PROGRAM,
+    PER_OU_AND_PROGRAM,
+    ;
 
-public enum EnrollmentScope {
-    ALL,
-    ONLY_ACTIVE;
-
-    public static EnrollmentScope forName(String name) {
-        for (EnrollmentScope c : values()) {
-            if (c.name().equals(name)) {
-                return c;
-            }
-        }
-
-        return null;
+    companion object {
+        fun forName(name: String?): LimitScope? = entries.find { it.name == name }
     }
-
 }

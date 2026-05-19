@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.utils.integration.mock
 
-package org.hisp.dhis.android.core.program;
-
-public enum ProgramRuleActionType {
-    DISPLAYTEXT,
-    DISPLAYKEYVALUEPAIR,
-    HIDEFIELD,
-    HIDESECTION,
-    HIDEPROGRAMSTAGE,
-    ASSIGN,
-    SHOWWARNING,
-    WARNINGONCOMPLETE,
-    SHOWERROR,
-    ERRORONCOMPLETE,
-    CREATEEVENT,
-    SETMANDATORYFIELD,
-    SENDMESSAGE,
-    SCHEDULEMESSAGE,
-    HIDEOPTION,
-    SHOWOPTIONGROUP,
-    HIDEOPTIONGROUP
+enum class MockIntegrationTestDatabaseContent {
+    EmptyEnqueable,
+    EmptyDispatcher,
+    FullDispatcher,
+    MetadataEnqueable,
+    MetadataDispatcher,
+    MethodScopedEmptyEnqueable,
+    LocalAnalyticsDefaultDispatcher,
+    LocalAnalyticsLargeDispatcher,
+    LocalAnalyticsSuperLargeDispatcher,
+    DatabaseImportExport,
 }

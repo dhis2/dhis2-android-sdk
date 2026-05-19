@@ -25,22 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.dataapproval;
-
-public enum DataApprovalState {
-    UNAPPROVABLE,
-    UNAPPROVED_ABOVE,
-    UNAPPROVED_WAITING,
-    UNAPPROVED_READY,
-    APPROVED_ABOVE,
-    APPROVED_HERE,
-    ACCEPTED_HERE,
-
-    @Deprecated
-    UNAPPROVED_ELSEWHERE,
-    @Deprecated
-    APPROVED_ELSEWHERE,
-    @Deprecated
-    ACCEPTED_ELSEWHERE
+enum class RelationshipEntityType {
+    PROGRAM_INSTANCE, PROGRAM_STAGE_INSTANCE, TRACKED_ENTITY_INSTANCE
 }

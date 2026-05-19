@@ -25,10 +25,8 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.db.sqlorder.internal
 
-package org.hisp.dhis.android.core.common;
-
-public enum DatePeriodType {
-    RELATIVE,
-    ABSOLUTE
+enum class SQLOrderType {
+    ASC, DESC
 }

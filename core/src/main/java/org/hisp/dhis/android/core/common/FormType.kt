@@ -25,23 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.settings;
+enum class FormType {
+    DEFAULT, CUSTOM, SECTION, SECTION_MULTIORG;
 
-public enum LimitScope {
-    ALL_ORG_UNITS,
-    GLOBAL,
-    PER_ORG_UNIT,
-    PER_PROGRAM,
-    PER_OU_AND_PROGRAM;
+    val isDefault: Boolean
+        get() = this == FormType.DEFAULT
 
-    public static LimitScope forName(String name) {
-        for (LimitScope c : values()) {
-            if (c.name().equals(name)) {
-                return c;
-            }
-        }
+    val isCustom: Boolean
+        get() = this == FormType.CUSTOM
 
-        return null;
-    }
+    val isSection: Boolean
+        get() = this == FormType.SECTION || this == FormType.SECTION_MULTIORG
 }

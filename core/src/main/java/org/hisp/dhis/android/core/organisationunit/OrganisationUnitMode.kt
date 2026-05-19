@@ -25,18 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit
 
-package org.hisp.dhis.android.core.utils.integration.mock;
-
-public enum MockIntegrationTestDatabaseContent {
-    EmptyEnqueable,
-    EmptyDispatcher,
-    FullDispatcher,
-    MetadataEnqueable,
-    MetadataDispatcher,
-    MethodScopedEmptyEnqueable,
-    LocalAnalyticsDefaultDispatcher,
-    LocalAnalyticsLargeDispatcher,
-    LocalAnalyticsSuperLargeDispatcher,
-    DatabaseImportExport,
+/**
+ * Defines the selection of organisation units.
+ *
+ *
+ *  * SELECTED: specified units only.
+ *  * CHILDREN: immediate children of specified units, including specified units.
+ *  * DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.
+ *  * ACCESSIBLE: all organisation units accessible by the user (search scope).
+ *  * ALL: all units in system.
+ *
+ *
+ * @author Lars Helge Overland
+ */
+enum class OrganisationUnitMode {
+    SELECTED,
+    CHILDREN,
+    DESCENDANTS,
+    ACCESSIBLE,
+    CAPTURE,
+    ALL,
 }

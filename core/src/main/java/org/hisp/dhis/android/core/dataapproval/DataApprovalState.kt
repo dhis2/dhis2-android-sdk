@@ -25,12 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval
 
-package org.hisp.dhis.android.core.common;
+enum class DataApprovalState {
+    UNAPPROVABLE,
+    UNAPPROVED_ABOVE,
+    UNAPPROVED_WAITING,
+    UNAPPROVED_READY,
+    APPROVED_ABOVE,
+    APPROVED_HERE,
+    ACCEPTED_HERE,
 
-public enum AssignedUserMode {
-    CURRENT,
-    PROVIDED,
-    NONE,
-    ANY
+    @Deprecated("")
+    UNAPPROVED_ELSEWHERE,
+
+    @Deprecated("")
+    APPROVED_ELSEWHERE,
+
+    @Deprecated("")
+    ACCEPTED_ELSEWHERE,
 }

@@ -58,7 +58,7 @@ internal class ValidationRuleShould : CoreObjectShould<ValidationRuleDTO>(
 
         assertThat(validationRule.instruction()).isEqualTo("Instruction")
         assertThat(validationRule.importance()).isEqualTo(ValidationRuleImportance.MEDIUM)
-        assertThat(validationRule.operator()).isEqualTo(ValidationRuleOperator.greater_than)
+        assertThat(validationRule.operator()).isEqualTo(ValidationRuleOperator.GREATER_THAN)
         assertThat(validationRule.periodType()).isEqualTo(PeriodType.Monthly)
         assertThat(validationRule.skipFormValidation()).isFalse()
         assertThat(validationRule.leftSide().expression()).isEqualTo("10")

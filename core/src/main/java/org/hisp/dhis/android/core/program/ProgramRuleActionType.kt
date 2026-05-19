@@ -25,28 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.organisationunit;
-
-/**
- * Defines the selection of organisation units.
- *
- * <ul>
- * <li>SELECTED: specified units only.</li>
- * <li>CHILDREN: immediate children of specified units, including specified units.</li>
- * <li>DESCENDANTS: all units in sub-hierarchy of specified units, including specified units.</li>
- * <li>ACCESSIBLE: all organisation units accessible by the user (search scope).</li>
- * <li>ALL: all units in system.</li>
- * </ul>
- *
- * @author Lars Helge Overland
- */
-
-public enum OrganisationUnitMode {
-    SELECTED,
-    CHILDREN,
-    DESCENDANTS,
-    ACCESSIBLE,
-    CAPTURE,
-    ALL
+enum class ProgramRuleActionType {
+    DISPLAYTEXT,
+    DISPLAYKEYVALUEPAIR,
+    HIDEFIELD,
+    HIDESECTION,
+    HIDEPROGRAMSTAGE,
+    ASSIGN,
+    SHOWWARNING,
+    WARNINGONCOMPLETE,
+    SHOWERROR,
+    ERRORONCOMPLETE,
+    CREATEEVENT,
+    SETMANDATORYFIELD,
+    SENDMESSAGE,
+    SCHEDULEMESSAGE,
+    HIDEOPTION,
+    SHOWOPTIONGROUP,
+    HIDEOPTIONGROUP,
 }

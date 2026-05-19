@@ -35,12 +35,14 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2NetworkHandler
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OAuth2NetworkHandlerImpl(
     httpClient: HttpServiceClient,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val oAuth2SecureStore: OAuth2SecureStore,
 ) : OAuth2NetworkHandler {
 
     private val service = OAuth2Service(httpClient)
@@ -52,7 +54,9 @@ internal class OAuth2NetworkHandlerImpl(
         codeChallenge: String,
         scope: String,
     ): String {
-        return Uri.parse("$serverUrl/oauth2/authorize").buildUpon()
+        val authorizationEndpoint = oAuth2SecureStore.authorizationEndpoint
+            ?: error("Authorization endpoint not configured. checkServerUrl must run before OAuth login.")
+        return Uri.parse(authorizationEndpoint).buildUpon()
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", OAuth2Config.DEFAULT_REDIRECT_URI)
             .appendQueryParameter("response_type", "code")

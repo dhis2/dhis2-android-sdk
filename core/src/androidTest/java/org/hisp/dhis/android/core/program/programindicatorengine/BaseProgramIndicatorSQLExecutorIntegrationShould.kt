@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -55,7 +55,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         databaseAdapter,
     )
 
-    protected val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo.uid())
+    protected val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo1.uid())
 
     protected suspend fun evaluateTeiCount(
         filter: String? = null,

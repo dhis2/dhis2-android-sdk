@@ -134,7 +134,8 @@ internal class ProgramIndicatorSQLExecutor(
         return "SELECT ${aggregator.sql}($selectExpression) " +
             "FROM $targetTable " +
             "WHERE ($filterExpression) " +
-            "AND $contextWhereClause"
+            "AND $contextWhereClause" +
+            "AND ${disagreggationCategoryFilter}"
     }
 
     private suspend fun constantMap(): Map<String, Constant> {

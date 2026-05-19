@@ -35,16 +35,19 @@ import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.day20191101
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -79,10 +82,12 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
 
     @Test
     fun should_filter_event_count_by_category_option_filter() = runTest {
-        // 3 events: two match the option filter (dataElement1 = 10), one does not (= 20).
         seedEvents(values = listOf("10", "10", "20"))
 
-        seedCategoryMapping(filter = "${de(programStage1.uid(), dataElement1.uid())} == 10")
+        seedCategoryMapping(listOf(
+            categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+            categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+        ))
 
         val pi = buildDisaggregatedProgramIndicator(
             expression = `var`("event_count"),
@@ -92,12 +97,16 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         // Baseline: without disaggregation the COUNT returns every event.
         assertThat(evaluate(pi)).isEqualTo("3")
 
-        // With disaggregation by the configured option the mapping filter must apply.
-        val countForOption = evaluate(
+        val countForOption1 = evaluate(
             pi,
-            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption.uid())),
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
         )
-        assertThat(countForOption).isEqualTo("2")
+        val countForOption2 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
+        )
+        assertThat(countForOption1).isEqualTo("2")
+        assertThat(countForOption2).isEqualTo("1")
     }
 
     @Test
@@ -106,7 +115,10 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         seedEvents(values = listOf("5", "10", "15", "20"))
 
         // Filter keeps only events whose data element value is at least 10.
-        seedCategoryMapping(filter = "${de(programStage1.uid(), dataElement1.uid())} >= 10")
+        seedCategoryMapping(listOf(
+            categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+            categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+        ))
 
         val pi = buildDisaggregatedProgramIndicator(
             expression = de(programStage1.uid(), dataElement1.uid()),
@@ -119,7 +131,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         // With the option filter applied only 10 + 15 + 20 = 45 should remain.
         val sumForOption = evaluate(
             pi,
-            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption.uid())),
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
         )
         assertThat(sumForOption).isEqualTo("45")
     }
@@ -143,7 +155,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         }
     }
 
-    private suspend fun seedCategoryMapping(filter: String) {
+    private suspend fun seedCategoryMapping(filterList: List<Pair<CategoryOption, String>>) {
         val mapping = CategoryMapping.builder()
             .uid(mappingUid)
             .program(program.uid())
@@ -153,12 +165,14 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
             .build()
         categoryMappingStore.insertIfNotExists(mapping)
 
-        val optionMapping = CategoryOptionMapping.builder()
-            .categoryMapping(mappingUid)
-            .optionId(categoryOption.uid())
-            .filter(filter)
-            .build()
-        categoryOptionMappingStore.insertIfNotExists(optionMapping)
+        filterList.forEach { (co, cf) ->
+            val optionMapping = CategoryOptionMapping.builder()
+                .categoryMapping(mappingUid)
+                .optionId(co.uid)
+                .filter(cf)
+                .build()
+            categoryOptionMappingStore.insertIfNotExists(optionMapping)
+        }
     }
 
     private suspend fun buildDisaggregatedProgramIndicator(
@@ -183,6 +197,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
             .aggregationType(aggregationType)
             .analyticsType(AnalyticsType.EVENT)
             .expression(expression)
+            .filter("1") // Evaluate all events
             .analyticsPeriodBoundaries(boundaries)
             .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
             .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
@@ -199,7 +214,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(DimensionItem.DataItem.ProgramIndicatorItem(pi.uid())) + extraDimensions,
-            filters = emptyList(),
+            filters = listOf(DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)),
         )
         return programIndicatorEvaluator.getProgramIndicatorValue(
             evaluationItem = evaluationItem,

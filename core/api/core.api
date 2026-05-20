@@ -12784,19 +12784,26 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Config$Companion
 
 public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler {
 	public abstract fun blockingBuildEnrollmentUrl (Ljava/lang/String;)Ljava/lang/String;
+	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;)V
 	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
-	public abstract fun changePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun getClientId ()Ljava/lang/String;
 	public abstract fun isDeviceRegistered ()Z
 	public abstract fun isLoggedIn ()Z
 	public abstract fun logOutObservable ()Lio/reactivex/Observable;
 	public abstract fun resetRegistration ()V
 	public abstract fun rxLogOutObservable ()Lio/reactivex/Observable;
-	public abstract fun setPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public abstract fun suspendChangePin (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendSetPin (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler$DefaultImpls {
+	public static fun blockingChangePin (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun blockingSetPin (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {

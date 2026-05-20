@@ -199,31 +199,34 @@ internal class OAuth2HandlerImpl(
 
     override fun setPin(pin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
-            ?: return Result.Failure(logInExceptions.noActiveSessionError())
-        if (credentials.oauth2State == null) {
-            return Result.Failure(logInExceptions.pinRequiresOAuth2AccountError())
-        }
-
-        val updated = credentials.copy(password = pin)
-        credentialsSecureStore.set(updated)
-
-        return runBlocking {
-            val existing = authenticatedUserStore.selectFirst()
-                ?: return@runBlocking Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
-            authenticatedUserStore.updateOrInsertWhere(
-                existing.toBuilder().hash(updated.getHash()).build(),
-            )
-            Result.Success(Unit)
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.oauth2State == null -> Result.Failure(logInExceptions.pinRequiresOAuth2AccountError())
+            else -> {
+                val updated = credentials.copy(password = pin)
+                credentialsSecureStore.set(updated)
+                runBlocking {
+                    val existing = authenticatedUserStore.selectFirst()
+                    if (existing == null) {
+                        Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
+                    } else {
+                        authenticatedUserStore.updateOrInsertWhere(
+                            existing.toBuilder().hash(updated.getHash()).build(),
+                        )
+                        Result.Success(Unit)
+                    }
+                }
+            }
         }
     }
 
     override fun changePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
-            ?: return Result.Failure(logInExceptions.noActiveSessionError())
-        if (credentials.password != currentPin) {
-            return Result.Failure(logInExceptions.incorrectPinError())
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
+            else -> setPin(newPin)
         }
-        return setPin(newPin)
     }
 
     override fun blockingLogOut() {

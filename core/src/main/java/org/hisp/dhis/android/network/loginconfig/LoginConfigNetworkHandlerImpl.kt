@@ -50,9 +50,7 @@ internal class LoginConfigNetworkHandlerImpl(
     }
 
     override suspend fun loginConfig(): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfig()
-        }.getOrThrow()
+        val loginConfigDTO = service.getLoginConfig()
 
         return loginConfigDTO.toDomain()
     }
@@ -61,9 +59,6 @@ internal class LoginConfigNetworkHandlerImpl(
         serverUrl: String,
         oauthInfoPath: String,
     ): OauthConfig {
-        val oauthConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getOauthConfigFor(serverUrl, oauthInfoPath)
-        }.getOrThrow()
-        return oauthConfigDTO.toDomain()
+        return service.getOauthConfigFor(serverUrl, oauthInfoPath).toDomain()
     }
 }

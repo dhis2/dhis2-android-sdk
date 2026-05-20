@@ -63,7 +63,7 @@ internal class OAuth2StateSecureStore(
     companion object {
         private const val KEY_PREFIX = "oauth2_state_"
         private const val HASH_ALGORITHM = "SHA-256"
-        private const val HASH_BYTE_COUNT = 4
+        private const val HASH_BYTE_COUNT = 8
         private const val HEX_STRING_WIDTH = 2
         private const val HEX_RADIX = 16
     }

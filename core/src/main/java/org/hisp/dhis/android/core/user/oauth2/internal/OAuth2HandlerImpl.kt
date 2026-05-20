@@ -197,7 +197,7 @@ internal class OAuth2HandlerImpl(
         return credentialsSecureStore.get()?.oauth2State?.clientId
     }
 
-    override fun setPin(pin: String): Result<Unit, D2Error> {
+    override suspend fun suspendSetPin(pin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
         return when {
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
@@ -205,27 +205,25 @@ internal class OAuth2HandlerImpl(
             else -> {
                 val updated = credentials.copy(password = pin)
                 credentialsSecureStore.set(updated)
-                runBlocking {
-                    val existing = authenticatedUserStore.selectFirst()
-                    if (existing == null) {
-                        Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
-                    } else {
-                        authenticatedUserStore.updateOrInsertWhere(
-                            existing.toBuilder().hash(updated.getHash()).build(),
-                        )
-                        Result.Success(Unit)
-                    }
+                val existing = authenticatedUserStore.selectFirst()
+                if (existing == null) {
+                    Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
+                } else {
+                    authenticatedUserStore.updateOrInsertWhere(
+                        existing.toBuilder().hash(updated.getHash()).build(),
+                    )
+                    Result.Success(Unit)
                 }
             }
         }
     }
 
-    override fun changePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
+    override suspend fun suspendChangePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
         return when {
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
             credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
-            else -> setPin(newPin)
+            else -> suspendSetPin(newPin)
         }
     }
 

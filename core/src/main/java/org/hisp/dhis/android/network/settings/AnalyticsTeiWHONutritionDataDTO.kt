@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.settings
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
 import org.hisp.dhis.android.core.settings.WHONutritionChartType
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
 @Serializable
 internal data class AnalyticsTeiWHONutritionDataDTO(
@@ -44,8 +45,8 @@ internal data class AnalyticsTeiWHONutritionDataDTO(
             .teiSetting(teiSetting)
             .chartType(WHONutritionChartType.valueOf(chartType))
             .gender(gender.toDomain())
-            .x(x.toDomain())
-            .y(y.toDomain())
+            .x(x.toDomain(teiSetting, WHONutritionComponent.X))
+            .y(y.toDomain(teiSetting, WHONutritionComponent.Y))
             .build()
     }
 }

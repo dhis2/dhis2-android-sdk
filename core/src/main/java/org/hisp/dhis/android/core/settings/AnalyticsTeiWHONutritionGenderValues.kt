@@ -26,29 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionGender {
+@ModelBuilder
+data class AnalyticsTeiWHONutritionGenderValues(
+    val female: String,
+    val male: String,
+) {
 
-    public abstract String attribute();
+    fun female(): String = female
+    fun male(): String = male
 
-    public abstract AnalyticsTeiWHONutritionGenderValues values();
+    fun toBuilder(): Builder = AnalyticsTeiWHONutritionGenderValuesBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : AnalyticsTeiWHONutritionGenderValuesBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionGender.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder values(AnalyticsTeiWHONutritionGenderValues values);
-
-        public abstract AnalyticsTeiWHONutritionGender build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -21,3 +21,25 @@ UPDATE ValidationRule SET operator = 'LESS_THAN' WHERE operator = 'less_than';
 UPDATE ValidationRule SET operator = 'LESS_THAN_OR_EQUAL_TO' WHERE operator = 'less_than_or_equal_to';
 UPDATE ValidationRule SET operator = 'COMPULSORY_PAIR' WHERE operator = 'compulsory_pair';
 UPDATE ValidationRule SET operator = 'EXCLUSIVE_PAIR' WHERE operator = 'exclusive_pair';
+
+# AnalyticsTeiWHONutritionGenderValues: make genderFemale and genderMale non-null (ANDROSDK-2295)
+
+# Remove rows with null gender values
+DELETE FROM AnalyticsTeiWHONutritionData WHERE genderFemale IS NULL OR genderMale IS NULL;
+
+# Recreate table with genderFemale and genderMale as NOT NULL
+ALTER TABLE AnalyticsTeiWHONutritionData RENAME TO AnalyticsTeiWHONutritionData_Old;
+CREATE TABLE AnalyticsTeiWHONutritionData(teiSetting TEXT NOT NULL, chartType TEXT, genderAttribute TEXT NOT NULL, genderFemale TEXT NOT NULL, genderMale TEXT NOT NULL, PRIMARY KEY(teiSetting, genderAttribute), FOREIGN KEY(genderAttribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(teiSetting) REFERENCES AnalyticsTeiSetting(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO AnalyticsTeiWHONutritionData(teiSetting, chartType, genderAttribute, genderFemale, genderMale) SELECT teiSetting, chartType, genderAttribute, genderFemale, genderMale FROM AnalyticsTeiWHONutritionData_Old;
+DROP TABLE IF EXISTS AnalyticsTeiWHONutritionData_Old;
+
+# AnalyticsDhisVisualization: make scope, groupUid and groupName non-null (ANDROSDK-2295)
+
+# Remove rows with null scope, groupUid or groupName
+DELETE FROM AnalyticsDhisVisualization WHERE scope IS NULL OR groupUid IS NULL OR groupName IS NULL;
+
+# Recreate table with scope, groupUid and groupName as NOT NULL
+ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
+CREATE TABLE AnalyticsDhisVisualization (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT NOT NULL, groupUid TEXT NOT NULL, groupName TEXT NOT NULL, timestamp TEXT, name TEXT, type TEXT NOT NULL);
+INSERT INTO AnalyticsDhisVisualization(_id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT _id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
+DROP TABLE IF EXISTS AnalyticsDhisVisualization_Old;

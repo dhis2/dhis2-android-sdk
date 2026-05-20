@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import java.util.Collections;
-import java.util.List;
+@ModelBuilder
+data class AnalyticsTeiData(
+    val dataElements: List<AnalyticsTeiDataElement> = emptyList(),
+    val indicators: List<AnalyticsTeiIndicator> = emptyList(),
+    val attributes: List<AnalyticsTeiAttribute> = emptyList(),
+) {
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionItem {
+    fun dataElements(): List<AnalyticsTeiDataElement> = dataElements
+    fun indicators(): List<AnalyticsTeiIndicator> = indicators
+    fun attributes(): List<AnalyticsTeiAttribute> = attributes
 
-    public abstract List<AnalyticsTeiDataElement> dataElements();
+    fun toBuilder(): Builder = AnalyticsTeiDataBuilder.from(this)
 
-    public abstract List<AnalyticsTeiIndicator> indicators();
+    class Builder : AnalyticsTeiDataBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionItem.Builder()
-                .dataElements(Collections.emptyList())
-                .indicators(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataElements(List<AnalyticsTeiDataElement> dataElements);
-
-        public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
-
-        public abstract AnalyticsTeiWHONutritionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .dataElements(emptyList())
+            .indicators(emptyList())
+            .attributes(emptyList())
     }
 }

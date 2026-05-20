@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class AnalyticsTeiIndicatorHandler(
     store: AnalyticsTeiIndicatorStore,
-) : LinkHandlerImpl<AnalyticsTeiIndicator, AnalyticsTeiIndicator>(store)
+) : ChildElementHandlerImpl<AnalyticsTeiIndicator>(store)

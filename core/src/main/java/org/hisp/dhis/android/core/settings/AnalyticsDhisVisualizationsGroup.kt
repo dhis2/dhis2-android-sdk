@@ -26,33 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.settings.AnalyticsSettingsSamples
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationStoreImpl
-import org.hisp.dhis.android.persistence.settings.AnalyticsDhisVisualizationTableInfo
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@RunWith(D2JunitRunner::class)
-class AnalyticsDhisVisualizationStoreIntegrationShould :
-    ObjectStoreAbstractIntegrationShould<AnalyticsDhisVisualization>(
-        AnalyticsDhisVisualizationStoreImpl(TestDatabaseAdapterFactory.get()),
-        AnalyticsDhisVisualizationTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get(),
-    ) {
-    override fun buildObject(): AnalyticsDhisVisualization {
-        return AnalyticsSettingsSamples.analyticsDhisVisualization
-    }
+@ModelBuilder
+data class AnalyticsDhisVisualizationsGroup(
+    val name: String,
+    val id: String,
+    val visualizations: List<AnalyticsDhisVisualization>,
+) {
 
-    override fun buildObjectWithNullableFields(): AnalyticsDhisVisualization {
-        return buildObject().toBuilder()
-            .scopeUid(null)
-            .timestamp(null)
-            .name(null)
-            .build()
+    fun name(): String = name
+    fun id(): String = id
+    fun visualizations(): List<AnalyticsDhisVisualization> = visualizations
+
+    fun toBuilder(): Builder = AnalyticsDhisVisualizationsGroupBuilder.from(this)
+
+    class Builder : AnalyticsDhisVisualizationsGroupBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

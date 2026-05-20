@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.List;
-import java.util.Map;
+@ModelBuilder
+data class AnalyticsTeiIndicator(
+    val teiSetting: String,
+    val whoComponent: WHONutritionComponent?,
+    val programStage: String?,
+    val indicator: String,
+) : CoreObject {
 
-@AutoValue
-public abstract class AnalyticsDhisVisualizationsSetting {
+    fun teiSetting(): String = teiSetting
+    fun whoComponent(): WHONutritionComponent? = whoComponent
+    fun programStage(): String? = programStage
+    fun indicator(): String = indicator
 
-    public abstract List<AnalyticsDhisVisualizationsGroup> home();
+    fun toBuilder(): Builder = AnalyticsTeiIndicatorBuilder.from(this)
 
-    public abstract Map<String, List<AnalyticsDhisVisualizationsGroup>> program();
+    class Builder : AnalyticsTeiIndicatorBuilder()
 
-    public abstract Map<String, List<AnalyticsDhisVisualizationsGroup>> dataSet();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsDhisVisualizationsSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder home(List<AnalyticsDhisVisualizationsGroup> home);
-
-        public abstract Builder program(Map<String, List<AnalyticsDhisVisualizationsGroup>> program);
-
-        public abstract Builder dataSet(Map<String, List<AnalyticsDhisVisualizationsGroup>> dataSet);
-
-        public abstract AnalyticsDhisVisualizationsSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionGenderValues {
+@ModelBuilder
+data class AnalyticsTeiDataElement(
+    val teiSetting: String,
+    val whoComponent: WHONutritionComponent?,
+    val programStage: String?,
+    val dataElement: String,
+) : CoreObject {
 
-    public abstract String female();
+    fun teiSetting(): String = teiSetting
+    fun whoComponent(): WHONutritionComponent? = whoComponent
+    fun programStage(): String? = programStage
+    fun dataElement(): String = dataElement
 
-    public abstract String male();
+    fun toBuilder(): Builder = AnalyticsTeiDataElementBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : AnalyticsTeiDataElementBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionGenderValues.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder female(String female);
-
-        public abstract Builder male(String male);
-
-        public abstract AnalyticsTeiWHONutritionGenderValues build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

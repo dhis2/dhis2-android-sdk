@@ -26,36 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import java.util.List;
+@ModelBuilder
+data class AnalyticsTeiWHONutritionGender(
+    val attribute: String,
+    val values: AnalyticsTeiWHONutritionGenderValues,
+) {
 
-@AutoValue
-public abstract class AnalyticsDhisVisualizationsGroup {
+    fun attribute(): String = attribute
+    fun values(): AnalyticsTeiWHONutritionGenderValues = values
 
-    public abstract String name();
+    fun toBuilder(): Builder = AnalyticsTeiWHONutritionGenderBuilder.from(this)
 
-    public abstract String id();
+    class Builder : AnalyticsTeiWHONutritionGenderBuilder()
 
-    public abstract List<AnalyticsDhisVisualization> visualizations();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsDhisVisualizationsGroup.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder name(String name);
-
-        public abstract Builder id(String id);
-
-        public abstract Builder visualizations(List<AnalyticsDhisVisualization> visualizations);
-
-        public abstract AnalyticsDhisVisualizationsGroup build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

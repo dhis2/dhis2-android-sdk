@@ -30,8 +30,10 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 import io.reactivex.Observable
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
@@ -48,6 +50,9 @@ internal class OAuth2HandlerImpl(
     private val oauth2NetworkHandler: OAuth2NetworkHandler,
     private val keyStoreManager: KeyStoreManager,
     private val oauth2SecureStore: OAuth2SecureStore,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val authenticatedUserStore: AuthenticatedUserStore,
 ) : OAuth2Handler {
 
     private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
@@ -159,8 +164,10 @@ internal class OAuth2HandlerImpl(
         return when (result) {
             is Result.Success -> {
                 val oauth2State = result.value.copy(keyId = keyId)
-                oauth2SecureStore.clearTemporaryData()
-                logInCall.logInOAuth2(normalizedUrl, oauth2State)
+                val user = logInCall.logInOAuth2(normalizedUrl, oauth2State)
+                oauth2StateSecureStore.set(normalizedUrl, user.username()!!, oauth2State)
+                oauth2SecureStore.clearAll()
+                user
             }
             is Result.Failure -> {
                 oauth2SecureStore.clearTemporaryData()
@@ -180,11 +187,35 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun isLoggedIn(): Boolean {
-        return logInCall.isUserLoggedIn() && oauth2SecureStore.clientId != null
+        return logInCall.isUserLoggedIn() && credentialsSecureStore.get()?.oauth2State != null
     }
 
     override fun getClientId(): String? {
-        return oauth2SecureStore.clientId
+        return credentialsSecureStore.get()?.oauth2State?.clientId
+    }
+
+    override fun setPin(pin: String): kotlin.Result<Unit> = kotlin.runCatching {
+        val credentials = credentialsSecureStore.get()
+            ?: error("PIN cannot be set: no active session")
+        check(credentials.oauth2State != null) { "PIN can only be set for OAuth2 accounts" }
+
+        val updated = credentials.copy(password = pin)
+        credentialsSecureStore.set(updated)
+
+        runBlocking {
+            val existing = authenticatedUserStore.selectFirst()
+                ?: error("PIN cannot be set: no authenticated user persisted")
+            authenticatedUserStore.updateOrInsertWhere(
+                existing.toBuilder().hash(updated.getHash()).build(),
+            )
+        }
+    }
+
+    override fun changePin(currentPin: String, newPin: String): kotlin.Result<Unit> = kotlin.runCatching {
+        val credentials = credentialsSecureStore.get()
+            ?: error("PIN cannot be changed: no active session")
+        require(credentials.password == currentPin) { "Current PIN is incorrect" }
+        setPin(newPin).getOrThrow()
     }
 
     override fun blockingLogOut() {

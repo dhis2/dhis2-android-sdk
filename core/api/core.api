@@ -16164,12 +16164,14 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
+	public abstract fun changePin-gIAlu-s (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun getClientId ()Ljava/lang/String;
 	public abstract fun isDeviceRegistered ()Z
 	public abstract fun isLoggedIn ()Z
 	public abstract fun logOutObservable ()Lio/reactivex/Observable;
 	public abstract fun resetRegistration ()V
 	public abstract fun rxLogOutObservable ()Lio/reactivex/Observable;
+	public abstract fun setPin-IoAF18A (Ljava/lang/String;)Ljava/lang/Object;
 	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -16197,7 +16199,20 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final synthetic class org/hisp/dhis/android/core/user/oauth2/OAuth2State$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State$Companion {
+	public final fun jsonDeserialize (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
 public final class org/hisp/dhis/android/core/user/openid/IntentWithRequestCode {

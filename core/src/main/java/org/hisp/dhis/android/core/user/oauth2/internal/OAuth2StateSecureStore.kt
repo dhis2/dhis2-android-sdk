@@ -27,52 +27,44 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
+import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
-import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
-import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.koin.core.annotation.Singleton
+import java.security.MessageDigest
 
 @Singleton
-internal class OAuth2TokenRefresher(
-    private val oauth2NetworkHandler: OAuth2NetworkHandler,
-    private val keyStoreManager: KeyStoreManager,
-    private val logoutHandler: OAuth2LogoutHandler,
+internal class OAuth2StateSecureStore(
+    private val secureStore: ChunkedSecureStore,
 ) {
-    @Suppress("ReturnCount")
-    suspend fun refreshToken(state: OAuth2State, serverUrl: String): OAuth2State? {
-        return try {
-            if (state.refreshToken == null) {
-                logoutHandler.logOut()
-                return null
-            }
+    fun set(serverUrl: String, username: String, state: OAuth2State) {
+        secureStore.setData(buildKey(serverUrl, username), state.jsonSerializeString())
+    }
 
-            val privateKey = keyStoreManager.getPrivateKey(state.keyId) ?: return null
+    fun get(serverUrl: String, username: String): OAuth2State? {
+        return secureStore.getData(buildKey(serverUrl, username))
+            ?.let { OAuth2State.jsonDeserialize(it) }
+    }
 
-            val clientAssertion = JWTHelper.createClientAssertion(
-                clientId = state.clientId,
-                tokenEndpoint = "$serverUrl/oauth2/token",
-                privateKey = privateKey,
-                keyId = state.keyId,
-            )
+    fun remove(serverUrl: String, username: String) {
+        secureStore.removeData(buildKey(serverUrl, username))
+    }
 
-            val result = oauth2NetworkHandler.refreshToken(
-                url = serverUrl,
-                refreshToken = state.refreshToken,
-                clientId = state.clientId,
-                keyId = state.keyId,
-                clientAssertion = clientAssertion,
-            )
-
-            when (result) {
-                is org.hisp.dhis.android.core.arch.helpers.Result.Success -> result.value
-                is org.hisp.dhis.android.core.arch.helpers.Result.Failure -> {
-                    logoutHandler.logOut()
-                    null
-                }
-            }
-        } catch (_: Exception) {
-            logoutHandler.logOut()
-            null
+    private fun buildKey(serverUrl: String, username: String): String {
+        val normalized = ServerUrlNormalizer.normalize(serverUrl)
+        val digest = MessageDigest.getInstance(HASH_ALGORITHM)
+            .digest("$normalized|$username".toByteArray())
+        val hash = digest.take(HASH_BYTE_COUNT).joinToString("") {
+            it.toUByte().toString(HEX_RADIX).padStart(HEX_STRING_WIDTH, '0')
         }
+        return "$KEY_PREFIX$hash"
+    }
+
+    companion object {
+        private const val KEY_PREFIX = "oauth2_state_"
+        private const val HASH_ALGORITHM = "SHA-256"
+        private const val HASH_BYTE_COUNT = 4
+        private const val HEX_STRING_WIDTH = 2
+        private const val HEX_RADIX = 16
     }
 }

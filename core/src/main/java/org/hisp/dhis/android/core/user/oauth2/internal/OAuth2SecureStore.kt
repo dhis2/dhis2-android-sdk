@@ -75,6 +75,11 @@ internal class OAuth2SecureStore(
         tempCodeVerifier = null
     }
 
+    fun clearAll() {
+        clearRegistration()
+        clearTemporaryData()
+    }
+
     companion object {
         private const val KEY_CLIENT_ID = "oauth2_client_id"
         private const val KEY_KEY_ID = "oauth2_key_id"

@@ -47,6 +47,10 @@ interface OAuth2Handler {
 
     fun getClientId(): String?
 
+    fun setPin(pin: String): Result<Unit>
+
+    fun changePin(currentPin: String, newPin: String): Result<Unit>
+
     fun blockingLogOut()
 
     suspend fun suspendLogOut()

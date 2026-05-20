@@ -42,7 +42,7 @@ internal class AnalyticsTeiWHONutritionDataHandler(
         val dataElementList = (o.x()?.dataElements() ?: emptyList()) + (o.y()?.dataElements() ?: emptyList())
         val indicatorList = (o.x()?.indicators() ?: emptyList()) + (o.y()?.indicators() ?: emptyList())
 
-        teiDataElementHandler.handleMany(o.teiSetting()!!, dataElementList)
-        teiIndicatorHandler.handleMany(o.teiSetting()!!, indicatorList)
+        teiDataElementHandler.handleMany(o.teiSetting(), dataElementList)
+        teiIndicatorHandler.handleMany(o.teiSetting(), indicatorList)
     }
 }

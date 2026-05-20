@@ -157,38 +157,20 @@ internal object SettingsAppHelper {
     }
 
     fun getAnalyticsDhisVisualizations(analyticsSettings: AnalyticsSettings): List<AnalyticsDhisVisualization> {
-        val result = mutableListOf<AnalyticsDhisVisualization>()
+        val visualizationsSetting = analyticsSettings.dhisVisualizations
 
-        analyticsSettings.dhisVisualizations()?.let { visualizationsSetting ->
+        val homeItems = visualizationsSetting.home()
+            .flatMap { it.visualizations() }
 
-            visualizationsSetting.home()?.flatMap { it.visualizations() }?.let { result.addAll(it) }
+        val programItems = visualizationsSetting.program().values
+            .flatMap { list -> list.flatMap { it.visualizations() } }
 
-            visualizationsSetting.program()?.values
-                ?.flatMap { list -> list.flatMap { it.visualizations() } }
-                ?.let { result.addAll(it) }
+        val dataSetItems = visualizationsSetting.dataSet().values
+            .flatMap { list -> list.flatMap { it.visualizations() } }
 
-            visualizationsSetting.dataSet()?.values
-                ?.flatMap { list -> list.flatMap { it.visualizations() } }
-                ?.let { result.addAll(it) }
-        }
-
-        return result
+        return homeItems + programItems + dataSetItems
     }
 
-    @JvmStatic
-    fun buildAnalyticsTeiSettings(
-        teiSettings: List<AnalyticsTeiSetting>,
-        teiDataElements: List<AnalyticsTeiDataElement>,
-        teiIndicators: List<AnalyticsTeiIndicator>,
-        teiAttributes: List<AnalyticsTeiAttribute>,
-        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>,
-    ): List<AnalyticsTeiSetting> {
-        return teiSettings.map {
-            buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes, teiWhoNutritionData)
-        }
-    }
-
-    @JvmStatic
     fun buildAnalyticsTeiSetting(
         teiSetting: AnalyticsTeiSetting,
         teiDataElements: List<AnalyticsTeiDataElement>,

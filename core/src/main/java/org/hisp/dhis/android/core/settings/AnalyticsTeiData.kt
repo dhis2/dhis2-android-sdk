@@ -32,9 +32,9 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 
 @ModelBuilder
 data class AnalyticsTeiData(
-    val dataElements: List<AnalyticsTeiDataElement>,
-    val indicators: List<AnalyticsTeiIndicator>,
-    val attributes: List<AnalyticsTeiAttribute>,
+    val dataElements: List<AnalyticsTeiDataElement> = emptyList(),
+    val indicators: List<AnalyticsTeiIndicator> = emptyList(),
+    val attributes: List<AnalyticsTeiAttribute> = emptyList(),
 ) {
 
     fun dataElements(): List<AnalyticsTeiDataElement> = dataElements

@@ -26,28 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntentDataElement(
+    val uid: String,
+    val customIntentUid: String,
+) : CoreObject {
+    fun uid(): String = uid
+    fun customIntentUid(): String = customIntentUid
 
-import java.util.List;
+    fun toBuilder(): Builder = CustomIntentDataElementBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntents {
+    class Builder : CustomIntentDataElementBuilder()
 
-    @Nullable
-    public abstract List<CustomIntent> customIntents();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntents.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder customIntents(List<CustomIntent> customIntents);
-
-        public abstract CustomIntents build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

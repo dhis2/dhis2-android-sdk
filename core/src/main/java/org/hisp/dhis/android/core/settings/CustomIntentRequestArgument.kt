@@ -26,34 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntentRequestArgument(
+    val key: String,
+    val value: String,
+) {
+    fun key(): String = key
+    fun value(): String = value
 
-import java.util.List;
+    fun toBuilder(): Builder = CustomIntentRequestArgumentBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntentTrigger {
+    class Builder : CustomIntentRequestArgumentBuilder()
 
-    @Nullable
-    public abstract List<CustomIntentDataElement> dataElements();
-
-    @Nullable
-    public abstract List<CustomIntentAttribute> attributes();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntentTrigger.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataElements(List<CustomIntentDataElement> dataElements);
-
-        public abstract Builder attributes(List<CustomIntentAttribute> attributes);
-
-        public abstract CustomIntentTrigger build();
-    }
-
 }

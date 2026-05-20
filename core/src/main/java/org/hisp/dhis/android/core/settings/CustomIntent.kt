@@ -26,33 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntent(
+    override val uid: String,
+    val name: String?,
+    val trigger: CustomIntentTrigger?,
+    val action: List<CustomIntentActionType>?,
+    val packageName: String?,
+    val request: CustomIntentRequest?,
+    val response: CustomIntentResponse?,
+) : ObjectWithUidInterfaceKt, CoreObject {
+    override fun uid(): String = uid
+    fun name(): String? = name
+    fun trigger(): CustomIntentTrigger? = trigger
+    fun action(): List<CustomIntentActionType>? = action
+    fun packageName(): String? = packageName
+    fun request(): CustomIntentRequest? = request
+    fun response(): CustomIntentResponse? = response
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = CustomIntentBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntentAttribute implements CoreObject {
+    class Builder : CustomIntentBuilder()
 
-    @NonNull
-    public abstract String uid();
-
-    @NonNull
-    public abstract String customIntentUid();
-
-    public static CustomIntentAttribute.Builder builder() {
-        return new AutoValue_CustomIntentAttribute.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(@NonNull String uid);
-
-        public abstract Builder customIntentUid(@NonNull String customIntentUid);
-
-        public abstract CustomIntentAttribute build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

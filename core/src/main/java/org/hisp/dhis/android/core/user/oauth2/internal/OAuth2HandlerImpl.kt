@@ -32,9 +32,11 @@ import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
 import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
@@ -53,6 +55,7 @@ internal class OAuth2HandlerImpl(
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val authenticatedUserStore: AuthenticatedUserStore,
+    private val logInExceptions: LogInExceptions,
 ) : OAuth2Handler {
 
     private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
@@ -194,28 +197,33 @@ internal class OAuth2HandlerImpl(
         return credentialsSecureStore.get()?.oauth2State?.clientId
     }
 
-    override fun setPin(pin: String): kotlin.Result<Unit> = kotlin.runCatching {
+    override fun setPin(pin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
-            ?: error("PIN cannot be set: no active session")
-        check(credentials.oauth2State != null) { "PIN can only be set for OAuth2 accounts" }
+            ?: return Result.Failure(logInExceptions.noActiveSessionError())
+        if (credentials.oauth2State == null) {
+            return Result.Failure(logInExceptions.pinRequiresOAuth2AccountError())
+        }
 
         val updated = credentials.copy(password = pin)
         credentialsSecureStore.set(updated)
 
-        runBlocking {
+        return runBlocking {
             val existing = authenticatedUserStore.selectFirst()
-                ?: error("PIN cannot be set: no authenticated user persisted")
+                ?: return@runBlocking Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
             authenticatedUserStore.updateOrInsertWhere(
                 existing.toBuilder().hash(updated.getHash()).build(),
             )
+            Result.Success(Unit)
         }
     }
 
-    override fun changePin(currentPin: String, newPin: String): kotlin.Result<Unit> = kotlin.runCatching {
+    override fun changePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
         val credentials = credentialsSecureStore.get()
-            ?: error("PIN cannot be changed: no active session")
-        require(credentials.password == currentPin) { "Current PIN is incorrect" }
-        setPin(newPin).getOrThrow()
+            ?: return Result.Failure(logInExceptions.noActiveSessionError())
+        if (credentials.password != currentPin) {
+            return Result.Failure(logInExceptions.incorrectPinError())
+        }
+        return setPin(newPin)
     }
 
     override fun blockingLogOut() {

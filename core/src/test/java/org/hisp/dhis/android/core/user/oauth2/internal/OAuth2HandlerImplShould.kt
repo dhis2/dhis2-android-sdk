@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.junit.Before
@@ -77,6 +78,7 @@ class OAuth2HandlerImplShould {
     private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val authenticatedUserStore: AuthenticatedUserStore = mock()
+    private val logInExceptions: LogInExceptions = mock()
 
     private lateinit var keyPair: KeyPair
     private lateinit var handler: OAuth2HandlerImpl
@@ -84,6 +86,10 @@ class OAuth2HandlerImplShould {
     @Before
     fun setUp() {
         keyPair = KeyPairGenerator.getInstance("RSA").apply { initialize(KEY_SIZE) }.generateKeyPair()
+        whenever(logInExceptions.noActiveSessionError()).thenReturn(sdkError("no session"))
+        whenever(logInExceptions.pinRequiresOAuth2AccountError()).thenReturn(sdkError("not oauth2"))
+        whenever(logInExceptions.noAuthenticatedUserPersistedError()).thenReturn(sdkError("no user"))
+        whenever(logInExceptions.incorrectPinError()).thenReturn(sdkError("bad pin"))
         handler = OAuth2HandlerImpl(
             logInCall,
             logoutHandler,
@@ -94,6 +100,7 @@ class OAuth2HandlerImplShould {
             oauth2StateSecureStore,
             credentialsSecureStore,
             authenticatedUserStore,
+            logInExceptions,
         )
     }
 
@@ -324,7 +331,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.setPin(PIN)
 
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
         assertThat(credentialsCaptor.firstValue.password).isEqualTo(PIN)
@@ -341,7 +348,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.setPin(PIN)
 
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
         verify(credentialsSecureStore, never()).set(any())
     }
 
@@ -351,7 +358,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.setPin(PIN)
 
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
         verify(credentialsSecureStore, never()).set(any())
     }
 
@@ -364,7 +371,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.setPin(PIN)
 
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
     }
 
     @Test
@@ -378,7 +385,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.changePin(PIN, NEW_PIN)
 
-        assertThat(result.isSuccess).isTrue()
+        assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
         assertThat(credentialsCaptor.firstValue.password).isEqualTo(NEW_PIN)
@@ -391,7 +398,7 @@ class OAuth2HandlerImplShould {
 
         val result = handler.changePin("wrong", NEW_PIN)
 
-        assertThat(result.isFailure).isTrue()
+        assertThat(result).isInstanceOf(Result.Failure::class.java)
         verify(credentialsSecureStore, never()).set(any())
     }
 
@@ -505,6 +512,13 @@ class OAuth2HandlerImplShould {
             .errorCode(D2ErrorCode.UNEXPECTED)
             .errorDescription("test failure")
             .errorComponent(D2ErrorComponent.Server)
+            .build()
+
+    private fun sdkError(description: String): D2Error =
+        D2Error.builder()
+            .errorCode(D2ErrorCode.UNEXPECTED)
+            .errorDescription(description)
+            .errorComponent(D2ErrorComponent.SDK)
             .build()
 
     // endregion

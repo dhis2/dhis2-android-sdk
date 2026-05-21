@@ -52,6 +52,7 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         koin.get(),
         koin.get(),
         koin.get(),
+        koin.get(),
         databaseAdapter,
     )
 

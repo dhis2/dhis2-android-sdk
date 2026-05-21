@@ -37,9 +37,9 @@ internal interface CategoryOptionMappingDaoAux : LinkDao<CategoryOptionMappingDB
 
     @Query(
         """
-        SELECT cm.${CategoryMappingTableInfo.Columns.CATEGORY_ID} AS categoryId,
-               com.${CategoryOptionMappingTableInfo.Columns.OPTION_ID} AS optionId,
-               com.${CategoryOptionMappingTableInfo.Columns.FILTER} AS filter
+        SELECT cm.${CategoryMappingTableInfo.Columns.CATEGORY_ID} AS categoryUid,
+               com.${CategoryOptionMappingTableInfo.Columns.OPTION_ID} AS optionUid,
+               com.${CategoryOptionMappingTableInfo.Columns.FILTER} AS filterExpression
         FROM ${CategoryOptionMappingTableInfo.TABLE_NAME} AS com
         INNER JOIN ${CategoryMappingTableInfo.TABLE_NAME} AS cm
             ON com.${CategoryOptionMappingTableInfo.Columns.CATEGORY_MAPPING} =
@@ -55,7 +55,7 @@ internal interface CategoryOptionMappingDaoAux : LinkDao<CategoryOptionMappingDB
 }
 
 internal data class CategoryOptionFilterRow(
-    val categoryId: String,
-    val optionId: String,
-    val filter: String,
+    val categoryUid: String,
+    val optionUid: String,
+    val filterExpression: String,
 )

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import androidx.sqlite.db.SimpleSQLiteQuery
+import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -45,6 +46,8 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -59,6 +62,7 @@ internal class ProgramIndicatorSQLExecutor(
     private val constantStore: ConstantStore,
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
+    private val categoryOptionMappingStore: CategoryOptionMappingStore,
     private val databaseAdapter: DatabaseAdapter,
 ) {
 
@@ -131,11 +135,47 @@ internal class ProgramIndicatorSQLExecutor(
             else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
+        val disagreggationCategoryFilter = buildDisaggregationCategoryFilter(
+            programIndicator = programIndicator,
+            evaluationItem = evaluationItem,
+            sqlVisitor = sqlVisitor,
+        )
+
         return "SELECT ${aggregator.sql}($selectExpression) " +
             "FROM $targetTable " +
             "WHERE ($filterExpression) " +
-            "AND $contextWhereClause" +
-            "AND ${disagreggationCategoryFilter}"
+            "AND $contextWhereClause " +
+            "AND ($disagreggationCategoryFilter)"
+    }
+
+    private suspend fun buildDisaggregationCategoryFilter(
+        programIndicator: ProgramIndicator,
+        evaluationItem: AnalyticsServiceEvaluationItem,
+        sqlVisitor: CommonExpressionVisitor,
+    ): String {
+        val categoryItems = evaluationItem.allDimensionItems
+            .filterIsInstance<DimensionItem.CategoryItem>()
+        if (categoryItems.isEmpty()) return "1"
+
+        val mappingIds = programIndicator.categoryMappingIds().orEmpty()
+        val programUid = programIndicator.program()?.uid()
+        if (mappingIds.isEmpty() || programUid == null) return "0"
+
+        val filtersByCategoryAndOption = categoryOptionMappingStore
+            .selectFiltersForProgram(programUid, mappingIds)
+
+        val filterFragments = categoryItems.map { item ->
+            val categoryUid = (item.dimension as Dimension.Category).uid
+            val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
+                ?: return@map "0"
+
+            when (filter.trim()) {
+                "true", "1", "" -> "1"
+                else -> "(${CommonParser.visit(filter, sqlVisitor)})"
+            }
+        }
+
+        return filterFragments.joinToString(" AND ")
     }
 
     private suspend fun constantMap(): Map<String, Constant> {

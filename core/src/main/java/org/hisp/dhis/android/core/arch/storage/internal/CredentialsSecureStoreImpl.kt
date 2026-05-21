@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 
@@ -52,6 +53,12 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
 
     override fun getServerUrl(): String? {
         return secureStore.getData(SERVER_URL_KEY)
+    }
+
+    override fun getAuthorizationType(): AuthorizationType = when {
+        credentials?.openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
+        credentials?.oauth2State != null -> AuthorizationType.OAUTH2
+        else -> AuthorizationType.BASIC
     }
 
     override fun get(): Credentials? {

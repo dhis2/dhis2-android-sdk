@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
+import org.hisp.dhis.android.core.common.AuthorizationType;
 import org.hisp.dhis.android.core.common.State;
 import org.hisp.dhis.android.core.server.LoginConfig;
 
@@ -67,6 +68,9 @@ public abstract class DatabaseAccount {
     @Nullable
     public abstract LoginConfig loginConfig();
 
+    @Nullable
+    public abstract AuthorizationType authorizationType();
+
     public abstract Builder toBuilder();
 
     public static Builder builder() {
@@ -93,6 +97,8 @@ public abstract class DatabaseAccount {
         public abstract Builder loginConfig(LoginConfig loginConfig);
 
         public abstract Builder syncState(State syncState);
+
+        public abstract Builder authorizationType(AuthorizationType authorizationType);
 
         public abstract DatabaseAccount build();
     }

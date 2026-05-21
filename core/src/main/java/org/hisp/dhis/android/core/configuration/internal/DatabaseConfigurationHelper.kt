@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.koin.core.annotation.Singleton
@@ -36,6 +37,7 @@ import org.koin.core.annotation.Singleton
 internal class DatabaseConfigurationHelper(
     private val databaseNameGenerator: DatabaseNameGenerator,
     private val dateProvider: DateProvider,
+    private val credentialsSecureStore: CredentialsSecureStore,
 ) {
 
     fun changeEncryption(serverUrl: String?, account: DatabaseAccount): DatabaseAccount {
@@ -76,6 +78,7 @@ internal class DatabaseConfigurationHelper(
             .lastAccessDate(DateUtils.DATE_FORMAT.parse(dateProvider.dateStr))
             .loginConfig(loginConfig)
             .importDB(importDb)
+            .authorizationType(credentialsSecureStore.getAuthorizationType())
             .build()
 
         return addOrUpdateAccount(configuration, newAccount)

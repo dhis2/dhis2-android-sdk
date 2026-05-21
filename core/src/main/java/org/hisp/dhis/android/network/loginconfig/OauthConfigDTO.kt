@@ -25,38 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.server
 
-data class LoginConfig(
-    val apiVersion: String? = null,
-    val applicationTitle: String? = null,
-    val applicationDescription: String? = null,
-    val applicationNotification: String? = null,
-    val applicationLeftSideFooter: String? = null,
-    val applicationRightSideFooter: String? = null,
-    val countryFlag: String? = null,
-    val uiLocale: String? = null,
-    val loginPageLogo: String? = null,
-    val loginPopup: String? = null,
-    val loginPageLayout: LoginPageLayout? = LoginPageLayout.DEFAULT,
-    val recaptchaSite: String? = null,
-    val minPasswordLength: Int? = null,
-    val maxPasswordLength: Int? = null,
-    val emailConfigured: Boolean = false,
-    val selfRegistrationEnabled: Boolean = false,
-    val selfRegistrationNoRecaptcha: Boolean = false,
-    val allowAccountRecovery: Boolean = false,
-    val useCustomLogoFront: Boolean = false,
-    val oidcProviders: List<LoginOidcProvider> = emptyList(),
+package org.hisp.dhis.android.network.loginconfig
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.server.OauthConfig
+
+@Serializable
+internal data class OauthConfigDTO(
+    @SerialName("authorization_endpoint") val authorizationEndpoint: String?,
+    @SerialName("jwks_uri") val jwksUri: String?,
+    @SerialName("code_challenge_methods_supported") val codeChallengeMethodsSupported: List<String> = emptyList(),
+    @SerialName("grant_types_supported") val grantTypesSupported: List<String> = emptyList(),
+    @SerialName("response_types_supported") val responseTypesSupported: List<String> = emptyList(),
 ) {
-    var isOauthEnabled: Boolean = false
-        internal set
-
-    internal companion object {
-        fun createDefault(serverUrl: String): LoginConfig {
-            return LoginConfig(
-                applicationTitle = serverUrl,
-            )
-        }
+    fun toDomain(): OauthConfig {
+        return OauthConfig(
+            authorizationEndpoint = authorizationEndpoint,
+            jwksUri = jwksUri,
+            codeChallengeMethodsSupported = codeChallengeMethodsSupported,
+            grantTypesSupported = grantTypesSupported,
+            responseTypesSupported = responseTypesSupported,
+        )
     }
 }

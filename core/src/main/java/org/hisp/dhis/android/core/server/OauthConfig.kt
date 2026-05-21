@@ -27,36 +27,22 @@
  */
 package org.hisp.dhis.android.core.server
 
-data class LoginConfig(
-    val apiVersion: String? = null,
-    val applicationTitle: String? = null,
-    val applicationDescription: String? = null,
-    val applicationNotification: String? = null,
-    val applicationLeftSideFooter: String? = null,
-    val applicationRightSideFooter: String? = null,
-    val countryFlag: String? = null,
-    val uiLocale: String? = null,
-    val loginPageLogo: String? = null,
-    val loginPopup: String? = null,
-    val loginPageLayout: LoginPageLayout? = LoginPageLayout.DEFAULT,
-    val recaptchaSite: String? = null,
-    val minPasswordLength: Int? = null,
-    val maxPasswordLength: Int? = null,
-    val emailConfigured: Boolean = false,
-    val selfRegistrationEnabled: Boolean = false,
-    val selfRegistrationNoRecaptcha: Boolean = false,
-    val allowAccountRecovery: Boolean = false,
-    val useCustomLogoFront: Boolean = false,
-    val oidcProviders: List<LoginOidcProvider> = emptyList(),
+internal data class OauthConfig(
+    val authorizationEndpoint: String? = null,
+    val jwksUri: String? = null,
+    val codeChallengeMethodsSupported: List<String> = emptyList(),
+    val grantTypesSupported: List<String> = emptyList(),
+    val responseTypesSupported: List<String> = emptyList(),
 ) {
-    var isOauthEnabled: Boolean = false
-        internal set
+    fun supportsRequiredFunctions(): Boolean {
+        return codeChallengeMethodsSupported.contains(REQUIRED_CODE_CHALLENGE_METHOD) &&
+            grantTypesSupported.containsAll(REQUIRED_GRANT_TYPES) &&
+            responseTypesSupported.contains(REQUIRED_RESPONSE_TYPE)
+    }
 
-    internal companion object {
-        fun createDefault(serverUrl: String): LoginConfig {
-            return LoginConfig(
-                applicationTitle = serverUrl,
-            )
-        }
+    companion object {
+        const val REQUIRED_CODE_CHALLENGE_METHOD = "S256"
+        const val REQUIRED_RESPONSE_TYPE = "code"
+        val REQUIRED_GRANT_TYPES = listOf("authorization_code", "refresh_token")
     }
 }

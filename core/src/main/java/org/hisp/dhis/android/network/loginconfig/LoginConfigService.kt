@@ -45,6 +45,18 @@ internal class LoginConfigService(private val client: HttpServiceClient) {
         }
     }
 
+    suspend fun getOauthConfigFor(serverUrl: String, oauthPath: String): OauthConfigDTO {
+        return client.get {
+            val oauthConfigUrl = if (oauthPath.startsWith("http")) {
+                oauthPath
+            } else {
+                serverUrl.dropLastWhile { it == '/' } + "/" + oauthPath.dropWhile { it == '/' }
+            }
+            absoluteUrl(oauthConfigUrl)
+            excludeCredentials()
+        }
+    }
+
     companion object {
         const val LOGIN_CONFIG = "loginConfig"
     }

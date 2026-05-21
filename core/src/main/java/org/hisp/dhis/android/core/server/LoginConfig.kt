@@ -50,6 +50,7 @@ data class LoginConfig(
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
 ) {
     var isOauthEnabled: Boolean = false
+        internal set
 
     internal companion object {
         fun createDefault(serverUrl: String): LoginConfig {

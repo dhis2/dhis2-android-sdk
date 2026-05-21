@@ -36,11 +36,17 @@ import org.hisp.dhis.android.core.server.OauthConfig
 internal data class OauthConfigDTO(
     @SerialName("authorization_endpoint") val authorizationEndpoint: String?,
     @SerialName("jwks_uri") val jwksUri: String?,
+    @SerialName("code_challenge_methods_supported") val codeChallengeMethodsSupported: List<String> = emptyList(),
+    @SerialName("grant_types_supported") val grantTypesSupported: List<String> = emptyList(),
+    @SerialName("response_types_supported") val responseTypesSupported: List<String> = emptyList(),
 ) {
     fun toDomain(): OauthConfig {
         return OauthConfig(
             authorizationEndpoint = authorizationEndpoint,
             jwksUri = jwksUri,
+            codeChallengeMethodsSupported = codeChallengeMethodsSupported,
+            grantTypesSupported = grantTypesSupported,
+            responseTypesSupported = responseTypesSupported,
         )
     }
 }

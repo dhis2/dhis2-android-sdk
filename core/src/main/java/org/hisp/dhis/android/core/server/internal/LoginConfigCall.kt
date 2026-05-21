@@ -61,7 +61,7 @@ internal class LoginConfigCall(
 
     private suspend fun withOauthConfig(serverUrl: String, loginConfig: LoginConfig): LoginConfig {
         val oauthConfig = tryFetchOauthConfig(serverUrl)
-        return if (oauthConfig != null) {
+        return if (oauthConfig != null && oauthConfig.supportsRequiredFunctions()) {
             oAuth2SecureStore.setEndpoints(oauthConfig)
             loginConfig.apply { isOauthEnabled = true }
         } else {

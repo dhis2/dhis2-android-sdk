@@ -27,7 +27,22 @@
  */
 package org.hisp.dhis.android.core.server
 
-data class OauthConfig(
+internal data class OauthConfig(
     val authorizationEndpoint: String? = null,
     val jwksUri: String? = null,
-)
+    val codeChallengeMethodsSupported: List<String> = emptyList(),
+    val grantTypesSupported: List<String> = emptyList(),
+    val responseTypesSupported: List<String> = emptyList(),
+) {
+    fun supportsRequiredFunctions(): Boolean {
+        return codeChallengeMethodsSupported.contains(REQUIRED_CODE_CHALLENGE_METHOD) &&
+            grantTypesSupported.containsAll(REQUIRED_GRANT_TYPES) &&
+            responseTypesSupported.contains(REQUIRED_RESPONSE_TYPE)
+    }
+
+    companion object {
+        const val REQUIRED_CODE_CHALLENGE_METHOD = "S256"
+        const val REQUIRED_RESPONSE_TYPE = "code"
+        val REQUIRED_GRANT_TYPES = listOf("authorization_code", "refresh_token")
+    }
+}

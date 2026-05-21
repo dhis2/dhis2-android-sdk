@@ -110,6 +110,25 @@ class LoginConfigCallShould {
     }
 
     @Test
+    fun marks_oauth_disabled_and_clears_endpoints_when_oauth_config_does_not_support_required_functions() = runTest {
+        oauth2SecureStore.authorizationEndpoint = "stale-auth"
+        oauth2SecureStore.jwksUri = "stale-jwks"
+
+        networkHandler.stub {
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample()
+            onBlocking { oauthConfigFor(any(), any()) } doReturn unsupportedOauthConfigSample()
+        }
+
+        val result = call.checkServerUrl(NORMALIZED_URL)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        val loginConfig = (result as Result.Success<LoginConfig, D2Error>).value
+        assertThat(loginConfig.isOauthEnabled).isFalse()
+        assertThat(oauth2SecureStore.authorizationEndpoint).isNull()
+        assertThat(oauth2SecureStore.jwksUri).isNull()
+    }
+
+    @Test
     fun falls_back_to_ping_without_touching_oauth_store_when_login_config_fails() = runTest {
         oauth2SecureStore.authorizationEndpoint = "kept-auth"
         oauth2SecureStore.jwksUri = "kept-jwks"
@@ -138,6 +157,18 @@ class LoginConfigCallShould {
         OauthConfig(
             authorizationEndpoint = AUTHORIZATION_ENDPOINT,
             jwksUri = JWKS_URI,
+            codeChallengeMethodsSupported = listOf("S256"),
+            grantTypesSupported = listOf("authorization_code", "refresh_token"),
+            responseTypesSupported = listOf("code"),
+        )
+
+    private fun unsupportedOauthConfigSample(): OauthConfig =
+        OauthConfig(
+            authorizationEndpoint = AUTHORIZATION_ENDPOINT,
+            jwksUri = JWKS_URI,
+            codeChallengeMethodsSupported = listOf("plain"),
+            grantTypesSupported = listOf("authorization_code"),
+            responseTypesSupported = listOf("code"),
         )
 
     private fun serverError(): D2Error =

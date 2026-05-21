@@ -26,33 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntentAttribute(
+    override val uid: String,
+    val customIntentUid: String,
+) : CoreObject, ObjectWithUidInterfaceKt {
+    fun customIntentUid(): String = customIntentUid
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = CustomIntentAttributeBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntentDataElement implements CoreObject {
+    class Builder : CustomIntentAttributeBuilder()
 
-    @NonNull
-    public abstract String uid();
-
-    @NonNull
-    public abstract String customIntentUid();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntentDataElement.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(@NonNull String uid);
-
-        public abstract Builder customIntentUid(@NonNull String customIntentUid);
-
-        public abstract CustomIntentDataElement build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

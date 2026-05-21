@@ -26,27 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@AutoValue
-public abstract class CustomIntentRequestArgument {
+@ModelBuilder
+data class CustomIntentResponseDataExtra(
+    val extraName: String,
+    val extraType: CustomIntentResponseExtraType,
+    val key: String?,
+) {
+    fun extraName(): String = extraName
+    fun extraType(): CustomIntentResponseExtraType = extraType
+    fun key(): String? = key
 
-    public abstract String key();
+    fun toBuilder(): Builder = CustomIntentResponseDataExtraBuilder.from(this)
 
-    public abstract String value();
+    class Builder : CustomIntentResponseDataExtraBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_CustomIntentRequestArgument.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract CustomIntentRequestArgument build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

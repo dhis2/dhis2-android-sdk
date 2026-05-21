@@ -30,5 +30,5 @@ package org.hisp.dhis.android.core.common
 interface ObjectWithUidInterfaceKt : ObjectWithUidInterface {
     val uid: String
 
-    override fun uid(): String
+    override fun uid(): String = uid
 }

@@ -26,28 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntent(
+    override val uid: String,
+    val name: String?,
+    val trigger: CustomIntentTrigger?,
+    val action: List<CustomIntentActionType>?,
+    val packageName: String?,
+    val request: CustomIntentRequest?,
+    val response: CustomIntentResponse?,
+) : ObjectWithUidInterfaceKt, CoreObject {
+    fun name(): String? = name
+    fun trigger(): CustomIntentTrigger? = trigger
+    fun action(): List<CustomIntentActionType>? = action
+    fun packageName(): String? = packageName
+    fun request(): CustomIntentRequest? = request
+    fun response(): CustomIntentResponse? = response
 
-import java.util.List;
+    fun toBuilder(): Builder = CustomIntentBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntents {
+    class Builder : CustomIntentBuilder()
 
-    @Nullable
-    public abstract List<CustomIntent> customIntents();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntents.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder customIntents(List<CustomIntent> customIntents);
-
-        public abstract CustomIntents build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

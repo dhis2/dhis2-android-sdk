@@ -26,33 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("MemberNameEqualsClassName")
+data class CustomIntents(
+    val customIntents: List<CustomIntent>,
+) {
+    fun customIntents(): List<CustomIntent> = customIntents
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = CustomIntentsBuilder.from(this)
 
-@AutoValue
-public abstract class CustomIntentAttribute implements CoreObject {
+    class Builder : CustomIntentsBuilder()
 
-    @NonNull
-    public abstract String uid();
-
-    @NonNull
-    public abstract String customIntentUid();
-
-    public static CustomIntentAttribute.Builder builder() {
-        return new AutoValue_CustomIntentAttribute.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(@NonNull String uid);
-
-        public abstract Builder customIntentUid(@NonNull String customIntentUid);
-
-        public abstract CustomIntentAttribute build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

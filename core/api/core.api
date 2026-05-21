@@ -9540,7 +9540,6 @@ public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public final fun getUseCustomLogoFront ()Z
 	public fun hashCode ()I
 	public final fun isOauthEnabled ()Z
-	public final fun setOauthEnabled (Z)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -9571,21 +9570,6 @@ public final class org/hisp/dhis/android/core/server/LoginPageLayout : java/lang
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/server/LoginPageLayout;
 	public static fun values ()[Lorg/hisp/dhis/android/core/server/LoginPageLayout;
-}
-
-public final class org/hisp/dhis/android/core/server/OauthConfig {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/server/OauthConfig;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/server/OauthConfig;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/server/OauthConfig;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAuthorizationEndpoint ()Ljava/lang/String;
-	public final fun getJwksUri ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/server/ServerModule {

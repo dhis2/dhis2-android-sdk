@@ -44,7 +44,6 @@ data class AnalyticsDhisVisualization(
     val type: AnalyticsDhisVisualizationType,
 ) : CoreObject, ObjectWithUidInterfaceKt {
 
-    override fun uid(): String = uid
     fun scopeUid(): String? = scopeUid
     fun groupUid(): String = groupUid
     fun groupName(): String = groupName

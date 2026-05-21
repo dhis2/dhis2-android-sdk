@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.settings
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
 @ModelBuilder
 data class CustomIntentAttribute(
-    val uid: String,
+    override val uid: String,
     val customIntentUid: String,
-) : CoreObject {
-    fun uid(): String = uid
+) : CoreObject, ObjectWithUidInterfaceKt {
     fun customIntentUid(): String = customIntentUid
 
     fun toBuilder(): Builder = CustomIntentAttributeBuilder.from(this)

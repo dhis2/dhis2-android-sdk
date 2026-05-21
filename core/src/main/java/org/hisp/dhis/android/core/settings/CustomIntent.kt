@@ -42,7 +42,6 @@ data class CustomIntent(
     val request: CustomIntentRequest?,
     val response: CustomIntentResponse?,
 ) : ObjectWithUidInterfaceKt, CoreObject {
-    override fun uid(): String = uid
     fun name(): String? = name
     fun trigger(): CustomIntentTrigger? = trigger
     fun action(): List<CustomIntentActionType>? = action

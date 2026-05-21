@@ -31,4 +31,9 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.program.CategoryOptionMapping
 
-internal interface CategoryOptionMappingStore : LinkStore<CategoryOptionMapping>
+internal interface CategoryOptionMappingStore : LinkStore<CategoryOptionMapping> {
+    suspend fun selectFiltersForProgram(
+        programUid: String,
+        mappingIds: List<String>,
+    ): Map<Pair<String, String>, String>
+}

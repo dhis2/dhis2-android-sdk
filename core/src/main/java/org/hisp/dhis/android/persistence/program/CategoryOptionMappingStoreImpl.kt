@@ -45,4 +45,14 @@ internal class CategoryOptionMappingStoreImpl(
         CategoryOptionMappingTableInfo.TABLE_INFO,
         CategoryOptionMappingTableInfo.Columns.CATEGORY_MAPPING,
     ),
-)
+) {
+    override suspend fun selectFiltersForProgram(
+        programUid: String,
+        mappingIds: List<String>,
+    ): Map<Pair<String, String>, String> {
+        if (mappingIds.isEmpty()) return emptyMap()
+        val dao = databaseAdapter.getCurrentDatabase().categoryOptionMappingDao()
+        return dao.selectFiltersForProgram(programUid, mappingIds)
+            .associate { (it.categoryId to it.optionId) to it.filter }
+    }
+}

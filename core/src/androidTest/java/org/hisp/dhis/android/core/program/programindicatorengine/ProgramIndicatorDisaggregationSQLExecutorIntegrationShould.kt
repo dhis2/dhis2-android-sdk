@@ -103,7 +103,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         )
         val countForOption2 = evaluate(
             pi,
-            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption2.uid())),
         )
         assertThat(countForOption1).isEqualTo("2")
         assertThat(countForOption2).isEqualTo("1")
@@ -114,7 +114,8 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         // Events with values 5, 10, 15, 20 — sum total 50.
         seedEvents(values = listOf("5", "10", "15", "20"))
 
-        // Filter keeps only events whose data element value is at least 10.
+        // option1 keeps events with value < 11 (5, 10);
+        // option2 keeps events with value >= 11 (15, 20).
         seedCategoryMapping(listOf(
             categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
             categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
@@ -128,12 +129,19 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         // Baseline: SUM of all four events.
         assertThat(evaluate(pi)).isEqualTo("50")
 
-        // With the option filter applied only 10 + 15 + 20 = 45 should remain.
-        val sumForOption = evaluate(
+        // With option1 applied only 5 + 10 = 15 should remain.
+        val sumForOption1 = evaluate(
             pi,
             extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
         )
-        assertThat(sumForOption).isEqualTo("45")
+        assertThat(sumForOption1).isEqualTo("15")
+
+        // With option2 applied only 15 + 20 = 35 should remain.
+        val sumForOption2 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption2.uid())),
+        )
+        assertThat(sumForOption2).isEqualTo("35")
     }
 
     private suspend fun seedEvents(values: List<String>) {

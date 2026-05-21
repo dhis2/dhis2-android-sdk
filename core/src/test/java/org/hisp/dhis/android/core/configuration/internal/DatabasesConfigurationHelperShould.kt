@@ -29,11 +29,19 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 class DatabasesConfigurationHelperShould {
     private val nameGenerator = DatabaseNameGenerator()
+    private val credentialsSecureStore: CredentialsSecureStore = mock {
+        on { getAuthorizationType() } doReturn AuthorizationType.BASIC
+    }
     private val url1 = "https://url1.org"
     private val url2 = "https://url2.org"
     private val username1 = "u1"
@@ -49,6 +57,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfig12 = DatabaseAccount.builder()
@@ -58,6 +67,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfig22 = DatabaseAccount.builder()
@@ -67,6 +77,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val singleServerSingleUserConfig = DatabasesConfiguration.builder()
@@ -90,6 +101,7 @@ class DatabasesConfigurationHelperShould {
         object : DateProvider {
             override val dateStr: String = DATE
         },
+        credentialsSecureStore,
     )
 
     @Test
@@ -310,6 +322,34 @@ class DatabasesConfigurationHelperShould {
         val updatedConfig = helper.addOrUpdateAccount(config, URL_WITH_SLASHES, username1, false)
 
         assertThat(updatedConfig.accounts().size).isEqualTo(1)
+    }
+
+    @Test
+    fun set_basic_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(null, url1, username1, false)
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.BASIC)
+    }
+
+    @Test
+    fun set_open_id_connect_authorization_type_when_adding_account() {
+        whenever(credentialsSecureStore.getAuthorizationType()) doReturn AuthorizationType.OPEN_ID_CONNECT
+
+        val config = helper.addOrUpdateAccount(null, url1, username1, false)
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+    }
+
+    @Test
+    fun set_oauth2_authorization_type_when_adding_account() {
+        whenever(credentialsSecureStore.getAuthorizationType()) doReturn AuthorizationType.OAUTH2
+
+        val config = helper.addOrUpdateAccount(null, url1, username1, false)
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OAUTH2)
     }
 
     private fun createConfigWithAccount(serverUrl: String): DatabasesConfiguration {

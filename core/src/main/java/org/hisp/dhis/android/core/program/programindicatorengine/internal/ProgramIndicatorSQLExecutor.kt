@@ -148,6 +148,7 @@ internal class ProgramIndicatorSQLExecutor(
             "AND ($disagreggationCategoryFilter)"
     }
 
+    @Suppress("ReturnCount")
     private suspend fun buildDisaggregationCategoryFilter(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,

@@ -84,10 +84,12 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
     fun should_filter_event_count_by_category_option_filter() = runTest {
         seedEvents(values = listOf("10", "10", "20"))
 
-        seedCategoryMapping(listOf(
-            categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
-            categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
-        ))
+        seedCategoryMapping(
+            listOf(
+                categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+                categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+            ),
+        )
 
         val pi = buildDisaggregatedProgramIndicator(
             expression = `var`("event_count"),
@@ -116,10 +118,12 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
 
         // option1 keeps events with value < 11 (5, 10);
         // option2 keeps events with value >= 11 (15, 20).
-        seedCategoryMapping(listOf(
-            categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
-            categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
-        ))
+        seedCategoryMapping(
+            listOf(
+                categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+                categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+            ),
+        )
 
         val pi = buildDisaggregatedProgramIndicator(
             expression = de(programStage1.uid(), dataElement1.uid()),

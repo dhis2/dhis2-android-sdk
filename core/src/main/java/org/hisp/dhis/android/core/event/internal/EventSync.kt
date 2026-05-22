@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,46 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.event.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class EventSync(
+    override val program: String?,
+    override val organisationUnitIdsHash: Int,
+    override val downloadLimit: Int,
+    override val workingListsHash: Int?,
+    override val lastUpdated: Date,
+) : TrackerBaseSync {
 
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter;
-import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
+    fun toBuilder(): Builder = EventSyncBuilder.from(this)
 
-import java.util.List;
+    class Builder : EventSyncBuilder()
 
-@AutoValue
-public abstract class TrackerQueryBundle extends BaseTrackerQueryBundle {
-
-    @Nullable
-    public abstract EnrollmentStatus programStatus();
-
-    @Nullable
-    public abstract List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters();
-
-    @Nullable
-    public abstract List<ProgramStageWorkingList> programStageWorkingLists();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerQueryBundle.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
-
-        public abstract Builder programStatus(EnrollmentStatus programStatus);
-
-        public abstract Builder trackedEntityInstanceFilters(
-                List<TrackedEntityInstanceFilter> trackedEntityInstanceFilters);
-
-        public abstract Builder programStageWorkingLists(
-                List<ProgramStageWorkingList> programStageWorkingLists);
-
-        public abstract TrackerQueryBundle build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

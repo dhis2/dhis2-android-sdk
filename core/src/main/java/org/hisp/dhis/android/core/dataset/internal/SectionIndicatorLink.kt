@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.dataset.internal
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class SectionIndicatorLink(
+    val section: String,
+    val indicator: String,
+) : CoreObject {
+    fun section(): String = section
+    fun indicator(): String = indicator
 
-import java.util.Date;
+    fun toBuilder(): Builder = SectionIndicatorLinkBuilder.from(this)
 
-public interface TrackerBaseSync extends CoreObject {
+    class Builder : SectionIndicatorLinkBuilder()
 
-    @Nullable
-    String program();
-
-    @NonNull
-    Integer organisationUnitIdsHash();
-
-    @NonNull
-    Integer downloadLimit();
-
-    @Nullable
-    Integer workingListsHash();
-
-    @NonNull
-    Date lastUpdated();
-
-    interface Builder<T> {
-        T program(String program);
-
-        T organisationUnitIdsHash(Integer organisationUnitIdsHash);
-
-        T downloadLimit(Integer limit);
-
-        T workingListsHash(Integer workingListsHash);
-
-        T lastUpdated(Date lastUpdated);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

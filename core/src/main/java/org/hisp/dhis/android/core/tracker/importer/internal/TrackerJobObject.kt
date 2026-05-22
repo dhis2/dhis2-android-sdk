@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,53 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.importer.internal;
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.Date;
-import java.util.List;
-
-@AutoValue
-public abstract class TrackerJobObject implements CoreObject {
-
-    @NonNull
-    public abstract TrackerImporterObjectType trackerType();
-
-    @NonNull
-    public abstract String objectUid();
-
-    @NonNull
-    public abstract String jobUid();
-
-    @NonNull
-    public abstract Date lastUpdated();
-
-    @NonNull
-    public abstract List<String> fileResources();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerJobObject.Builder();
-    }
-
-    abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackerType(TrackerImporterObjectType trackerType);
-
-        public abstract Builder objectUid(String objectUid);
-
-        public abstract Builder jobUid(String jobUid);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract Builder fileResources(List<String> fileResources);
-
-        public abstract TrackerJobObject build();
-    }
-}
+internal data class TrackerJobObject(
+    val trackerType: TrackerImporterObjectType,
+    val objectUid: String,
+    val jobUid: String,
+    val lastUpdated: Date,
+    val fileResources: List<String>,
+) : CoreObject

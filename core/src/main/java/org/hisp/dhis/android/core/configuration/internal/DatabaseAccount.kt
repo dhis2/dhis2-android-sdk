@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.server.LoginConfig
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 @ModelBuilder
 data class DatabaseAccount(
     val username: String,

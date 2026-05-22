@@ -1,5 +1,5 @@
 [versions]
-dhis2AndroidSdkVersion = "1.15.0-OAUTH-PIN-SNAPSHOT"
+dhis2AndroidSdkVersion = "1.15.0-SNAPSHOT"
 dhis2AndroidSdkCode = "305"
 
 gradle = "8.13.2"

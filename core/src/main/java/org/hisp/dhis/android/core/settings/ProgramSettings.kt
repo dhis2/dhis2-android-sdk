@@ -26,49 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramSettings(
+    val globalSettings: ProgramSetting,
+    val specificSettings: Map<String, ProgramSetting>,
+) {
+    fun globalSettings(): ProgramSetting = globalSettings
+    fun specificSettings(): Map<String, ProgramSetting> = specificSettings
 
-import java.util.Collections;
-import java.util.Map;
+    fun toBuilder(): Builder = ProgramSettingsBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramSettings {
+    class Builder : ProgramSettingsBuilder()
 
-    @Nullable
-    public abstract ProgramSetting globalSettings();
-
-    public abstract Map<String, ProgramSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSettings.Builder()
-                .globalSettings(ProgramSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramSetting> specificSettings);
-
-        abstract ProgramSettings autoBuild();
-
-        //Auxiliary fields
-        abstract Map<String, ProgramSetting> specificSettings();
-
-        public ProgramSettings build() {
-
-            try {
-                specificSettings();
-            } catch (IllegalStateException e) {
-                specificSettings(Collections.emptyMap());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .globalSettings(ProgramSetting.builder().build())
+            .specificSettings(emptyMap())
     }
 }

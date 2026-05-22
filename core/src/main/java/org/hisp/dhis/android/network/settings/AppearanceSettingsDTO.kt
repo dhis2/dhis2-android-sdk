@@ -48,11 +48,6 @@ internal data class AppearanceSettingsDTO(
                 ),
             )
             .dataSetConfiguration(dataSetConfiguration?.toDomain())
-            .completionSpinner(
-                completionSpinner?.toDomain() ?: AppearanceSettingsHelper.programToCompletionSpinner(
-                    programConfiguration?.toDomain(),
-                ),
-            )
             .build()
     }
 }

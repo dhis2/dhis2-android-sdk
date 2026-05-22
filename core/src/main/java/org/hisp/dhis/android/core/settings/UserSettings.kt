@@ -26,35 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class UserSettings(
+    val keyUiLocale: String?,
+    val keyDbLocale: String?,
+) : CoreObject {
+    fun keyUiLocale(): String? = keyUiLocale
+    fun keyDbLocale(): String? = keyDbLocale
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = UserSettingsBuilder.from(this)
 
-@AutoValue
-public abstract class UserSettings implements CoreObject {
+    class Builder : UserSettingsBuilder()
 
-    @Nullable
-    public abstract String keyUiLocale();
-
-    @Nullable
-    public abstract String keyDbLocale();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_UserSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder keyUiLocale(String keyUiLocale);
-
-        public abstract Builder keyDbLocale(String keyDbLocale);
-
-        public abstract UserSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

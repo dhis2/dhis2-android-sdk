@@ -26,20 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SystemSetting(
+    val key: SystemSettingKey,
+    val value: String?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class SystemSetting implements CoreObject {
-
-    public enum SystemSettingKey {
+    enum class SystemSettingKey {
         FLAG,
-        @Deprecated
+
+        @Deprecated("", level = DeprecationLevel.WARNING)
         STYLE,
         DEFAULT_BASE_MAP,
         BING_BASE_MAP,
@@ -48,24 +49,15 @@ public abstract class SystemSetting implements CoreObject {
         CUSTOM_COLOR,
     }
 
-    @Nullable
-    public abstract SystemSettingKey key();
+    fun key(): SystemSettingKey = key
+    fun value(): String? = value
 
-    @Nullable
-    public abstract String value();
+    fun toBuilder(): Builder = SystemSettingBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : SystemSettingBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_SystemSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder key(SystemSettingKey key);
-
-        public abstract Builder value(String value);
-
-        public abstract SystemSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

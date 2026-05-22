@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramConfigurationSettings(
+    val globalSettings: ProgramConfigurationSetting?,
+    val specificSettings: Map<String, ProgramConfigurationSetting>?,
+) {
 
-import java.util.Map;
+    fun globalSettings(): ProgramConfigurationSetting? = globalSettings
+    fun specificSettings(): Map<String, ProgramConfigurationSetting>? = specificSettings
 
-@AutoValue
-public abstract class ProgramConfigurationSettings {
+    fun toBuilder(): Builder = ProgramConfigurationSettingsBuilder.from(this)
 
-    @Nullable
-    public abstract ProgramConfigurationSetting globalSettings();
+    class Builder : ProgramConfigurationSettingsBuilder()
 
-    @Nullable
-    public abstract Map<String, ProgramConfigurationSetting> specificSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramConfigurationSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(ProgramConfigurationSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, ProgramConfigurationSetting> specificSettings);
-
-        public abstract ProgramConfigurationSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

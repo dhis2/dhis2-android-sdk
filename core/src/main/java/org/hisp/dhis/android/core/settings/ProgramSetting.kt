@@ -26,119 +26,60 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class ProgramSetting(
+    val uid: String?,
+    val name: String?,
+    val filters: List<ObjectWithUid>?,
+    val lastUpdated: Date?,
+    val teiDownload: Int?,
+    val teiDBTrimming: Int?,
+    val eventsDownload: Int?,
+    val eventsDBTrimming: Int?,
+    val updateDownload: DownloadPeriod?,
+    val updateDBTrimming: DownloadPeriod?,
+    val settingDownload: LimitScope?,
+    val settingDBTrimming: LimitScope?,
+    val enrollmentDownload: EnrollmentScope?,
+    val enrollmentDBTrimming: EnrollmentScope?,
+    val eventDateDownload: DownloadPeriod?,
+    val eventDateDBTrimming: DownloadPeriod?,
+    val enrollmentDateDownload: DownloadPeriod?,
+    val enrollmentDateDBTrimming: DownloadPeriod?,
+) : CoreObject {
+    fun uid(): String? = uid
+    fun name(): String? = name
+    fun filters(): List<ObjectWithUid>? = filters
+    fun lastUpdated(): Date? = lastUpdated
+    fun teiDownload(): Int? = teiDownload
+    fun teiDBTrimming(): Int? = teiDBTrimming
+    fun eventsDownload(): Int? = eventsDownload
+    fun eventsDBTrimming(): Int? = eventsDBTrimming
+    fun updateDownload(): DownloadPeriod? = updateDownload
+    fun updateDBTrimming(): DownloadPeriod? = updateDBTrimming
+    fun settingDownload(): LimitScope? = settingDownload
+    fun settingDBTrimming(): LimitScope? = settingDBTrimming
+    fun enrollmentDownload(): EnrollmentScope? = enrollmentDownload
+    fun enrollmentDBTrimming(): EnrollmentScope? = enrollmentDBTrimming
+    fun eventDateDownload(): DownloadPeriod? = eventDateDownload
+    fun eventDateDBTrimming(): DownloadPeriod? = eventDateDBTrimming
+    fun enrollmentDateDownload(): DownloadPeriod? = enrollmentDateDownload
+    fun enrollmentDateDBTrimming(): DownloadPeriod? = enrollmentDateDBTrimming
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun toBuilder(): Builder = ProgramSettingBuilder.from(this)
 
-import java.util.Date;
-import java.util.List;
+    class Builder : ProgramSettingBuilder()
 
-@AutoValue
-public abstract class ProgramSetting implements CoreObject {
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract List<ObjectWithUid> filters();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract Integer teiDownload();
-
-    @Nullable
-    public abstract Integer teiDBTrimming();
-
-    @Nullable
-    public abstract Integer eventsDownload();
-
-    @Nullable
-    public abstract Integer eventsDBTrimming();
-
-    @Nullable
-    public abstract DownloadPeriod updateDownload();
-
-    @Nullable
-    public abstract DownloadPeriod updateDBTrimming();
-
-    @Nullable
-    public abstract LimitScope settingDownload();
-
-    @Nullable
-    public abstract LimitScope settingDBTrimming();
-
-    @Nullable
-    public abstract EnrollmentScope enrollmentDownload();
-
-    @Nullable
-    public abstract EnrollmentScope enrollmentDBTrimming();
-
-    @Nullable
-    public abstract DownloadPeriod eventDateDownload();
-
-    @Nullable
-    public abstract DownloadPeriod eventDateDBTrimming();
-
-    @Nullable
-    public abstract DownloadPeriod enrollmentDateDownload();
-
-    @Nullable
-    public abstract DownloadPeriod enrollmentDateDBTrimming();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder filters(List<ObjectWithUid> filters);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract Builder teiDownload(Integer teiDownload);
-
-        public abstract Builder teiDBTrimming(Integer teiDBTrimming);
-
-        public abstract Builder eventsDownload(Integer eventsDownload);
-
-        public abstract Builder eventsDBTrimming(Integer eventsDBTrimming);
-
-        public abstract Builder updateDownload(DownloadPeriod updateDownload);
-
-        public abstract Builder updateDBTrimming(DownloadPeriod updateDBTrimming);
-
-        public abstract Builder settingDownload(LimitScope settingDownload);
-
-        public abstract Builder settingDBTrimming(LimitScope settingDBTrimming);
-
-        public abstract Builder enrollmentDownload(EnrollmentScope enrollmentDownload);
-
-        public abstract Builder enrollmentDBTrimming(EnrollmentScope enrollmentDBTrimming);
-
-        public abstract Builder eventDateDownload(DownloadPeriod eventPeriodDownload);
-
-        public abstract Builder eventDateDBTrimming(DownloadPeriod eventPeriodDBTrimming);
-
-        public abstract Builder enrollmentDateDownload(DownloadPeriod enrollmentDateDownload);
-
-        public abstract Builder enrollmentDateDBTrimming(DownloadPeriod enrollmentDateDBTrimming);
-
-        public abstract ProgramSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

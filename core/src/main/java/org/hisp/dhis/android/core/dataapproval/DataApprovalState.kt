@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataapproval
 
-package org.hisp.dhis.android.core.dataapproval;
-
-public enum DataApprovalState {
+enum class DataApprovalState {
     UNAPPROVABLE,
     UNAPPROVED_ABOVE,
     UNAPPROVED_WAITING,
@@ -37,10 +36,12 @@ public enum DataApprovalState {
     APPROVED_HERE,
     ACCEPTED_HERE,
 
-    @Deprecated
+    @Deprecated("")
     UNAPPROVED_ELSEWHERE,
-    @Deprecated
+
+    @Deprecated("")
     APPROVED_ELSEWHERE,
-    @Deprecated
-    ACCEPTED_ELSEWHERE
+
+    @Deprecated("")
+    ACCEPTED_ELSEWHERE,
 }

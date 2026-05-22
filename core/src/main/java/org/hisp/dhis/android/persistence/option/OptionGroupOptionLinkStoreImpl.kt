@@ -56,6 +56,6 @@ internal class OptionGroupOptionLinkStoreImpl(
             )
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.option()) }
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.option()!!) }
     }
 }

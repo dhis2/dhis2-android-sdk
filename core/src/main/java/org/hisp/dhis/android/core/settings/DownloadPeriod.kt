@@ -25,33 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.settings
 
-package org.hisp.dhis.android.core.settings;
-
-
-public enum DownloadPeriod {
+@Suppress("MagicNumber")
+enum class DownloadPeriod(val months: Int?) {
     ANY(null),
     LAST_MONTH(1),
     LAST_3_MONTHS(3),
-    LAST_12_MONTHS(12);
+    LAST_12_MONTHS(12),
+    ;
 
-    private final Integer months;
-
-    DownloadPeriod(final Integer months) {
-        this.months = months;
-    }
-
-    public Integer getMonths() {
-        return this.months;
-    }
-
-    public static DownloadPeriod forName(String name) {
-        for (DownloadPeriod c : values()) {
-            if (c.name().equals(name)) {
-                return c;
-            }
-        }
-
-        return null;
+    companion object {
+        fun forName(name: String?): DownloadPeriod? = entries.find { it.name == name }
     }
 }

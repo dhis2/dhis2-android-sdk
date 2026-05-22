@@ -25,10 +25,9 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public enum ValueTypeRenderingType {
+enum class ValueTypeRenderingType {
     DEFAULT,
     DROPDOWN,
     VERTICAL_RADIOBUTTONS,

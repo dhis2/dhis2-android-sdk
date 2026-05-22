@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,110 +26,65 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.Program;
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElementInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+internal object ProgramParentUidsHelper {
 
-final class ProgramParentUidsHelper {
-
-    private ProgramParentUidsHelper() {}
-
-    static Set<String> getAssignedOptionSetUids(List<TrackedEntityAttribute> attributes,
-                                                List<ProgramStage> programStages) {
-        Set<String> uids = new HashSet<>();
-
-        if (attributes != null) {
-            getOptionSetUidsForAttributes(uids, attributes);
-        }
-
-        if (programStages != null) {
-            getOptionSetUidsForDataElements(uids, programStages);
-        }
-        return uids;
+    fun getAssignedOptionSetUids(
+        attributes: List<TrackedEntityAttribute>?,
+        programStages: List<ProgramStage>?,
+    ): Set<String> {
+        val uids = mutableSetOf<String>()
+        attributes?.let { getOptionSetUidsForAttributes(uids, it) }
+        programStages?.let { getOptionSetUidsForDataElements(uids, it) }
+        return uids
     }
 
-    private static void getOptionSetUidsForDataElements(Set<String> uids, List<ProgramStage> programStages) {
-        int programStagesSize = programStages.size();
-
-        for (int j = 0; j < programStagesSize; j++) {
-            ProgramStage programStage = programStages.get(j);
-            List<ProgramStageDataElement> programStageDataElements =
-                    ProgramStageInternalAccessor.accessProgramStageDataElements(programStage);
-            int programStageDataElementSize = programStageDataElements.size();
-
-            for (int k = 0; k < programStageDataElementSize; k++) {
-                ProgramStageDataElement programStageDataElement = programStageDataElements.get(k);
-                DataElement dataElement = ProgramStageDataElementInternalAccessor
-                        .accessFullDataElement(programStageDataElement);
-
-                if (dataElement != null && dataElement.optionSet() != null) {
-                    uids.add(dataElement.optionSet().uid());
-                }
+    private fun getOptionSetUidsForDataElements(uids: MutableSet<String>, programStages: List<ProgramStage>) {
+        for (programStage in programStages) {
+            val programStageDataElements = programStage.programStageDataElements() ?: continue
+            for (programStageDataElement in programStageDataElements) {
+                val dataElement = programStageDataElement.fullDataElement()
+                dataElement?.optionSet()?.let { uids.add(it.uid()) }
             }
         }
     }
 
-    private static void getOptionSetUidsForAttributes(Set<String> uids, List<TrackedEntityAttribute> attributes) {
-        for (TrackedEntityAttribute attribute : attributes) {
-            if (attribute.optionSet() != null) {
-                uids.add(attribute.optionSet().uid());
-            }
+    private fun getOptionSetUidsForAttributes(uids: MutableSet<String>, attributes: List<TrackedEntityAttribute>) {
+        for (attribute in attributes) {
+            attribute.optionSet()?.let { uids.add(it.uid()) }
         }
     }
 
-    static Set<String> getAssignedTrackedEntityUids(List<Program> programs) {
-        if (programs == null) {
-            return null;
+    fun getAssignedTrackedEntityUids(programs: List<Program>?): Set<String> {
+        if (programs == null) return emptySet()
+        val uids = mutableSetOf<String>()
+        for (program in programs) {
+            program.trackedEntityType()?.let { uids.add(it.uid()) }
         }
-
-        Set<String> uids = new HashSet<>();
-
-        int size = programs.size();
-        for (int i = 0; i < size; i++) {
-            Program program = programs.get(i);
-
-            if (program.trackedEntityType() != null) {
-                uids.add(program.trackedEntityType().uid());
-            }
-        }
-        return uids;
+        return uids
     }
 
-    static Set<String> getAssignedTrackedEntityAttributeUids(List<Program> programs, List<TrackedEntityType> types) {
-        Set<String> attributeUids = new HashSet<>();
-
-        for (Program program : programs) {
-            List<ProgramTrackedEntityAttribute> attributes =
-                    ProgramInternalAccessor.accessProgramTrackedEntityAttributes(program);
-            if (attributes != null) {
-                for (ProgramTrackedEntityAttribute programAttribute : attributes) {
-                    attributeUids.add(programAttribute.trackedEntityAttribute().uid());
-                }
+    fun getAssignedTrackedEntityAttributeUids(
+        programs: List<Program>,
+        types: List<TrackedEntityType>,
+    ): Set<String> {
+        val attributeUids = mutableSetOf<String>()
+        for (program in programs) {
+            program.programTrackedEntityAttributes()?.forEach { programAttribute ->
+                programAttribute.trackedEntityAttribute()?.uid()?.let { attributeUids.add(it) }
             }
         }
-
-        for (TrackedEntityType type : types) {
-            if (type.trackedEntityTypeAttributes() != null) {
-                for (TrackedEntityTypeAttribute attribute : type.trackedEntityTypeAttributes()) {
-                    attributeUids.add(attribute.trackedEntityAttribute().uid());
-                }
+        for (type in types) {
+            type.trackedEntityTypeAttributes()?.forEach { attribute ->
+                attribute.trackedEntityAttribute()?.uid()?.let { attributeUids.add(it) }
             }
         }
-
-        return attributeUids;
+        return attributeUids
     }
 }

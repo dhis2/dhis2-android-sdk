@@ -26,52 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetSetting(
+    val uid: String?,
+    val name: String?,
+    val lastUpdated: Date?,
+    val periodDSDownload: Int?,
+    val periodDSDBTrimming: Int?,
+) : CoreObject {
+    fun uid(): String? = uid
+    fun name(): String? = name
+    fun lastUpdated(): Date? = lastUpdated
+    fun periodDSDownload(): Int? = periodDSDownload
+    fun periodDSDBTrimming(): Int? = periodDSDBTrimming
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = DataSetSettingBuilder.from(this)
 
-import java.util.Date;
+    class Builder : DataSetSettingBuilder()
 
-@AutoValue
-public abstract class DataSetSetting implements CoreObject {
-
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract Integer periodDSDownload();
-
-    @Nullable
-    public abstract Integer periodDSDBTrimming();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract Builder periodDSDownload(Integer periodDSDownload);
-
-        public abstract Builder periodDSDBTrimming(Integer periodDSDBTrimming);
-
-        public abstract DataSetSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

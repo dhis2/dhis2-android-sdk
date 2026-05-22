@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.programToCompletionSpinner
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AppearanceSettings(
+    val filterSorting: FilterSorting?,
+    val programConfiguration: ProgramConfigurationSettings?,
+    val dataSetConfiguration: DataSetConfigurationSettings?,
+) {
 
-@AutoValue
-public abstract class AppearanceSettings {
+    fun filterSorting(): FilterSorting? = filterSorting
+    fun programConfiguration(): ProgramConfigurationSettings? = programConfiguration
+    fun dataSetConfiguration(): DataSetConfigurationSettings? = dataSetConfiguration
 
-    @Nullable
-    public abstract FilterSorting filterSorting();
+    @Deprecated("Use programConfiguration instead")
+    fun completionSpinner(): CompletionSpinnerSetting = programToCompletionSpinner(programConfiguration)
 
-    @Nullable
-    public abstract ProgramConfigurationSettings programConfiguration();
+    fun toBuilder(): Builder = AppearanceSettingsBuilder.from(this)
 
-    @Nullable
-    public abstract DataSetConfigurationSettings dataSetConfiguration();
+    class Builder : AppearanceSettingsBuilder()
 
-    @Deprecated
-    @Nullable
-    public abstract CompletionSpinnerSetting completionSpinner();
-
-    public abstract AppearanceSettings.Builder toBuilder();
-
-    public static AppearanceSettings.Builder builder() {
-        return new AutoValue_AppearanceSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder filterSorting(FilterSorting filterSorting);
-
-        public abstract Builder programConfiguration(ProgramConfigurationSettings programConfiguration);
-
-        public abstract Builder dataSetConfiguration(DataSetConfigurationSettings dataSetConfiguration);
-
-        @Deprecated
-        public abstract Builder completionSpinner(CompletionSpinnerSetting completionSpinnerSetting);
-
-        @SuppressWarnings("PMD.ConfusingTernary")
-        public abstract AppearanceSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

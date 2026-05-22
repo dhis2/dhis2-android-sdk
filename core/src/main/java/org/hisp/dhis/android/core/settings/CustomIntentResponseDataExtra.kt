@@ -26,39 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntentResponseDataExtra(
+    val extraName: String,
+    val extraType: CustomIntentResponseExtraType,
+    val key: String?,
+) {
+    fun extraName(): String = extraName
+    fun extraType(): CustomIntentResponseExtraType = extraType
+    fun key(): String? = key
 
-@AutoValue
-public abstract class CustomIntentResponseDataExtra {
-    @NonNull
-    public abstract String extraName();
+    fun toBuilder(): Builder = CustomIntentResponseDataExtraBuilder.from(this)
 
-    @NonNull
-    public abstract CustomIntentResponseExtraType extraType();
+    class Builder : CustomIntentResponseDataExtraBuilder()
 
-    @Nullable
-    public abstract String key();
-
-
-    public static CustomIntentResponseDataExtra.Builder builder() {
-        return new AutoValue_CustomIntentResponseDataExtra.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract CustomIntentResponseDataExtra.Builder extraName(String extraName);
-
-        public abstract CustomIntentResponseDataExtra.Builder extraType(CustomIntentResponseExtraType extraName);
-
-        public abstract CustomIntentResponseDataExtra.Builder key(String extraName);
-
-
-        public abstract CustomIntentResponseDataExtra build();
-    }
-
 }

@@ -33,7 +33,6 @@ import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
-import org.hisp.dhis.android.core.dataset.DataSetInternalAccessor
 import org.hisp.dhis.android.core.dataset.TabsDirection
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.period.PeriodType
@@ -105,7 +104,7 @@ internal data class DataSetDTO(
             workflow(workflow?.toDomain())
             dataSetElements(dataSetElements.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            DataSetInternalAccessor.insertSections(this, sections.map { it.toDomain() })
+            sections(sections.map { it.toDomain() })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(

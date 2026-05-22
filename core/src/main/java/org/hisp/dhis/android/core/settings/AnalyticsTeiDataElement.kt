@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsTeiDataElement(
+    val teiSetting: String,
+    val whoComponent: WHONutritionComponent?,
+    val programStage: String?,
+    val dataElement: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun teiSetting(): String = teiSetting
+    fun whoComponent(): WHONutritionComponent? = whoComponent
+    fun programStage(): String? = programStage
+    fun dataElement(): String = dataElement
 
-@AutoValue
-public abstract class AnalyticsTeiDataElement implements CoreObject {
+    fun toBuilder(): Builder = AnalyticsTeiDataElementBuilder.from(this)
 
-    @Nullable
-    public abstract String teiSetting();
+    class Builder : AnalyticsTeiDataElementBuilder()
 
-    @Nullable
-    public abstract WHONutritionComponent whoComponent();
-
-    @Nullable
-    public abstract String programStage();
-
-    public abstract String dataElement();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiDataElement.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder teiSetting(String teiSetting);
-
-        public abstract Builder whoComponent(WHONutritionComponent component);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract AnalyticsTeiDataElement build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

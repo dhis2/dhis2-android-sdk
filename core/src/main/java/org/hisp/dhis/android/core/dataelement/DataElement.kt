@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,110 +26,66 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataelement;
+package org.hisp.dhis.android.core.dataelement
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class DataElement(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val valueType: ValueType?,
+    val zeroIsSignificant: Boolean?,
+    val aggregationType: String?,
+    val formName: String?,
+    val domainType: String?,
+    val displayFormName: String?,
+    val optionSet: ObjectWithUid?,
+    val categoryCombo: ObjectWithUid,
+    val legendSets: List<ObjectWithUid>?,
+    val fieldMask: String?,
+    val attributeValues: List<AttributeValue>?,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
+    fun valueType(): ValueType? = valueType
+    fun zeroIsSignificant(): Boolean? = zeroIsSignificant
+    fun aggregationType(): String? = aggregationType
+    fun formName(): String? = formName
+    fun domainType(): String? = domainType
+    fun displayFormName(): String? = displayFormName
+    fun optionSet(): ObjectWithUid? = optionSet
+    fun optionSetUid(): String? = optionSet?.uid()
+    fun categoryCombo(): ObjectWithUid = categoryCombo
+    fun legendSets(): List<ObjectWithUid>? = legendSets
+    fun fieldMask(): String? = fieldMask
+    fun attributeValues(): List<AttributeValue>? = attributeValues
 
-import java.util.List;
+    fun toBuilder(): Builder = DataElementBuilder.from(this)
 
-@AutoValue
-public abstract class DataElement extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    class Builder : DataElementBuilder()
 
-    @Nullable
-    public abstract ValueType valueType();
-
-    @Nullable
-    public abstract Boolean zeroIsSignificant();
-
-    @Nullable
-    public abstract String aggregationType();
-
-    @Nullable
-    public abstract String formName();
-
-    @Nullable
-    public abstract String domainType();
-
-    @Nullable
-    public abstract String displayFormName();
-
-    @Nullable
-    public abstract ObjectWithUid optionSet();
-
-    public String optionSetUid() {
-        ObjectWithUid optionSet = optionSet();
-        return optionSet == null ? null : optionSet.uid();
-    }
-
-    @NonNull
-    public abstract ObjectWithUid categoryCombo();
-
-    @Nullable
-    public abstract List<ObjectWithUid> legendSets();
-
-    @Nullable
-    public abstract String fieldMask();
-
-    @Nullable
-    public abstract List<AttributeValue> attributeValues();
-
-    public static Builder builder() {
-        return new AutoValue_DataElement.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<DataElement.Builder> {
-        public abstract DataElement.Builder valueType(ValueType valueType);
-
-        public abstract DataElement.Builder zeroIsSignificant(Boolean zeroIsSignificant);
-
-        public abstract DataElement.Builder aggregationType(String aggregationType);
-
-        public abstract DataElement.Builder formName(String formName);
-
-        public abstract DataElement.Builder domainType(String domainType);
-
-        public abstract DataElement.Builder displayFormName(String displayFormName);
-
-        public abstract DataElement.Builder optionSet(ObjectWithUid optionSet);
-
-        public abstract DataElement.Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
-
-        public abstract DataElement.Builder legendSets(List<ObjectWithUid> legendSets);
-
-        public abstract DataElement.Builder fieldMask(String fieldMask);
-
-        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract DataElement autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-
-        public DataElement build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }

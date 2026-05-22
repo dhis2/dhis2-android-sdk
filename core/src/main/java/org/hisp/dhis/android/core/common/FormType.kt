@@ -25,21 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public enum FormType {
+enum class FormType {
     DEFAULT, CUSTOM, SECTION, SECTION_MULTIORG;
 
-    public boolean isDefault() {
-        return this == DEFAULT;
-    }
+    val isDefault: Boolean
+        get() = this == FormType.DEFAULT
 
-    public boolean isCustom() {
-        return this == CUSTOM;
-    }
+    val isCustom: Boolean
+        get() = this == FormType.CUSTOM
 
-    public boolean isSection() {
-        return this == SECTION || this == SECTION_MULTIORG;
-    }
+    val isSection: Boolean
+        get() = this == FormType.SECTION || this == FormType.SECTION_MULTIORG
 }

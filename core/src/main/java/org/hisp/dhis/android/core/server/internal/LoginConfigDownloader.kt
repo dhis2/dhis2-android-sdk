@@ -63,7 +63,7 @@ internal class LoginConfigDownloader(
             } else {
                 account
             }
-        }
+        } ?: emptyList()
         databasesConfiguration?.toBuilder()
             ?.accounts(updatedAccounts)
             ?.build()

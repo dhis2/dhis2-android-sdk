@@ -26,64 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SynchronizationSettings(
+    val dataSync: DataSyncPeriod?,
+    val metadataSync: MetadataSyncPeriod?,
+    val trackerImporterVersion: TrackerImporterVersion?,
+    val trackerExporterVersion: TrackerExporterVersion?,
+    val dataSetSettings: DataSetSettings?,
+    val programSettings: ProgramSettings?,
+    val fileMaxLengthBytes: Int?,
+) : CoreObject {
+    fun dataSync(): DataSyncPeriod? = dataSync
+    fun metadataSync(): MetadataSyncPeriod? = metadataSync
+    fun trackerImporterVersion(): TrackerImporterVersion? = trackerImporterVersion
+    fun trackerExporterVersion(): TrackerExporterVersion? = trackerExporterVersion
+    fun dataSetSettings(): DataSetSettings? = dataSetSettings
+    fun programSettings(): ProgramSettings? = programSettings
+    fun fileMaxLengthBytes(): Int? = fileMaxLengthBytes
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
-import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
+    fun toBuilder(): Builder = SynchronizationSettingsBuilder.from(this)
 
-@AutoValue
-public abstract class SynchronizationSettings implements CoreObject {
+    class Builder : SynchronizationSettingsBuilder()
 
-    @Nullable
-    public abstract DataSyncPeriod dataSync();
-
-    @Nullable
-    public abstract MetadataSyncPeriod metadataSync();
-
-    @Nullable
-    public abstract TrackerImporterVersion trackerImporterVersion();
-
-    @Nullable
-    public abstract TrackerExporterVersion trackerExporterVersion();
-
-    @Nullable
-    public abstract DataSetSettings dataSetSettings();
-
-    @Nullable
-    public abstract ProgramSettings programSettings();
-
-    @Nullable
-    public abstract Integer fileMaxLengthBytes();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_SynchronizationSettings.Builder()
-                .dataSetSettings(DataSetSettings.builder().build())
-                .programSettings(ProgramSettings.builder().build());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataSync(DataSyncPeriod dataSync);
-
-        public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
-
-        public abstract Builder trackerImporterVersion(TrackerImporterVersion trackerImporterVersion);
-
-        public abstract Builder trackerExporterVersion(TrackerExporterVersion trackerExporterVersion);
-
-        public abstract Builder dataSetSettings(DataSetSettings dataSetSettings);
-
-        public abstract Builder programSettings(ProgramSettings programSettings);
-
-        public abstract Builder fileMaxLengthBytes(Integer fileMaxLengthBytes);
-
-        public abstract SynchronizationSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .dataSetSettings(DataSetSettings.builder().build())
+            .programSettings(ProgramSettings.builder().build())
     }
 }

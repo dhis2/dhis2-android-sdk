@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,40 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
-
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
 /**
  * Old configuration class. Needs to be kept for migration from SDK version previous to 1.1.0
- * Use {@link DatabasesConfiguration} instead.
+ * Use [DatabasesConfiguration] instead.
  */
-@AutoValue
-@Deprecated
-public abstract class Configuration implements CoreObject {
+@Deprecated("Use DatabasesConfiguration instead")
+@ModelBuilder
+data class Configuration(
+    val serverUrl: String,
+) : CoreObject {
+    fun serverUrl(): String = serverUrl
 
-    @NonNull
-    public abstract String serverUrl();
+    fun toBuilder(): Builder = ConfigurationBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : ConfigurationBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_Configuration.Builder();
-    }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder serverUrl(String serverUrl);
-
-        public abstract Configuration build();
-    }
-
-    static Configuration forServerUrl(String url) {
-        return Configuration.builder().serverUrl(url).build();
+        internal fun forServerUrl(url: String): Configuration =
+            builder().serverUrl(url).build()
     }
 }

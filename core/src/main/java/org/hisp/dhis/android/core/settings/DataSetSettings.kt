@@ -26,33 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetSettings(
+    val globalSettings: DataSetSetting,
+    val specificSettings: Map<String, DataSetSetting>,
+) {
+    fun globalSettings(): DataSetSetting = globalSettings
+    fun specificSettings(): Map<String, DataSetSetting> = specificSettings
 
-import java.util.Collections;
-import java.util.Map;
+    fun toBuilder(): Builder = DataSetSettingsBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetSettings {
+    class Builder : DataSetSettingsBuilder()
 
-    public abstract DataSetSetting globalSettings();
-
-    public abstract Map<String, DataSetSetting> specificSettings();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetSettings.Builder()
-                .globalSettings(DataSetSetting.builder().build())
-                .specificSettings(Collections.emptyMap());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(DataSetSetting globalSettings);
-
-        public abstract Builder specificSettings(Map<String, DataSetSetting> specificSettings);
-
-        public abstract DataSetSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .globalSettings(DataSetSetting.builder().build())
+            .specificSettings(emptyMap())
     }
 }

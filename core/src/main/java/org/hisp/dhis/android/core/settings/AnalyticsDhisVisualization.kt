@@ -26,68 +26,38 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsDhisVisualization(
+    override val uid: String,
+    val scopeUid: String?,
+    val groupUid: String,
+    val groupName: String,
+    val scope: AnalyticsDhisVisualizationScope,
+    val name: String?,
+    val timestamp: String?,
+    val type: AnalyticsDhisVisualizationType,
+) : CoreObject, ObjectWithUidInterfaceKt {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun scopeUid(): String? = scopeUid
+    fun groupUid(): String = groupUid
+    fun groupName(): String = groupName
+    fun scope(): AnalyticsDhisVisualizationScope = scope
+    fun name(): String? = name
+    fun timestamp(): String? = timestamp
+    fun type(): AnalyticsDhisVisualizationType = type
 
-@AutoValue
-public abstract class AnalyticsDhisVisualization implements CoreObject, ObjectWithUidInterface {
+    fun toBuilder(): Builder = AnalyticsDhisVisualizationBuilder.from(this)
 
-    @Nullable
-    public abstract String scopeUid();
+    class Builder : AnalyticsDhisVisualizationBuilder()
 
-    @Nullable
-    public abstract String groupUid();
-
-    @Nullable
-    public abstract String groupName();
-
-    @Nullable
-    public abstract AnalyticsDhisVisualizationScope scope();
-
-    @NonNull
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract String timestamp();
-
-    @NonNull
-    public abstract AnalyticsDhisVisualizationType type();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsDhisVisualization.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder scopeUid(String scopeUid);
-
-        public abstract Builder groupUid(String groupUid);
-
-        public abstract Builder groupName(String groupName);
-
-        public abstract Builder scope(AnalyticsDhisVisualizationScope scope);
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder timestamp(String timestamp);
-
-        public abstract Builder type(AnalyticsDhisVisualizationType type);
-
-        public abstract AnalyticsDhisVisualization build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,22 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.program
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.AuthorizationType
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.server.LoginConfig
+import java.util.Date
 
-import org.hisp.dhis.android.core.dataelement.DataElement
+@ModelBuilder
+data class DatabaseAccount(
+    val username: String,
+    val serverUrl: String,
+    val databaseName: String,
+    val databaseCreationDate: Date,
+    val lastAccessDate: Date?,
+    val encrypted: Boolean,
+    val syncState: State?,
+    val importDB: DatabaseAccountImport?,
+    val loginConfig: LoginConfig?,
+    val authorizationType: AuthorizationType?,
+) {
+    fun username(): String = username
+    fun serverUrl(): String = serverUrl
+    fun databaseName(): String = databaseName
+    fun databaseCreationDate(): Date = databaseCreationDate
+    fun lastAccessDate(): Date? = lastAccessDate
+    fun encrypted(): Boolean = encrypted
+    fun syncState(): State? = syncState
+    fun importDB(): DatabaseAccountImport? = importDB
+    fun loginConfig(): LoginConfig? = loginConfig
+    fun authorizationType(): AuthorizationType? = authorizationType
 
-internal object ProgramStageDataElementInternalAccessor {
+    fun toBuilder(): Builder = DatabaseAccountBuilder.from(this)
 
-    @JvmStatic
-    fun accessFullDataElement(programStageDataElement: ProgramStageDataElement): DataElement? {
-        return programStageDataElement.fullDataElement()
-    }
+    class Builder : DatabaseAccountBuilder()
 
-    fun insertFullDataElement(
-        builder: ProgramStageDataElement.Builder,
-        dataElement: DataElement?,
-    ): ProgramStageDataElement.Builder {
-        return builder.fullDataElement(dataElement)
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

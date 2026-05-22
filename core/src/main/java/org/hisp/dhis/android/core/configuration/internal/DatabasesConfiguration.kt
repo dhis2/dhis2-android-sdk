@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,48 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.configuration.internal;
+import org.hisp.dhis.android.BuildConfig
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DatabasesConfiguration(
+    val versionCode: Long,
+    val maxAccounts: Int?,
+    val accounts: List<DatabaseAccount>,
+) {
+    fun versionCode(): Long = versionCode
+    fun maxAccounts(): Int? = maxAccounts
+    fun accounts(): List<DatabaseAccount> = accounts
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = DatabasesConfigurationBuilder.from(this)
 
-import org.hisp.dhis.android.BuildConfig;
+    class Builder : DatabasesConfigurationBuilder()
 
-import java.util.Collections;
-import java.util.List;
-
-@AutoValue
-public abstract class DatabasesConfiguration {
-
-    public abstract long versionCode();
-
-    @Nullable
-    public abstract Integer maxAccounts();
-
-    @NonNull
-    public abstract List<DatabaseAccount> accounts();
-
-    public static Builder builder() {
-        return new AutoValue_DatabasesConfiguration.Builder()
-                .versionCode(BuildConfig.VERSION_CODE)
-                .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
-                .accounts(Collections.emptyList());
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder versionCode(long versionCode);
-
-        public abstract Builder maxAccounts(Integer maxAccounts);
-
-        public abstract Builder accounts(List<DatabaseAccount> accounts);
-
-        public abstract DatabasesConfiguration build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .versionCode(BuildConfig.VERSION_CODE)
+            .maxAccounts(MultiUserDatabaseManager.DefaultMaxAccounts)
+            .accounts(emptyList())
     }
 }

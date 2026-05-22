@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,446 +26,197 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.attribute.AttributeValue
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class Program(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val version: Int?,
+    val onlyEnrollOnce: Boolean?,
+    val displayEnrollmentDateLabel: String?,
+    val displayIncidentDate: Boolean?,
+    val displayIncidentDateLabel: String?,
+    val registration: Boolean?,
+    val selectEnrollmentDatesInFuture: Boolean?,
+    val dataEntryMethod: Boolean?,
+    val ignoreOverdueEvents: Boolean?,
+    val selectIncidentDatesInFuture: Boolean?,
+    val useFirstStageDuringRegistration: Boolean?,
+    val displayFrontPageList: Boolean?,
+    val programType: ProgramType?,
+    internal val programTrackedEntityAttributes: List<ProgramTrackedEntityAttribute>?,
+    val relatedProgram: ObjectWithUid?,
+    val trackedEntityType: TrackedEntityType?,
+    val categoryCombo: ObjectWithUid,
+    val access: Access,
+    internal val programRuleVariables: List<ProgramRuleVariable>?,
+    val expiryDays: Int?,
+    val completeEventsExpiryDays: Int?,
+    val expiryPeriodType: PeriodType?,
+    val minAttributesRequiredToSearch: Int?,
+    val maxTeiCountToReturn: Int?,
+    internal val programSections: List<ProgramSection>?,
+    val featureType: FeatureType?,
+    val accessLevel: AccessLevel?,
+    val displayEnrollmentLabel: String?,
+    val displayFollowUpLabel: String?,
+    val displayOrgUnitLabel: String?,
+    val displayRelationshipLabel: String?,
+    val displayNoteLabel: String?,
+    val displayTrackedEntityAttributeLabel: String?,
+    val displayProgramStageLabel: String?,
+    val displayEventLabel: String?,
+    val attributeValues: List<AttributeValue>?,
+    val enrollmentCategoryCombo: ObjectWithUid,
+    internal val categoryMappings: List<CategoryMapping>?,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.attribute.AttributeValue;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.period.PeriodType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+    fun version(): Int? = version
+    fun onlyEnrollOnce(): Boolean? = onlyEnrollOnce
 
-import java.util.List;
+    @Deprecated("since v41, replaced by displayEnrollmentDateLabel()")
+    fun enrollmentDateLabel(): String? = displayEnrollmentDateLabel
+    fun displayEnrollmentDateLabel(): String? = displayEnrollmentDateLabel
+    fun displayIncidentDate(): Boolean? = displayIncidentDate
 
-@AutoValue
-@SuppressWarnings({"PMD.ExcessivePublicCount", "PMD.ExcessiveImports", "PMD.CouplingBetweenObjects", "PMD.GodClass"})
-public abstract class Program extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    @Deprecated("since v41, replaced by displayIncidentDateLabel()")
+    fun incidentDateLabel(): String? = displayIncidentDateLabel
+    fun displayIncidentDateLabel(): String? = displayIncidentDateLabel
+    fun registration(): Boolean? = registration
+    fun selectEnrollmentDatesInFuture(): Boolean? = selectEnrollmentDatesInFuture
+    fun dataEntryMethod(): Boolean? = dataEntryMethod
+    fun ignoreOverdueEvents(): Boolean? = ignoreOverdueEvents
+    fun selectIncidentDatesInFuture(): Boolean? = selectIncidentDatesInFuture
+    fun useFirstStageDuringRegistration(): Boolean? = useFirstStageDuringRegistration
+    fun displayFrontPageList(): Boolean? = displayFrontPageList
+    fun programType(): ProgramType? = programType
+    internal fun programTrackedEntityAttributes(): List<ProgramTrackedEntityAttribute>? = programTrackedEntityAttributes
+    fun relatedProgram(): ObjectWithUid? = relatedProgram
+    fun trackedEntityType(): TrackedEntityType? = trackedEntityType
+    fun categoryCombo(): ObjectWithUid = categoryCombo
+    fun access(): Access = access
+    internal fun programRuleVariables(): List<ProgramRuleVariable>? = programRuleVariables
+    fun expiryDays(): Int? = expiryDays
+    fun completeEventsExpiryDays(): Int? = completeEventsExpiryDays
+    fun expiryPeriodType(): PeriodType? = expiryPeriodType
+    fun minAttributesRequiredToSearch(): Int? = minAttributesRequiredToSearch
+    fun maxTeiCountToReturn(): Int? = maxTeiCountToReturn
+    internal fun programSections(): List<ProgramSection>? = programSections
+    fun featureType(): FeatureType? = featureType
+    fun accessLevel(): AccessLevel? = accessLevel
 
-    @Nullable
-    public abstract Integer version();
+    @Deprecated("since v41, replaced by displayEnrollmentLabel()")
+    fun enrollmentLabel(): String? = displayEnrollmentLabel
+    fun displayEnrollmentLabel(): String? = displayEnrollmentLabel
 
-    @Nullable
-    public abstract Boolean onlyEnrollOnce();
+    @Deprecated("since v41, replaced by displayFollowUpLabel()")
+    fun followUpLabel(): String? = displayFollowUpLabel
+    fun displayFollowUpLabel(): String? = displayFollowUpLabel
 
-    /**
-     * @deprecated since v41, replaced by {@link #displayEnrollmentDateLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String enrollmentDateLabel() {
-        return displayEnrollmentDateLabel();
+    @Deprecated("since v41, replaced by displayOrgUnitLabel()")
+    fun orgUnitLabel(): String? = displayOrgUnitLabel
+    fun displayOrgUnitLabel(): String? = displayOrgUnitLabel
+
+    @Deprecated("since v41, replaced by displayRelationshipLabel()")
+    fun relationshipLabel(): String? = displayRelationshipLabel
+    fun displayRelationshipLabel(): String? = displayRelationshipLabel
+
+    @Deprecated("since v41, replaced by displayNoteLabel()")
+    fun noteLabel(): String? = displayNoteLabel
+    fun displayNoteLabel(): String? = displayNoteLabel
+
+    @Deprecated("since v41, replaced by displayTrackedEntityAttributeLabel()")
+    fun trackedEntityAttributeLabel(): String? = displayTrackedEntityAttributeLabel
+    fun displayTrackedEntityAttributeLabel(): String? = displayTrackedEntityAttributeLabel
+
+    @Deprecated("since v41, replaced by displayProgramStageLabel()")
+    fun programStageLabel(): String? = displayProgramStageLabel
+    fun displayProgramStageLabel(): String? = displayProgramStageLabel
+
+    @Deprecated("since v41, replaced by displayEventLabel()")
+    fun eventLabel(): String? = displayEventLabel
+    fun displayEventLabel(): String? = displayEventLabel
+
+    fun attributeValues(): List<AttributeValue>? = attributeValues
+    fun enrollmentCategoryCombo(): ObjectWithUid = enrollmentCategoryCombo
+    internal fun categoryMappings(): List<CategoryMapping>? = categoryMappings
+
+    fun toBuilder(): Builder = ProgramBuilder.from(this)
+
+    @Suppress("TooManyFunctions")
+    class Builder : ProgramBuilder() {
+        @Deprecated("replaced by displayEnrollmentDateLabel(String)")
+        fun enrollmentDateLabel(enrollmentDateLabel: String?): Builder =
+            displayEnrollmentDateLabel(enrollmentDateLabel)
+
+        @Deprecated("replaced by displayIncidentDateLabel(String)")
+        fun incidentDateLabel(incidentDateLabel: String?): Builder =
+            displayIncidentDateLabel(incidentDateLabel)
+
+        @Deprecated("replaced by displayEnrollmentLabel(String)")
+        fun enrollmentLabel(enrollmentLabel: String?): Builder =
+            displayEnrollmentLabel(enrollmentLabel)
+
+        @Deprecated("replaced by displayFollowUpLabel(String)")
+        fun followUpLabel(followUpLabel: String?): Builder =
+            displayFollowUpLabel(followUpLabel)
+
+        @Deprecated("replaced by displayOrgUnitLabel(String)")
+        fun orgUnitLabel(orgUnitLabel: String?): Builder =
+            displayOrgUnitLabel(orgUnitLabel)
+
+        @Deprecated("replaced by displayRelationshipLabel(String)")
+        fun relationshipLabel(relationshipLabel: String?): Builder =
+            displayRelationshipLabel(relationshipLabel)
+
+        @Deprecated("replaced by displayNoteLabel(String)")
+        fun noteLabel(noteLabel: String?): Builder =
+            displayNoteLabel(noteLabel)
+
+        @Deprecated("replaced by displayTrackedEntityAttributeLabel(String)")
+        fun trackedEntityAttributeLabel(trackedEntityAttributeLabel: String?): Builder =
+            displayTrackedEntityAttributeLabel(trackedEntityAttributeLabel)
+
+        @Deprecated("replaced by displayProgramStageLabel(String)")
+        fun programStageLabel(programStageLabel: String?): Builder =
+            displayProgramStageLabel(programStageLabel)
+
+        @Deprecated("replaced by displayEventLabel(String)")
+        fun eventLabel(eventLabel: String?): Builder =
+            displayEventLabel(eventLabel)
     }
 
-    @Nullable
-    public abstract String displayEnrollmentDateLabel();
-
-    @Nullable
-    public abstract Boolean displayIncidentDate();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayIncidentDateLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String incidentDateLabel() {
-        return displayIncidentDateLabel();
-    }
-
-    @Nullable
-    public abstract String displayIncidentDateLabel();
-
-    @Nullable
-    public abstract Boolean registration();
-
-    @Nullable
-    public abstract Boolean selectEnrollmentDatesInFuture();
-
-    @Nullable
-    public abstract Boolean dataEntryMethod();
-
-    @Nullable
-    public abstract Boolean ignoreOverdueEvents();
-
-    @Nullable
-    public abstract Boolean selectIncidentDatesInFuture();
-
-    /**
-     * @deprecated since 2.29, replaced by {@link #featureType()}
-     */
-    @Deprecated
-    @Nullable
-    abstract Boolean captureCoordinates();
-
-    @Nullable
-    public abstract Boolean useFirstStageDuringRegistration();
-
-    @Nullable
-    public abstract Boolean displayFrontPageList();
-
-    @Nullable
-    public abstract ProgramType programType();
-
-    @Nullable
-    abstract List<ProgramTrackedEntityAttribute> programTrackedEntityAttributes();
-
-    @Nullable
-    public abstract ObjectWithUid relatedProgram();
-
-    @Nullable
-    public abstract TrackedEntityType trackedEntityType();
-
-    @NonNull
-    public abstract ObjectWithUid categoryCombo();
-
-    public abstract Access access();
-
-    @Nullable
-    abstract List<ProgramRuleVariable> programRuleVariables();
-
-    @Nullable
-    public abstract Integer expiryDays();
-
-    @Nullable
-    public abstract Integer completeEventsExpiryDays();
-
-    @Nullable
-    public abstract PeriodType expiryPeriodType();
-
-    @Nullable
-    public abstract Integer minAttributesRequiredToSearch();
-
-    @Nullable
-    public abstract Integer maxTeiCountToReturn();
-
-    @Nullable
-    public abstract List<ProgramSection> programSections();
-
-    @Nullable
-    public abstract FeatureType featureType();
-
-    @Nullable
-    public abstract AccessLevel accessLevel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayEnrollmentLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String enrollmentLabel() {
-        return displayEnrollmentLabel();
-    }
-
-    @Nullable
-    public abstract String displayEnrollmentLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayFollowUpLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String followUpLabel() {
-        return displayFollowUpLabel();
-    }
-
-    @Nullable
-    public abstract String displayFollowUpLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayOrgUnitLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String orgUnitLabel() {
-        return displayOrgUnitLabel();
-    }
-
-    @Nullable
-    public abstract String displayOrgUnitLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayRelationshipLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String relationshipLabel() {
-        return displayRelationshipLabel();
-    }
-
-    @Nullable
-    public abstract String displayRelationshipLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayNoteLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String noteLabel() {
-        return displayNoteLabel();
-    }
-
-    @Nullable
-    public abstract String displayNoteLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayTrackedEntityAttributeLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String trackedEntityAttributeLabel() {
-        return displayTrackedEntityAttributeLabel();
-    }
-
-    @Nullable
-    public abstract String displayTrackedEntityAttributeLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayProgramStageLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String programStageLabel() {
-        return displayProgramStageLabel();
-    }
-
-    @Nullable
-    public abstract String displayProgramStageLabel();
-
-    /**
-     * @deprecated since v41, replaced by {@link #displayEventLabel()}
-     */
-    @Deprecated
-    @Nullable
-    public String eventLabel() {
-        return displayEventLabel();
-    }
-
-    @Nullable
-    public abstract String displayEventLabel();
-
-    @Nullable
-    public abstract List<AttributeValue> attributeValues();
-
-    @NonNull
-    public abstract ObjectWithUid enrollmentCategoryCombo();
-
-    @Nullable
-    abstract List<CategoryMapping> categoryMappings();
-
-    public static Builder builder() {
-        return new AutoValue_Program.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-
-        public abstract Builder version(Integer version);
-
-        public abstract Builder onlyEnrollOnce(Boolean onlyEnrollOnce);
-
-        /**
-         * @deprecated replaced by {@link #displayEnrollmentDateLabel(String displayEnrollmentDateLabel))}
-         */
-        public Builder enrollmentDateLabel(String enrollmentDateLabel) {
-            return displayEnrollmentDateLabel(enrollmentDateLabel);
-        }
-
-        public abstract Builder displayEnrollmentDateLabel(String displayEnrollmentDateLabel);
-
-        public abstract Builder displayIncidentDate(Boolean displayIncidentDate);
-
-        /**
-         * @deprecated replaced by {@link #displayIncidentDateLabel(String displayIncidentDateLabel))}
-         */
-        public Builder incidentDateLabel(String incidentDateLabel) {
-            return displayIncidentDateLabel(incidentDateLabel);
-        }
-
-        public abstract Builder displayIncidentDateLabel(String displayIncidentDateLabel);
-
-        public abstract Builder registration(Boolean registration);
-
-        public abstract Builder selectEnrollmentDatesInFuture(Boolean selectEnrollmentDatesInFuture);
-
-        public abstract Builder dataEntryMethod(Boolean dataEntryMethod);
-
-        public abstract Builder ignoreOverdueEvents(Boolean ignoreOverdueEvents);
-
-        public abstract Builder selectIncidentDatesInFuture(Boolean selectIncidentDatesInFuture);
-
-        /**
-         * @deprecated since 2.29, replaced by {@link #featureType()}
-         */
-        @Deprecated
-        abstract Builder captureCoordinates(Boolean captureCoordinates);
-
-        public abstract Builder useFirstStageDuringRegistration(Boolean useFirstStageDuringRegistration);
-
-        public abstract Builder displayFrontPageList(Boolean displayFrontPageList);
-
-        public abstract Builder programType(ProgramType programType);
-
-        abstract Builder programTrackedEntityAttributes(List<ProgramTrackedEntityAttribute>
-                                                                programTrackedEntityAttributes);
-
-        public abstract Builder relatedProgram(ObjectWithUid relatedProgram);
-
-        public abstract Builder trackedEntityType(TrackedEntityType trackedEntityType);
-
-        public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
-
-        public abstract Builder access(Access access);
-
-        abstract Builder programRuleVariables(List<ProgramRuleVariable> programRuleVariables);
-
-        public abstract Builder expiryDays(Integer expiryDays);
-
-        public abstract Builder completeEventsExpiryDays(Integer completeEventsExpiryDays);
-
-        public abstract Builder expiryPeriodType(PeriodType expiryPeriodType);
-
-        public abstract Builder minAttributesRequiredToSearch(Integer minAttributesRequiredToSearch);
-
-        public abstract Builder maxTeiCountToReturn(Integer maxTeiCountToReturn);
-
-        abstract Builder programSections(List<ProgramSection> programSections);
-
-        public abstract Builder featureType(FeatureType featureType);
-
-        public abstract Builder accessLevel(AccessLevel accessLevel);
-
-        /**
-         * @deprecated replaced by {@link #displayEnrollmentLabel(String displayEnrollmentLabel))}
-         */
-        public Builder enrollmentLabel(String enrollmentLabel) {
-            return displayEnrollmentLabel(enrollmentLabel);
-        }
-
-        public abstract Builder displayEnrollmentLabel(String displayEnrollmentLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayFollowUpLabel(String displayFollowUpLabel))}
-         */
-        public Builder followUpLabel(String followUpLabel) {
-            return displayFollowUpLabel(followUpLabel);
-        }
-
-        public abstract Builder displayFollowUpLabel(String displayFollowUpLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayOrgUnitLabel(String displayOrgUnitLabel))}
-         */
-        public Builder orgUnitLabel(String orgUnitLabel) {
-            return displayOrgUnitLabel(orgUnitLabel);
-        }
-
-        public abstract Builder displayOrgUnitLabel(String displayOrgUnitLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayRelationshipLabel(String displayRelationshipLabel))}
-         */
-        public Builder relationshipLabel(String relationshipLabel) {
-            return displayRelationshipLabel(relationshipLabel);
-        }
-
-        public abstract Builder displayRelationshipLabel(String displayRelationshipLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayNoteLabel(String displayNoteLabel))}
-         */
-        public Builder noteLabel(String noteLabel) {
-            return displayNoteLabel(noteLabel);
-        }
-
-        public abstract Builder displayNoteLabel(String displayNoteLabel);
-
-        /**
-         * @deprecated replaced by
-         * {@link #displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel))}
-         */
-        public Builder trackedEntityAttributeLabel(String trackedEntityAttributeLabel) {
-            return displayTrackedEntityAttributeLabel(trackedEntityAttributeLabel);
-        }
-
-        public abstract Builder displayTrackedEntityAttributeLabel(String displayTrackedEntityAttributeLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayProgramStageLabel(String displayProgramStageLabel))}
-         */
-        public Builder programStageLabel(String programStageLabel) {
-            return displayProgramStageLabel(programStageLabel);
-        }
-
-        public abstract Builder displayProgramStageLabel(String displayProgramStageLabel);
-
-        /**
-         * @deprecated replaced by {@link #displayEventLabel(String displayEventLabel))}
-         */
-        public Builder eventLabel(String eventLabel) {
-            return displayEventLabel(eventLabel);
-        }
-
-        public abstract Builder displayEventLabel(String displayEventLabel);
-
-        public abstract Builder attributeValues(List<AttributeValue> attributeValues);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract Program autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean captureCoordinates();
-
-        abstract FeatureType featureType();
-
-        abstract Access access();
-
-        abstract AccessLevel accessLevel();
-
-        abstract ObjectStyle style();
-
-        public abstract Builder enrollmentCategoryCombo(@NonNull ObjectWithUid enrollmentCategoryCombo);
-
-        abstract Builder categoryMappings(List<CategoryMapping> categoryMappings);
-
-        public Program build() {
-            if (featureType() == null) {
-                if (captureCoordinates() != null) {
-                    featureType(captureCoordinates() ? FeatureType.POINT : FeatureType.NONE);
-                }
-            } else {
-                captureCoordinates(featureType() != FeatureType.NONE);
-            }
-
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            if (accessLevel() == null) {
-                accessLevel(AccessLevel.OPEN);      // Since 2.30
-            }
-
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
+            .accessLevel(AccessLevel.OPEN)
+            .style(ObjectStyle())
     }
 }

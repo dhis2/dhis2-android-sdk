@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,93 +26,58 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.indicator
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Indicator(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val annualized: Boolean?,
+    val indicatorType: ObjectWithUid?,
+    val numerator: String?,
+    val numeratorDescription: String?,
+    val denominator: String?,
+    val denominatorDescription: String?,
+    val url: String?,
+    val decimals: Int?,
+    val legendSets: List<ObjectWithUid>?,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun annualized(): Boolean? = annualized
+    fun indicatorType(): ObjectWithUid? = indicatorType
+    fun numerator(): String? = numerator
+    fun numeratorDescription(): String? = numeratorDescription
+    fun denominator(): String? = denominator
+    fun denominatorDescription(): String? = denominatorDescription
+    fun url(): String? = url
+    fun decimals(): Int? = decimals
+    fun legendSets(): List<ObjectWithUid>? = legendSets
 
-import java.util.List;
+    fun toBuilder(): Builder = IndicatorBuilder.from(this)
 
-@AutoValue
-public abstract class Indicator extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    class Builder : IndicatorBuilder()
 
-    @Nullable
-    public abstract Boolean annualized();
-
-    @Nullable
-    public abstract ObjectWithUid indicatorType();
-
-    @Nullable
-    public abstract String numerator();
-
-    @Nullable
-    public abstract String numeratorDescription();
-
-    @Nullable
-    public abstract String denominator();
-
-    @Nullable
-    public abstract String denominatorDescription();
-
-    @Nullable
-    public abstract String url();
-
-    @Nullable
-    public abstract Integer decimals();
-
-    @Nullable
-    public abstract List<ObjectWithUid> legendSets();
-
-    public static Builder builder() {
-        return new AutoValue_Indicator.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder annualized(Boolean annualized);
-
-        public abstract Builder indicatorType(ObjectWithUid indicatorType);
-
-        public abstract Builder numerator(String numerator);
-
-        public abstract Builder numeratorDescription(String numeratorDescription);
-
-        public abstract Builder denominator(String denominator);
-
-        public abstract Builder denominatorDescription(String denominatorDescription);
-
-        public abstract Builder legendSets(List<ObjectWithUid> legendSets);
-
-        public abstract Builder url(String url);
-
-        public abstract Builder decimals(Integer decimals);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract Indicator autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-
-        public Indicator build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }

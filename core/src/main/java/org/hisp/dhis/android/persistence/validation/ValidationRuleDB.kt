@@ -64,14 +64,14 @@ internal data class ValidationRuleDB(
                     .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
                     .build(),
             )
-            organisationUnitLevels(organisationUnitLevels?.toDomain())
+            organisationUnitLevels?.let { organisationUnitLevels(it.toDomain()) }
         }.build()
     }
 }
 
 internal fun ValidationRule.toDB(): ValidationRuleDB {
     return ValidationRuleDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -92,6 +92,6 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
         rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = organisationUnitLevels()?.toDB(),
+        organisationUnitLevels = organisationUnitLevels().toDB(),
     )
 }

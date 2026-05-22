@@ -26,74 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramConfigurationSetting(
+    val uid: String?,
+    val completionSpinner: Boolean?,
+    val optionalSearch: Boolean?,
+    val disableReferrals: Boolean?,
+    val disableCollapsibleSections: Boolean?,
+    val itemHeader: ProgramItemHeader?,
+    val minimumLocationAccuracy: Int?,
+    val disableManualLocation: Boolean?,
+    val quickActions: List<QuickAction>?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun uid(): String? = uid
+    fun completionSpinner(): Boolean? = completionSpinner
+    fun optionalSearch(): Boolean? = optionalSearch
+    fun disableReferrals(): Boolean? = disableReferrals
+    fun disableCollapsibleSections(): Boolean? = disableCollapsibleSections
+    fun itemHeader(): ProgramItemHeader? = itemHeader
+    fun minimumLocationAccuracy(): Int? = minimumLocationAccuracy
+    fun disableManualLocation(): Boolean? = disableManualLocation
+    fun quickActions(): List<QuickAction>? = quickActions
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramConfigurationSettingBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramConfigurationSetting implements CoreObject, ObjectWithUidInterface {
+    class Builder : ProgramConfigurationSettingBuilder()
 
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract Boolean completionSpinner();
-
-    @Nullable
-    public abstract Boolean optionalSearch();
-
-    @Nullable
-    public abstract Boolean disableReferrals();
-
-    @Nullable
-    public abstract Boolean disableCollapsibleSections();
-
-    @Nullable
-    public abstract ProgramItemHeader itemHeader();
-
-    @Nullable
-    public abstract Integer minimumLocationAccuracy();
-
-    @Nullable
-    public abstract Boolean disableManualLocation();
-
-    @Nullable
-    public abstract List<QuickAction> quickActions();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramConfigurationSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder completionSpinner(Boolean completionSpinner);
-
-        public abstract Builder optionalSearch(Boolean optionalSearch);
-
-        public abstract Builder disableReferrals(Boolean disableReferrals);
-
-        public abstract Builder disableCollapsibleSections(Boolean disableCollapsibleSections);
-
-        public abstract Builder itemHeader(ProgramItemHeader itemHeader);
-
-        public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
-
-        public abstract Builder disableManualLocation(Boolean disableManualLocation);
-
-        public abstract Builder quickActions(List<QuickAction> quickActions);
-
-        public abstract ProgramConfigurationSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

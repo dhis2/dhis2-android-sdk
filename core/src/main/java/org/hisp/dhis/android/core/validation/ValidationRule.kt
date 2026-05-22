@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,63 +26,52 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ValidationRule(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val instruction: String?,
+    val importance: ValidationRuleImportance?,
+    val operator: ValidationRuleOperator?,
+    val periodType: PeriodType?,
+    val skipFormValidation: Boolean?,
+    val leftSide: ValidationRuleExpression,
+    val rightSide: ValidationRuleExpression,
+    val organisationUnitLevels: List<Int>,
+) : BaseNameableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.period.PeriodType;
+    fun instruction(): String? = instruction
+    fun importance(): ValidationRuleImportance? = importance
+    fun operator(): ValidationRuleOperator? = operator
+    fun periodType(): PeriodType? = periodType
+    fun skipFormValidation(): Boolean? = skipFormValidation
+    fun leftSide(): ValidationRuleExpression = leftSide
+    fun rightSide(): ValidationRuleExpression = rightSide
+    fun organisationUnitLevels(): List<Int> = organisationUnitLevels
 
-import java.util.List;
+    fun toBuilder(): Builder = ValidationRuleBuilder.from(this)
 
-@AutoValue
-public abstract class ValidationRule extends BaseNameableObAuVa implements CoreObject {
+    class Builder : ValidationRuleBuilder()
 
-    @Nullable
-    public abstract String instruction();
-
-    public abstract ValidationRuleImportance importance();
-
-    public abstract ValidationRuleOperator operator();
-
-    public abstract PeriodType periodType();
-
-    public abstract Boolean skipFormValidation();
-
-    public abstract ValidationRuleExpression leftSide();
-
-    public abstract ValidationRuleExpression rightSide();
-
-    public abstract List<Integer> organisationUnitLevels();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationRule.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-
-        public abstract Builder instruction(String instruction);
-
-        public abstract Builder importance(ValidationRuleImportance importance);
-
-        public abstract Builder operator(ValidationRuleOperator operator);
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder skipFormValidation(Boolean skipFormValidation);
-
-        public abstract Builder leftSide(ValidationRuleExpression leftSide);
-
-        public abstract Builder rightSide(ValidationRuleExpression rightSide);
-
-        public abstract Builder organisationUnitLevels(List<Integer> organisationUnitLevels);
-
-        public abstract ValidationRule build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -26,119 +26,61 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class GeneralSettings(
+    @Deprecated("Use SynchronizationSettings.dataSync() instead.")
+    internal val dataSync: DataSyncPeriod?,
+    val encryptDB: Boolean,
+    val lastUpdated: Date?,
+    @Deprecated("Use SynchronizationSettings.metadataSync() instead.")
+    internal val metadataSync: MetadataSyncPeriod?,
+    val reservedValues: Int?,
+    val smsGateway: String?,
+    val smsResultSender: String?,
+    val matomoID: Int?,
+    val matomoURL: String?,
+    val allowScreenCapture: Boolean?,
+    val messageOfTheDay: String?,
+    val experimentalFeatures: List<String>?,
+    val bypassDHIS2VersionCheck: Boolean?,
+) : CoreObject {
+    @Deprecated("Use SynchronizationSettings.dataSync() instead.")
+    fun dataSync(): DataSyncPeriod? = dataSync
+    fun encryptDB(): Boolean = encryptDB
+    fun lastUpdated(): Date? = lastUpdated
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    @Deprecated("Use SynchronizationSettings.metadataSync() instead.")
+    fun metadataSync(): MetadataSyncPeriod? = metadataSync
+    fun reservedValues(): Int? = reservedValues
 
-import java.util.Date;
-import java.util.List;
+    @Deprecated("Use smsGateway() instead.")
+    fun numberSmsToSend(): String? = smsGateway()
 
-@AutoValue
-public abstract class GeneralSettings implements CoreObject {
+    @Deprecated("Use smsResultSender() instead.")
+    fun numberSmsConfirmation(): String? = smsResultSender()
 
-    /**
-     * @deprecated Use {@link SynchronizationSettings#dataSync()} instead.
-     */
-    @Deprecated
-    @Nullable
-    public abstract DataSyncPeriod dataSync();
+    fun smsGateway(): String? = smsGateway
+    fun smsResultSender(): String? = smsResultSender
+    fun matomoID(): Int? = matomoID
+    fun matomoURL(): String? = matomoURL
+    fun allowScreenCapture(): Boolean? = allowScreenCapture
+    fun messageOfTheDay(): String? = messageOfTheDay
+    fun experimentalFeatures(): List<String>? = experimentalFeatures
+    fun bypassDHIS2VersionCheck(): Boolean? = bypassDHIS2VersionCheck
 
-    public abstract Boolean encryptDB();
+    fun toBuilder(): Builder = GeneralSettingsBuilder.from(this)
 
-    @Nullable
-    public abstract Date lastUpdated();
+    class Builder : GeneralSettingsBuilder()
 
-    /**
-     * @deprecated Use {@link SynchronizationSettings#metadataSync()} instead.
-     */
-    @Deprecated
-    @Nullable
-    public abstract MetadataSyncPeriod metadataSync();
-
-    @Nullable
-    public abstract Integer reservedValues();
-
-    /**
-     * @deprecated Use {@link #smsGateway()} instead.
-     */
-    @Deprecated
-    @Nullable
-    public String numberSmsToSend() {
-        return smsGateway();
-    }
-
-    /**
-     * @deprecated Use {@link #smsResultSender()} instead.
-     */
-    @Deprecated
-    @Nullable
-    public String numberSmsConfirmation() {
-        return smsResultSender();
-    }
-
-    @Nullable
-    public abstract String smsGateway();
-
-    @Nullable
-    public abstract String smsResultSender();
-
-    @Nullable
-    public abstract Integer matomoID();
-
-    @Nullable
-    public abstract String matomoURL();
-
-    @Nullable
-    public abstract Boolean allowScreenCapture();
-
-    @Nullable
-    public abstract String messageOfTheDay();
-
-    @Nullable
-    public abstract List<String> experimentalFeatures();
-
-    @Nullable
-    public abstract Boolean bypassDHIS2VersionCheck();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_GeneralSettings.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        @Deprecated
-        public abstract Builder dataSync(DataSyncPeriod dataSync);
-
-        public abstract Builder encryptDB(Boolean encryptDB);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        @Deprecated
-        public abstract Builder metadataSync(MetadataSyncPeriod metadataSync);
-
-        public abstract Builder reservedValues(Integer reservedValues);
-
-        public abstract Builder smsGateway(String smsGateway);
-
-        public abstract Builder smsResultSender(String smsGateway);
-
-        public abstract Builder matomoID(Integer matomoID);
-        public abstract Builder matomoURL(String matomoURL);
-
-        public abstract Builder allowScreenCapture(Boolean allowScreenCapture);
-
-        public abstract Builder messageOfTheDay(String messageOfTheDay);
-
-        public abstract Builder experimentalFeatures(List<String> experimentalFeatures);
-
-        public abstract Builder bypassDHIS2VersionCheck(Boolean bypassDHIS2VersionCheck);
-
-        public abstract GeneralSettings build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

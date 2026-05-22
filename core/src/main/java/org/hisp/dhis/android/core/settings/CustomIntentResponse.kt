@@ -26,28 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class CustomIntentResponse(
+    val data: CustomIntentResponseData?,
+) {
+    fun data(): CustomIntentResponseData? = data
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = CustomIntentResponseBuilder.from(this)
 
+    class Builder : CustomIntentResponseBuilder()
 
-@AutoValue
-public abstract class CustomIntentResponse {
-
-    @Nullable
-    public abstract CustomIntentResponseData data();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntentResponse.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder data(CustomIntentResponseData data);
-
-        public abstract CustomIntentResponse build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

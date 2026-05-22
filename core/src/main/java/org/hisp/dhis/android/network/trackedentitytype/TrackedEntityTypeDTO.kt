@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.trackedentitytype
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -63,8 +62,8 @@ internal data class TrackedEntityTypeDTO(
             applyBaseNameableFields(this@TrackedEntityTypeDTO)
             trackedEntityTypeAttributes?.let { trackedEntityTypeAttributes(it.map { it.toDomain() }) }
             featureType?.let { featureType(FeatureType.valueOf(it)) }
-            access?.let { access(it.toDomain()) } ?: defaultAccess()
-            style?.let { style(style.toDomain()) }
+            access?.let { access(it.toDomain()) }
+            style?.let { style(it.toDomain()) }
         }.build()
     }
 }

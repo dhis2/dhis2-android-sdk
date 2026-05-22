@@ -26,28 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class QuickAction(
+    val actionId: String,
+) {
 
-@AutoValue
-public abstract class QuickAction {
+    fun actionId(): String = actionId
 
-    @NonNull
-    public abstract String actionId();
+    fun toBuilder(): Builder = QuickActionBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : QuickActionBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_QuickAction.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder actionId(String uid);
-
-        public abstract QuickAction build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,176 +26,93 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.indicator.Indicator
+import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class DataSet(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    override val shortName: String?,
+    override val displayShortName: String?,
+    override val description: String?,
+    override val displayDescription: String?,
+    val periodType: PeriodType?,
+    val categoryCombo: ObjectWithUid,
+    val mobile: Boolean?,
+    val version: Int?,
+    val expiryDays: Double?,
+    val timelyDays: Double?,
+    val notifyCompletingUser: Boolean?,
+    val openFuturePeriods: Int?,
+    val fieldCombinationRequired: Boolean?,
+    val validCompleteOnly: Boolean?,
+    val noValueRequiresComment: Boolean?,
+    val skipOffline: Boolean?,
+    val dataElementDecoration: Boolean?,
+    val renderAsTabs: Boolean?,
+    val renderHorizontally: Boolean?,
+    val workflow: ObjectWithUid?,
+    val dataSetElements: List<DataSetElement>?,
+    val indicators: List<Indicator>?,
+    internal val sections: List<Section>?,
+    val compulsoryDataElementOperands: List<DataElementOperand>?,
+    val dataInputPeriods: List<DataInputPeriod>?,
+    val displayOptions: DataSetDisplayOptions?,
+    val access: Access,
+    override val style: ObjectStyle,
+) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseNameableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.indicator.Indicator;
-import org.hisp.dhis.android.core.period.PeriodType;
+    fun periodType(): PeriodType? = periodType
+    fun categoryCombo(): ObjectWithUid = categoryCombo
+    fun mobile(): Boolean? = mobile
+    fun version(): Int? = version
+    fun expiryDays(): Double? = expiryDays
+    fun timelyDays(): Double? = timelyDays
+    fun notifyCompletingUser(): Boolean? = notifyCompletingUser
+    fun openFuturePeriods(): Int? = openFuturePeriods
+    fun fieldCombinationRequired(): Boolean? = fieldCombinationRequired
+    fun validCompleteOnly(): Boolean? = validCompleteOnly
+    fun noValueRequiresComment(): Boolean? = noValueRequiresComment
+    fun skipOffline(): Boolean? = skipOffline
+    fun dataElementDecoration(): Boolean? = dataElementDecoration
+    fun renderAsTabs(): Boolean? = renderAsTabs
+    fun renderHorizontally(): Boolean? = renderHorizontally
+    fun workflow(): ObjectWithUid? = workflow
+    fun dataSetElements(): List<DataSetElement>? = dataSetElements
+    fun indicators(): List<Indicator>? = indicators
+    internal fun sections(): List<Section>? = sections
+    fun compulsoryDataElementOperands(): List<DataElementOperand>? = compulsoryDataElementOperands
+    fun dataInputPeriods(): List<DataInputPeriod>? = dataInputPeriods
+    fun displayOptions(): DataSetDisplayOptions? = displayOptions
+    fun access(): Access = access
 
-import java.util.List;
+    fun toBuilder(): Builder = DataSetBuilder.from(this)
 
-@AutoValue
-@SuppressWarnings({"PMD.GodClass", "PMD.ExcessivePublicCount"})
-public abstract class DataSet extends BaseNameableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    class Builder : DataSetBuilder()
 
-    @Nullable
-    public abstract PeriodType periodType();
-
-    @NonNull
-    public abstract ObjectWithUid categoryCombo();
-
-    @Nullable
-    public abstract Boolean mobile();
-
-    @Nullable
-    public abstract Integer version();
-
-    @Nullable
-    public abstract Double expiryDays();
-
-    @Nullable
-    public abstract Double timelyDays();
-
-    @Nullable
-    public abstract Boolean notifyCompletingUser();
-
-    @Nullable
-    public abstract Integer openFuturePeriods();
-
-    @Nullable
-    public abstract Boolean fieldCombinationRequired();
-
-    @Nullable
-    public abstract Boolean validCompleteOnly();
-
-    @Nullable
-    public abstract Boolean noValueRequiresComment();
-
-    @Nullable
-    public abstract Boolean skipOffline();
-
-    @Nullable
-    public abstract Boolean dataElementDecoration();
-
-    @Nullable
-    public abstract Boolean renderAsTabs();
-
-    @Nullable
-    public abstract Boolean renderHorizontally();
-
-    @Nullable
-    public abstract ObjectWithUid workflow();
-
-    @Nullable
-    public abstract List<DataSetElement> dataSetElements();
-
-    @Nullable
-    public abstract List<Indicator> indicators();
-
-    @Nullable
-    abstract List<Section> sections();
-
-    @Nullable
-    public abstract List<DataElementOperand> compulsoryDataElementOperands();
-
-    @Nullable
-    public abstract List<DataInputPeriod> dataInputPeriods();
-
-    @Nullable
-    public abstract DataSetDisplayOptions displayOptions();
-
-    public abstract Access access();
-
-    public static Builder builder() {
-        return new AutoValue_DataSet.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseNameableObAuVa.Builder<Builder> {
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder categoryCombo(@NonNull ObjectWithUid categoryCombo);
-
-        public abstract Builder mobile(Boolean mobile);
-
-        public abstract Builder version(Integer version);
-
-        public abstract Builder expiryDays(Double expiryDays);
-
-        public abstract Builder timelyDays(Double timelyDays);
-
-        public abstract Builder notifyCompletingUser(Boolean notifyCompletingUser);
-
-        public abstract Builder openFuturePeriods(Integer openFuturePeriods);
-
-        public abstract Builder fieldCombinationRequired(Boolean fieldCombinationRequired);
-
-        public abstract Builder validCompleteOnly(Boolean validCompleteOnly);
-
-        public abstract Builder noValueRequiresComment(Boolean noValueRequiresComment);
-
-        public abstract Builder skipOffline(Boolean skipOffline);
-
-        public abstract Builder dataElementDecoration(Boolean dataElementDecoration);
-
-        public abstract Builder renderAsTabs(Boolean renderAsTabs);
-
-        public abstract Builder renderHorizontally(Boolean renderHorizontally);
-
-        public abstract Builder workflow(ObjectWithUid workflow);
-
-        public abstract Builder dataSetElements(List<DataSetElement> dataSetElements);
-
-        public abstract Builder indicators(List<Indicator> indicators);
-
-        abstract Builder sections(List<Section> sections);
-
-        public abstract Builder compulsoryDataElementOperands(List<DataElementOperand> compulsoryDataElementOperands);
-
-        public abstract Builder dataInputPeriods(List<DataInputPeriod> dataInputPeriods);
-
-        public abstract Builder displayOptions(DataSetDisplayOptions displayOptions);
-
-        public abstract Builder access(Access access);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract DataSet autoBuild();
-
-        // Auxiliary fields
-        abstract Access access();
-
-        abstract ObjectStyle style();
-
-        public DataSet build() {
-            try {
-                access();
-            } catch (IllegalStateException e) {
-                access(AccessHelper.defaultAccess());
-            }
-
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .access(defaultAccess())
+            .style(ObjectStyle())
     }
 }

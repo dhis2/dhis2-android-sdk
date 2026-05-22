@@ -26,32 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import java.util.Collections;
-import java.util.List;
+@ModelBuilder
+data class AnalyticsTeiWHONutritionItem(
+    val dataElements: List<AnalyticsTeiDataElement>,
+    val indicators: List<AnalyticsTeiIndicator>,
+) {
 
-@AutoValue
-public abstract class AnalyticsTeiWHONutritionItem {
+    fun dataElements(): List<AnalyticsTeiDataElement> = dataElements
+    fun indicators(): List<AnalyticsTeiIndicator> = indicators
 
-    public abstract List<AnalyticsTeiDataElement> dataElements();
+    fun toBuilder(): Builder = AnalyticsTeiWHONutritionItemBuilder.from(this)
 
-    public abstract List<AnalyticsTeiIndicator> indicators();
+    class Builder : AnalyticsTeiWHONutritionItemBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiWHONutritionItem.Builder()
-                .dataElements(Collections.emptyList())
-                .indicators(Collections.emptyList());
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataElements(List<AnalyticsTeiDataElement> dataElements);
-
-        public abstract Builder indicators(List<AnalyticsTeiIndicator> indicators);
-
-        public abstract AnalyticsTeiWHONutritionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

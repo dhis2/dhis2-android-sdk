@@ -36,19 +36,24 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 internal object ServerUrlParser {
     @JvmStatic
-    @Suppress("ThrowsCount")
     @Throws(D2Error::class)
-    fun parse(url: String?): Url {
+    fun validate(url: String?) {
         when {
             url.isNullOrBlank() -> throw nullOrBlankUrlD2Error()
             !url.startsWith("http") -> throw malformedUrlD2Error()
-            else -> try {
-                val urlBuilder = URLBuilder(removeTrailingApi(url))
-                urlBuilder.encodedPathSegments += "api/"
-                return urlBuilder.build()
-            } catch (_: URLParserException) {
-                throw malformedUrlD2Error()
-            }
+        }
+    }
+
+    @JvmStatic
+    @Throws(D2Error::class)
+    fun parse(url: String?): Url {
+        validate(url)
+        return try {
+            val urlBuilder = URLBuilder(removeTrailingApi(url!!))
+            urlBuilder.encodedPathSegments += "api/"
+            urlBuilder.build()
+        } catch (_: URLParserException) {
+            throw malformedUrlD2Error()
         }
     }
 

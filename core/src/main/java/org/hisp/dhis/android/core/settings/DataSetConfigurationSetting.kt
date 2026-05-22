@@ -26,45 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataSetConfigurationSetting(
+    val uid: String?,
+    val minimumLocationAccuracy: Int?,
+    val disableManualLocation: Boolean?,
+) : CoreObject {
 
-import com.google.auto.value.AutoValue;
+    fun uid(): String? = uid
+    fun minimumLocationAccuracy(): Int? = minimumLocationAccuracy
+    fun disableManualLocation(): Boolean? = disableManualLocation
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun toBuilder(): Builder = DataSetConfigurationSettingBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetConfigurationSetting implements CoreObject, ObjectWithUidInterface {
+    class Builder : DataSetConfigurationSettingBuilder()
 
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract Integer minimumLocationAccuracy();
-
-    @Nullable
-    public abstract Boolean disableManualLocation();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetConfigurationSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder minimumLocationAccuracy(Integer minimumLocationAccuracy);
-
-        public abstract Builder disableManualLocation(Boolean disableManualLocation);
-
-        public abstract DataSetConfigurationSetting build();
-
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
 import org.koin.core.annotation.Singleton
 
@@ -52,15 +51,12 @@ internal class ProgramHandler(
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
     override suspend fun afterObjectHandled(o: Program, action: HandleAction) {
-        programTrackedEntityAttributeHandler.handleMany(
-            ProgramInternalAccessor
-                .accessProgramTrackedEntityAttributes(o),
-        )
-        programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(o))
-        programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(o))
+        programTrackedEntityAttributeHandler.handleMany(o.programTrackedEntityAttributes())
+        programRuleVariableHandler.handleMany(o.programRuleVariables())
+        programSectionHandler.handleMany(o.programSections())
         categoryMappingHandler.handleMany(
             o.uid(),
-            ProgramInternalAccessor.accessCategoryMappings(o),
+            o.categoryMappings(),
         ) { it }
 
         if (action === HandleAction.Update) {

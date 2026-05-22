@@ -80,7 +80,8 @@ class ModelBuilderProcessor(
             val baseClass = baseClasses.find { baseClass ->
                 symbol.getAllSuperTypes().any { it.declaration.simpleName.asString() == baseClass.name }
             }
-            val implementationClass = baseClass?.let { ": ${baseClass.builder}.Builder<$builderName> " } ?: ""
+            val implementationClass =
+                baseClass?.let { ": ${baseClass.builder}.Builder<$innerBuilderName> " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
             val visibilityModifier = if (symbol.modifiers.contains(Modifier.INTERNAL)) "internal " else ""
 
@@ -88,6 +89,7 @@ class ModelBuilderProcessor(
                 ClassField(
                     name = field.simpleName.asString(),
                     type = field.type.resolve(),
+                    isInternal = field.modifiers.contains(Modifier.INTERNAL),
                 )
             }
 
@@ -119,14 +121,16 @@ class ModelBuilderProcessor(
                 fields.joinToString("\n                ") { field ->
                     val name = field.name
                     val type = field.type.toString()
-                    val optOverride = if (overridenFields.contains(name)) "override " else ""
+                    val isOverride = overridenFields.contains(name)
+                    val optOverride = if (isOverride) "override " else ""
+                    val optInternal = if (field.isInternal && !isOverride) "internal " else ""
 
-                    "${optOverride}fun $name ($name: $type): $innerBuilderName = " +
+                    "${optInternal}${optOverride}fun $name ($name: $type): $innerBuilderName = " +
                             "this.also { this.$name = $name } as $innerBuilderName"
                 }
             }
                 
-                fun build(): $className {
+                open fun build(): $className {
                     return $className(
                         ${
                 fields.joinToString("\n                        ") { field ->
@@ -160,13 +164,14 @@ class ModelBuilderProcessor(
     }
 
     private fun getBuilderInternalProperty(field: ClassField): String {
-        val isPrimitive = listOf("Int", "Double", "Boolean").contains(field.type.toString())
+        val isPrimitive = listOf("Int", "Long", "Short", "Byte", "Char", "Float", "Double", "Boolean")
+            .contains(field.type.toString())
         val isNotNull = !field.type.isMarkedNullable
 
         return when {
-            isNotNull && isPrimitive -> "private var ${field.name} by Delegates.notNull<${field.type}>()"
-            isNotNull -> "private lateinit var ${field.name}: ${field.type}"
-            else -> "private var ${field.name}: ${field.type} = null"
+            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<${field.type}>()"
+            isNotNull -> "protected lateinit var ${field.name}: ${field.type}"
+            else -> "protected var ${field.name}: ${field.type} = null"
         }
     }
 
@@ -202,4 +207,5 @@ data class BaseClass(
 data class ClassField(
     val name: String,
     val type: KSType,
+    val isInternal: Boolean = false,
 )

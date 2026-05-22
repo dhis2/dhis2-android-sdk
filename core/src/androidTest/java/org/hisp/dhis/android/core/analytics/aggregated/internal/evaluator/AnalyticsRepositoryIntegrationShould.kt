@@ -74,6 +74,17 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods[2]).isEqualTo("201911")
     }
 
+    fun evaluate_program_indicator() {
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("GSae40Fyppf"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+            .blockingEvaluate()
+            .getOrThrow()
+
+        val value = result.values.firstOrNull()?.value
+        assertThat(value).isEqualTo("0.0")
+    }
+
     @Test
     fun remove_duplicate_periods() {
         val result = d2.analyticsModule().analytics()

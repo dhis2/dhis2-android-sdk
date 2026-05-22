@@ -26,67 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIntent(
+    override val uid: String,
+    val name: String?,
+    val trigger: CustomIntentTrigger?,
+    val action: List<CustomIntentActionType>?,
+    val packageName: String?,
+    val request: CustomIntentRequest?,
+    val response: CustomIntentResponse?,
+) : ObjectWithUidInterfaceKt, CoreObject {
+    fun name(): String? = name
+    fun trigger(): CustomIntentTrigger? = trigger
+    fun action(): List<CustomIntentActionType>? = action
+    fun packageName(): String? = packageName
+    fun request(): CustomIntentRequest? = request
+    fun response(): CustomIntentResponse? = response
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun toBuilder(): Builder = CustomIntentBuilder.from(this)
 
-import java.util.List;
+    class Builder : CustomIntentBuilder()
 
-@AutoValue
-public abstract class CustomIntent implements ObjectWithUidInterface, CoreObject {
-
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract CustomIntentTrigger trigger();
-
-    @Nullable
-    public abstract List<CustomIntentActionType> action();
-
-    @Nullable
-    public abstract String packageName();
-
-    @Nullable
-    public abstract CustomIntentRequest request();
-
-    @Nullable
-    public abstract CustomIntentResponse response();
-
-    public abstract Builder toBuilder();
-
-
-    public static Builder builder() {
-        return new AutoValue_CustomIntent.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String intentUid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder trigger(CustomIntentTrigger trigger);
-
-        public abstract Builder action(List<CustomIntentActionType> action);
-
-        public abstract Builder packageName(String packageName);
-
-        public abstract Builder request(CustomIntentRequest request);
-
-        public abstract Builder response(CustomIntentResponse response);
-
-        public abstract CustomIntent build();
-    }
-
 }

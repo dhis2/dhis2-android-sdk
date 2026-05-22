@@ -26,35 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CompletionSpinnerSetting(
+    val globalSettings: CompletionSpinner?,
+    val specificSettings: Map<String, CompletionSpinner>?,
+) {
 
-import java.util.Map;
+    fun globalSettings(): CompletionSpinner? = globalSettings
+    fun specificSettings(): Map<String, CompletionSpinner>? = specificSettings
 
-@AutoValue
-public abstract class CompletionSpinnerSetting {
+    fun toBuilder(): Builder = CompletionSpinnerSettingBuilder.from(this)
 
-    @Nullable
-    public abstract CompletionSpinner globalSettings();
+    class Builder : CompletionSpinnerSettingBuilder()
 
-    @Nullable
-    public abstract Map<String, CompletionSpinner> specificSettings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CompletionSpinnerSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder globalSettings(CompletionSpinner globalSettings);
-
-        public abstract Builder specificSettings(Map<String, CompletionSpinner> specificSettings);
-
-        public abstract CompletionSpinnerSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

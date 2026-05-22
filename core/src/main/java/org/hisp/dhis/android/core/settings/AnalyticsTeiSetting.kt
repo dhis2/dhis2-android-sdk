@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,68 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings;
+package org.hisp.dhis.android.core.settings
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.period.PeriodType
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AnalyticsTeiSetting(
+    val uid: String,
+    val name: String,
+    val shortName: String,
+    val program: String,
+    val programStage: String?,
+    val period: PeriodType?,
+    val type: ChartType,
+    val data: AnalyticsTeiData?,
+    val whoNutritionData: AnalyticsTeiWHONutritionData?,
+) : CoreObject, ObjectWithUidInterface {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-import org.hisp.dhis.android.core.period.PeriodType;
+    override fun uid(): String = uid
+    fun name(): String = name
+    fun shortName(): String = shortName
+    fun program(): String = program
+    fun programStage(): String? = programStage
+    fun period(): PeriodType? = period
+    fun type(): ChartType = type
+    fun data(): AnalyticsTeiData? = data
+    fun whoNutritionData(): AnalyticsTeiWHONutritionData? = whoNutritionData
 
-@AutoValue
-public abstract class AnalyticsTeiSetting implements CoreObject, ObjectWithUidInterface {
+    fun toBuilder(): Builder = AnalyticsTeiSettingBuilder.from(this)
 
-    public abstract String uid();
+    class Builder : AnalyticsTeiSettingBuilder()
 
-    public abstract String name();
-
-    public abstract String shortName();
-
-    public abstract String program();
-
-    @Nullable
-    public abstract String programStage();
-
-    @Nullable
-    public abstract PeriodType period();
-
-    public abstract ChartType type();
-
-    @Nullable
-    public abstract AnalyticsTeiData data();
-
-    @Nullable
-    public abstract AnalyticsTeiWHONutritionData whoNutritionData();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsTeiSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder shortName(String shortName);
-
-        public abstract Builder program(String program);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder period(PeriodType period);
-
-        public abstract Builder type(ChartType type);
-
-        public abstract Builder data(AnalyticsTeiData data);
-
-        public abstract Builder whoNutritionData(AnalyticsTeiWHONutritionData whoNutritionData);
-
-        public abstract AnalyticsTeiSetting build();
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

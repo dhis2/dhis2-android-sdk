@@ -157,6 +157,7 @@ internal class ProgramIndicatorSQLExecutor(
         val categoryItems = evaluationItem.allDimensionItems
             .filterIsInstance<DimensionItem.CategoryItem>()
         if (categoryItems.isEmpty()) return "1"
+        val categoryItemsByCategory = categoryItems.groupBy { (it.dimension as Dimension.Category).uid }
 
         val mappingIds = programIndicator.categoryMappingIds().orEmpty()
         val programUid = programIndicator.program()?.uid()
@@ -165,18 +166,20 @@ internal class ProgramIndicatorSQLExecutor(
         val filtersByCategoryAndOption = categoryOptionMappingStore
             .selectFiltersForProgram(programUid, mappingIds)
 
-        val filterFragments = categoryItems.map { item ->
-            val categoryUid = (item.dimension as Dimension.Category).uid
-            val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
-                ?: return@map "0"
+        val categoryFragments = categoryItemsByCategory.map { (categoryUid, items) ->
+            val itemFragments = items.map { item ->
+                val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
+                    ?: return@map "0"
 
-            when (filter.trim()) {
-                "true", "1", "" -> "1"
-                else -> "(${CommonParser.visit(filter, sqlVisitor)})"
+                when (filter.trim()) {
+                    "true", "1", "" -> "1"
+                    else -> "(${CommonParser.visit(filter, sqlVisitor)})"
+                }
             }
+            itemFragments.joinToString(" OR ", prefix = "(", postfix = ")")
         }
 
-        return filterFragments.joinToString(" AND ")
+        return categoryFragments.joinToString(" AND ")
     }
 
     private suspend fun constantMap(): Map<String, Constant> {

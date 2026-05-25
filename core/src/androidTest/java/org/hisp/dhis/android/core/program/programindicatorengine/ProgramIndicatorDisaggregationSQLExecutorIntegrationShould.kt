@@ -81,7 +81,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
     }
 
     @Test
-    fun should_filter_event_count_by_category_option_filter() = runTest {
+    fun should_filter_event_count_by_category_option_disaggregation() = runTest {
         seedEvents(values = listOf("10", "10", "20"))
 
         seedCategoryMapping(
@@ -109,6 +109,35 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         )
         assertThat(countForOption1).isEqualTo("2")
         assertThat(countForOption2).isEqualTo("1")
+    }
+
+    @Test
+    fun should_filter_event_count_by_category_option_as_filters() = runTest {
+        seedEvents(values = listOf("10", "10", "20"))
+
+        seedCategoryMapping(
+            listOf(
+                categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+                categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+            ),
+        )
+
+        val pi = buildDisaggregatedProgramIndicator(
+            expression = `var`("event_count"),
+            aggregationType = AggregationType.COUNT,
+        )
+
+        // Baseline: without disaggregation the COUNT returns every event.
+        assertThat(evaluate(pi)).isEqualTo("3")
+
+        val countForOption1 = evaluate(
+            pi,
+            extraFilters = listOf(
+                DimensionItem.CategoryItem(category.uid(), categoryOption1.uid()),
+                DimensionItem.CategoryItem(category.uid(), categoryOption2.uid()),
+            ),
+        )
+        assertThat(countForOption1).isEqualTo("3")
     }
 
     @Test
@@ -223,10 +252,11 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
     private suspend fun evaluate(
         pi: ProgramIndicator,
         extraDimensions: List<DimensionItem.CategoryItem> = emptyList(),
+        extraFilters: List<DimensionItem.CategoryItem> = emptyList(),
     ): String? {
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(DimensionItem.DataItem.ProgramIndicatorItem(pi.uid())) + extraDimensions,
-            filters = listOf(DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)),
+            filters = listOf(DimensionItem.PeriodItem.Absolute(period201911.periodId()!!)) + extraFilters,
         )
         return programIndicatorEvaluator.getProgramIndicatorValue(
             evaluationItem = evaluationItem,

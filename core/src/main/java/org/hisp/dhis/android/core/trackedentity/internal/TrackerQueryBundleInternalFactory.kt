@@ -98,16 +98,20 @@ internal class TrackerQueryBundleInternalFactory(
         val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters, finalWorkingLists)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
-        val builder = TrackerQueryBundle.builder()
-            .commonParams(commonParamsWithHash)
-            .programStatus(programStatus)
-            .programStageWorkingLists(finalWorkingLists)
-            .trackedEntityInstanceFilters(finalFilters)
-
-        return commonHelper.divideByOrgUnits(
+        val orgUnitBundles = commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
             commonParams.hasLimitByOrgUnit,
-        ) { builder.orgUnits(it).build() }
+        )
+
+        return orgUnitBundles.map { orgUnits ->
+            TrackerQueryBundle(
+                commonParams = commonParamsWithHash,
+                orgUnits = orgUnits,
+                programStatus = programStatus,
+                trackedEntityInstanceFilters = finalFilters,
+                programStageWorkingLists = finalWorkingLists,
+            )
+        }
     }
 
     @Suppress("ReturnCount")

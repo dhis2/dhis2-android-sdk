@@ -25,37 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
-
-@AutoValue
-public abstract class SMSOngoingSubmission implements CoreObject {
-
-    @NonNull
-    public abstract Integer submissionId();
-
-    @NonNull
-    public abstract SubmissionType type();
-
-    public static Builder builder() {
-        return new AutoValue_SMSOngoingSubmission.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder submissionId(Integer submissionId);
-
-        public abstract Builder type(SubmissionType type);
-
-        public abstract SMSOngoingSubmission build();
-    }
-}
+internal data class TrackerQueryBundle(
+    override val commonParams: TrackerQueryCommonParams,
+    override val orgUnits: List<String>,
+    val programStatus: EnrollmentStatus?,
+    val trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?,
+    val programStageWorkingLists: List<ProgramStageWorkingList>?,
+) : BaseTrackerQueryBundle

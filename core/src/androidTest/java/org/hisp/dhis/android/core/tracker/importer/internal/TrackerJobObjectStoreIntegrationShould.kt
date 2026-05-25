@@ -36,19 +36,20 @@ import org.hisp.dhis.android.persistence.tracker.TrackerJobObjectTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class TrackerJobObjectStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
-    TrackerJobObjectStoreImpl(TestDatabaseAdapterFactory.get()),
-    TrackerJobObjectTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
-) {
+internal class TrackerJobObjectStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<TrackerJobObject>(
+        TrackerJobObjectStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackerJobObjectTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
     override fun buildObject(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()
     }
 
     override fun buildObjectToUpdate(): TrackerJobObject {
         return TrackerJobObjectSamples.get1()
-            .toBuilder()
-            .fileResources(listOf("file_resource_uid"))
-            .build()
+            .copy(
+                fileResources = listOf("file_resource_uid"),
+            )
     }
 }

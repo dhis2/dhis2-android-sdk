@@ -138,9 +138,9 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
-        assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
-        assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        assertThat(query.commonParams().program).isNull()
+        assertThat(query.orgUnits).isEqualTo(rootOrgUnits)
+        assertThat(query.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(query.commonParams.program).isNull()
     }
 
     @Test
@@ -153,9 +153,9 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
-                assertThat(query.commonParams().startDate).isNotNull()
+            if (query.commonParams.program != null) {
+                assertThat(query.commonParams.program).isEqualTo(p1)
+                assertThat(query.commonParams.startDate).isNotNull()
             }
         }
     }
@@ -166,8 +166,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
-            assertThat(query.commonParams().program).isEqualTo(p1)
-            assertThat(query.commonParams().limit).isEqualTo(5000)
+            assertThat(query.commonParams.program).isEqualTo(p1)
+            assertThat(query.commonParams.limit).isEqualTo(5000)
         }
     }
 
@@ -178,8 +178,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.programStageWorkingLists()?.size).isEqualTo(1)
-        assertThat(query.programStageWorkingLists()?.first()).isEqualTo(w1)
+        assertThat(query.programStageWorkingLists?.size).isEqualTo(1)
+        assertThat(query.programStageWorkingLists?.first()).isEqualTo(w1)
     }
 
     @Test
@@ -189,8 +189,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.trackedEntityInstanceFilters()?.size).isEqualTo(1)
-        assertThat(query.trackedEntityInstanceFilters()?.first()).isEqualTo(f1)
+        assertThat(query.trackedEntityInstanceFilters?.size).isEqualTo(1)
+        assertThat(query.trackedEntityInstanceFilters?.first()).isEqualTo(f1)
     }
 
     @Test
@@ -203,11 +203,11 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
-                assertThat(query.commonParams().limit).isEqualTo(100)
+            if (query.commonParams.program != null) {
+                assertThat(query.commonParams.program).isEqualTo(p1)
+                assertThat(query.commonParams.limit).isEqualTo(100)
             } else {
-                assertThat(query.commonParams().limit).isEqualTo(4800)
+                assertThat(query.commonParams.limit).isEqualTo(4800)
             }
         }
     }

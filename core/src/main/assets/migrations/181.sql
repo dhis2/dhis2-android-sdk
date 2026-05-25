@@ -43,3 +43,14 @@ ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
 CREATE TABLE AnalyticsDhisVisualization (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT NOT NULL, groupUid TEXT NOT NULL, groupName TEXT NOT NULL, timestamp TEXT, name TEXT, type TEXT NOT NULL);
 INSERT INTO AnalyticsDhisVisualization(_id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT _id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
 DROP TABLE IF EXISTS AnalyticsDhisVisualization_Old;
+
+# SMSOngoingSubmission: make type non-null (ANDROSDK-2295)
+
+# Remove rows with null type
+DELETE FROM SMSOngoingSubmission WHERE type IS NULL;
+
+# Recreate table with type as NOT NULL
+ALTER TABLE SMSOngoingSubmission RENAME TO SMSOngoingSubmission_Old;
+CREATE TABLE SMSOngoingSubmission(submissionId INTEGER NOT NULL, type TEXT NOT NULL, PRIMARY KEY(submissionId));
+INSERT INTO SMSOngoingSubmission(submissionId, type) SELECT submissionId, type FROM SMSOngoingSubmission_Old;
+DROP TABLE IF EXISTS SMSOngoingSubmission_Old;

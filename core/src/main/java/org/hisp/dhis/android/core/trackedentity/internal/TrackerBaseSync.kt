@@ -25,23 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+interface TrackerBaseSync : CoreObject {
+    val program: String?
+    val organisationUnitIdsHash: Int
+    val downloadLimit: Int
+    val workingListsHash: Int?
+    val lastUpdated: Date
 
-@AutoValue
-public abstract class TrackedEntityInstanceSync implements TrackerBaseSync {
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceSync.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
-
-        public abstract TrackedEntityInstanceSync build();
-    }
+    fun program(): String? = program
+    fun organisationUnitIdsHash(): Int = organisationUnitIdsHash
+    fun downloadLimit(): Int = downloadLimit
+    fun workingListsHash(): Int? = workingListsHash
+    fun lastUpdated(): Date = lastUpdated
 }

@@ -38,11 +38,11 @@ internal class TrackedEntityInstanceLastUpdatedManager(
 
     suspend fun update(trackerQuery: TrackerQueryBundle) {
         val sync = TrackedEntityInstanceSync.builder()
-            .program(trackerQuery.commonParams().program)
-            .organisationUnitIdsHash(trackerQuery.orgUnits().toSet().hashCode())
-            .downloadLimit(trackerQuery.commonParams().limit)
-            .workingListsHash(trackerQuery.commonParams().workingListsHash)
-            .lastUpdated(resourceHandler.serverDate)
+            .program(trackerQuery.commonParams.program)
+            .organisationUnitIdsHash(trackerQuery.orgUnits.toSet().hashCode())
+            .downloadLimit(trackerQuery.commonParams.limit)
+            .workingListsHash(trackerQuery.commonParams.workingListsHash)
+            .lastUpdated(resourceHandler.serverDate!!)
             .build()
         super.update(sync)
     }

@@ -80,15 +80,17 @@ internal class EventQueryBundleInternalFactory(
         val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
-        val builder = EventQueryBundle.builder()
-            .eventFilters(finalFilters)
-            .commonParams(commonParamsWithHash)
-
-        return commonHelper.divideByOrgUnits(
+        val orgUnitBundles = commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
             commonParams.hasLimitByOrgUnit,
-        ) {
-            builder.orgUnits(it).build()
+        )
+
+        return orgUnitBundles.map { orgUnits ->
+            EventQueryBundle(
+                commonParams = commonParamsWithHash,
+                orgUnits = orgUnits,
+                eventFilters = finalFilters,
+            )
         }
     }
 }

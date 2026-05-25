@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityInstanceSync(
+    override val program: String?,
+    override val organisationUnitIdsHash: Int,
+    override val downloadLimit: Int,
+    override val workingListsHash: Int?,
+    override val lastUpdated: Date,
+) : TrackerBaseSync {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = TrackedEntityInstanceSyncBuilder.from(this)
 
-@AutoValue
-public abstract class SectionIndicatorLink implements CoreObject {
+    class Builder : TrackedEntityInstanceSyncBuilder()
 
-    @Nullable
-    public abstract String section();
-
-    @Nullable
-    public abstract String indicator();
-
-    public static Builder builder() {
-        return new AutoValue_SectionIndicatorLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder section(@Nullable String section);
-
-        public abstract Builder indicator(@Nullable String indicator);
-
-        public abstract SectionIndicatorLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

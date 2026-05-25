@@ -17287,13 +17287,6 @@ public final class org/hisp/dhis/android/core/user/UserGroupBuilder$Companion {
 public final class org/hisp/dhis/android/core/user/UserGroupCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
 }
 
-public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/user/UserInternalAccessor;
-	public static final fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static final fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public final fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-}
-
 public abstract interface class org/hisp/dhis/android/core/user/UserModule {
 	public abstract fun accountManager ()Lorg/hisp/dhis/android/core/user/AccountManager;
 	public abstract fun authenticatedUser ()Lorg/hisp/dhis/android/core/user/AuthenticatedUserObjectRepository;
@@ -17483,11 +17476,6 @@ public final class org/hisp/dhis/android/core/user/UserRoleBuilder$Companion {
 }
 
 public final class org/hisp/dhis/android/core/user/UserRoleCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
-}
-
-public final class org/hisp/dhis/android/core/user/internal/UserOrganisationUnitLinkHelper {
-	public static fun isRoot (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
-	public static fun userIsAssigned (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Config {

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,79 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.user.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
+import org.hisp.dhis.android.core.user.User
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.User;
-import org.hisp.dhis.android.core.user.UserInternalAccessor;
+internal object UserOrganisationUnitLinkHelper {
 
-import java.util.List;
-import java.util.Set;
-
-import static org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree.findRoots;
-
-public final class UserOrganisationUnitLinkHelper {
-
-    private UserOrganisationUnitLinkHelper() {
+    @JvmStatic
+    fun userIsAssigned(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val assignedOrgUnitUids = UidsHelper.getUids(selectedScopeOrganisationUnits)
+        return assignedOrgUnitUids.contains(organisationUnit.uid())
     }
 
-    public static boolean userIsAssigned(
-            OrganisationUnit.Scope scope,
-            User user,
-            OrganisationUnit organisationUnit
-    ) {
-
-        List<OrganisationUnit> selectedScopeOrganisationUnits = null;
-
-        switch (scope) {
-            case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
-                break;
-
-            case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
-                break;
-
-            default:
-                break;
-        }
-
-        if (selectedScopeOrganisationUnits == null) {
-            return false;
-        } else {
-            Set<String> assignedOrgUnitUids = UidsHelper.getUids(selectedScopeOrganisationUnits);
-            return assignedOrgUnitUids.contains(organisationUnit.uid());
-        }
+    @JvmStatic
+    fun isRoot(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val rootOrgUnitUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(selectedScopeOrganisationUnits))
+        return rootOrgUnitUids.contains(organisationUnit.uid())
     }
 
-    public static boolean isRoot(@NonNull OrganisationUnit.Scope scope,
-                                 @NonNull User user,
-                                 @NonNull OrganisationUnit organisationUnit) {
-
-        List<OrganisationUnit> selectedScopeOrganisationUnits = null;
-
-        switch (scope) {
-
-            case SCOPE_TEI_SEARCH:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessTeiSearchOrganisationUnits(user);
-                break;
-
-            case SCOPE_DATA_CAPTURE:
-                selectedScopeOrganisationUnits = UserInternalAccessor.accessOrganisationUnits(user);
-                break;
-
-            default:
-                break;
-        }
-
-        if (selectedScopeOrganisationUnits == null) {
-            return false;
-        } else {
-            Set<String> rootOrgUnitUids = UidsHelper.getUids(findRoots(selectedScopeOrganisationUnits));
-            return rootOrgUnitUids.contains(organisationUnit.uid());
+    private fun selectScope(scope: OrganisationUnit.Scope, user: User): List<OrganisationUnit>? {
+        return when (scope) {
+            OrganisationUnit.Scope.SCOPE_TEI_SEARCH -> user.teiSearchOrganisationUnits
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE -> user.organisationUnits
         }
     }
 }

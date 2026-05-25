@@ -103,7 +103,7 @@ internal class RoomMultiUserDatabaseManager(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
-        authorizationType: AuthorizationType
+        authorizationType: AuthorizationType,
     ) {
         removeExceedingAccounts()
         val userConfiguration =

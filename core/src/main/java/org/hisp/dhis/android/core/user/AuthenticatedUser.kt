@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class AuthenticatedUser(
+    val user: String?,
+    val hash: String?,
+) : CoreObject {
+    fun user(): String? = user
+    fun hash(): String? = hash
 
-@AutoValue
-public abstract class UserRole extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = AuthenticatedUserBuilder.from(this)
 
-    public static Builder builder() {
-        return new AutoValue_UserRole.Builder();
-    }
+    class Builder : AuthenticatedUserBuilder()
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserRole build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

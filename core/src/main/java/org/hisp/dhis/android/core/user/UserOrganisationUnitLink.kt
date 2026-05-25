@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class UserOrganisationUnitLink(
+    val user: String,
+    val organisationUnit: String,
+    val organisationUnitScope: String,
+    val root: Boolean,
+    val userAssigned: Boolean,
+) : CoreObject {
+    fun user(): String = user
+    fun organisationUnit(): String = organisationUnit
+    fun organisationUnitScope(): String = organisationUnitScope
+    fun root(): Boolean = root
+    fun userAssigned(): Boolean = userAssigned
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = UserOrganisationUnitLinkBuilder.from(this)
 
-@AutoValue
-public abstract class Authority implements CoreObject {
+    class Builder : UserOrganisationUnitLinkBuilder()
 
-    @NonNull
-    public abstract String name();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Authority.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder name(@NonNull String name);
-
-        public abstract Authority build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

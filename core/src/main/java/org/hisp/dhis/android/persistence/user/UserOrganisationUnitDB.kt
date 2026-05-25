@@ -28,13 +28,13 @@ internal data class UserOrganisationUnitDB(
 ) : EntityDB<UserOrganisationUnitLink> {
 
     override fun toDomain(): UserOrganisationUnitLink {
-        return UserOrganisationUnitLink.builder()
-            .user(user)
-            .organisationUnit(organisationUnit)
-            .organisationUnitScope(organisationUnitScope)
-            .root(root)
-            .userAssigned(userAssigned)
-            .build()
+        return UserOrganisationUnitLink.builder().apply {
+            user(user)
+            organisationUnit(organisationUnit)
+            organisationUnitScope(organisationUnitScope)
+            root?.let { root(it) }
+            userAssigned?.let { userAssigned(it) }
+        }.build()
     }
 }
 

@@ -37,7 +37,7 @@ object UserInternalAccessor {
 
     fun insertOrganisationUnits(
         builder: User.Builder,
-        organisationUnits: List<OrganisationUnit?>?,
+        organisationUnits: List<OrganisationUnit>?,
     ): User.Builder {
         return builder.organisationUnits(organisationUnits)
     }

@@ -25,34 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.oauth2
+
+package org.hisp.dhis.android.network.loginconfig
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
-data class OAuth2State(
-    @SerialName("client_id") val clientId: String,
-    @SerialName("key_id") val keyId: String,
-    @SerialName("access_token") val accessToken: String?,
-    @SerialName("refresh_token") val refreshToken: String?,
-    @SerialName("expires_at") val expiresAt: Long,
-    @SerialName("scope") val scope: String?,
+internal data class OauthTokenConfigDTO(
     @SerialName("token_endpoint") val tokenEndpoint: String,
-) {
-    @Suppress("MagicNumber")
-    fun needsTokenRefresh(): Boolean {
-        val currentTime = System.currentTimeMillis().div(1000)
-        return (currentTime + BUFFER) >= expiresAt
-    }
-
-    fun jsonSerializeString(): String = Json.encodeToString(serializer(), this)
-
-    companion object {
-        private const val BUFFER = 60
-
-        fun jsonDeserialize(json: String): OAuth2State =
-            Json.decodeFromString(serializer(), json)
-    }
-}
+)

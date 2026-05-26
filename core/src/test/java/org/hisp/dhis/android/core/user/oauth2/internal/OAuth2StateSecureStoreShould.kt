@@ -45,6 +45,7 @@ class OAuth2StateSecureStoreShould {
         refreshToken = "refresh-A",
         expiresAt = 1_700_000_000L,
         scope = "openid",
+        tokenEndpoint = "https://dhis-instance.org/oauth/token",
     )
 
     private val stateB = OAuth2State(
@@ -54,6 +55,8 @@ class OAuth2StateSecureStoreShould {
         refreshToken = "refresh-B",
         expiresAt = 1_800_000_000L,
         scope = null,
+        tokenEndpoint = "https://dhis-instance.org/oauth/token",
+
     )
 
     @Before

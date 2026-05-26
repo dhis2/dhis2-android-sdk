@@ -329,6 +329,7 @@ class LogInCallUnitShould : BaseCallShould() {
             refreshToken = "refresh",
             expiresAt = 1_700_000_000L,
             scope = null,
+            tokenEndpoint = "https://dhis-instance.org/oauth/token",
         )
 
     companion object {

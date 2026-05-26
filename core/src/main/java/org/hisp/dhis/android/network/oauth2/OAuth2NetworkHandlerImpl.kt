@@ -38,6 +38,7 @@ import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2NetworkHandler
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
+import org.hisp.dhis.android.network.loginconfig.LoginConfigService
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -48,6 +49,7 @@ internal class OAuth2NetworkHandlerImpl(
 ) : OAuth2NetworkHandler {
 
     private val service = OAuth2Service(httpClient)
+    private val configService = LoginConfigService(httpClient)
 
     override fun buildAuthorizationUrl(
         serverUrl: String,
@@ -77,10 +79,12 @@ internal class OAuth2NetworkHandlerImpl(
         clientId: String,
         codeVerifier: String,
         clientAssertion: String,
+        oauthConfigPath: String,
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
+            val oauthConfig = configService.getOauthTokenConfigFor(url, oauthConfigPath)
             val response = service.exchangeCodeForToken(
-                url = url,
+                endpoint = oauthConfig.tokenEndpoint,
                 grantType = "authorization_code",
                 code = code,
                 redirectUri = redirectUri,
@@ -96,12 +100,13 @@ internal class OAuth2NetworkHandlerImpl(
                 refreshToken = response.refreshToken,
                 expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
                 scope = response.scope,
+                tokenEndpoint = oauthConfig.tokenEndpoint,
             )
         }
     }
 
     override suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         refreshToken: String,
         clientId: String,
         keyId: String,
@@ -109,7 +114,7 @@ internal class OAuth2NetworkHandlerImpl(
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val response = service.refreshToken(
-                url = url,
+                endpoint = endpoint,
                 grantType = "refresh_token",
                 refreshToken = refreshToken,
                 clientId = clientId,
@@ -123,6 +128,7 @@ internal class OAuth2NetworkHandlerImpl(
                 refreshToken = response.refreshToken ?: refreshToken,
                 expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
                 scope = response.scope,
+                tokenEndpoint = endpoint,
             )
         }
     }

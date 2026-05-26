@@ -17121,15 +17121,16 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler$DefaultI
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public static final field Companion Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()J
 	public final fun component6 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessToken ()Ljava/lang/String;
 	public final fun getClientId ()Ljava/lang/String;
@@ -17137,6 +17138,7 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public final fun getKeyId ()Ljava/lang/String;
 	public final fun getRefreshToken ()Ljava/lang/String;
 	public final fun getScope ()Ljava/lang/String;
+	public final fun getTokenEndpoint ()Ljava/lang/String;
 	public fun hashCode ()I
 	public final fun jsonSerializeString ()Ljava/lang/String;
 	public final fun needsTokenRefresh ()Z

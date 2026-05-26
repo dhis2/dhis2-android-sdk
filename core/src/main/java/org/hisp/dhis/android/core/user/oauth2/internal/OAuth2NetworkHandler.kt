@@ -48,10 +48,11 @@ internal interface OAuth2NetworkHandler {
         clientId: String,
         codeVerifier: String,
         clientAssertion: String,
+        oauthConfigPath: String = "/.well-known/oauth-authorization-server#/",
     ): Result<OAuth2State, D2Error>
 
     suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         refreshToken: String,
         clientId: String,
         keyId: String,

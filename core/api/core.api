@@ -2973,28 +2973,6 @@ public final class org/hisp/dhis/android/core/arch/storage/internal/ChunkedSecur
 	public fun setData (Ljava/lang/String;Ljava/lang/String;)V
 }
 
-public final class org/hisp/dhis/android/core/arch/storage/internal/Credentials {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun authorizationType ()Lorg/hisp/dhis/android/core/common/AuthorizationType;
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Lnet/openid/appauth/AuthState;
-	public final fun component5 ()Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;)Lorg/hisp/dhis/android/core/arch/storage/internal/Credentials;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/storage/internal/Credentials;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/storage/internal/Credentials;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getHash ()Ljava/lang/String;
-	public final fun getOauth2State ()Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
-	public final fun getOpenIDConnectState ()Lnet/openid/appauth/AuthState;
-	public final fun getPassword ()Ljava/lang/String;
-	public final fun getServerUrl ()Ljava/lang/String;
-	public final fun getUsername ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface class org/hisp/dhis/android/core/arch/storage/internal/InsecureStore : org/hisp/dhis/android/core/arch/storage/internal/KeyValueStore {
 }
 

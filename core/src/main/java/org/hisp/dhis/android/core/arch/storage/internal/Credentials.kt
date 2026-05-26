@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-data class Credentials(
+internal data class Credentials(
     val username: String,
     val serverUrl: String,
     val password: String?,
@@ -40,7 +40,7 @@ data class Credentials(
     val oauth2State: OAuth2State? = null,
 ) {
 
-    fun authorizationType(): AuthorizationType = when {
+    val authorizationType: AuthorizationType = when {
         openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
         oauth2State != null -> AuthorizationType.OAUTH2
         else -> AuthorizationType.BASIC

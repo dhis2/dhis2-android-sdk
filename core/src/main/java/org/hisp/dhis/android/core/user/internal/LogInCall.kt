@@ -154,7 +154,7 @@ internal class LogInCall(
         loginDatabaseManager.loadDatabaseOnline(
             credentials.serverUrl,
             credentials.username,
-            credentials.authorizationType(),
+            credentials.authorizationType,
         )
 
         return coroutineAPICallExecutor.wrapTransactionallyRoom {

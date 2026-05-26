@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-object UserInternalAccessor {
-    @JvmStatic
-    fun accessOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.organisationUnits()
-    }
+@ModelBuilder
+data class UserCredentials(
+    val username: String?,
+    val name: String?,
+    val displayName: String?,
+    val userRoles: List<UserRole>?,
+) {
+    fun username(): String? = username
+    fun name(): String? = name
+    fun displayName(): String? = displayName
+    fun userRoles(): List<UserRole>? = userRoles
 
-    fun insertOrganisationUnits(
-        builder: User.Builder,
-        organisationUnits: List<OrganisationUnit?>?,
-    ): User.Builder {
-        return builder.organisationUnits(organisationUnits)
-    }
+    fun toBuilder(): Builder = UserCredentialsBuilder.from(this)
 
-    @JvmStatic
-    fun accessTeiSearchOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.teiSearchOrganisationUnits()
+    class Builder : UserCredentialsBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

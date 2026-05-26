@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Authority(
+    val name: String,
+) : CoreObject {
+    fun name(): String = name
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = AuthorityBuilder.from(this)
 
-@AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
+    class Builder : AuthorityBuilder()
 
-    @Nullable
-    public abstract String user();
-
-    @Nullable
-    public abstract String hash();
-
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -23,18 +23,18 @@ internal data class UserOrganisationUnitDB(
     val user: String,
     val organisationUnit: String,
     @ParentColumn val organisationUnitScope: String,
-    val root: Boolean?,
-    val userAssigned: Boolean?,
+    val root: Boolean,
+    val userAssigned: Boolean,
 ) : EntityDB<UserOrganisationUnitLink> {
 
     override fun toDomain(): UserOrganisationUnitLink {
-        return UserOrganisationUnitLink.builder().apply {
-            user(user)
-            organisationUnit(organisationUnit)
-            organisationUnitScope(organisationUnitScope)
-            root?.let { root(it) }
-            userAssigned?.let { userAssigned(it) }
-        }.build()
+        return UserOrganisationUnitLink.builder()
+            .user(user)
+            .organisationUnit(organisationUnit)
+            .organisationUnitScope(organisationUnitScope)
+            .root(root)
+            .userAssigned(userAssigned)
+            .build()
     }
 }
 

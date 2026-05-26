@@ -2976,6 +2976,7 @@ public final class org/hisp/dhis/android/core/arch/storage/internal/ChunkedSecur
 public final class org/hisp/dhis/android/core/arch/storage/internal/Credentials {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lnet/openid/appauth/AuthState;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun authorizationType ()Lorg/hisp/dhis/android/core/common/AuthorizationType;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;

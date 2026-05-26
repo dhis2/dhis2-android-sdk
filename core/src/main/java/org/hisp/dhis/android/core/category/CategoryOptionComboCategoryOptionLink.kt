@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CategoryOptionComboCategoryOptionLink(
+    val categoryOptionCombo: String,
+    val categoryOption: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun categoryOptionCombo(): String = categoryOptionCombo
+    fun categoryOption(): String = categoryOption
 
-@AutoValue
-public abstract class CategoryOptionComboCategoryOptionLink implements CoreObject {
+    fun toBuilder(): Builder = CategoryOptionComboCategoryOptionLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String categoryOptionCombo();
+    class Builder : CategoryOptionComboCategoryOptionLinkBuilder()
 
-    @Nullable
-    public abstract String categoryOption();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionComboCategoryOptionLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder categoryOptionCombo(@Nullable String categoryOptionCombo);
-
-        public abstract Builder categoryOption(@Nullable String categoryOption);
-
-        public abstract CategoryOptionComboCategoryOptionLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Category(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val dataDimensionType: String?,
+    val categoryOptions: List<CategoryOption>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun dataDimensionType(): String? = dataDimensionType
+    fun categoryOptions(): List<CategoryOption>? = categoryOptions
 
-import java.util.List;
+    fun toBuilder(): Builder = CategoryBuilder.from(this)
 
-@AutoValue
-public abstract class Category extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : CategoryBuilder()
 
-    @Nullable
-    public abstract String dataDimensionType();
-
-    @Nullable
-    public abstract List<CategoryOption> categoryOptions();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Category.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder categoryOptions(@Nullable List<CategoryOption> categoryOptions);
-
-        public abstract Builder dataDimensionType(String dimensionType);
-
-        public abstract Category build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

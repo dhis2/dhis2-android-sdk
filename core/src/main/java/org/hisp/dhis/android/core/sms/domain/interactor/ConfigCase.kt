@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
  * Used to set initial data that is common for all sms sending tasks
  */
 @Suppress("TooManyFunctions")
-class ConfigCase(
+class ConfigCase internal constructor(
     private val webApiRepository: WebApiRepository,
     private val localDbRepository: LocalDbRepository,
 ) {

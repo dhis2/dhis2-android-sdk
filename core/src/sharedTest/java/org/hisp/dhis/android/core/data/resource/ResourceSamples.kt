@@ -25,65 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.resource
 
-package org.hisp.dhis.android.core.domain.aggregated.data.internal;
+import org.hisp.dhis.android.core.resource.internal.Resource
+import org.hisp.dhis.android.core.util.toJavaDate
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.period.PeriodType;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class AggregatedDataSync implements CoreObject {
-
-    public static Builder builder() {
-        return new AutoValue_AggregatedDataSync.Builder();
-    }
-
-    @NonNull
-    public abstract String dataSet();
-
-    @NonNull
-    public abstract PeriodType periodType();
-
-    @NonNull
-    public abstract Integer pastPeriods();
-
-    @NonNull
-    public abstract Integer futurePeriods();
-
-    @NonNull
-    public abstract Integer dataElementsHash();
-
-    @NonNull
-    public abstract Integer organisationUnitsHash();
-
-    @NonNull
-    public abstract Date lastUpdated();
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(String dataSet);
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder pastPeriods(Integer pastPeriods);
-
-        public abstract Builder futurePeriods(Integer futurePeriods);
-
-        public abstract Builder dataElementsHash(Integer dataElementsHash);
-
-        public abstract Builder organisationUnitsHash(Integer organisationUnitHash);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract AggregatedDataSync build();
-    }
+object ResourceSamples {
+    internal val resource = Resource(
+        resourceType = Resource.Type.PROGRAM,
+        lastSynced = "2017-11-29T11:27:46.935".toJavaDate(),
+    )
 }

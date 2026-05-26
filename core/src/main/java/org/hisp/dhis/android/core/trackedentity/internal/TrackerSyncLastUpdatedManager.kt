@@ -69,7 +69,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
         workingListsHash: Int?,
     ): Date? {
         val orgUnitHashCode = organisationUnits.toSet().hashCode()
-        return if (params.uids().isEmpty()) {
+        return if (params.uids.isEmpty()) {
             val programSync = syncMap[Triple(programId, orgUnitHashCode, workingListsHash)]
             val globalSync = syncMap[Triple(null, orgUnitHashCode, workingListsHash)]
 

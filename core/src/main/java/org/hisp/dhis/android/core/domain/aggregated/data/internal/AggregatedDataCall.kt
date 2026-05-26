@@ -137,12 +137,12 @@ internal class AggregatedDataCall(
             aggregatedDataSyncStore.updateOrInsertWhere(
                 AggregatedDataSync.builder()
                     .dataSet(dataSet.uid())
-                    .periodType(dataSet.periodType())
+                    .periodType(dataSet.periodType()!!)
                     .pastPeriods(bundle.key.pastPeriods)
-                    .futurePeriods(dataSet.openFuturePeriods())
+                    .futurePeriods(dataSet.openFuturePeriods() ?: 0)
                     .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                     .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
-                    .lastUpdated(resourceHandler.serverDate)
+                    .lastUpdated(resourceHandler.serverDate!!)
                     .build(),
             )
         }

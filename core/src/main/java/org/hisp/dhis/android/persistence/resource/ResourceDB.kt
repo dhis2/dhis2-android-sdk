@@ -15,16 +15,16 @@ internal data class ResourceDB(
 ) : EntityDB<Resource> {
 
     override fun toDomain(): Resource {
-        return Resource.builder()
-            .resourceType(resourceType.let { Resource.Type.valueOf(it) })
-            .lastSynced(lastSynced.toJavaDate())
-            .build()
+        return Resource(
+            resourceType = resourceType.let { Resource.Type.valueOf(it) },
+            lastSynced = lastSynced.toJavaDate(),
+        )
     }
 }
 
 internal fun Resource.toDB(): ResourceDB {
     return ResourceDB(
-        resourceType = resourceType()?.name!!,
-        lastSynced = lastSynced().dateFormat(),
+        resourceType = resourceType?.name!!,
+        lastSynced = lastSynced.dateFormat(),
     )
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,54 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.period.PeriodType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AggregatedDataSync(
+    val dataSet: String,
+    val periodType: PeriodType,
+    val pastPeriods: Int,
+    val futurePeriods: Int,
+    val dataElementsHash: Int,
+    val organisationUnitsHash: Int,
+    val lastUpdated: Date,
+) : CoreObject {
+    fun dataSet(): String = dataSet
+    fun periodType(): PeriodType = periodType
+    fun pastPeriods(): Int = pastPeriods
+    fun futurePeriods(): Int = futurePeriods
+    fun dataElementsHash(): Int = dataElementsHash
+    fun organisationUnitsHash(): Int = organisationUnitsHash
+    fun lastUpdated(): Date = lastUpdated
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = AggregatedDataSyncBuilder.from(this)
 
-import java.util.Date;
+    class Builder : AggregatedDataSyncBuilder()
 
-@AutoValue
-public abstract class Resource implements CoreObject {
-
-    public enum Type {
-        EVENT,
-        SYSTEM_INFO,
-        ORGANISATION_UNIT,
-        PROGRAM,
-        OPTION_SET,
-        TRACKED_ENTITY_TYPE,
-        DATA_SET,
-        DATA_ELEMENT,
-        CATEGORY_COMBO,
-        INDICATOR_TYPE,
-        INDICATOR,
-        PROGRAM_STAGE,
-        RELATIONSHIP_TYPE,
-        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
-    }
-
-    @Nullable
-    public abstract Resource.Type resourceType();
-
-    @Nullable
-    public abstract Date lastSynced();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Resource.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder resourceType(Resource.Type resourceType);
-
-        public abstract Builder lastSynced(Date lastSynced);
-
-        public abstract Resource build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

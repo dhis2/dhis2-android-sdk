@@ -79,26 +79,26 @@ class EventDownloader internal constructor(
     }
 
     fun byUid(): ListFilterConnector<EventDownloader, String> =
-        connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
+        connectorFactory.listConnector { uids -> params.copy(uids = uids) }
 
     fun byProgramUid(programUid: String): EventDownloader =
         connectorFactory.eqConnector<String> { programUid ->
-            params.toBuilder().program(programUid).build()
+            params.copy(program = programUid)
         }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): EventDownloader =
         connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
-            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+            params.copy(limitByOrgunit = limitByOrgunit)
         }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): EventDownloader =
         connectorFactory.eqConnector<Boolean> { limitByProgram ->
-            params.toBuilder().limitByProgram(limitByProgram).build()
+            params.copy(limitByProgram = limitByProgram)
         }.eq(limitByProgram)
 
     fun limit(limit: Int): EventDownloader =
         connectorFactory.eqConnector<Int> { limit ->
-            params.toBuilder().limit(limit).build()
+            params.copy(limit = limit)
         }.eq(limit)
 
     fun byFilterUid(): ListFilterConnector<EventDownloader, String> {
@@ -107,12 +107,12 @@ class EventDownloader internal constructor(
                 .byUid().`in`(filterUids)
                 .withEventDataFilters()
                 .blockingGet()
-            params.toBuilder().eventFilters(eventFilters).build()
+            params.copy(eventFilters = eventFilters)
         }
     }
 
     fun byEventFilter(): ListFilterConnector<EventDownloader, EventFilter> =
         connectorFactory.listConnector { eventFilters ->
-            params.toBuilder().eventFilters(eventFilters).build()
+            params.copy(eventFilters = eventFilters)
         }
 }

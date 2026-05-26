@@ -41,7 +41,7 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
         return CategoryOptionOrganisationUnitLink.builder()
             .categoryOption(categoryOption)
             .organisationUnit(organisationUnit)
-            .restriction(restriction)
+            .restriction(restriction!!)
             .build()
     }
 }

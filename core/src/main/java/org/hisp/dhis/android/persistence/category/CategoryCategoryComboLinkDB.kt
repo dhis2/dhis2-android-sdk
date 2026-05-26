@@ -43,8 +43,8 @@ internal data class CategoryCategoryComboLinkDB(
 
 internal fun CategoryCategoryComboLink.toDB(): CategoryCategoryComboLinkDB {
     return CategoryCategoryComboLinkDB(
-        category = category()!!,
-        categoryCombo = categoryCombo()!!,
+        category = category(),
+        categoryCombo = categoryCombo(),
         sortOrder = sortOrder(),
     )
 }

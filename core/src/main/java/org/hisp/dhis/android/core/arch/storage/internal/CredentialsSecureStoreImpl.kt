@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 

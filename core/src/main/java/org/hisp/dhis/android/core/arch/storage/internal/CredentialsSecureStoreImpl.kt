@@ -55,12 +55,6 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         return secureStore.getData(SERVER_URL_KEY)
     }
 
-    override fun getAuthorizationType(): AuthorizationType = when {
-        credentials?.openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
-        credentials?.oauth2State != null -> AuthorizationType.OAUTH2
-        else -> AuthorizationType.BASIC
-    }
-
     override fun get(): Credentials? {
         if (credentials == null) {
             credentials = tryGet()

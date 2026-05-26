@@ -174,7 +174,7 @@ internal class DatabaseImportExportImpl(
             serverUrl = userConfiguration.serverUrl(),
             username = userConfiguration.username(),
             encrypted = userConfiguration.encrypted(),
-            authorizationType = credentialsStore.getAuthorizationType(),
+            authorizationType = credentials.authorizationType(),
         )
 
         exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {

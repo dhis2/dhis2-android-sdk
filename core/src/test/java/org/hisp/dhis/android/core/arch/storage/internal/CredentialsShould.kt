@@ -31,14 +31,11 @@ import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
-import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
-class CredentialsSecureStoreImplShould {
+class CredentialsShould {
 
-    private val secureStore: ChunkedSecureStore = mock()
     private val openIDConnectState: AuthState = mock()
     private val oauth2State = OAuth2State(
         clientId = "client",
@@ -49,40 +46,27 @@ class CredentialsSecureStoreImplShould {
         scope = null,
     )
 
-    private lateinit var store: CredentialsSecureStoreImpl
-
-    @Before
-    fun setUp() {
-        whenever(openIDConnectState.jsonSerializeString()).thenReturn("{'key:value'}")
-        store = CredentialsSecureStoreImpl(secureStore)
+    @Test
+    fun return_basic_when_no_sso_state() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null)
+        assertThat(credentials.authorizationType()).isEqualTo(AuthorizationType.BASIC)
     }
 
     @Test
-    fun return_basic_when_no_credentials_set() {
-        assertThat(store.getAuthorizationType()).isEqualTo(AuthorizationType.BASIC)
+    fun return_open_id_connect_when_open_id_connect_state() {
+        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, null)
+        assertThat(credentials.authorizationType()).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 
     @Test
-    fun return_basic_when_credentials_have_no_sso_state() {
-        store.set(Credentials("user", "https://dhis2.org", "password", null, null))
-        assertThat(store.getAuthorizationType()).isEqualTo(AuthorizationType.BASIC)
+    fun return_oauth2_when_oauth2_state() {
+        val credentials = Credentials("user", "https://dhis2.org", null, null, oauth2State)
+        assertThat(credentials.authorizationType()).isEqualTo(AuthorizationType.OAUTH2)
     }
 
     @Test
-    fun return_open_id_connect_when_credentials_have_open_id_connect_state() {
-        store.set(Credentials("user", "https://dhis2.org", null, openIDConnectState, null))
-        assertThat(store.getAuthorizationType()).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
-    }
-
-    @Test
-    fun return_oauth2_when_credentials_have_oauth2_state() {
-        store.set(Credentials("user", "https://dhis2.org", null, null, oauth2State))
-        assertThat(store.getAuthorizationType()).isEqualTo(AuthorizationType.OAUTH2)
-    }
-
-    @Test
-    fun return_open_id_connect_when_credentials_have_both_sso_states() {
-        store.set(Credentials("user", "https://dhis2.org", null, openIDConnectState, oauth2State))
-        assertThat(store.getAuthorizationType()).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+    fun return_open_id_connect_when_both_sso_states() {
+        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, oauth2State)
+        assertThat(credentials.authorizationType()).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 }

@@ -54,3 +54,14 @@ ALTER TABLE SMSOngoingSubmission RENAME TO SMSOngoingSubmission_Old;
 CREATE TABLE SMSOngoingSubmission(submissionId INTEGER NOT NULL, type TEXT NOT NULL, PRIMARY KEY(submissionId));
 INSERT INTO SMSOngoingSubmission(submissionId, type) SELECT submissionId, type FROM SMSOngoingSubmission_Old;
 DROP TABLE IF EXISTS SMSOngoingSubmission_Old;
+
+# CategoryOptionOrganisationUnitLink: make restriction non-null (ANDROSDK-2308)
+
+# Remove rows with null restriction
+DELETE FROM CategoryOptionOrganisationUnitLink WHERE restriction IS NULL;
+
+# Recreate table with restriction as NOT NULL
+ALTER TABLE CategoryOptionOrganisationUnitLink RENAME TO CategoryOptionOrganisationUnitLink_Old;
+CREATE TABLE CategoryOptionOrganisationUnitLink(_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT NOT NULL, FOREIGN KEY(categoryOption) REFERENCES CategoryOption(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO CategoryOptionOrganisationUnitLink(_id, categoryOption, organisationUnit, restriction) SELECT _id, categoryOption, organisationUnit, restriction FROM CategoryOptionOrganisationUnitLink_Old;
+DROP TABLE IF EXISTS CategoryOptionOrganisationUnitLink_Old;

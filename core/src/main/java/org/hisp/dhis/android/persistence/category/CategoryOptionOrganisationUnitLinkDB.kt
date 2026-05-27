@@ -34,14 +34,14 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
     val id: Int = 0,
     @ParentColumn val categoryOption: String,
     val organisationUnit: String?,
-    val restriction: String?,
+    val restriction: String,
 ) : EntityDB<CategoryOptionOrganisationUnitLink> {
 
     override fun toDomain(): CategoryOptionOrganisationUnitLink {
         return CategoryOptionOrganisationUnitLink.builder()
             .categoryOption(categoryOption)
             .organisationUnit(organisationUnit)
-            .restriction(restriction!!)
+            .restriction(restriction)
             .build()
     }
 }

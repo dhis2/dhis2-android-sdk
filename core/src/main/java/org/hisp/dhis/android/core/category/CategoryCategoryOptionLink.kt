@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CategoryCategoryOptionLink(
+    val category: String,
+    val categoryOption: String,
+    val sortOrder: Int?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun category(): String = category
+    fun categoryOption(): String = categoryOption
+    fun sortOrder(): Int? = sortOrder
 
-@AutoValue
-public abstract class CategoryCategoryOptionLink implements CoreObject {
+    fun toBuilder(): Builder = CategoryCategoryOptionLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String category();
+    class Builder : CategoryCategoryOptionLinkBuilder()
 
-    @Nullable
-    public abstract String categoryOption();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryCategoryOptionLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder category(@Nullable String category);
-
-        public abstract Builder categoryOption(@Nullable String categoryOption);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract CategoryCategoryOptionLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

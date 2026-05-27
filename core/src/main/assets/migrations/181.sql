@@ -65,3 +65,14 @@ ALTER TABLE UserOrganisationUnit RENAME TO UserOrganisationUnit_Old;
 CREATE TABLE UserOrganisationUnit(user TEXT NOT NULL, organisationUnit TEXT NOT NULL, organisationUnitScope TEXT NOT NULL, root INTEGER NOT NULL, userAssigned INTEGER NOT NULL, PRIMARY KEY(organisationUnitScope, user, organisationUnit), FOREIGN KEY(user) REFERENCES User(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO UserOrganisationUnit(user, organisationUnit, organisationUnitScope, root, userAssigned) SELECT user, organisationUnit, organisationUnitScope, root, userAssigned FROM UserOrganisationUnit_Old;
 DROP TABLE IF EXISTS UserOrganisationUnit_Old;
+
+# CategoryOptionOrganisationUnitLink: make restriction non-null (ANDROSDK-2308)
+
+# Remove rows with null restriction
+DELETE FROM CategoryOptionOrganisationUnitLink WHERE restriction IS NULL;
+
+# Recreate table with restriction as NOT NULL
+ALTER TABLE CategoryOptionOrganisationUnitLink RENAME TO CategoryOptionOrganisationUnitLink_Old;
+CREATE TABLE CategoryOptionOrganisationUnitLink(_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT NOT NULL, FOREIGN KEY(categoryOption) REFERENCES CategoryOption(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO CategoryOptionOrganisationUnitLink(_id, categoryOption, organisationUnit, restriction) SELECT _id, categoryOption, organisationUnit, restriction FROM CategoryOptionOrganisationUnitLink_Old;
+DROP TABLE IF EXISTS CategoryOptionOrganisationUnitLink_Old;

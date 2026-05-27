@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CategoryOptionOrganisationUnitLink(
+    val categoryOption: String,
+    val organisationUnit: String?,
+    val restriction: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun categoryOption(): String = categoryOption
+    fun organisationUnit(): String? = organisationUnit
+    fun restriction(): String = restriction
 
-@AutoValue
-public abstract class CategoryOptionOrganisationUnitLink implements CoreObject {
+    fun toBuilder(): Builder = CategoryOptionOrganisationUnitLinkBuilder.from(this)
 
-    @NonNull
-    public abstract String categoryOption();
+    class Builder : CategoryOptionOrganisationUnitLinkBuilder()
 
-    @Nullable
-    public abstract String organisationUnit();
-
-    public abstract String restriction();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionOrganisationUnitLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder categoryOption(String categoryOption);
-
-        public abstract Builder organisationUnit(@Nullable String organisationUnit);
-
-        public abstract Builder restriction(String restriction);
-
-        public abstract CategoryOptionOrganisationUnitLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

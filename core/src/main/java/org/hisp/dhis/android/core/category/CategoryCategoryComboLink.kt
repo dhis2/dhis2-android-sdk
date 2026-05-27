@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,48 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CategoryCategoryComboLink(
+    val category: String,
+    val categoryCombo: String,
+    val sortOrder: Int?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun category(): String = category
+    fun categoryCombo(): String = categoryCombo
+    fun sortOrder(): Int? = sortOrder
 
-import java.util.List;
+    fun toBuilder(): Builder = CategoryCategoryComboLinkBuilder.from(this)
 
-@AutoValue
-public abstract class CategoryCombo extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : CategoryCategoryComboLinkBuilder()
 
-    @Nullable
-    public abstract Boolean isDefault();
-
-    @Nullable
-    public abstract List<Category> categories();
-
-    @Nullable
-    abstract List<CategoryOptionCombo> categoryOptionCombos();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryCombo.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder isDefault(Boolean isDefault);
-
-        public abstract Builder categories(List<Category> categories);
-
-        public abstract Builder categoryOptionCombos(List<CategoryOptionCombo> categoryOptionCombos);
-
-        public abstract List<Category> categories();
-
-        abstract List<CategoryOptionCombo> categoryOptionCombos();
-
-        public abstract CategoryCombo build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.category;
+package org.hisp.dhis.android.core.category
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CategoryCombo(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val isDefault: Boolean?,
+    val categories: List<Category>?,
+    internal val categoryOptionCombos: List<CategoryOptionCombo>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun categories(): List<Category>? = categories
+    internal fun categoryOptionCombos(): List<CategoryOptionCombo>? = categoryOptionCombos
 
-@AutoValue
-public abstract class CategoryCategoryComboLink implements CoreObject {
+    fun toBuilder(): Builder = CategoryComboBuilder.from(this)
 
-    @Nullable
-    public abstract String category();
+    class Builder : CategoryComboBuilder()
 
-    @Nullable
-    public abstract String categoryCombo();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryCategoryComboLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder category(@Nullable String category);
-
-        public abstract Builder categoryCombo(@Nullable String combo);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract CategoryCategoryComboLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

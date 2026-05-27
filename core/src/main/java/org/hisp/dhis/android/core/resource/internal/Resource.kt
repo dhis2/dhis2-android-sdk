@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,31 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.domain.model.internal;
+package org.hisp.dhis.android.core.resource.internal
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
-
-import java.util.Collection;
-
-@AutoValue
-public abstract class SMSDataValueSet {
-
-    public abstract Collection<DataValue> dataValues();
-
-    public abstract Boolean completed();
-
-    public static Builder builder() {
-        return new AutoValue_SMSDataValueSet.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataValues(Collection<DataValue> dataValues);
-
-        public abstract Builder completed(Boolean completed);
-
-        public abstract SMSDataValueSet build();
+internal data class Resource(
+    val resourceType: Type?,
+    val lastSynced: Date?,
+) : CoreObject {
+    enum class Type {
+        EVENT,
+        SYSTEM_INFO,
+        ORGANISATION_UNIT,
+        PROGRAM,
+        OPTION_SET,
+        TRACKED_ENTITY_TYPE,
+        DATA_SET,
+        DATA_ELEMENT,
+        CATEGORY_COMBO,
+        INDICATOR_TYPE,
+        INDICATOR,
+        PROGRAM_STAGE,
+        RELATIONSHIP_TYPE,
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,
     }
 }

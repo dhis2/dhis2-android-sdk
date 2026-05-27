@@ -93,7 +93,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.LatestAppVersion
@@ -195,7 +194,6 @@ internal val domainClasses = listOf(
     RelationshipConstraint::class.java,
     RelationshipItem::class.java,
     RelationshipType::class.java,
-    Resource::class.java,
     ReservedValueSetting::class.java,
     Section::class.java,
     SectionDataElementLink::class.java,

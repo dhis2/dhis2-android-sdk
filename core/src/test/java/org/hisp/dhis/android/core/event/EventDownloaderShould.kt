@@ -59,7 +59,7 @@ class EventDownloaderShould {
 
     @Before
     fun setUp() {
-        params = ProgramDataDownloadParams.builder().build()
+        params = ProgramDataDownloadParams()
         downloader = EventDownloader(call, params, eventFilterCollectionRepository)
 
         whenever(eventFilterCollectionRepository.byUid()).thenReturn(connectorEvent)
@@ -80,8 +80,8 @@ class EventDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.uids().size).isEqualTo(1)
-        assertThat(params.uids()[0]).isEqualTo("uid")
+        assertThat(params.uids.size).isEqualTo(1)
+        assertThat(params.uids[0]).isEqualTo("uid")
     }
 
     @Test
@@ -91,10 +91,10 @@ class EventDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.uids().size).isEqualTo(3)
-        assertThat(params.uids()[0]).isEqualTo("uid0")
-        assertThat(params.uids()[1]).isEqualTo("uid1")
-        assertThat(params.uids()[2]).isEqualTo("uid2")
+        assertThat(params.uids.size).isEqualTo(3)
+        assertThat(params.uids[0]).isEqualTo("uid0")
+        assertThat(params.uids[1]).isEqualTo("uid1")
+        assertThat(params.uids[2]).isEqualTo("uid2")
     }
 
     @Test
@@ -104,8 +104,8 @@ class EventDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.eventFilters()?.size).isEqualTo(1)
-        assertThat(params.eventFilters()?.get(0)?.uid()).isEqualTo(filterUid)
+        assertThat(params.eventFilters?.size).isEqualTo(1)
+        assertThat(params.eventFilters?.get(0)?.uid()).isEqualTo(filterUid)
     }
 
     @Test
@@ -115,10 +115,10 @@ class EventDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.eventFilters()?.size).isEqualTo(3)
-        assertThat(params.eventFilters()?.get(0)?.uid()).isEqualTo("filterUid0")
-        assertThat(params.eventFilters()?.get(1)?.uid()).isEqualTo("filterUid1")
-        assertThat(params.eventFilters()?.get(2)?.uid()).isEqualTo("filterUid2")
+        assertThat(params.eventFilters?.size).isEqualTo(3)
+        assertThat(params.eventFilters?.get(0)?.uid()).isEqualTo("filterUid0")
+        assertThat(params.eventFilters?.get(1)?.uid()).isEqualTo("filterUid1")
+        assertThat(params.eventFilters?.get(2)?.uid()).isEqualTo("filterUid2")
     }
 
     @Test
@@ -129,6 +129,6 @@ class EventDownloaderShould {
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
 
-        assertThat(params.eventFilters()).isEqualTo(listOf(eventFilter))
+        assertThat(params.eventFilters).isEqualTo(listOf(eventFilter))
     }
 }

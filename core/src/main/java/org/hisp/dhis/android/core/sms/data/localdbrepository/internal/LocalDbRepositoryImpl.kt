@@ -299,10 +299,10 @@ internal class LocalDbRepositoryImpl(
             val values = dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
             val isCompleted = isDataValueSetCompleted(dataset, orgUnit, period, attributeOptionComboUid)
 
-            SMSDataValueSet.builder()
-                .dataValues(values)
-                .completed(isCompleted)
-                .build()
+            SMSDataValueSet(
+                dataValues = values,
+                completed = isCompleted,
+            )
         }
     }
 

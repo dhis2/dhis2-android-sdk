@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.smscompression.models.SMSMetadata
 import java.util.Date
 
-class MockLocalDbRepository : LocalDbRepository {
+internal class MockLocalDbRepository : LocalDbRepository {
     private var gatewayNumber: String? = "525525"
     private var confirmationSenderNumber: String? = null
     private var resultWaitingTimeout = RESULT_WAITING_TIMEOUT_DEFAULT

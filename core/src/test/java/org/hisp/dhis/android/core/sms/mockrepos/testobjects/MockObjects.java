@@ -205,17 +205,11 @@ public class MockObjects {
     }
 
     public static SMSDataValueSet getSMSDataValueSet() {
-        return SMSDataValueSet.builder()
-                .dataValues(getDataValues())
-                .completed(isCompleted)
-                .build();
+        return new SMSDataValueSet(getDataValues(), isCompleted);
     }
 
     public static SMSDataValueSet getSMSDataValueSetEmptyList() {
-        return SMSDataValueSet.builder()
-                .dataValues(Collections.emptyList())
-                .completed(isCompleted)
-                .build();
+        return new SMSDataValueSet(Collections.emptyList(), isCompleted);
     }
 
     public static ArrayList<DataValue> getDataValues() {

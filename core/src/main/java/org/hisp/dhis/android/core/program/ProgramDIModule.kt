@@ -38,5 +38,5 @@ import org.koin.core.annotation.Module
 internal class ProgramDIModule {
 
     @Factory
-    fun programDataDownloadParams(): ProgramDataDownloadParams = ProgramDataDownloadParams.builder().build()
+    fun programDataDownloadParams(): ProgramDataDownloadParams = ProgramDataDownloadParams()
 }

@@ -7034,29 +7034,79 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun dataElementsHash ()Ljava/lang/Integer;
-	public abstract fun dataSet ()Ljava/lang/String;
-	public abstract fun futurePeriods ()Ljava/lang/Integer;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun organisationUnitsHash ()Ljava/lang/Integer;
-	public abstract fun pastPeriods ()Ljava/lang/Integer;
-	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;IIIILjava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()I
+	public final fun component7 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;IIIILjava/util/Date;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;IIIILjava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
+	public final fun dataElementsHash ()I
+	public final fun dataSet ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun futurePeriods ()I
+	public final fun getDataElementsHash ()I
+	public final fun getDataSet ()Ljava/lang/String;
+	public final fun getFuturePeriods ()I
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getOrganisationUnitsHash ()I
+	public final fun getPastPeriods ()I
+	public final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun organisationUnitsHash ()I
+	public final fun pastPeriods ()I
+	public final fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder {
+public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder : org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
-	public abstract fun dataElementsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun futurePeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun organisationUnitsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun pastPeriods (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
-	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+}
+
+public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+}
+
+public class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncBuilder$Companion;
+	protected field dataSet Ljava/lang/String;
+	protected field lastUpdated Ljava/util/Date;
+	protected field periodType Lorg/hisp/dhis/android/core/period/PeriodType;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;
+	public final fun dataElementsHash (I)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun futurePeriods (I)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	protected final fun getDataElementsHash ()I
+	protected final fun getDataSet ()Ljava/lang/String;
+	protected final fun getFuturePeriods ()I
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getOrganisationUnitsHash ()I
+	protected final fun getPastPeriods ()I
+	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun organisationUnitsHash (I)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun pastPeriods (I)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	public final fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
+	protected final fun setDataElementsHash (I)V
+	protected final fun setDataSet (Ljava/lang/String;)V
+	protected final fun setFuturePeriods (I)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setOrganisationUnitsHash (I)V
+	protected final fun setPastPeriods (I)V
+	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
+}
+
+public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
@@ -11311,49 +11361,6 @@ public final class org/hisp/dhis/android/core/program/SectionRenderingType : jav
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 }
 
-public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
-	public static final field DEFAULT_LIMIT Ljava/lang/Integer;
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun eventFilters ()Ljava/util/List;
-	public fun hasProgramOrFilters ()Z
-	public abstract fun limit ()Ljava/lang/Integer;
-	public abstract fun limitByOrgunit ()Ljava/lang/Boolean;
-	public abstract fun limitByProgram ()Ljava/lang/Boolean;
-	public abstract fun orgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
-	public abstract fun orgUnits ()Ljava/util/List;
-	public abstract fun overwrite ()Ljava/lang/Boolean;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun programEndDate ()Ljava/util/Date;
-	public abstract fun programStageWorkingLists ()Ljava/util/List;
-	public abstract fun programStartDate ()Ljava/util/Date;
-	public abstract fun programStatus ()Lorg/hisp/dhis/android/core/settings/EnrollmentScope;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun trackedEntityInstanceFilters ()Ljava/util/List;
-	public abstract fun trackedEntityType ()Ljava/lang/String;
-	public abstract fun uids ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams;
-	public abstract fun eventFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun limit (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun limitByOrgunit (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun limitByProgram (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun orgUnitMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun orgUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun overwrite (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun programEndDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun programStageWorkingLists (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun programStartDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun programStatus (Lorg/hisp/dhis/android/core/settings/EnrollmentScope;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun trackedEntityInstanceFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-	public abstract fun uids (Ljava/util/List;)Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams$Builder;
-}
-
 public abstract interface class org/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine {
 	public abstract fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
@@ -11783,40 +11790,6 @@ public final class org/hisp/dhis/android/core/relationship/internal/Relationship
 	public static final fun availableForEnrollmentRawQuery (Lorg/hisp/dhis/android/core/enrollment/Enrollment;)Ljava/lang/String;
 	public static final fun availableForEventRawQuery (Lorg/hisp/dhis/android/core/event/Event;)Ljava/lang/String;
 	public static final fun availableForTrackedEntityInstanceRawQuery (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/resource/internal/Resource : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
-	public abstract fun lastSynced ()Ljava/util/Date;
-	public abstract fun resourceType ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/resource/internal/Resource$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/resource/internal/Resource;
-	public abstract fun lastSynced (Ljava/util/Date;)Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
-	public abstract fun resourceType (Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;)Lorg/hisp/dhis/android/core/resource/internal/Resource$Builder;
-}
-
-public final class org/hisp/dhis/android/core/resource/internal/Resource$Type : java/lang/Enum {
-	public static final field CATEGORY_COMBO Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field DATA_ELEMENT Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field DATA_SET Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field EVENT Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field INDICATOR Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field INDICATOR_TYPE Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field OPTION_SET Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field ORGANISATION_UNIT Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field PROGRAM Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field PROGRAM_STAGE Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field RELATIONSHIP_TYPE Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field SYSTEM_INFO Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static final field TRACKED_ENTITY_TYPE Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
-	public static fun values ()[Lorg/hisp/dhis/android/core/resource/internal/Resource$Type;
 }
 
 public final class org/hisp/dhis/android/core/server/LoginConfig {
@@ -14783,7 +14756,6 @@ public class org/hisp/dhis/android/core/sms/domain/converter/internal/TrackerEve
 
 public final class org/hisp/dhis/android/core/sms/domain/interactor/ConfigCase {
 	public static final field Companion Lorg/hisp/dhis/android/core/sms/domain/interactor/ConfigCase$Companion;
-	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository;Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;)V
 	public final fun deleteGatewayNumber ()Lio/reactivex/Completable;
 	public final fun getSmsModuleConfig ()Lio/reactivex/Single;
 	public final fun refreshMetadataIds ()Lio/reactivex/Completable;
@@ -14853,20 +14825,6 @@ public final class org/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCas
 	public static final field SMS_MODULE_DISABLED Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
 	public static fun values ()[Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet$Builder;
-	public abstract fun completed ()Ljava/lang/Boolean;
-	public abstract fun dataValues ()Ljava/util/Collection;
-}
-
-public abstract class org/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet;
-	public abstract fun completed (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet$Builder;
-	public abstract fun dataValues (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
@@ -14955,50 +14913,6 @@ public abstract interface class org/hisp/dhis/android/core/sms/domain/repository
 	public abstract fun hasReceiveSMSPermission ()Lio/reactivex/Single;
 	public abstract fun hasSendSMSPermission ()Lio/reactivex/Single;
 	public abstract fun isNetworkConnected ()Lio/reactivex/Single;
-}
-
-public abstract interface class org/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository {
-	public abstract fun addOngoingSubmission (ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Completable;
-	public abstract fun deleteConfirmationSenderNumber ()Lio/reactivex/Completable;
-	public abstract fun deleteGatewayNumber ()Lio/reactivex/Completable;
-	public abstract fun deleteWaitingResultTimeout ()Lio/reactivex/Completable;
-	public abstract fun generateNextSubmissionId ()Lio/reactivex/Single;
-	public abstract fun getConfirmationSenderNumber ()Lio/reactivex/Single;
-	public abstract fun getConfirmationSenderNumberSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getDataValueSet (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getGatewayNumber ()Lio/reactivex/Single;
-	public abstract fun getGatewayNumberSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getMetadataDownloadConfig (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getMetadataIds ()Lio/reactivex/Single;
-	public abstract fun getOngoingSubmissions ()Lio/reactivex/Single;
-	public abstract fun getRelationship (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getSimpleEventToSubmit (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getTeiEnrollmentToSubmit (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getTrackerEventToSubmit (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getUserName ()Lio/reactivex/Single;
-	public abstract fun getWaitingForResultEnabled ()Lio/reactivex/Single;
-	public abstract fun getWaitingForResultEnabledSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getWaitingResultTimeout ()Lio/reactivex/Single;
-	public abstract fun getWaitingResultTimeoutSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun isModuleEnabled ()Lio/reactivex/Single;
-	public abstract fun isModuleEnabledSuspend (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun removeOngoingSubmission (I)Lio/reactivex/Completable;
-	public abstract fun setConfirmationSenderNumber (Ljava/lang/String;)Lio/reactivex/Completable;
-	public abstract fun setGatewayNumber (Ljava/lang/String;)Lio/reactivex/Completable;
-	public abstract fun setGatewayNumberSuspend (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun setMetadataDownloadConfig (Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository$GetMetadataIdsConfig;)Lio/reactivex/Completable;
-	public abstract fun setMetadataIds (Lorg/hisp/dhis/smscompression/models/SMSMetadata;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun setModuleEnabled (Z)Lio/reactivex/Completable;
-	public abstract fun setWaitingForResultEnabled (Z)Lio/reactivex/Completable;
-	public abstract fun setWaitingResultTimeout (I)Lio/reactivex/Completable;
-	public abstract fun updateDataSetSubmissionState (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
-	public abstract fun updateEnrollmentSubmissionState (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
-	public abstract fun updateEventSubmissionState (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
-	public abstract fun updateRelationshipSubmissionState (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
-}
-
-public final class org/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository$TooManySubmissionsException : java/lang/IllegalStateException {
-	public fun <init> ()V
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType : java/lang/Enum {

@@ -98,7 +98,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
         for (bundle in bundles) {
             if (bundle.commonParams.uids.isNotEmpty()) {
-                val result = queryByUids(bundle, params.overwrite(), relatives)
+                val result = queryByUids(bundle, params.overwrite, relatives)
 
                 result.d2Error?.let {
                     throw it
@@ -140,7 +140,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
         iterationCount: Int,
     ): Boolean {
-        return params.limitByProgram() != true &&
+        return params.limitByProgram != true &&
             bundleResult.bundleCount < bundle.commonParams.limit &&
             bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
             iterationCount < max(bundle.commonParams.limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
@@ -203,7 +203,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                             trackerQuery,
                             limit,
                             bundleProgram.itemCount,
-                            params.overwrite(),
+                            params.overwrite,
                             relatives,
                         )
                     } else {
@@ -249,8 +249,8 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
     ): Int {
         return when {
-            params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true -> {
+            params.uids.isNotEmpty() -> params.uids.size
+            params.limitByProgram != true -> {
                 val numOfCombinations = bundleResult.bundleOrgUnitPrograms.values.sumOf { it.size }
                 val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
 

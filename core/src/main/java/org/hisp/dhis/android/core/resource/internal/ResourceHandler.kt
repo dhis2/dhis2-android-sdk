@@ -46,10 +46,10 @@ internal class ResourceHandler(private val resourceStore: ResourceStore) {
         if (resourceType == null || serverDate == null) {
             return
         }
-        val resource = Resource.builder()
-            .resourceType(resourceType)
-            .lastSynced(serverDate)
-            .build()
+        val resource = Resource(
+            resourceType = resourceType,
+            lastSynced = serverDate,
+        )
 
         resourceStore.updateOrInsertWhere(resource)
     }

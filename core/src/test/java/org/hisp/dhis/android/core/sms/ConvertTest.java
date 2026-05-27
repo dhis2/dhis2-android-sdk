@@ -191,7 +191,7 @@ public class ConvertTest {
 
         SMSDataValueSet mockSMSDataValueSet = MockObjects.getSMSDataValueSet();
         for (SMSDataValue item : s.getValues()) {
-            assertTrue(containsDataValue(mockSMSDataValueSet.dataValues(), item));
+            assertTrue(containsDataValue(mockSMSDataValueSet.getDataValues(), item));
         }
         assertEquals(s.isComplete(), MockObjects.isCompleted);
     }

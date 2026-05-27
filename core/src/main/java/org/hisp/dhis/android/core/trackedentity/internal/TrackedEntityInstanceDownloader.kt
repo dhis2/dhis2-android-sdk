@@ -90,31 +90,31 @@ class TrackedEntityInstanceDownloader internal constructor(
     }
 
     fun byUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
-        connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
+        connectorFactory.listConnector { uids -> params.copy(uids = uids) }
 
     fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<String> { programUid ->
-            params.toBuilder().program(programUid).build()
+            params.copy(program = programUid)
         }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
-            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+            params.copy(limitByOrgunit = limitByOrgunit)
         }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { limitByProgram ->
-            params.toBuilder().limitByProgram(limitByProgram).build()
+            params.copy(limitByProgram = limitByProgram)
         }.eq(limitByProgram)
 
     fun limit(limit: Int): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Int> { limit ->
-            params.toBuilder().limit(limit).build()
+            params.copy(limit = limit)
         }.eq(limit)
 
     fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<EnrollmentScope> { status ->
-            params.toBuilder().programStatus(status).build()
+            params.copy(programStatus = status)
         }.eq(status)
 
     /**
@@ -126,7 +126,7 @@ class TrackedEntityInstanceDownloader internal constructor(
      */
     fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { overwrite ->
-            params.toBuilder().overwrite(overwrite).build()
+            params.copy(overwrite = overwrite ?: false)
         }.eq(overwrite)
 
     fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> {
@@ -141,11 +141,15 @@ class TrackedEntityInstanceDownloader internal constructor(
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
                 .blockingGet()
-            params.toBuilder().run {
-                wl.takeIf { it.isNotEmpty() }?.let { programStageWorkingLists(it) }
-                teiFilters.takeIf { it.isNotEmpty() }?.let { trackedEntityInstanceFilters(it) }
-                build()
-            }
+            params
+                .run {
+                    wl.takeIf { it.isNotEmpty() }
+                        ?.let { copy(programStageWorkingLists = wl) } ?: this
+                }
+                .run {
+                    teiFilters.takeIf { it.isNotEmpty() }
+                        ?.let { copy(trackedEntityInstanceFilters = teiFilters) } ?: this
+                }
         }
     }
 
@@ -154,11 +158,11 @@ class TrackedEntityInstanceDownloader internal constructor(
         TrackedEntityInstanceFilter,
         > =
         connectorFactory.listConnector { teiFilters ->
-            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+            params.copy(trackedEntityInstanceFilters = teiFilters)
         }
 
     fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
         connectorFactory.listConnector { programStageWorkingLists ->
-            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+            params.copy(programStageWorkingLists = programStageWorkingLists)
         }
 }

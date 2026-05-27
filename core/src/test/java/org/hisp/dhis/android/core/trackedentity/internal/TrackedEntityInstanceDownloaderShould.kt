@@ -68,7 +68,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Before
     fun setUp() {
-        params = ProgramDataDownloadParams.builder().build()
+        params = ProgramDataDownloadParams()
         downloader = TrackedEntityInstanceDownloader(
             call,
             params,
@@ -122,12 +122,12 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.program()).isEqualTo("program-uid")
-        assertThat(params.limitByOrgunit()).isTrue()
-        assertThat(params.limitByProgram()).isTrue()
-        assertThat(params.limit()).isEqualTo(500)
-        assertThat(params.programStatus()).isEqualTo(EnrollmentScope.ONLY_ACTIVE)
-        assertThat(params.overwrite()).isTrue()
+        assertThat(params.program).isEqualTo("program-uid")
+        assertThat(params.limitByOrgunit).isTrue()
+        assertThat(params.limitByProgram).isTrue()
+        assertThat(params.limit).isEqualTo(500)
+        assertThat(params.programStatus).isEqualTo(EnrollmentScope.ONLY_ACTIVE)
+        assertThat(params.overwrite).isTrue()
     }
 
     @Test
@@ -137,8 +137,8 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.uids().size).isEqualTo(1)
-        assertThat(params.uids()[0]).isEqualTo("uid")
+        assertThat(params.uids.size).isEqualTo(1)
+        assertThat(params.uids[0]).isEqualTo("uid")
     }
 
     @Test
@@ -148,10 +148,10 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.uids().size).isEqualTo(3)
-        assertThat(params.uids()[0]).isEqualTo("uid0")
-        assertThat(params.uids()[1]).isEqualTo("uid1")
-        assertThat(params.uids()[2]).isEqualTo("uid2")
+        assertThat(params.uids.size).isEqualTo(3)
+        assertThat(params.uids[0]).isEqualTo("uid0")
+        assertThat(params.uids[1]).isEqualTo("uid1")
+        assertThat(params.uids[2]).isEqualTo("uid2")
     }
 
     @Test
@@ -161,8 +161,8 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.trackedEntityInstanceFilters()?.size).isEqualTo(1)
-        assertThat(params.trackedEntityInstanceFilters()?.get(0)?.uid()).isEqualTo("filterUid")
+        assertThat(params.trackedEntityInstanceFilters?.size).isEqualTo(1)
+        assertThat(params.trackedEntityInstanceFilters?.get(0)?.uid()).isEqualTo("filterUid")
     }
 
     @Test
@@ -172,10 +172,10 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.trackedEntityInstanceFilters()?.size).isEqualTo(3)
-        assertThat(params.trackedEntityInstanceFilters()?.get(0)?.uid()).isEqualTo("filterUid0")
-        assertThat(params.trackedEntityInstanceFilters()?.get(1)?.uid()).isEqualTo("filterUid1")
-        assertThat(params.trackedEntityInstanceFilters()?.get(2)?.uid()).isEqualTo("filterUid2")
+        assertThat(params.trackedEntityInstanceFilters?.size).isEqualTo(3)
+        assertThat(params.trackedEntityInstanceFilters?.get(0)?.uid()).isEqualTo("filterUid0")
+        assertThat(params.trackedEntityInstanceFilters?.get(1)?.uid()).isEqualTo("filterUid1")
+        assertThat(params.trackedEntityInstanceFilters?.get(2)?.uid()).isEqualTo("filterUid2")
     }
 
     @Test
@@ -186,7 +186,7 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.trackedEntityInstanceFilters()).isEqualTo(listOf(trackedEntityInstanceFilter))
+        assertThat(params.trackedEntityInstanceFilters).isEqualTo(listOf(trackedEntityInstanceFilter))
     }
 
     @Test
@@ -199,7 +199,7 @@ class TrackedEntityInstanceDownloaderShould {
         verify(call).download(paramsCapture.capture())
 
         val params = paramsCapture.firstValue
-        assertThat(params.programStageWorkingLists())
+        assertThat(params.programStageWorkingLists)
             .isEqualTo(listOf(programStageWorkingList1, programStageWorkingList2))
     }
 }

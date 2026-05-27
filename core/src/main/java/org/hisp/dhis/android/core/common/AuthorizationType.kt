@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access
+package org.hisp.dhis.android.core.common
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.AuthorizationType
-
-@Serializable
-data class DatabaseExportMetadata(
-    val version: Int,
-    val date: String,
-    val serverUrl: String,
-    val username: String,
-    val encrypted: Boolean,
-    val authorizationType: AuthorizationType = AuthorizationType.BASIC,
-)
+enum class AuthorizationType {
+    BASIC,
+    OPEN_ID_CONNECT,
+    OAUTH2,
+}

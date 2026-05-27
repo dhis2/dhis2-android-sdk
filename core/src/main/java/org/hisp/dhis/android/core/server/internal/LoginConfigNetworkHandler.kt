@@ -36,6 +36,6 @@ internal interface LoginConfigNetworkHandler {
     suspend fun loginConfig(): LoginConfig
     suspend fun oauthConfigFor(
         serverUrl: String,
-        oauthInfoPath: String = "/.well-known/oauth-authorization-server#/",
+        oauthInfoPath: String = "/.well-known/oauth-authorization-server/",
     ): OauthConfig
 }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Test
 
@@ -310,6 +311,48 @@ class DatabasesConfigurationHelperShould {
         val updatedConfig = helper.addOrUpdateAccount(config, URL_WITH_SLASHES, username1, false)
 
         assertThat(updatedConfig.accounts().size).isEqualTo(1)
+    }
+
+    @Test
+    fun set_basic_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.BASIC)
+    }
+
+    @Test
+    fun set_open_id_connect_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.OPEN_ID_CONNECT,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+    }
+
+    @Test
+    fun set_oauth2_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.OAUTH2,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OAUTH2)
     }
 
     private fun createConfigWithAccount(serverUrl: String): DatabasesConfiguration {

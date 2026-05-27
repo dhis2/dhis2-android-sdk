@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
+package org.hisp.dhis.android.core.user
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class UserCredentials(
+    val username: String?,
+    val name: String?,
+    val displayName: String?,
+    val userRoles: List<UserRole>?,
+) {
+    fun username(): String? = username
+    fun name(): String? = name
+    fun displayName(): String? = displayName
+    fun userRoles(): List<UserRole>? = userRoles
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+    fun toBuilder(): Builder = UserCredentialsBuilder.from(this)
 
-@AutoValue
-public abstract class SMSOngoingSubmission implements CoreObject {
+    class Builder : UserCredentialsBuilder()
 
-    @NonNull
-    public abstract Integer submissionId();
-
-    @NonNull
-    public abstract SubmissionType type();
-
-    public static Builder builder() {
-        return new AutoValue_SMSOngoingSubmission.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder submissionId(Integer submissionId);
-
-        public abstract Builder type(SubmissionType type);
-
-        public abstract SMSOngoingSubmission build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

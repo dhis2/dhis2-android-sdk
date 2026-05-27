@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,45 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class AuthenticatedUser(
+    val user: String?,
+    val hash: String?,
+) : CoreObject {
+    fun user(): String? = user
+    fun hash(): String? = hash
 
-import java.util.List;
+    fun toBuilder(): Builder = AuthenticatedUserBuilder.from(this)
 
-@AutoValue
-public abstract class UserCredentials {
+    class Builder : AuthenticatedUserBuilder()
 
-    @Nullable
-    public abstract String username();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract String displayName();
-
-    @Nullable
-    public abstract List<UserRole> userRoles();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_UserCredentials.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder username(String username);
-
-        public abstract Builder name(String username);
-
-        public abstract Builder displayName(String username);
-
-        public abstract Builder userRoles(List<UserRole> userRoles);
-
-        public abstract UserCredentials build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

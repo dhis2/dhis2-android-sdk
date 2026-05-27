@@ -120,9 +120,9 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
-        assertThat(bundle.commonParams().programs).isEqualTo(programList)
-        assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(bundle.orgUnits).isEqualTo(rootOrgUnits)
+        assertThat(bundle.commonParams.programs).isEqualTo(programList)
+        assertThat(bundle.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }
 
     @Test
@@ -133,15 +133,15 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            when (bundle.commonParams().programs.size) {
+            when (bundle.commonParams.programs.size) {
                 1 -> {
-                    assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                    assertThat(bundle.commonParams().limit).isEqualTo(200)
+                    assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                    assertThat(bundle.commonParams.limit).isEqualTo(200)
                 }
 
                 2 -> {
-                    assertThat(bundle.commonParams().programs.contains(p2)).isTrue()
-                    assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
+                    assertThat(bundle.commonParams.programs.contains(p2)).isTrue()
+                    assertThat(bundle.commonParams.programs.contains(p3)).isTrue()
                 }
 
                 else -> {
@@ -158,8 +158,8 @@ class EventQueryBundleFactoryShould {
         val queries = bundleFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.eventFilters()?.size).isEqualTo(1)
-        assertThat(query.eventFilters()?.first()).isEqualTo(f1)
+        assertThat(query.eventFilters?.size).isEqualTo(1)
+        assertThat(query.eventFilters?.first()).isEqualTo(f1)
     }
 
     @Test
@@ -170,9 +170,9 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            if (bundle.commonParams().programs.size == 1) {
-                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                assertThat(bundle.commonParams().startDate).isNotNull()
+            if (bundle.commonParams.programs.size == 1) {
+                assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams.startDate).isNotNull()
             }
         }
     }
@@ -187,11 +187,11 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            if (bundle.commonParams().programs.size == 1) {
-                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                assertThat(bundle.commonParams().limit).isEqualTo(100)
+            if (bundle.commonParams.programs.size == 1) {
+                assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams.limit).isEqualTo(100)
             } else {
-                assertThat(bundle.commonParams().limit).isEqualTo(4800)
+                assertThat(bundle.commonParams.limit).isEqualTo(4800)
             }
         }
     }
@@ -212,8 +212,8 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
 
         assertThat(bundles.size).isEqualTo(3)
-        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
-        assertThat(bundles.filter { it.commonParams().program == null }.size).isEqualTo(1)
+        assertThat(bundles.filter { it.commonParams.program == p1 }.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams.program == null }.size).isEqualTo(1)
     }
 
     @Test
@@ -234,8 +234,8 @@ class EventQueryBundleFactoryShould {
         val limits = bundleFactory.getQueries(params)
 
         assertThat(limits.size).isEqualTo(4)
-        assertThat(limits.filter { it.commonParams().program == p1 }.size).isEqualTo(1)
-        assertThat(limits.filter { it.commonParams().program == null }.size).isEqualTo(3)
+        assertThat(limits.filter { it.commonParams.program == p1 }.size).isEqualTo(1)
+        assertThat(limits.filter { it.commonParams.program == null }.size).isEqualTo(3)
     }
 
     @Test
@@ -257,6 +257,6 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
 
         assertThat(bundles.size).isEqualTo(2)
-        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams.program == p1 }.size).isEqualTo(2)
     }
 }

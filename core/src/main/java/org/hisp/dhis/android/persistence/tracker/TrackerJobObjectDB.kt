@@ -4,7 +4,7 @@ import androidx.room.Entity
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import org.hisp.dhis.android.core.util.dateFormatNonNull
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.StringListDB
 import org.hisp.dhis.android.persistence.common.toDB
@@ -21,22 +21,22 @@ internal data class TrackerJobObjectDB(
     val fileResources: StringListDB?,
 ) : EntityDB<TrackerJobObject> {
     override fun toDomain(): TrackerJobObject {
-        return TrackerJobObject.builder()
-            .trackerType(trackerType.let { TrackerImporterObjectType.valueOf(it) })
-            .objectUid(objectUid)
-            .jobUid(jobUid)
-            .lastUpdated(lastUpdated.toJavaDate())
-            .fileResources(fileResources?.toDomain())
-            .build()
+        return TrackerJobObject(
+            trackerType = TrackerImporterObjectType.valueOf(trackerType),
+            objectUid = objectUid,
+            jobUid = jobUid,
+            lastUpdated = lastUpdated.toJavaDateNonNull(),
+            fileResources = fileResources?.toDomain() ?: emptyList(),
+        )
     }
 }
 
 internal fun TrackerJobObject.toDB(): TrackerJobObjectDB {
     return TrackerJobObjectDB(
-        trackerType = trackerType().name,
-        objectUid = objectUid(),
-        jobUid = jobUid(),
-        lastUpdated = lastUpdated().dateFormatNonNull(),
-        fileResources = fileResources().toDB(),
+        trackerType = trackerType.name,
+        objectUid = objectUid,
+        jobUid = jobUid,
+        lastUpdated = lastUpdated.dateFormatNonNull(),
+        fileResources = fileResources.toDB(),
     )
 }

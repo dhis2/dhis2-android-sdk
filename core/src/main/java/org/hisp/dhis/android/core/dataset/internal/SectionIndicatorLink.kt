@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.dataset.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SectionIndicatorLink(
+    val section: String,
+    val indicator: String,
+) : CoreObject {
+    fun section(): String = section
+    fun indicator(): String = indicator
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = SectionIndicatorLinkBuilder.from(this)
 
-@AutoValue
-public abstract class Authority implements CoreObject {
+    class Builder : SectionIndicatorLinkBuilder()
 
-    @NonNull
-    public abstract String name();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Authority.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder name(@NonNull String name);
-
-        public abstract Authority build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.tracker.importer.internal
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-@AutoValue
-public abstract class TrackedEntityInstanceSync implements TrackerBaseSync {
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceSync.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
-
-        public abstract TrackedEntityInstanceSync build();
-    }
-}
+internal data class TrackerJobObject(
+    val trackerType: TrackerImporterObjectType,
+    val objectUid: String,
+    val jobUid: String,
+    val lastUpdated: Date,
+    val fileResources: List<String>,
+) : CoreObject

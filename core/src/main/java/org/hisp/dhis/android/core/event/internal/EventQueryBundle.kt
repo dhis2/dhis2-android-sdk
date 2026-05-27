@@ -25,25 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class UserGroup extends BaseIdentifiableObAuVa implements CoreObject {
-
-    public static Builder builder() {
-        return new AutoValue_UserGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserGroup build();
-    }
-}
+internal data class EventQueryBundle(
+    override val commonParams: TrackerQueryCommonParams,
+    override val orgUnits: List<String>,
+    val eventFilters: List<EventFilter>?,
+) : BaseTrackerQueryBundle

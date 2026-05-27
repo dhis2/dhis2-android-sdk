@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.smscompression.SMSConsts
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SMSMetadataId(
+    val type: SMSConsts.MetadataType,
+    val uid: String,
+) : CoreObject {
+    fun type(): SMSConsts.MetadataType = type
+    fun uid(): String = uid
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = SMSMetadataIdBuilder.from(this)
 
-@AutoValue
-public abstract class SectionIndicatorLink implements CoreObject {
+    class Builder : SMSMetadataIdBuilder()
 
-    @Nullable
-    public abstract String section();
-
-    @Nullable
-    public abstract String indicator();
-
-    public static Builder builder() {
-        return new AutoValue_SectionIndicatorLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder section(@Nullable String section);
-
-        public abstract Builder indicator(@Nullable String indicator);
-
-        public abstract SectionIndicatorLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

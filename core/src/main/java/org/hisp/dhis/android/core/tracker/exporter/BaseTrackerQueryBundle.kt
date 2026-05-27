@@ -25,24 +25,11 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.tracker.exporter
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync;
-
-@AutoValue
-public abstract class EventSync implements TrackerBaseSync {
-
-    public static Builder builder() {
-        return new AutoValue_EventSync.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements TrackerBaseSync.Builder<Builder> {
-        public abstract EventSync build();
-    }
+internal interface BaseTrackerQueryBundle {
+    val commonParams: TrackerQueryCommonParams
+    val orgUnits: List<String>
 }

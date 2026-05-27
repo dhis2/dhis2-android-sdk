@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.user
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class UserGroup(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-@AutoValue
-public abstract class UserOrganisationUnitLink implements CoreObject {
+    fun toBuilder(): Builder = UserGroupBuilder.from(this)
 
-    public abstract String user();
+    class Builder : UserGroupBuilder()
 
-    public abstract String organisationUnit();
-
-    public abstract String organisationUnitScope();
-
-    public abstract Boolean root();
-
-    public abstract Boolean userAssigned();
-
-    public static Builder builder() {
-        return new AutoValue_UserOrganisationUnitLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder user(String user);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder organisationUnitScope(String organisationUnitScope);
-
-        public abstract Builder root(Boolean root);
-
-        public abstract Builder userAssigned(Boolean userAssigned);
-
-        public abstract UserOrganisationUnitLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

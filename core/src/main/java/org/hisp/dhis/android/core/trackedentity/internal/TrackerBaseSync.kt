@@ -25,38 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.user;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import androidx.annotation.Nullable;
+interface TrackerBaseSync : CoreObject {
+    val program: String?
+    val organisationUnitIdsHash: Int
+    val downloadLimit: Int
+    val workingListsHash: Int?
+    val lastUpdated: Date
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class AuthenticatedUser implements CoreObject {
-
-    @Nullable
-    public abstract String user();
-
-    @Nullable
-    public abstract String hash();
-
-    public static Builder builder() {
-        return new AutoValue_AuthenticatedUser.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder user(@Nullable String user);
-
-        public abstract Builder hash(@Nullable String hash);
-
-        public abstract AuthenticatedUser build();
-    }
+    fun program(): String? = program
+    fun organisationUnitIdsHash(): Int = organisationUnitIdsHash
+    fun downloadLimit(): Int = downloadLimit
+    fun workingListsHash(): Int? = workingListsHash
+    fun lastUpdated(): Date = lastUpdated
 }

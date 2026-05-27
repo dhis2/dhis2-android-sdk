@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.tracker.exporter;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import java.util.Date
 
-import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams;
+@ModelBuilder
+data class TrackedEntityInstanceSync(
+    override val program: String?,
+    override val organisationUnitIdsHash: Int,
+    override val downloadLimit: Int,
+    override val workingListsHash: Int?,
+    override val lastUpdated: Date,
+) : TrackerBaseSync {
 
-import java.util.List;
+    fun toBuilder(): Builder = TrackedEntityInstanceSyncBuilder.from(this)
 
-public abstract class BaseTrackerQueryBundle {
+    class Builder : TrackedEntityInstanceSyncBuilder()
 
-    @NonNull
-    public abstract TrackerQueryCommonParams commonParams();
-
-    @NonNull
-    public abstract List<String> orgUnits();
-
-    public abstract static class Builder<T extends Builder> {
-        public abstract T commonParams(TrackerQueryCommonParams commonParams);
-
-        public abstract T orgUnits(List<String> orgUnits);
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

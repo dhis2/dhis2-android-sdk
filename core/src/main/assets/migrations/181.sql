@@ -43,3 +43,25 @@ ALTER TABLE AnalyticsDhisVisualization RENAME TO AnalyticsDhisVisualization_Old;
 CREATE TABLE AnalyticsDhisVisualization (_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, uid TEXT NOT NULL, scopeUid TEXT, scope TEXT NOT NULL, groupUid TEXT NOT NULL, groupName TEXT NOT NULL, timestamp TEXT, name TEXT, type TEXT NOT NULL);
 INSERT INTO AnalyticsDhisVisualization(_id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type) SELECT _id, uid, scopeUid, scope, groupUid, groupName, timestamp, name, type FROM AnalyticsDhisVisualization_Old;
 DROP TABLE IF EXISTS AnalyticsDhisVisualization_Old;
+
+# SMSOngoingSubmission: make type non-null (ANDROSDK-2295)
+
+# Remove rows with null type
+DELETE FROM SMSOngoingSubmission WHERE type IS NULL;
+
+# Recreate table with type as NOT NULL
+ALTER TABLE SMSOngoingSubmission RENAME TO SMSOngoingSubmission_Old;
+CREATE TABLE SMSOngoingSubmission(submissionId INTEGER NOT NULL, type TEXT NOT NULL, PRIMARY KEY(submissionId));
+INSERT INTO SMSOngoingSubmission(submissionId, type) SELECT submissionId, type FROM SMSOngoingSubmission_Old;
+DROP TABLE IF EXISTS SMSOngoingSubmission_Old;
+
+# UserOrganisationUnit: make root and userAssigned non-null (ANDROSDK-2307)
+
+# Remove rows with null root or userAssigned
+DELETE FROM UserOrganisationUnit WHERE root IS NULL OR userAssigned IS NULL;
+
+# Recreate table with root and userAssigned as NOT NULL
+ALTER TABLE UserOrganisationUnit RENAME TO UserOrganisationUnit_Old;
+CREATE TABLE UserOrganisationUnit(user TEXT NOT NULL, organisationUnit TEXT NOT NULL, organisationUnitScope TEXT NOT NULL, root INTEGER NOT NULL, userAssigned INTEGER NOT NULL, PRIMARY KEY(organisationUnitScope, user, organisationUnit), FOREIGN KEY(user) REFERENCES User(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO UserOrganisationUnit(user, organisationUnit, organisationUnitScope, root, userAssigned) SELECT user, organisationUnit, organisationUnitScope, root, userAssigned FROM UserOrganisationUnit_Old;
+DROP TABLE IF EXISTS UserOrganisationUnit_Old;

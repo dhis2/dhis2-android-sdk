@@ -25,25 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
 
-object UserInternalAccessor {
-    @JvmStatic
-    fun accessOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.organisationUnits()
-    }
-
-    fun insertOrganisationUnits(
-        builder: User.Builder,
-        organisationUnits: List<OrganisationUnit?>?,
-    ): User.Builder {
-        return builder.organisationUnits(organisationUnits)
-    }
-
-    @JvmStatic
-    fun accessTeiSearchOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.teiSearchOrganisationUnits()
-    }
-}
+internal data class TrackerQueryBundle(
+    override val commonParams: TrackerQueryCommonParams,
+    override val orgUnits: List<String>,
+    val programStatus: EnrollmentStatus?,
+    val trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?,
+    val programStageWorkingLists: List<ProgramStageWorkingList>?,
+) : BaseTrackerQueryBundle

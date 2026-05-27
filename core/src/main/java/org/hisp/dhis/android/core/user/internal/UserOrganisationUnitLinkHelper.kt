@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2026, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,42 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.oauth2
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+package org.hisp.dhis.android.core.user.internal
 
-@Serializable
-data class OAuth2State(
-    @SerialName("client_id") val clientId: String,
-    @SerialName("key_id") val keyId: String,
-    @SerialName("access_token") val accessToken: String?,
-    @SerialName("refresh_token") val refreshToken: String?,
-    @SerialName("expires_at") val expiresAt: Long,
-    @SerialName("scope") val scope: String?,
-    @SerialName("token_endpoint") val tokenEndpoint: String,
-) {
-    @Suppress("MagicNumber")
-    fun needsTokenRefresh(): Boolean {
-        val currentTime = System.currentTimeMillis().div(1000)
-        return (currentTime + BUFFER) >= expiresAt
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
+import org.hisp.dhis.android.core.user.User
+
+internal object UserOrganisationUnitLinkHelper {
+
+    @JvmStatic
+    fun userIsAssigned(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val assignedOrgUnitUids = UidsHelper.getUids(selectedScopeOrganisationUnits)
+        return assignedOrgUnitUids.contains(organisationUnit.uid())
     }
 
-    fun jsonSerializeString(): String = Json.encodeToString(serializer(), this)
+    @JvmStatic
+    fun isRoot(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val rootOrgUnitUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(selectedScopeOrganisationUnits))
+        return rootOrgUnitUids.contains(organisationUnit.uid())
+    }
 
-    companion object {
-        private const val BUFFER = 60
-
-        fun jsonDeserialize(json: String): OAuth2State =
-            Json.decodeFromString(serializer(), json)
+    private fun selectScope(scope: OrganisationUnit.Scope, user: User): List<OrganisationUnit>? {
+        return when (scope) {
+            OrganisationUnit.Scope.SCOPE_TEI_SEARCH -> user.teiSearchOrganisationUnits
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE -> user.organisationUnits
+        }
     }
 }

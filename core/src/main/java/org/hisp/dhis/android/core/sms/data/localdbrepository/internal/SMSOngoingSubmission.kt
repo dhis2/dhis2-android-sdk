@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SMSOngoingSubmission(
+    val submissionId: Int,
+    val type: SubmissionType,
+) : CoreObject {
+    fun submissionId(): Int = submissionId
+    fun type(): SubmissionType = type
 
-import org.hisp.dhis.android.core.event.EventFilter;
-import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle;
+    fun toBuilder(): Builder = SMSOngoingSubmissionBuilder.from(this)
 
-import java.util.List;
+    class Builder : SMSOngoingSubmissionBuilder()
 
-@AutoValue
-abstract class EventQueryBundle extends BaseTrackerQueryBundle {
-
-    @Nullable
-    public abstract List<EventFilter> eventFilters();
-
-    static Builder builder() {
-        return new AutoValue_EventQueryBundle.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder extends BaseTrackerQueryBundle.Builder<Builder> {
-
-        abstract Builder eventFilters(List<EventFilter> eventFilters);
-
-        abstract EventQueryBundle build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

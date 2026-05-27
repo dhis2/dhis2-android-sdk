@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,24 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user;
+package org.hisp.dhis.android.core.event.internal
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerBaseSync
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class EventSync(
+    override val program: String?,
+    override val organisationUnitIdsHash: Int,
+    override val downloadLimit: Int,
+    override val workingListsHash: Int?,
+    override val lastUpdated: Date,
+) : TrackerBaseSync {
 
-@AutoValue
-public abstract class UserRole extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = EventSyncBuilder.from(this)
 
-    public static Builder builder() {
-        return new AutoValue_UserRole.Builder();
-    }
+    class Builder : EventSyncBuilder()
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract UserRole build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

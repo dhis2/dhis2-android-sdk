@@ -199,7 +199,7 @@ class OAuth2HandlerImplShould {
         seedSuccessfulLogInPrerequisites()
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
         oauth2NetworkHandler.stub {
-            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Failure(serverError()))
         }
 
@@ -216,7 +216,7 @@ class OAuth2HandlerImplShould {
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
         val exchangedState = exchangedState()
         oauth2NetworkHandler.stub {
-            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Success(exchangedState))
         }
         val expectedUser: User = mock()
@@ -462,6 +462,7 @@ class OAuth2HandlerImplShould {
             refreshToken = "refresh",
             expiresAt = 1_700_000_000L,
             scope = "openid",
+            tokenEndpoint = "https://server.com/oauth2/token",
         )
 
     private fun sampleOAuth2State(): OAuth2State =
@@ -472,6 +473,7 @@ class OAuth2HandlerImplShould {
             refreshToken = "refresh",
             expiresAt = 1_700_000_000L,
             scope = null,
+            tokenEndpoint = "https://server.com/oauth2/token",
         )
 
     private fun credentialsWithOAuth2(state: OAuth2State?): Credentials =

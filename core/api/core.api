@@ -6684,19 +6684,48 @@ public final class org/hisp/dhis/android/core/dataset/internal/DataSetModuleImpl
 	public fun sections ()Lorg/hisp/dhis/android/core/dataset/SectionCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
-	public abstract fun indicator ()Ljava/lang/String;
-	public abstract fun section ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+public final class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndicator ()Ljava/lang/String;
+	public final fun getSection ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun indicator ()Ljava/lang/String;
+	public final fun section ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder {
+public final class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder : org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
-	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
-	public abstract fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLinkBuilder$Companion;
+	protected field indicator Ljava/lang/String;
+	protected field section Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;
+	protected final fun getIndicator ()Ljava/lang/String;
+	protected final fun getSection ()Ljava/lang/String;
+	public final fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+	public final fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
+	protected final fun setIndicator (Ljava/lang/String;)V
+	protected final fun setSection (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/dataset/internal/SectionIndicatorLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink;)Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/datastore/DataStoreCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository {
@@ -7506,15 +7535,65 @@ public final class org/hisp/dhis/android/core/event/internal/EventStatusFilterCo
 	public final fun notIn ([Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+public final class org/hisp/dhis/android/core/event/internal/EventSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
+	public static final field Companion Lorg/hisp/dhis/android/core/event/internal/EventSync$Companion;
+	public fun <init> (Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/lang/Integer;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/internal/EventSync;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/event/internal/EventSync;Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/event/internal/EventSync;
+	public fun downloadLimit ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDownloadLimit ()I
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getOrganisationUnitIdsHash ()I
+	public fun getProgram ()Ljava/lang/String;
+	public fun getWorkingListsHash ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun organisationUnitIdsHash ()I
+	public fun program ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun workingListsHash ()Ljava/lang/Integer;
 }
 
-public abstract class org/hisp/dhis/android/core/event/internal/EventSync$Builder : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
+public final class org/hisp/dhis/android/core/event/internal/EventSync$Builder : org/hisp/dhis/android/core/event/internal/EventSyncBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/event/internal/EventSync;
+}
+
+public final class org/hisp/dhis/android/core/event/internal/EventSync$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+}
+
+public class org/hisp/dhis/android/core/event/internal/EventSyncBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/event/internal/EventSyncBuilder$Companion;
+	protected field lastUpdated Ljava/util/Date;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/event/internal/EventSync;
+	public final fun downloadLimit (I)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	protected final fun getDownloadLimit ()I
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getOrganisationUnitIdsHash ()I
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getWorkingListsHash ()Ljava/lang/Integer;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	public final fun organisationUnitIdsHash (I)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+	protected final fun setDownloadLimit (I)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setOrganisationUnitIdsHash (I)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setWorkingListsHash (Ljava/lang/Integer;)V
+	public final fun workingListsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
+}
+
+public final class org/hisp/dhis/android/core/event/internal/EventSyncBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/event/internal/EventSync;)Lorg/hisp/dhis/android/core/event/internal/EventSync$Builder;
 }
 
 public final class org/hisp/dhis/android/core/event/search/EventQueryCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {
@@ -14564,34 +14643,91 @@ public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/File
 	public fun <init> (Lorg/hisp/dhis/android/core/dataelement/DataElementModule;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityModule;Lorg/hisp/dhis/android/core/fileresource/FileResourceModule;)V
 }
 
-public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Companion;
+	public fun <init> (Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
+	public final fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
+	public final fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder {
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder : org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataIdBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;
-	public abstract fun type (Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
-	public abstract fun submissionId ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder {
+public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataIdBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataIdBuilder$Companion;
+	protected field type Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
+	protected field uid Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;
-	public abstract fun submissionId (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;
+	protected final fun getType ()Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun setType (Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun type (Lorg/hisp/dhis/smscompression/SMSConsts$MetadataType;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
+}
+
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataIdBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSMetadataId$Builder;
+}
+
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Companion;
+	public fun <init> (ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+	public final fun component1 ()I
+	public final fun component2 ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+	public final fun copy (ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSubmissionId ()I
+	public final fun getType ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+	public fun hashCode ()I
+	public final fun submissionId ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+}
+
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder : org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmissionBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+}
+
+public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmissionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmissionBuilder$Companion;
+	protected field type Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;
+	protected final fun getSubmissionId ()I
+	protected final fun getType ()Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;
+	protected final fun setSubmissionId (I)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)V
+	public final fun submissionId (I)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
+}
+
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmissionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
 }
 
 public class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
@@ -16007,47 +16143,86 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEnti
 public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceFilterCall$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Companion;
+	public fun <init> (Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/lang/Integer;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;Ljava/lang/String;IILjava/lang/Integer;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+	public fun downloadLimit ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDownloadLimit ()I
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getOrganisationUnitIdsHash ()I
+	public fun getProgram ()Ljava/lang/String;
+	public fun getWorkingListsHash ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun organisationUnitIdsHash ()I
+	public fun program ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun workingListsHash ()Ljava/lang/Integer;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder : org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder : org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSyncBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSyncBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSyncBuilder$Companion;
+	protected field lastUpdated Ljava/util/Date;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;
+	public final fun downloadLimit (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	protected final fun getDownloadLimit ()I
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getOrganisationUnitIdsHash ()I
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getWorkingListsHash ()Ljava/lang/Integer;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	public final fun organisationUnitIdsHash (I)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+	protected final fun setDownloadLimit (I)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setOrganisationUnitIdsHash (I)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setWorkingListsHash (Ljava/lang/Integer;)V
+	public final fun workingListsHash (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSyncBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackedEntityInstanceSync$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync : org/hisp/dhis/android/core/common/CoreObject {
-	public abstract fun downloadLimit ()Ljava/lang/Integer;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun organisationUnitIdsHash ()Ljava/lang/Integer;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun workingListsHash ()Ljava/lang/Integer;
+	public fun downloadLimit ()I
+	public abstract fun getDownloadLimit ()I
+	public abstract fun getLastUpdated ()Ljava/util/Date;
+	public abstract fun getOrganisationUnitIdsHash ()I
+	public abstract fun getProgram ()Ljava/lang/String;
+	public abstract fun getWorkingListsHash ()Ljava/lang/Integer;
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun organisationUnitIdsHash ()I
+	public fun program ()Ljava/lang/String;
+	public fun workingListsHash ()Ljava/lang/Integer;
 }
 
-public abstract interface class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$Builder {
-	public abstract fun downloadLimit (Ljava/lang/Integer;)Ljava/lang/Object;
-	public abstract fun lastUpdated (Ljava/util/Date;)Ljava/lang/Object;
-	public abstract fun organisationUnitIdsHash (Ljava/lang/Integer;)Ljava/lang/Object;
-	public abstract fun program (Ljava/lang/String;)Ljava/lang/Object;
-	public abstract fun workingListsHash (Ljava/lang/Integer;)Ljava/lang/Object;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
-	public abstract fun programStageWorkingLists ()Ljava/util/List;
-	public abstract fun programStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
-	public abstract fun trackedEntityInstanceFilters ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder : org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle;
-	public abstract fun programStageWorkingLists (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
-	public abstract fun programStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
-	public abstract fun trackedEntityInstanceFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryBundle$Builder;
+public final class org/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync$DefaultImpls {
+	public static fun downloadLimit (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync;)I
+	public static fun lastUpdated (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync;)Ljava/util/Date;
+	public static fun organisationUnitIdsHash (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync;)I
+	public static fun program (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync;)Ljava/lang/String;
+	public static fun workingListsHash (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerBaseSync;)Ljava/lang/Integer;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager {
@@ -16431,18 +16606,6 @@ public final class org/hisp/dhis/android/core/tracker/TrackerImporterVersion : j
 public final class org/hisp/dhis/android/core/tracker/TrackerImporterVersion$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle {
-	public fun <init> ()V
-	public abstract fun commonParams ()Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryCommonParams;
-	public abstract fun orgUnits ()Ljava/util/List;
-}
-
-public abstract class org/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder {
-	public fun <init> ()V
-	public abstract fun commonParams (Lorg/hisp/dhis/android/core/trackedentity/internal/TrackerQueryCommonParams;)Lorg/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder;
-	public abstract fun orgUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/tracker/exporter/BaseTrackerQueryBundle$Builder;
-}
-
 public final class org/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress : org/hisp/dhis/android/core/arch/call/D2Progress {
 	public static final field Companion Lorg/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress$Companion;
 	public fun <init> ()V
@@ -16491,26 +16654,6 @@ public final class org/hisp/dhis/android/core/tracker/exporter/TrackerD2Progress
 public final class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
 	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public abstract fun fileResources ()Ljava/util/List;
-	public abstract fun jobUid ()Ljava/lang/String;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun objectUid ()Ljava/lang/String;
-	public abstract fun trackerType ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerImporterObjectType;
-}
-
-public abstract class org/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject;
-	public abstract fun fileResources (Ljava/util/List;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public abstract fun jobUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public abstract fun objectUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
-	public abstract fun trackerType (Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerImporterObjectType;)Lorg/hisp/dhis/android/core/tracker/importer/internal/TrackerJobObject$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/usecase/UseCaseModule {
@@ -16703,35 +16846,86 @@ public abstract interface class org/hisp/dhis/android/core/user/AccountManager {
 	public abstract fun setMaxAccounts (Ljava/lang/Integer;)V
 }
 
-public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
-	public abstract fun hash ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
-	public abstract fun user ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/user/AuthenticatedUser : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/AuthenticatedUser;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHash ()Ljava/lang/String;
+	public final fun getUser ()Ljava/lang/String;
+	public final fun hash ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun user ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/user/AuthenticatedUser$Builder {
+public final class org/hisp/dhis/android/core/user/AuthenticatedUser$Builder : org/hisp/dhis/android/core/user/AuthenticatedUserBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
-	public abstract fun hash (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
-	public abstract fun user (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/AuthenticatedUser$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+}
+
+public class org/hisp/dhis/android/core/user/AuthenticatedUserBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/AuthenticatedUserBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/user/AuthenticatedUser;
+	protected final fun getHash ()Ljava/lang/String;
+	protected final fun getUser ()Ljava/lang/String;
+	public final fun hash (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+	protected final fun setHash (Ljava/lang/String;)V
+	protected final fun setUser (Ljava/lang/String;)V
+	public final fun user (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/AuthenticatedUserBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/AuthenticatedUser;)Lorg/hisp/dhis/android/core/user/AuthenticatedUser$Builder;
 }
 
 public final class org/hisp/dhis/android/core/user/AuthenticatedUserObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
 }
 
-public abstract class org/hisp/dhis/android/core/user/Authority : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
+public final class org/hisp/dhis/android/core/user/Authority : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/Authority$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/Authority;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/Authority;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/Authority;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/user/Authority$Builder {
+public final class org/hisp/dhis/android/core/user/Authority$Builder : org/hisp/dhis/android/core/user/AuthorityBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/Authority;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/Authority$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/Authority$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/Authority$Builder;
+}
+
+public class org/hisp/dhis/android/core/user/AuthorityBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/AuthorityBuilder$Companion;
+	protected field name Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/user/Authority;
+	protected final fun getName ()Ljava/lang/String;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/Authority$Builder;
+	protected final fun setName (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/user/AuthorityBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/Authority;)Lorg/hisp/dhis/android/core/user/Authority$Builder;
 }
 
 public final class org/hisp/dhis/android/core/user/AuthorityCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -16746,70 +16940,248 @@ public abstract interface class org/hisp/dhis/android/core/user/TwoFactorAuthMan
 	public abstract fun is2faEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun birthday ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun education ()Ljava/lang/String;
-	public abstract fun email ()Ljava/lang/String;
-	public abstract fun employer ()Ljava/lang/String;
-	public abstract fun firstName ()Ljava/lang/String;
-	public abstract fun gender ()Ljava/lang/String;
-	public abstract fun interests ()Ljava/lang/String;
-	public abstract fun introduction ()Ljava/lang/String;
-	public abstract fun jobTitle ()Ljava/lang/String;
-	public abstract fun languages ()Ljava/lang/String;
-	public abstract fun nationality ()Ljava/lang/String;
-	public abstract fun phoneNumber ()Ljava/lang/String;
-	public abstract fun surname ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun twoFactorAuthEnabled ()Ljava/lang/Boolean;
-	public abstract fun userGroups ()Ljava/util/List;
-	public abstract fun userRoles ()Ljava/util/List;
-	public abstract fun username ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/User$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun birthday ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/User$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/String;
+	public final fun component14 ()Ljava/lang/String;
+	public final fun component15 ()Ljava/lang/String;
+	public final fun component16 ()Ljava/lang/String;
+	public final fun component17 ()Ljava/lang/String;
+	public final fun component18 ()Ljava/lang/String;
+	public final fun component19 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component20 ()Ljava/lang/String;
+	public final fun component21 ()Ljava/lang/String;
+	public final fun component22 ()Ljava/lang/Boolean;
+	public final fun component25 ()Ljava/util/List;
+	public final fun component26 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/User;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/User;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public final fun education ()Ljava/lang/String;
+	public final fun email ()Ljava/lang/String;
+	public final fun employer ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun firstName ()Ljava/lang/String;
+	public final fun gender ()Ljava/lang/String;
+	public final fun getBirthday ()Ljava/lang/String;
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getEducation ()Ljava/lang/String;
+	public final fun getEmail ()Ljava/lang/String;
+	public final fun getEmployer ()Ljava/lang/String;
+	public final fun getFirstName ()Ljava/lang/String;
+	public final fun getGender ()Ljava/lang/String;
+	public final fun getInterests ()Ljava/lang/String;
+	public final fun getIntroduction ()Ljava/lang/String;
+	public final fun getJobTitle ()Ljava/lang/String;
+	public final fun getLanguages ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getNationality ()Ljava/lang/String;
+	public final fun getPhoneNumber ()Ljava/lang/String;
+	public final fun getSurname ()Ljava/lang/String;
+	public final fun getTwoFactorAuthEnabled ()Ljava/lang/Boolean;
+	public fun getUid ()Ljava/lang/String;
+	public final fun getUserGroups ()Ljava/util/List;
+	public final fun getUserRoles ()Ljava/util/List;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun interests ()Ljava/lang/String;
+	public final fun introduction ()Ljava/lang/String;
+	public final fun jobTitle ()Ljava/lang/String;
+	public final fun languages ()Ljava/lang/String;
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun nationality ()Ljava/lang/String;
+	public final fun phoneNumber ()Ljava/lang/String;
+	public final fun surname ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/User$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun twoFactorAuthEnabled ()Ljava/lang/Boolean;
+	public fun uid ()Ljava/lang/String;
+	public final fun userGroups ()Ljava/util/List;
+	public final fun userRoles ()Ljava/util/List;
+	public final fun username ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/user/User$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/user/User$Builder : org/hisp/dhis/android/core/user/UserBuilder {
 	public fun <init> ()V
-	public abstract fun birthday (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/User;
-	public abstract fun education (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun email (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun employer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun firstName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun gender (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun interests (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun introduction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun jobTitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun languages (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun nationality (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun organisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun phoneNumber (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun surname (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun teiSearchOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun twoFactorAuthEnabled (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun userGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
-	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserCredentials {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
-	public abstract fun displayName ()Ljava/lang/String;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
-	public abstract fun userRoles ()Ljava/util/List;
-	public abstract fun username ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/user/User$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserCredentials$Builder {
+public class org/hisp/dhis/android/core/user/UserBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserBuilder$Companion;
+	protected field uid Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/UserCredentials;
-	public abstract fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
-	public abstract fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
-	public abstract fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	public final fun birthday (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/user/User;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun education (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun email (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun employer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun firstName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun gender (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	protected final fun getBirthday ()Ljava/lang/String;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getEducation ()Ljava/lang/String;
+	protected final fun getEmail ()Ljava/lang/String;
+	protected final fun getEmployer ()Ljava/lang/String;
+	protected final fun getFirstName ()Ljava/lang/String;
+	protected final fun getGender ()Ljava/lang/String;
+	protected final fun getInterests ()Ljava/lang/String;
+	protected final fun getIntroduction ()Ljava/lang/String;
+	protected final fun getJobTitle ()Ljava/lang/String;
+	protected final fun getLanguages ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getNationality ()Ljava/lang/String;
+	protected final fun getOrganisationUnits ()Ljava/util/List;
+	protected final fun getPhoneNumber ()Ljava/lang/String;
+	protected final fun getSurname ()Ljava/lang/String;
+	protected final fun getTeiSearchOrganisationUnits ()Ljava/util/List;
+	protected final fun getTwoFactorAuthEnabled ()Ljava/lang/Boolean;
+	protected final fun getUid ()Ljava/lang/String;
+	protected final fun getUserGroups ()Ljava/util/List;
+	protected final fun getUserRoles ()Ljava/util/List;
+	protected final fun getUsername ()Ljava/lang/String;
+	public final fun interests (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun introduction (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun jobTitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun languages (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun nationality (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun phoneNumber (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	protected final fun setBirthday (Ljava/lang/String;)V
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setEducation (Ljava/lang/String;)V
+	protected final fun setEmail (Ljava/lang/String;)V
+	protected final fun setEmployer (Ljava/lang/String;)V
+	protected final fun setFirstName (Ljava/lang/String;)V
+	protected final fun setGender (Ljava/lang/String;)V
+	protected final fun setInterests (Ljava/lang/String;)V
+	protected final fun setIntroduction (Ljava/lang/String;)V
+	protected final fun setJobTitle (Ljava/lang/String;)V
+	protected final fun setLanguages (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setNationality (Ljava/lang/String;)V
+	protected final fun setOrganisationUnits (Ljava/util/List;)V
+	protected final fun setPhoneNumber (Ljava/lang/String;)V
+	protected final fun setSurname (Ljava/lang/String;)V
+	protected final fun setTeiSearchOrganisationUnits (Ljava/util/List;)V
+	protected final fun setTwoFactorAuthEnabled (Ljava/lang/Boolean;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	protected final fun setUserGroups (Ljava/util/List;)V
+	protected final fun setUserRoles (Ljava/util/List;)V
+	protected final fun setUsername (Ljava/lang/String;)V
+	public final fun surname (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun twoFactorAuthEnabled (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun userGroups (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
+	public final fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/User;)Lorg/hisp/dhis/android/core/user/User$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserCredentials {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserCredentials$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/UserCredentials;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/UserCredentials;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/UserCredentials;
+	public final fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDisplayName ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getUserRoles ()Ljava/util/List;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun userRoles ()Ljava/util/List;
+	public final fun username ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/user/UserCredentials$Builder : org/hisp/dhis/android/core/user/UserCredentialsBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/user/UserCredentials$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+}
+
+public class org/hisp/dhis/android/core/user/UserCredentialsBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserCredentialsBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/user/UserCredentials;
+	public final fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getUserRoles ()Ljava/util/List;
+	protected final fun getUsername ()Ljava/lang/String;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setUserRoles (Ljava/util/List;)V
+	protected final fun setUsername (Ljava/lang/String;)V
+	public final fun userRoles (Ljava/util/List;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+	public final fun username (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserCredentialsBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/UserCredentials;)Lorg/hisp/dhis/android/core/user/UserCredentials$Builder;
 }
 
 public final class org/hisp/dhis/android/core/user/UserCredentialsObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository {
@@ -16825,25 +17197,91 @@ public final class org/hisp/dhis/android/core/user/UserCredentialsObjectReposito
 	public final fun withUserRoles ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+public final class org/hisp/dhis/android/core/user/UserGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserGroup$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserGroup;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/UserGroup;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/UserGroup;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserGroup$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/user/UserGroup$Builder : org/hisp/dhis/android/core/user/UserGroupBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/UserGroup;
+}
+
+public final class org/hisp/dhis/android/core/user/UserGroup$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+}
+
+public class org/hisp/dhis/android/core/user/UserGroupBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserGroupBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/user/UserGroup;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserGroupBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/UserGroup;)Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
 }
 
 public final class org/hisp/dhis/android/core/user/UserGroupCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
-}
-
-public final class org/hisp/dhis/android/core/user/UserInternalAccessor {
-	public static final field INSTANCE Lorg/hisp/dhis/android/core/user/UserInternalAccessor;
-	public static final fun accessOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public static final fun accessTeiSearchOrganisationUnits (Lorg/hisp/dhis/android/core/user/User;)Ljava/util/List;
-	public final fun insertOrganisationUnits (Lorg/hisp/dhis/android/core/user/User$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/user/User$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/UserModule {
@@ -16887,44 +17325,154 @@ public final class org/hisp/dhis/android/core/user/UserObjectRepository : org/hi
 	public final fun withUserRoles ()Lorg/hisp/dhis/android/core/user/UserObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun organisationUnitScope ()Ljava/lang/String;
-	public abstract fun root ()Ljava/lang/Boolean;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun user ()Ljava/lang/String;
-	public abstract fun userAssigned ()Ljava/lang/Boolean;
+public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZ)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZ)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getOrganisationUnitScope ()Ljava/lang/String;
+	public final fun getRoot ()Z
+	public final fun getUser ()Ljava/lang/String;
+	public final fun getUserAssigned ()Z
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun organisationUnitScope ()Ljava/lang/String;
+	public final fun root ()Z
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun user ()Ljava/lang/String;
+	public final fun userAssigned ()Z
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder {
+public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder : org/hisp/dhis/android/core/user/UserOrganisationUnitLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun organisationUnitScope (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun root (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun user (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
-	public abstract fun userAssigned (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/user/UserRole$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public class org/hisp/dhis/android/core/user/UserOrganisationUnitLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLinkBuilder$Companion;
+	protected field organisationUnit Ljava/lang/String;
+	protected field organisationUnitScope Ljava/lang/String;
+	protected field user Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/user/UserRole;
+	public fun build ()Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getOrganisationUnitScope ()Ljava/lang/String;
+	protected final fun getRoot ()Z
+	protected final fun getUser ()Ljava/lang/String;
+	protected final fun getUserAssigned ()Z
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	public final fun organisationUnitScope (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	public final fun root (Z)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setOrganisationUnitScope (Ljava/lang/String;)V
+	protected final fun setRoot (Z)V
+	protected final fun setUser (Ljava/lang/String;)V
+	protected final fun setUserAssigned (Z)V
+	public final fun user (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+	public final fun userAssigned (Z)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserRole$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserRole;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/UserRole;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/UserRole;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/user/UserRole$Builder : org/hisp/dhis/android/core/user/UserRoleBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/user/UserRole$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+}
+
+public class org/hisp/dhis/android/core/user/UserRoleBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/user/UserRoleBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/user/UserRole;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
+}
+
+public final class org/hisp/dhis/android/core/user/UserRoleBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/user/UserRole;)Lorg/hisp/dhis/android/core/user/UserRole$Builder;
 }
 
 public final class org/hisp/dhis/android/core/user/UserRoleCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
-}
-
-public final class org/hisp/dhis/android/core/user/internal/UserOrganisationUnitLinkHelper {
-	public static fun isRoot (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
-	public static fun userIsAssigned (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Scope;Lorg/hisp/dhis/android/core/user/User;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit;)Z
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Config {
@@ -16975,15 +17523,16 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler$DefaultI
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public static final field Companion Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()J
 	public final fun component6 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;JLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/user/oauth2/OAuth2State;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAccessToken ()Ljava/lang/String;
 	public final fun getClientId ()Ljava/lang/String;
@@ -16991,6 +17540,7 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public final fun getKeyId ()Ljava/lang/String;
 	public final fun getRefreshToken ()Ljava/lang/String;
 	public final fun getScope ()Ljava/lang/String;
+	public final fun getTokenEndpoint ()Ljava/lang/String;
 	public fun hashCode ()I
 	public final fun jsonSerializeString ()Ljava/lang/String;
 	public final fun needsTokenRefresh ()Z

@@ -201,15 +201,14 @@ internal class TrackerQueryFactoryCommonHelper(
         return false
     }
 
-    fun <O> divideByOrgUnits(
+    fun divideByOrgUnits(
         orgUnits: List<String>,
         hasLimitByOrgUnit: Boolean,
-        builder: (List<String>) -> O,
-    ): List<O> {
+    ): List<List<String>> {
         return if (hasLimitByOrgUnit && orgUnits.isNotEmpty()) {
-            orgUnits.map { builder.invoke(listOf(it)) }
+            orgUnits.map { listOf(it) }
         } else {
-            listOf(builder.invoke(orgUnits))
+            listOf(orgUnits)
         }
     }
 

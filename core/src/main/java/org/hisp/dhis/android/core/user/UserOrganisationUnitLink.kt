@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
+package org.hisp.dhis.android.core.user
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class UserOrganisationUnitLink(
+    val user: String,
+    val organisationUnit: String,
+    val organisationUnitScope: String,
+    val root: Boolean,
+    val userAssigned: Boolean,
+) : CoreObject {
+    fun user(): String = user
+    fun organisationUnit(): String = organisationUnit
+    fun organisationUnitScope(): String = organisationUnitScope
+    fun root(): Boolean = root
+    fun userAssigned(): Boolean = userAssigned
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.smscompression.SMSConsts;
+    fun toBuilder(): Builder = UserOrganisationUnitLinkBuilder.from(this)
 
-@AutoValue
-public abstract class SMSMetadataId implements CoreObject {
+    class Builder : UserOrganisationUnitLinkBuilder()
 
-    @NonNull
-    public abstract SMSConsts.MetadataType type();
-
-    @NonNull
-    public abstract String uid();
-
-    public static Builder builder() {
-        return new AutoValue_SMSMetadataId.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder type(SMSConsts.MetadataType smsMetadataIdType);
-
-        public abstract Builder uid(String uid);
-
-        public abstract SMSMetadataId build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

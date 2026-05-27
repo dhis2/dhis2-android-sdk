@@ -44,6 +44,7 @@ class CredentialsShould {
         refreshToken = null,
         expiresAt = Long.MAX_VALUE,
         scope = null,
+        tokenEndpoint = "tokenEndpoint",
     )
 
     @Test

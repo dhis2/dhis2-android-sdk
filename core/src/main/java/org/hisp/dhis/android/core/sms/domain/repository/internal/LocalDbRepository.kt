@@ -38,7 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.smscompression.models.SMSMetadata
 
 @Suppress("TooManyFunctions")
-interface LocalDbRepository {
+internal interface LocalDbRepository {
     fun getUserName(): Single<String>
     fun getGatewayNumber(): Single<String>
     suspend fun getGatewayNumberSuspend(): String

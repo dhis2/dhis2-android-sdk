@@ -82,7 +82,7 @@ class EventQueryBundleFactoryShould {
     private val captureOrgUnits = listOf(ou1, ou1c1, ou2)
     private val programList = listOf(p1, p2, p3)
 
-    private val params = ProgramDataDownloadParams.builder().build()
+    private val params = ProgramDataDownloadParams()
 
     // Object to test
     private lateinit var bundleFactory: EventQueryBundleFactory
@@ -153,8 +153,10 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun single_query_if_event_filter_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000)
-            .eventFilters(listOf(f1)).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+            eventFilters = listOf(f1),
+        )
         val queries = bundleFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
@@ -179,7 +181,9 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+        )
 
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
@@ -198,7 +202,7 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun should_create_different_queries_if_per_orgunit_in_specific() = runTest {
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
 
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.PER_ORG_UNIT).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
@@ -227,9 +231,9 @@ class EventQueryBundleFactoryShould {
             ),
         )
 
-        val params = ProgramDataDownloadParams.builder()
-            .limitByOrgunit(true)
-            .build()
+        val params = ProgramDataDownloadParams(
+            limitByOrgunit = true,
+        )
 
         val limits = bundleFactory.getQueries(params)
 
@@ -249,10 +253,10 @@ class EventQueryBundleFactoryShould {
             ),
         )
 
-        val params = ProgramDataDownloadParams.builder()
-            .limitByOrgunit(true)
-            .program(p1)
-            .build()
+        val params = ProgramDataDownloadParams(
+            limitByOrgunit = true,
+            program = p1,
+        )
 
         val bundles = bundleFactory.getQueries(params)
 

@@ -64,7 +64,7 @@ internal class EventQueryBundleInternalFactory(
             orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
-        val eventFilters = (params.eventFilters()?.filter { it.program() == programUid } ?: emptyList())
+        val eventFilters = (params.eventFilters?.filter { it.program() == programUid } ?: emptyList())
 
         val eventFilterSettings = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
 

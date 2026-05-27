@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,31 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.domain.model.internal;
+package org.hisp.dhis.android.core.user
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
+@ModelBuilder
+data class UserOrganisationUnitLink(
+    val user: String,
+    val organisationUnit: String,
+    val organisationUnitScope: String,
+    val root: Boolean,
+    val userAssigned: Boolean,
+) : CoreObject {
+    fun user(): String = user
+    fun organisationUnit(): String = organisationUnit
+    fun organisationUnitScope(): String = organisationUnitScope
+    fun root(): Boolean = root
+    fun userAssigned(): Boolean = userAssigned
 
-import java.util.Collection;
+    fun toBuilder(): Builder = UserOrganisationUnitLinkBuilder.from(this)
 
-@AutoValue
-public abstract class SMSDataValueSet {
+    class Builder : UserOrganisationUnitLinkBuilder()
 
-    public abstract Collection<DataValue> dataValues();
-
-    public abstract Boolean completed();
-
-    public static Builder builder() {
-        return new AutoValue_SMSDataValueSet.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataValues(Collection<DataValue> dataValues);
-
-        public abstract Builder completed(Boolean completed);
-
-        public abstract SMSDataValueSet build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

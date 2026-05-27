@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.server.LoginConfig
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 @ModelBuilder
 data class DatabaseAccount(
     val username: String,
@@ -43,6 +45,7 @@ data class DatabaseAccount(
     val syncState: State?,
     val importDB: DatabaseAccountImport?,
     val loginConfig: LoginConfig?,
+    val authorizationType: AuthorizationType?,
 ) {
     fun username(): String = username
     fun serverUrl(): String = serverUrl
@@ -53,6 +56,7 @@ data class DatabaseAccount(
     fun syncState(): State? = syncState
     fun importDB(): DatabaseAccountImport? = importDB
     fun loginConfig(): LoginConfig? = loginConfig
+    fun authorizationType(): AuthorizationType? = authorizationType
 
     fun toBuilder(): Builder = DatabaseAccountBuilder.from(this)
 

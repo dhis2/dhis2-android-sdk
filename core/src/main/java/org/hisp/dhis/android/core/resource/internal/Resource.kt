@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.resource.internal;
+package org.hisp.dhis.android.core.resource.internal
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.Date;
-
-@AutoValue
-public abstract class Resource implements CoreObject {
-
-    public enum Type {
+internal data class Resource(
+    val resourceType: Type?,
+    val lastSynced: Date?,
+) : CoreObject {
+    enum class Type {
         EVENT,
         SYSTEM_INFO,
         ORGANISATION_UNIT,
@@ -53,27 +49,6 @@ public abstract class Resource implements CoreObject {
         INDICATOR,
         PROGRAM_STAGE,
         RELATIONSHIP_TYPE,
-        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE
-    }
-
-    @Nullable
-    public abstract Resource.Type resourceType();
-
-    @Nullable
-    public abstract Date lastSynced();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Resource.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder resourceType(Resource.Type resourceType);
-
-        public abstract Builder lastSynced(Date lastSynced);
-
-        public abstract Resource build();
+        TRACKED_ENTITY_ATTRIBUTE_RESERVED_VALUE,
     }
 }

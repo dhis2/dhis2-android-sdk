@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Before
@@ -137,7 +136,7 @@ class OrganisationUnitCallUnitShould {
 
         // Return only one organisationUnit.
         val organisationUnits = listOf(organisationUnit)
-        whenever(UserInternalAccessor.accessOrganisationUnits(user)).doReturn(organisationUnits)
+        whenever(user.organisationUnits).doReturn(organisationUnits)
 
         organisationUnitNetworkHandler.stub {
             onBlocking {

@@ -26,39 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.resource
+package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.resource.internal.Resource
-import org.hisp.dhis.android.core.resource.internal.ResourceStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
-import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
+import org.hisp.dhis.android.core.user.User
 
-@Singleton
-internal class ResourceStoreImpl(
-    private val databaseAdapter: DatabaseAdapter,
-) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
-    { databaseAdapter.getCurrentDatabase().resourceDao() },
-    Resource::toDB,
-    SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
-) {
-    override suspend fun getLastUpdated(type: Resource.Type): String? {
-        val whereClause =
-            WhereClauseBuilder()
-                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
-                .build()
-        val resourceList = selectWhere(whereClause)
+internal object UserOrganisationUnitLinkHelper {
 
-        return resourceList.firstOrNull()?.lastSynced?.let {
-            DateUtils.DATE_FORMAT.format(it)
-        }
+    @JvmStatic
+    fun userIsAssigned(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val assignedOrgUnitUids = UidsHelper.getUids(selectedScopeOrganisationUnits)
+        return assignedOrgUnitUids.contains(organisationUnit.uid())
     }
 
-    override suspend fun deleteResource(type: Resource.Type): Boolean {
-        val dao = databaseAdapter.getCurrentDatabase().resourceDao()
-        return dao.deleteResource(type) > 0
+    @JvmStatic
+    fun isRoot(
+        scope: OrganisationUnit.Scope,
+        user: User,
+        organisationUnit: OrganisationUnit,
+    ): Boolean {
+        val selectedScopeOrganisationUnits = selectScope(scope, user) ?: return false
+        val rootOrgUnitUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(selectedScopeOrganisationUnits))
+        return rootOrgUnitUids.contains(organisationUnit.uid())
+    }
+
+    private fun selectScope(scope: OrganisationUnit.Scope, user: User): List<OrganisationUnit>? {
+        return when (scope) {
+            OrganisationUnit.Scope.SCOPE_TEI_SEARCH -> user.teiSearchOrganisationUnits
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE -> user.organisationUnits
+        }
     }
 }

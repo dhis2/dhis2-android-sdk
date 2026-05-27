@@ -26,39 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.resource
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.resource.internal.Resource
-import org.hisp.dhis.android.core.resource.internal.ResourceStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
-import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.arch.repositories.scope.BaseScope
+import org.hisp.dhis.android.core.event.EventFilter
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
+import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
+import org.hisp.dhis.android.core.settings.EnrollmentScope
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
+import java.util.Date
 
-@Singleton
-internal class ResourceStoreImpl(
-    private val databaseAdapter: DatabaseAdapter,
-) : ResourceStore, ObjectWithoutUidStoreImpl<Resource, ResourceDB>(
-    { databaseAdapter.getCurrentDatabase().resourceDao() },
-    Resource::toDB,
-    SQLStatementBuilderImpl(ResourceTableInfo.TABLE_INFO),
-) {
-    override suspend fun getLastUpdated(type: Resource.Type): String? {
-        val whereClause =
-            WhereClauseBuilder()
-                .appendKeyStringValue(ResourceTableInfo.Columns.RESOURCE_TYPE, type.name)
-                .build()
-        val resourceList = selectWhere(whereClause)
+internal data class ProgramDataDownloadParams(
+    val uids: List<String> = emptyList(),
+    val orgUnits: List<String> = emptyList(),
+    val orgUnitMode: OrganisationUnitMode? = null,
+    val program: String? = null,
+    val programStatus: EnrollmentScope? = null,
+    val programStartDate: Date? = null,
+    val programEndDate: Date? = null,
+    val trackedEntityType: String? = null,
+    val limitByOrgunit: Boolean? = null,
+    val limitByProgram: Boolean? = null,
+    val limit: Int? = null,
+    val overwrite: Boolean = false,
+    val trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>? = null,
+    val programStageWorkingLists: List<ProgramStageWorkingList>? = null,
+    val eventFilters: List<EventFilter>? = null,
+) : BaseScope {
 
-        return resourceList.firstOrNull()?.lastSynced?.let {
-            DateUtils.DATE_FORMAT.format(it)
-        }
+    fun hasProgramOrFilters(): Boolean {
+        return program != null ||
+            !programStageWorkingLists.isNullOrEmpty() ||
+            !trackedEntityInstanceFilters.isNullOrEmpty() ||
+            !eventFilters.isNullOrEmpty()
     }
 
-    override suspend fun deleteResource(type: Resource.Type): Boolean {
-        val dao = databaseAdapter.getCurrentDatabase().resourceDao()
-        return dao.deleteResource(type) > 0
+    companion object {
+        const val DEFAULT_LIMIT: Int = 500
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,43 +27,47 @@
  */
 package org.hisp.dhis.android.core.arch.storage.internal
 
+import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import org.junit.Test
+import org.mockito.kotlin.mock
 
-internal data class Credentials(
-    val username: String,
-    val serverUrl: String,
-    val password: String?,
-    val openIDConnectState: AuthState?,
-    val oauth2State: OAuth2State? = null,
-) {
+class CredentialsShould {
 
-    val authorizationType: AuthorizationType = when {
-        openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
-        oauth2State != null -> AuthorizationType.OAUTH2
-        else -> AuthorizationType.BASIC
+    private val openIDConnectState: AuthState = mock()
+    private val oauth2State = OAuth2State(
+        clientId = "client",
+        keyId = "key",
+        accessToken = "token",
+        refreshToken = null,
+        expiresAt = Long.MAX_VALUE,
+        scope = null,
+        tokenEndpoint = "tokenEndpoint",
+    )
+
+    @Test
+    fun return_basic_when_no_sso_state() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null)
+        assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.BASIC)
     }
 
-    fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
+    @Test
+    fun return_open_id_connect_when_open_id_connect_state() {
+        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, null)
+        assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 
-    override fun equals(other: Any?) =
-        (other is Credentials) &&
-            username == other.username &&
-            password == other.password &&
-            serverUrl == other.serverUrl &&
-            openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
-            oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
+    @Test
+    fun return_oauth2_when_oauth2_state() {
+        val credentials = Credentials("user", "https://dhis2.org", null, null, oauth2State)
+        assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OAUTH2)
+    }
 
-    override fun hashCode(): Int {
-        var result = username.hashCode()
-        result = 31 * result + serverUrl.hashCode()
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
-        result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
-        return result
+    @Test
+    fun return_open_id_connect_when_both_sso_states() {
+        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, oauth2State)
+        assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 }

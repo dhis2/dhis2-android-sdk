@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,29 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.resource;
+package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.resource.internal.Resource;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.text.ParseException;
-import java.util.Date;
+@ModelBuilder
+data class Authority(
+    val name: String,
+) : CoreObject {
+    fun name(): String = name
 
-public class ResourceSamples {
+    fun toBuilder(): Builder = AuthorityBuilder.from(this)
 
-    public static Resource getResource() {
-        return Resource.builder()
-                .lastSynced(getDate("2017-11-29T11:27:46.935"))
-                .resourceType(Resource.Type.PROGRAM)
-                .build();
-    }
+    class Builder : AuthorityBuilder()
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

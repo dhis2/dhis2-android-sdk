@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+package org.hisp.dhis.android.core.sms.domain.model.internal
 
-object UserInternalAccessor {
-    @JvmStatic
-    fun accessOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.organisationUnits()
-    }
+import org.hisp.dhis.android.core.datavalue.DataValue
 
-    fun insertOrganisationUnits(
-        builder: User.Builder,
-        organisationUnits: List<OrganisationUnit?>?,
-    ): User.Builder {
-        return builder.organisationUnits(organisationUnits)
-    }
-
-    @JvmStatic
-    fun accessTeiSearchOrganisationUnits(user: User): List<OrganisationUnit>? {
-        return user.teiSearchOrganisationUnits()
-    }
-}
+internal data class SMSDataValueSet(
+    val dataValues: Collection<DataValue>,
+    val completed: Boolean,
+)

@@ -64,6 +64,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .serverUrl(serverUrl)
         .encrypted(false)
         .databaseCreationDate(DATE)
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfigurationEncrypted = DatabaseAccount.builder()
@@ -72,6 +73,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .serverUrl(serverUrl)
         .encrypted(true)
         .databaseCreationDate(DATE)
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val unencryptedConfiguration = DatabasesConfiguration.builder()
@@ -181,6 +183,34 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         manager.loadExistingKeepingEncryption(serverUrl, username)
 
         verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
+    }
+
+    @Test
+    fun forward_oauth2_authorization_type_to_configurationHelper_on_createNew() {
+        whenever(databaseManager.databaseExists(any())).doReturn(true)
+        whenever(
+            configurationHelper.addOrUpdateAccount(
+                null,
+                serverUrl,
+                username,
+                false,
+                null,
+                null,
+                AuthorizationType.OAUTH2,
+            ),
+        ).doReturn(unencryptedConfiguration)
+
+        manager.createNew(serverUrl, username, false, AuthorizationType.OAUTH2)
+
+        verify(configurationHelper).addOrUpdateAccount(
+            null,
+            serverUrl,
+            username,
+            false,
+            null,
+            null,
+            AuthorizationType.OAUTH2,
+        )
     }
 
     @Test

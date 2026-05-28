@@ -32,6 +32,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
@@ -130,12 +131,18 @@ class AccountManagerImplShould {
     private fun activeCredentials(): Credentials =
         Credentials(USERNAME, SERVER_URL, "pwd", null)
 
-    private fun mockDatabaseAccount(serverUrl: String, username: String, dbName: String): DatabaseAccount =
+    private fun mockDatabaseAccount(
+        serverUrl: String,
+        username: String,
+        dbName: String,
+        authorizationType: AuthorizationType? = AuthorizationType.BASIC,
+    ): DatabaseAccount =
         mock {
             on { serverUrl() } doReturn serverUrl
             on { username() } doReturn username
             on { databaseName() } doReturn dbName
             on { encrypted() } doReturn false
+            on { authorizationType() } doReturn authorizationType
         }
 
     private fun seedConfiguration(accounts: List<DatabaseAccount>) {

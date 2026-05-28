@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.persistence.configuration.DatabasesConfigurationDB
 import org.hisp.dhis.android.persistence.configuration.toDB
@@ -54,6 +55,10 @@ internal class DatabasesConfigurationShould : CoreObjectShould<DatabasesConfigur
         assertThat(user1.databaseName()).isEqualTo("dbname1.db")
         assertThat(user1.encrypted()).isTrue()
         assertThat(user1.databaseCreationDate()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-06-06T20:44:21.375"))
+        assertThat(user1.authorizationType()).isEqualTo(AuthorizationType.OAUTH2)
+
+        val user2 = configuration.accounts()[1]
+        assertThat(user2.authorizationType()).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 
     @Test

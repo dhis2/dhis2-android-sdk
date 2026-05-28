@@ -29,12 +29,14 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 
 object DatabasesConfigurationUtil {
     fun buildUserConfiguration(
         username: String,
         creationDate: String,
         serverUrl: String = "server",
+        authorizationType: AuthorizationType? = AuthorizationType.BASIC,
     ): DatabaseAccount {
         return DatabaseAccount.builder()
             .username(username)
@@ -43,6 +45,7 @@ object DatabasesConfigurationUtil {
             .encrypted(false)
             .databaseCreationDate(DateUtils.DATE_FORMAT.parse(creationDate))
             .lastAccessDate(DateUtils.DATE_FORMAT.parse(creationDate))
+            .authorizationType(authorizationType)
             .build()
     }
 }

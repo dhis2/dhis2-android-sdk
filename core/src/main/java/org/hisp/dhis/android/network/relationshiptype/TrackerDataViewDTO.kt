@@ -33,8 +33,8 @@ import org.hisp.dhis.android.core.relationship.TrackerDataView
 
 @Serializable
 internal data class TrackerDataViewDTO(
-    val attributes: List<String>? = emptyList(),
-    val dataElements: List<String>? = emptyList(),
+    val attributes: List<String> = emptyList(),
+    val dataElements: List<String> = emptyList(),
 ) {
     fun toDomain(): TrackerDataView {
         return TrackerDataView.builder()

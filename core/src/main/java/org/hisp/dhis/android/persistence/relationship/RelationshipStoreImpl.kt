@@ -50,7 +50,7 @@ internal class RelationshipStoreImpl(
         val whereClause = WhereClauseBuilder()
             .appendKeyStringValue(
                 "RelationshipItem." + relationshipItem.elementType(),
-                relationshipItem.elementUid(),
+                relationshipItem.elementUid()!!,
             )
             .build()
 
@@ -72,7 +72,7 @@ internal class RelationshipStoreImpl(
         val builder = WhereClauseBuilder()
             .appendKeyStringValue(
                 "$itemTable.${relationshipItem.elementType()}",
-                relationshipItem.elementUid(),
+                relationshipItem.elementUid()!!,
             )
 
         val whereClause =

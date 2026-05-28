@@ -51,7 +51,7 @@ internal data class NewRelationshipDTO(
 
     fun toDomain(): Relationship {
         return Relationship.builder()
-            .uid(relationship)
+            .uid(relationship!!)
             .relationshipType(relationshipType)
             .name(relationshipName)
             .created(createdAt?.toDomain())

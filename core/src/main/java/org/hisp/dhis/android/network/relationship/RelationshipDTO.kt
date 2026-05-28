@@ -49,7 +49,7 @@ internal data class RelationshipDTO(
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): Relationship {
         return Relationship.builder()
-            .uid(relationship)
+            .uid(relationship!!)
             .name(relationshipName)
             .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
             .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })

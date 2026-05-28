@@ -54,14 +54,14 @@ internal data class RelationshipItemDTO(
             return when {
                 r.hasTrackedEntityInstance() ->
                     RelationshipItemDTO(
-                        trackedEntityInstance = RelationshipItemTrackedEntityInstanceDTO(r.elementUid()),
+                        trackedEntityInstance = RelationshipItemTrackedEntityInstanceDTO(r.elementUid()!!),
                     )
 
                 r.hasEnrollment() ->
-                    RelationshipItemDTO(enrollment = RelationshipItemEnrollmentDTO(r.elementUid()))
+                    RelationshipItemDTO(enrollment = RelationshipItemEnrollmentDTO(r.elementUid()!!))
 
                 r.hasEvent() ->
-                    RelationshipItemDTO(event = RelationshipItemEventDTO(r.elementUid()))
+                    RelationshipItemDTO(event = RelationshipItemEventDTO(r.elementUid()!!))
 
                 else -> null
             }

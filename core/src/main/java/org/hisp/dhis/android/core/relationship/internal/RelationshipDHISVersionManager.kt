@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.relationship.BaseRelationship
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
@@ -55,17 +54,17 @@ internal class RelationshipDHISVersionManager(
         } ?: false
     }
 
-    private fun getRelatedRelationshipItem(baseRelationship: BaseRelationship, parentUid: String): RelationshipItem? {
-        val fromUid = baseRelationship.from()?.elementUid()
-        val toUid = baseRelationship.to()?.elementUid()
+    private fun getRelatedRelationshipItem(relationship: Relationship, parentUid: String): RelationshipItem? {
+        val fromUid = relationship.from()?.elementUid()
+        val toUid = relationship.to()?.elementUid()
 
         val itemBuilder = when {
             parentUid == fromUid ->
-                baseRelationship.to()?.toBuilder()
+                relationship.to()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.TO)
 
             parentUid == toUid ->
-                baseRelationship.from()?.toBuilder()
+                relationship.from()?.toBuilder()
                     ?.relationshipItemType(RelationshipConstraintType.FROM)
 
             else ->
@@ -73,7 +72,7 @@ internal class RelationshipDHISVersionManager(
         }
 
         return itemBuilder
-            ?.relationship(ObjectWithUid.create(baseRelationship.uid()))
+            ?.relationship(ObjectWithUid.create(relationship.uid()))
             ?.build()
     }
 
@@ -86,7 +85,7 @@ internal class RelationshipDHISVersionManager(
             val item = getRelatedRelationshipItem(relationship, parentUid)
             if (item != null && relationship.relationshipType() != null && item.relationshipItemType() != null) {
                 val relationshipItem = RelationshipItemRelative(
-                    itemUid = item.elementUid(),
+                    itemUid = item.elementUid()!!,
                     itemType = item.elementType(),
                     relationshipTypeUid = relationship.relationshipType()!!,
                     constraintType = item.relationshipItemType()!!,

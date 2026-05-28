@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,100 +26,63 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns
 
-import com.google.auto.value.AutoValue;
+@Suppress("TooManyFunctions")
+@ModelBuilder
+data class RelationshipItem(
+    val relationship: ObjectWithUid?,
+    val relationshipItemType: RelationshipConstraintType?,
+    val trackedEntityInstance: RelationshipItemTrackedEntityInstance?,
+    val enrollment: RelationshipItemEnrollment?,
+    val event: RelationshipItemEvent?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns;
+    fun relationship(): ObjectWithUid? = relationship
+    fun relationshipItemType(): RelationshipConstraintType? = relationshipItemType
+    fun trackedEntityInstance(): RelationshipItemTrackedEntityInstance? = trackedEntityInstance
+    fun enrollment(): RelationshipItemEnrollment? = enrollment
+    fun event(): RelationshipItemEvent? = event
 
-@AutoValue
-public abstract class RelationshipItem implements CoreObject {
+    fun hasTrackedEntityInstance(): Boolean = trackedEntityInstance != null
+    fun hasEnrollment(): Boolean = enrollment != null
+    fun hasEvent(): Boolean = event != null
 
-    @Nullable
-    public abstract ObjectWithUid relationship();
-
-    @Nullable
-    public abstract RelationshipConstraintType relationshipItemType();
-
-    @Nullable
-    public abstract RelationshipItemTrackedEntityInstance trackedEntityInstance();
-
-    @Nullable
-    public abstract RelationshipItemEnrollment enrollment();
-
-    @Nullable
-    public abstract RelationshipItemEvent event();
-
-    public boolean hasTrackedEntityInstance() {
-        return trackedEntityInstance() != null;
+    fun elementUid(): String? = when {
+        hasTrackedEntityInstance() -> trackedEntityInstance!!.trackedEntityInstance
+        hasEnrollment() -> enrollment!!.enrollment
+        hasEvent() -> event!!.event
+        else -> null
     }
 
-    public boolean hasEnrollment() {
-        return enrollment() != null;
+    fun elementType(): String = when {
+        hasTrackedEntityInstance() -> Columns.TRACKED_ENTITY_INSTANCE
+        hasEnrollment() -> Columns.ENROLLMENT
+        else -> Columns.EVENT
     }
 
-    public boolean hasEvent() {
-        return event() != null;
-    }
+    fun toBuilder(): Builder = RelationshipItemBuilder.from(this)
 
-    public String elementUid() {
-        if (hasTrackedEntityInstance()) {
-            return trackedEntityInstance().trackedEntityInstance();
-        } else if (hasEnrollment()) {
-            return enrollment().enrollment();
-        } else if (hasEvent()) {
-            return event().event();
-        } else {
-            return null;
-        }
-    }
-
-    public String elementType() {
-        if (hasTrackedEntityInstance()) {
-            return Columns.TRACKED_ENTITY_INSTANCE;
-        } else if (hasEnrollment()) {
-            return Columns.ENROLLMENT;
-        } else {
-            return Columns.EVENT;
-        }
-    }
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipItem.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder trackedEntityInstance(RelationshipItemTrackedEntityInstance trackedEntityInstance);
-
-        public abstract Builder enrollment(RelationshipItemEnrollment enrollment);
-
-        public abstract Builder event(RelationshipItemEvent event);
-
-        public abstract Builder relationship(ObjectWithUid relationship);
-
-        public abstract Builder relationshipItemType(RelationshipConstraintType relationshipItemType);
-
-        protected abstract RelationshipItem autoBuild();
-
-        @SuppressWarnings("PMD.NPathComplexity")
-        public RelationshipItem build() {
-            RelationshipItem item = autoBuild();
-            int teiCount = item.trackedEntityInstance() == null ? 0 : 1;
-            int enrollmentCount = item.enrollment() == null ? 0 : 1;
-            int eventCount = item.event() == null ? 0 : 1;
-            if (teiCount + enrollmentCount + eventCount == 1) {
-                return item;
-            } else {
-                throw new IllegalArgumentException("Item must have either a TEI, enrollment or event");
+    class Builder : RelationshipItemBuilder() {
+        override fun build(): RelationshipItem {
+            val item = super.build()
+            val teiCount = if (item.trackedEntityInstance == null) 0 else 1
+            val enrollmentCount = if (item.enrollment == null) 0 else 1
+            val eventCount = if (item.event == null) 0 else 1
+            require(teiCount + enrollmentCount + eventCount == 1) {
+                "Item must have either a TEI, enrollment or event"
             }
+            return item
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

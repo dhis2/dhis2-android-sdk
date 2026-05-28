@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,56 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RelationshipType(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val fromToName: String?,
+    val toFromName: String?,
+    val fromConstraint: RelationshipConstraint?,
+    val toConstraint: RelationshipConstraint?,
+    val bidirectional: Boolean?,
+    val access: Access,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.Access;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun fromToName(): String? = fromToName
+    fun toFromName(): String? = toFromName
+    fun fromConstraint(): RelationshipConstraint? = fromConstraint
+    fun toConstraint(): RelationshipConstraint? = toConstraint
+    fun bidirectional(): Boolean? = bidirectional
+    fun access(): Access = access
 
-@AutoValue
-public abstract class RelationshipType extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = RelationshipTypeBuilder.from(this)
 
-    @Nullable
-    public abstract String fromToName();
+    class Builder : RelationshipTypeBuilder()
 
-    @Nullable
-    public abstract String toFromName();
-
-    @Nullable
-    public abstract RelationshipConstraint fromConstraint();
-
-    @Nullable
-    public abstract RelationshipConstraint toConstraint();
-
-    @Nullable
-    public abstract Boolean bidirectional();
-
-    public abstract Access access();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipType.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder fromToName(String fromToName);
-
-        public abstract Builder toFromName(String toFromName);
-
-        public abstract Builder fromConstraint(RelationshipConstraint fromConstraint);
-
-        public abstract Builder toConstraint(RelationshipConstraint toConstraint);
-
-        public abstract Builder bidirectional(Boolean bidirectional);
-
-        public abstract Builder access(Access access);
-
-        public abstract RelationshipType build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

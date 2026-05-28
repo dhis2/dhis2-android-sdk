@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,62 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RelationshipConstraint(
+    val relationshipType: ObjectWithUid?,
+    val constraintType: RelationshipConstraintType?,
+    val relationshipEntity: RelationshipEntityType?,
+    val trackedEntityType: ObjectWithUid?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val trackerDataView: TrackerDataView?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun relationshipType(): ObjectWithUid? = relationshipType
+    fun constraintType(): RelationshipConstraintType? = constraintType
+    fun relationshipEntity(): RelationshipEntityType? = relationshipEntity
+    fun trackedEntityType(): ObjectWithUid? = trackedEntityType
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun trackerDataView(): TrackerDataView? = trackerDataView
 
-@AutoValue
-public abstract class RelationshipConstraint implements CoreObject {
+    fun toBuilder(): Builder = RelationshipConstraintBuilder.from(this)
 
-    @Nullable
-    public abstract ObjectWithUid relationshipType();
+    class Builder : RelationshipConstraintBuilder()
 
-    @Nullable
-    public abstract RelationshipConstraintType constraintType();
-
-    @Nullable
-    public abstract RelationshipEntityType relationshipEntity();
-
-    @Nullable
-    public abstract ObjectWithUid trackedEntityType();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract TrackerDataView trackerDataView();
-
-    public static Builder builder() {
-        return new AutoValue_RelationshipConstraint.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder relationshipType(ObjectWithUid relationshipType);
-
-        public abstract Builder constraintType(RelationshipConstraintType constraintType);
-
-        public abstract Builder relationshipEntity(RelationshipEntityType relationshipEntity);
-
-        public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder trackerDataView(TrackerDataView trackerDataView);
-
-        public abstract RelationshipConstraint build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

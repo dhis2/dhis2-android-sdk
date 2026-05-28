@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,63 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackerDataView(
+    val attributes: List<String>,
+    val dataElements: List<String>,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun attributes(): List<String> = attributes
+    fun dataElements(): List<String> = dataElements
 
-import java.util.Collections;
-import java.util.List;
+    fun toBuilder(): Builder = TrackerDataViewBuilder.from(this)
 
-@AutoValue
-public abstract class TrackerDataView implements CoreObject {
+    class Builder : TrackerDataViewBuilder()
 
-    @Nullable
-    public abstract List<String> attributes();
-
-    @Nullable
-    public abstract List<String> dataElements();
-
-
-    public static Builder builder() {
-        return new AutoValue_TrackerDataView.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder attributes(List<String> attributes);
-
-        public abstract Builder dataElements(List<String> dataElements);
-
-        abstract TrackerDataView autoBuild();
-
-        //Auxiliary fields
-        abstract List<String> attributes();
-
-        abstract List<String> dataElements();
-
-        public TrackerDataView build() {
-
-            try {
-                attributes();
-            } catch (IllegalStateException e) {
-                attributes(Collections.emptyList());
-            }
-
-            try {
-                dataElements();
-            } catch (IllegalStateException e) {
-                dataElements(Collections.emptyList());
-            }
-
-            return autoBuild();
-        }
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

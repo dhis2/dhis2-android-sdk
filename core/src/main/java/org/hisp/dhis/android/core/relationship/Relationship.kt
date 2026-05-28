@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-@AutoValue
-public abstract class Relationship extends BaseRelationship {
+@ModelBuilder
+data class Relationship(
+    val uid: String,
+    val name: String?,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val syncState: State?,
+    override val deleted: Boolean?,
+    val relationshipType: String?,
+    val from: RelationshipItem?,
+    val to: RelationshipItem?,
+) : DeletableDataObjectKt, ObjectWithUidInterface {
 
-    public static Builder builder() {
-        return new AutoValue_Relationship.Builder();
-    }
+    override fun uid(): String = uid
+    fun name(): String? = name
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    override fun syncState(): State? = syncState
 
-    public abstract Builder toBuilder();
+    @Deprecated("")
+    override fun state(): State? = syncState
+    fun relationshipType(): String? = relationshipType
+    fun from(): RelationshipItem? = from
+    fun to(): RelationshipItem? = to
 
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseRelationship.Builder<Builder> {
+    fun toBuilder(): Builder = RelationshipBuilder.from(this)
 
-        public abstract Relationship build();
+    class Builder : RelationshipBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

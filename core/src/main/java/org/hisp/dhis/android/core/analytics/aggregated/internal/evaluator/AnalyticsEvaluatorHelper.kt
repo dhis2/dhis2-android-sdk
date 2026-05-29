@@ -245,7 +245,7 @@ internal object AnalyticsEvaluatorHelper {
         return builder.appendComplexQuery(innerBuilder.build())
     }
 
-    private fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
+    internal fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
         return "SELECT ${cocInfo.Columns.UID} " +
             "FROM ${cocInfo.TABLE_INFO.name()} " +
             "WHERE " +

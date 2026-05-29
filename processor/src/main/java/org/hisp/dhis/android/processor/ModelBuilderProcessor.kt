@@ -125,7 +125,7 @@ class ModelBuilderProcessor(
                     val optInternal = if (field.isInternal && !isOverride) "internal " else ""
 
                     "${optInternal}${optOverride}fun $name ($name: $type): $innerBuilderName = " +
-                            "this.also { this.$name = $name } as $innerBuilderName"
+                        "this.also { this.$name = $name } as $innerBuilderName"
                 }
             }
                 

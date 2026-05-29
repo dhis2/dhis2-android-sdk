@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
 import androidx.sqlite.db.SimpleSQLiteQuery
-import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -46,7 +45,6 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
-import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
@@ -93,25 +91,9 @@ internal class ProgramIndicatorSQLExecutor(
         val targetTable = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "${EventTableInfo.TABLE_INFO.name()} as $EventAlias"
+
             AnalyticsType.ENROLLMENT, null ->
                 "${EnrollmentTableInfo.TABLE_INFO.name()} as $EnrollmentAlias"
-        }
-
-        val contextWhereClause = when (programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
-                    programIndicator,
-                    evaluationItem,
-                    metadata,
-                    queryMods,
-                )
-            AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
-                    programIndicator,
-                    evaluationItem,
-                    metadata,
-                    queryMods,
-                )
         }
 
         val context = ProgramIndicatorSQLContext(
@@ -126,6 +108,28 @@ internal class ProgramIndicatorSQLExecutor(
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
+        val contextWhereClause = when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods,
+                    sqlVisitor,
+                    categoryOptionMappingStore,
+                )
+
+            AnalyticsType.ENROLLMENT, null ->
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods,
+                    sqlVisitor,
+                    categoryOptionMappingStore,
+                )
+        }
+
         val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)
 
@@ -135,51 +139,10 @@ internal class ProgramIndicatorSQLExecutor(
             else -> CommonParser.visit(programIndicator.filter(), sqlVisitor)
         }
 
-        val disagreggationCategoryFilter = buildDisaggregationCategoryFilter(
-            programIndicator = programIndicator,
-            evaluationItem = evaluationItem,
-            sqlVisitor = sqlVisitor,
-        )
-
         return "SELECT ${aggregator.sql}($selectExpression) " +
             "FROM $targetTable " +
             "WHERE ($filterExpression) " +
-            "AND $contextWhereClause " +
-            "AND ($disagreggationCategoryFilter)"
-    }
-
-    @Suppress("ReturnCount")
-    private suspend fun buildDisaggregationCategoryFilter(
-        programIndicator: ProgramIndicator,
-        evaluationItem: AnalyticsServiceEvaluationItem,
-        sqlVisitor: CommonExpressionVisitor,
-    ): String {
-        val categoryItems = evaluationItem.allDimensionItems
-            .filterIsInstance<DimensionItem.CategoryItem>()
-        if (categoryItems.isEmpty()) return "1"
-        val categoryItemsByCategory = categoryItems.groupBy { (it.dimension as Dimension.Category).uid }
-
-        val mappingIds = programIndicator.categoryMappingIds().orEmpty()
-        val programUid = programIndicator.program()?.uid()
-        if (mappingIds.isEmpty() || programUid == null) return "0"
-
-        val filtersByCategoryAndOption = categoryOptionMappingStore
-            .selectFiltersForProgram(programUid, mappingIds)
-
-        val categoryFragments = categoryItemsByCategory.map { (categoryUid, items) ->
-            val itemFragments = items.map { item ->
-                val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
-                    ?: return@map "0"
-
-                when (filter.trim()) {
-                    "true", "1", "" -> "1"
-                    else -> "(${CommonParser.visit(filter, sqlVisitor)})"
-                }
-            }
-            itemFragments.joinToString(" OR ", prefix = "(", postfix = ")")
-        }
-
-        return categoryFragments.joinToString(" AND ")
+            "AND $contextWhereClause"
     }
 
     private suspend fun constantMap(): Map<String, Constant> {

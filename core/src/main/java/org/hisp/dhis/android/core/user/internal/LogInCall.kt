@@ -235,6 +235,7 @@ internal class LogInCall(
             token = oauth2State.accessToken!!,
             openIDConnectState = null,
             oauth2State = oauth2State,
+            password = "",
         )
     }
 
@@ -244,6 +245,7 @@ internal class LogInCall(
         token: String,
         openIDConnectState: AuthState?,
         oauth2State: OAuth2State?,
+        password: String? = null,
     ): User {
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
 
@@ -258,7 +260,7 @@ internal class LogInCall(
             credentials = Credentials(
                 username = user.username()!!,
                 serverUrl = trimmedServerUrl!!,
-                password = null,
+                password = password,
                 openIDConnectState = openIDConnectState,
                 oauth2State = oauth2State,
             )

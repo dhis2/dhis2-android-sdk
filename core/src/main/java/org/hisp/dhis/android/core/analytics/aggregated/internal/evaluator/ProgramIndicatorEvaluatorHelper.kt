@@ -302,7 +302,7 @@ internal object ProgramIndicatorEvaluatorHelper {
             }
         }
 
-        return if (innerBuilder.isEmpty)  builder else builder.appendComplexQuery(innerBuilder.build())
+        return if (innerBuilder.isEmpty) builder else builder.appendComplexQuery(innerBuilder.build())
     }
 
     @Suppress("ReturnCount")

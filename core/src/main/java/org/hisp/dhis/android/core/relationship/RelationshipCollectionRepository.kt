@@ -87,7 +87,6 @@ class RelationshipCollectionRepository internal constructor(
     @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     override suspend fun suspendAdd(o: Relationship): String {
-        val relationshipWithUid: Relationship
         if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error
                 .builder()

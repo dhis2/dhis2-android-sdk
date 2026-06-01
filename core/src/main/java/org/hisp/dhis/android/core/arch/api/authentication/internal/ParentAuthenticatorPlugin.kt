@@ -57,16 +57,16 @@ internal class ParentAuthenticatorPlugin(
                         proceed(request)
                     }
 
-                    credentials?.password != null -> {
-                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
-                    }
-
                     credentials?.openIDConnectState != null -> {
                         openIDConnectAuthenticator.handleTokenCall(this, request, credentials)
                     }
 
                     credentials?.oauth2State != null -> {
                         oauth2Authenticator.handleTokenCall(this, request, credentials)
+                    }
+
+                    credentials?.password != null -> {
+                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
                     }
 
                     else -> {

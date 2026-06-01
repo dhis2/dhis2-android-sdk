@@ -39,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.PagerDTO
 @Serializable
 internal data class RelationshipDTO(
     override val deleted: Boolean?,
-    val relationship: String?,
+    val relationship: String,
     val relationshipName: String?,
     val created: String?,
     val lastUpdated: String?,
@@ -49,7 +49,7 @@ internal data class RelationshipDTO(
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): Relationship {
         return Relationship.builder()
-            .uid(relationship!!)
+            .uid(relationship)
             .name(relationshipName)
             .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
             .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })

@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.relationship
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.DeletableDataObjectKt
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 import org.hisp.dhis.android.core.common.State
 import java.util.Date
 
 @ModelBuilder
 data class Relationship(
-    val uid: String,
+    override val uid: String,
     val name: String?,
     val created: Date?,
     val lastUpdated: Date?,
@@ -45,9 +45,8 @@ data class Relationship(
     val relationshipType: String?,
     val from: RelationshipItem?,
     val to: RelationshipItem?,
-) : DeletableDataObjectKt, ObjectWithUidInterface {
+) : DeletableDataObjectKt, ObjectWithUidInterfaceKt {
 
-    override fun uid(): String = uid
     fun name(): String? = name
     fun created(): Date? = created
     fun lastUpdated(): Date? = lastUpdated

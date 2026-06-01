@@ -104,11 +104,10 @@ class RelationshipCollectionRepository internal constructor(
                 .build()
         } else {
             val from = o.from()
-            relationshipWithUid = o
             val fromStore = storeSelector.getElementStore(from)
             val fromState = fromStore.getSyncState(from!!.elementUid()!!)
             if (isUpdatableState(fromState)) {
-                relationshipHandler.handle(relationshipWithUid) { r: Relationship ->
+                relationshipHandler.handle(o) { r: Relationship ->
                     r.toBuilder()
                         .syncState(State.TO_POST)
                         .created(clockProvider.clock.now().toJavaDate())
@@ -129,7 +128,7 @@ class RelationshipCollectionRepository internal constructor(
                     .build()
             }
         }
-        return relationshipWithUid.uid()
+        return o.uid()
     }
 
     override fun uid(uid: String?): ReadWriteObjectRepository<Relationship> {

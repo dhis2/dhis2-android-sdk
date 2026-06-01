@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.Access
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RelationshipType(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val fromToName: String?,
+    val toFromName: String?,
+    val fromConstraint: RelationshipConstraint?,
+    val toConstraint: RelationshipConstraint?,
+    val bidirectional: Boolean?,
+    val access: Access,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-@AutoValue
-public abstract class RelationshipItemEnrollment {
+    fun fromToName(): String? = fromToName
+    fun toFromName(): String? = toFromName
+    fun fromConstraint(): RelationshipConstraint? = fromConstraint
+    fun toConstraint(): RelationshipConstraint? = toConstraint
+    fun bidirectional(): Boolean? = bidirectional
+    fun access(): Access = access
 
-    @NonNull
-    public abstract String enrollment();
+    fun toBuilder(): Builder = RelationshipTypeBuilder.from(this)
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEnrollment.Builder();
-    }
+    class Builder : RelationshipTypeBuilder()
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract RelationshipItemEnrollment build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

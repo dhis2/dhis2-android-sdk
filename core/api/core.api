@@ -4574,7 +4574,7 @@ public abstract interface class org/hisp/dhis/android/core/common/DeletableDataO
 	public abstract fun deleted ()Ljava/lang/Boolean;
 }
 
-public abstract interface class org/hisp/dhis/android/core/common/DeletableDataObjectKt : org/hisp/dhis/android/core/common/DataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
+public abstract interface class org/hisp/dhis/android/core/common/DeletableDataObjectKt : org/hisp/dhis/android/core/common/DeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public fun deleted ()Ljava/lang/Boolean;
 	public abstract fun getDeleted ()Ljava/lang/Boolean;
 }
@@ -11895,36 +11895,90 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/internal/A
 	public final fun from (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/BaseRelationship : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun from ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun relationshipType ()Ljava/lang/String;
-	public abstract fun to ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/relationship/Relationship : org/hisp/dhis/android/core/common/DeletableDataObjectKt, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/Relationship$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/Date;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component6 ()Ljava/lang/Boolean;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/Relationship;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public final fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun from ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getFrom ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getRelationshipType ()Ljava/lang/String;
+	public final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getTo ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun name ()Ljava/lang/String;
+	public final fun relationshipType ()Ljava/lang/String;
+	public fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun to ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract interface class org/hisp/dhis/android/core/relationship/BaseRelationship$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun relationshipType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun to (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/BaseRelationship$Builder;
+public final class org/hisp/dhis/android/core/relationship/Relationship$Builder : org/hisp/dhis/android/core/relationship/RelationshipBuilder {
+	public fun <init> ()V
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/Relationship : org/hisp/dhis/android/core/relationship/BaseRelationship {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+public final class org/hisp/dhis/android/core/relationship/Relationship$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/Relationship$Builder : org/hisp/dhis/android/core/relationship/BaseRelationship$Builder {
+public class org/hisp/dhis/android/core/relationship/RelationshipBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipBuilder$Companion;
+	protected field uid Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getFrom ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getRelationshipType ()Ljava/lang/String;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getTo ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun relationshipType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setFrom (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setRelationshipType (Ljava/lang/String;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setTo (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun to (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/Relationship;)Lorg/hisp/dhis/android/core/relationship/Relationship$Builder;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/BaseReadOnlyWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
@@ -11952,29 +12006,76 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public final fun withItems ()Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun constraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun relationshipEntity ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
-	public abstract fun relationshipType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun trackerDataView ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+public final class org/hisp/dhis/android/core/relationship/RelationshipConstraint : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component7 ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+	public final fun constraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/TrackerDataView;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConstraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getRelationshipEntity ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
+	public final fun getRelationshipType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getTrackerDataView ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+	public fun hashCode ()I
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun relationshipEntity ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
+	public final fun relationshipType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun trackerDataView ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder {
+public final class org/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder : org/hisp/dhis/android/core/relationship/RelationshipConstraintBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
-	public abstract fun constraintType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun relationshipEntity (Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun relationshipType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
-	public abstract fun trackerDataView (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipConstraint$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/RelationshipConstraintBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun constraintType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	protected final fun getConstraintType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getRelationshipEntity ()Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;
+	protected final fun getRelationshipType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getTrackerDataView ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public final fun relationshipEntity (Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public final fun relationshipType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	protected final fun setConstraintType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setRelationshipEntity (Lorg/hisp/dhis/android/core/relationship/RelationshipEntityType;)V
+	protected final fun setRelationshipType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setTrackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setTrackerDataView (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)V
+	public final fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+	public final fun trackerDataView (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipConstraintBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint$Builder;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipConstraintType : java/lang/Enum {
@@ -12012,67 +12113,181 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipHelper {
 	public static fun teiToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItem : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public fun elementType ()Ljava/lang/String;
-	public fun elementUid ()Ljava/lang/String;
-	public abstract fun enrollment ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
-	public abstract fun event ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
-	public fun hasEnrollment ()Z
-	public fun hasEvent ()Z
-	public fun hasTrackedEntityInstance ()Z
-	public abstract fun relationship ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun relationshipItemType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public abstract fun trackedEntityInstance ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+public final class org/hisp/dhis/android/core/relationship/RelationshipItem : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun elementType ()Ljava/lang/String;
+	public final fun elementUid ()Ljava/lang/String;
+	public final fun enrollment ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun event ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public final fun getEnrollment ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public final fun getEvent ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public final fun getRelationship ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getRelationshipItemType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun getTrackedEntityInstance ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	public final fun hasEnrollment ()Z
+	public final fun hasEvent ()Z
+	public final fun hasTrackedEntityInstance ()Z
+	public fun hashCode ()I
+	public final fun relationship ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun relationshipItemType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItem$Builder {
+public final class org/hisp/dhis/android/core/relationship/RelationshipItem$Builder : org/hisp/dhis/android/core/relationship/RelationshipItemBuilder {
 	public fun <init> ()V
-	protected abstract fun autoBuild ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
 	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public abstract fun enrollment (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public abstract fun event (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public abstract fun relationship (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public abstract fun relationshipItemType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
-	public abstract fun trackedEntityInstance (Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollment {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
-	public abstract fun enrollment ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/relationship/RelationshipItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder {
+public class org/hisp/dhis/android/core/relationship/RelationshipItemBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
-	public abstract fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public final fun enrollment (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	public final fun event (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	protected final fun getEnrollment ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	protected final fun getEvent ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	protected final fun getRelationship ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getRelationshipItemType ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;
+	protected final fun getTrackedEntityInstance ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	public final fun relationship (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	public final fun relationshipItemType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
+	protected final fun setEnrollment (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;)V
+	protected final fun setEvent (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)V
+	protected final fun setRelationship (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setRelationshipItemType (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraintType;)V
+	protected final fun setTrackedEntityInstance (Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;)V
+	public final fun trackedEntityInstance (Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemEvent {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
-	public abstract fun event ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
-	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollment {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public final fun enrollment ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnrollment ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance {
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder : org/hisp/dhis/android/core/relationship/RelationshipItemEnrollmentBuilder {
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
-	public abstract fun trackedEntityInstance ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder {
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollmentBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollmentBuilder$Companion;
+	protected field enrollment Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
-	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;
+	public final fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+	protected final fun getEnrollment ()Ljava/lang/String;
+	protected final fun setEnrollment (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEnrollmentBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEnrollment$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEvent {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun event ()Ljava/lang/String;
+	public final fun getEvent ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder : org/hisp/dhis/android/core/relationship/RelationshipItemEventBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEvent$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/RelationshipItemEventBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemEventBuilder$Companion;
+	protected field event Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;
+	public final fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+	protected final fun getEvent ()Ljava/lang/String;
+	protected final fun setEvent (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemEventBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemEvent$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder : org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstanceBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstanceBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstanceBuilder$Companion;
+	protected field trackedEntityInstance Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;
+	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
+	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
+	public final fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstanceBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance;)Lorg/hisp/dhis/android/core/relationship/RelationshipItemTrackedEntityInstance$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/relationship/RelationshipModule {
@@ -12093,27 +12308,125 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipService$D
 	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun access ()Lorg/hisp/dhis/android/core/common/Access;
-	public abstract fun bidirectional ()Ljava/lang/Boolean;
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun fromConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
-	public abstract fun fromToName ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun toConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
-	public abstract fun toFromName ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipType$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/Access;)V
+	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun bidirectional ()Ljava/lang/Boolean;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun component12 ()Ljava/lang/Boolean;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/RelationshipType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/Access;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun fromConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun fromToName ()Ljava/lang/String;
+	public final fun getAccess ()Lorg/hisp/dhis/android/core/common/Access;
+	public final fun getBidirectional ()Ljava/lang/Boolean;
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getFromConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun getFromToName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getToConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun getToFromName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public final fun toConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	public final fun toFromName ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/RelationshipType$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/relationship/RelationshipType$Builder : org/hisp/dhis/android/core/relationship/RelationshipTypeBuilder {
 	public fun <init> ()V
-	public abstract fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun bidirectional (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
-	public abstract fun fromConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun fromToName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun toConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
-	public abstract fun toFromName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipType$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/RelationshipTypeBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipTypeBuilder$Companion;
+	protected field access Lorg/hisp/dhis/android/core/common/Access;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public final fun access (Lorg/hisp/dhis/android/core/common/Access;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public final fun bidirectional (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/relationship/RelationshipType;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public final fun fromConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public final fun fromToName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	protected final fun getAccess ()Lorg/hisp/dhis/android/core/common/Access;
+	protected final fun getBidirectional ()Ljava/lang/Boolean;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getFromConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	protected final fun getFromToName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getToConstraint ()Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;
+	protected final fun getToFromName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	protected final fun setAccess (Lorg/hisp/dhis/android/core/common/Access;)V
+	protected final fun setBidirectional (Ljava/lang/Boolean;)V
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setFromConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)V
+	protected final fun setFromToName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setToConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)V
+	protected final fun setToFromName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun toConstraint (Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public final fun toFromName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/RelationshipTypeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Lorg/hisp/dhis/android/core/relationship/RelationshipType$Builder;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipTypeCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -12140,19 +12453,48 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipTypeWithE
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attributes ()Ljava/util/List;
-	public static fun builder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
-	public abstract fun dataElements ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+public final class org/hisp/dhis/android/core/relationship/TrackerDataView : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Companion;
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public final fun attributes ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
+	public final fun dataElements ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributes ()Ljava/util/List;
+	public final fun getDataElements ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/relationship/TrackerDataView$Builder {
+public final class org/hisp/dhis/android/core/relationship/TrackerDataView$Builder : org/hisp/dhis/android/core/relationship/TrackerDataViewBuilder {
 	public fun <init> ()V
-	public abstract fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+}
+
+public final class org/hisp/dhis/android/core/relationship/TrackerDataView$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+}
+
+public class org/hisp/dhis/android/core/relationship/TrackerDataViewBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/relationship/TrackerDataViewBuilder$Companion;
+	protected field attributes Ljava/util/List;
+	protected field dataElements Ljava/util/List;
+	public fun <init> ()V
+	public final fun attributes (Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/relationship/TrackerDataView;
-	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+	public final fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
+	protected final fun getAttributes ()Ljava/util/List;
+	protected final fun getDataElements ()Ljava/util/List;
+	protected final fun setAttributes (Ljava/util/List;)V
+	protected final fun setDataElements (Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/relationship/TrackerDataViewBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/relationship/TrackerDataView;)Lorg/hisp/dhis/android/core/relationship/TrackerDataView$Builder;
 }
 
 public final class org/hisp/dhis/android/core/relationship/internal/RelationshipTypeCollectionRepositoryHelper {

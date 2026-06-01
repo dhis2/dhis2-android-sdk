@@ -114,7 +114,7 @@ internal class RelationshipImportHandler internal constructor(
         val processedRelationships = getReferences(importSummaries)
 
         relationships.filterNot { processedRelationships.contains(it.uid()) }.forEach { relationship ->
-            relationshipStore.setSyncStateOrDelete(relationship.uid()!!, State.TO_UPDATE)
+            relationshipStore.setSyncStateOrDelete(relationship.uid(), State.TO_UPDATE)
             dataStatePropagator.propagateRelationshipUpdate(relationship)
         }
     }

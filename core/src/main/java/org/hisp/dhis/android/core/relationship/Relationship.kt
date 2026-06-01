@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,63 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Relationship(
+    override val uid: String,
+    val name: String?,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val syncState: State?,
+    override val deleted: Boolean?,
+    val relationshipType: String?,
+    val from: RelationshipItem?,
+    val to: RelationshipItem?,
+) : DeletableDataObjectKt, ObjectWithUidInterfaceKt {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun name(): String? = name
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    override fun syncState(): State? = syncState
 
-import java.util.Collections;
-import java.util.List;
+    @Deprecated("")
+    override fun state(): State? = syncState
+    fun relationshipType(): String? = relationshipType
+    fun from(): RelationshipItem? = from
+    fun to(): RelationshipItem? = to
 
-@AutoValue
-public abstract class TrackerDataView implements CoreObject {
+    fun toBuilder(): Builder = RelationshipBuilder.from(this)
 
-    @Nullable
-    public abstract List<String> attributes();
+    class Builder : RelationshipBuilder()
 
-    @Nullable
-    public abstract List<String> dataElements();
-
-
-    public static Builder builder() {
-        return new AutoValue_TrackerDataView.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder attributes(List<String> attributes);
-
-        public abstract Builder dataElements(List<String> dataElements);
-
-        abstract TrackerDataView autoBuild();
-
-        //Auxiliary fields
-        abstract List<String> attributes();
-
-        abstract List<String> dataElements();
-
-        public TrackerDataView build() {
-
-            try {
-                attributes();
-            } catch (IllegalStateException e) {
-                attributes(Collections.emptyList());
-            }
-
-            try {
-                dataElements();
-            } catch (IllegalStateException e) {
-                dataElements(Collections.emptyList());
-            }
-
-            return autoBuild();
-        }
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,52 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+@ModelBuilder
+data class RelationshipItemEvent(
+    val event: String,
+) {
+    fun event(): String = event
 
-import java.util.Date;
+    fun toBuilder(): Builder = RelationshipItemEventBuilder.from(this)
 
-public abstract class BaseRelationship extends BaseDeletableDataObject implements ObjectWithUidInterface {
+    class Builder : RelationshipItemEventBuilder()
 
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract Date created();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract String relationshipType();
-
-    @Nullable
-    public abstract RelationshipItem from();
-
-    @Nullable
-    public abstract RelationshipItem to();
-
-    public interface Builder<T extends Builder<T>> extends BaseDeletableDataObject.Builder<T> {
-
-        T uid(String uid);
-
-        T name(String name);
-
-        T created(Date created);
-
-        T lastUpdated(Date lastUpdated);
-
-        T relationshipType(String relationshipType);
-
-        T from(RelationshipItem from);
-
-        T to(RelationshipItem to);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

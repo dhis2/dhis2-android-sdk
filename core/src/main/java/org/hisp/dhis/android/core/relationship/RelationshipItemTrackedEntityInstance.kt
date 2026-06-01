@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RelationshipItemTrackedEntityInstance(
+    val trackedEntityInstance: String,
+) {
+    fun trackedEntityInstance(): String = trackedEntityInstance
 
-@AutoValue
-public abstract class RelationshipItemEvent {
+    fun toBuilder(): Builder = RelationshipItemTrackedEntityInstanceBuilder.from(this)
 
-    @NonNull
-    public abstract String event();
+    class Builder : RelationshipItemTrackedEntityInstanceBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemEvent.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder event(String event);
-
-        public abstract RelationshipItemEvent build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

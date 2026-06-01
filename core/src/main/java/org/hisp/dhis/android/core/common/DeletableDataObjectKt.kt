@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common
 
-interface DeletableDataObjectKt : DataObject, ObjectWithDeleteInterface {
+interface DeletableDataObjectKt : DeletableDataObject, ObjectWithDeleteInterface {
     val deleted: Boolean?
 
     override fun deleted(): Boolean? = deleted

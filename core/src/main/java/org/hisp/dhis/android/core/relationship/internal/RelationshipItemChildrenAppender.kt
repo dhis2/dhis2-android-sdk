@@ -40,11 +40,11 @@ internal class RelationshipItemChildrenAppender(
 
     override suspend fun appendChildren(relationship: Relationship): Relationship {
         val fromItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!,
+            relationship.uid(),
             RelationshipConstraintType.FROM,
         )
         val toItem = store.getForRelationshipUidAndConstraintType(
-            relationship.uid()!!,
+            relationship.uid(),
             RelationshipConstraintType.TO,
         )
         return relationship.toBuilder()

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,22 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@AutoValue
-public abstract class Relationship extends BaseRelationship {
+@ModelBuilder
+data class RelationshipItemEnrollment(
+    val enrollment: String,
+) {
+    fun enrollment(): String = enrollment
 
-    public static Builder builder() {
-        return new AutoValue_Relationship.Builder();
-    }
+    fun toBuilder(): Builder = RelationshipItemEnrollmentBuilder.from(this)
 
-    public abstract Builder toBuilder();
+    class Builder : RelationshipItemEnrollmentBuilder()
 
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseRelationship.Builder<Builder> {
-
-        public abstract Relationship build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

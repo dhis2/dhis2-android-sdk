@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class RelationshipConstraint(
+    val relationshipType: ObjectWithUid?,
+    val constraintType: RelationshipConstraintType?,
+    val relationshipEntity: RelationshipEntityType?,
+    val trackedEntityType: ObjectWithUid?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val trackerDataView: TrackerDataView?,
+) : CoreObject {
 
-@AutoValue
-public abstract class RelationshipItemTrackedEntityInstance {
+    fun relationshipType(): ObjectWithUid? = relationshipType
+    fun constraintType(): RelationshipConstraintType? = constraintType
+    fun relationshipEntity(): RelationshipEntityType? = relationshipEntity
+    fun trackedEntityType(): ObjectWithUid? = trackedEntityType
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun trackerDataView(): TrackerDataView? = trackerDataView
 
-    @NonNull
-    public abstract String trackedEntityInstance();
+    fun toBuilder(): Builder = RelationshipConstraintBuilder.from(this)
 
-    public static Builder builder() {
-        return new AutoValue_RelationshipItemTrackedEntityInstance.Builder();
-    }
+    class Builder : RelationshipConstraintBuilder()
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract RelationshipItemTrackedEntityInstance build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

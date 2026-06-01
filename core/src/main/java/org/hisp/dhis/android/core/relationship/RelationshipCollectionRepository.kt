@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.relationship
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseReadOnlyWithUidCollectionRepositoryImpl
@@ -88,7 +87,6 @@ class RelationshipCollectionRepository internal constructor(
     @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     override suspend fun suspendAdd(o: Relationship): String {
-        val relationshipWithUid: Relationship
         if (relationshipHandler.doesRelationshipExist(o)) {
             throw D2Error
                 .builder()
@@ -105,16 +103,10 @@ class RelationshipCollectionRepository internal constructor(
                 .build()
         } else {
             val from = o.from()
-            relationshipWithUid = if (o.uid() == null) {
-                val generatedUid = UidGeneratorImpl().generate()
-                o.toBuilder().uid(generatedUid).build()
-            } else {
-                o
-            }
             val fromStore = storeSelector.getElementStore(from)
-            val fromState = fromStore.getSyncState(from!!.elementUid())
+            val fromState = fromStore.getSyncState(from!!.elementUid()!!)
             if (isUpdatableState(fromState)) {
-                relationshipHandler.handle(relationshipWithUid) { r: Relationship ->
+                relationshipHandler.handle(o) { r: Relationship ->
                     r.toBuilder()
                         .syncState(State.TO_POST)
                         .created(clockProvider.clock.now().toJavaDate())
@@ -135,7 +127,7 @@ class RelationshipCollectionRepository internal constructor(
                     .build()
             }
         }
-        return relationshipWithUid.uid()!!
+        return o.uid()
     }
 
     override fun uid(uid: String?): ReadWriteObjectRepository<Relationship> {

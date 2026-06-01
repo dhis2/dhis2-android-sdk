@@ -152,9 +152,9 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         val missingItems = relatedItems.filterNotNull().filter { item ->
             when {
-                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid(), payload)
-                item.hasEnrollment() -> isMissingEnrollment(item.elementUid(), payload)
-                item.hasEvent() -> isMissingEvent(item.elementUid(), payload)
+                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid()!!, payload)
+                item.hasEnrollment() -> isMissingEnrollment(item.elementUid()!!, payload)
+                item.hasEvent() -> isMissingEvent(item.elementUid()!!, payload)
                 else -> false
             }
         }
@@ -164,14 +164,14 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         missingItems.forEach { item ->
             when {
-                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid())
+                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid()!!)
                 item.hasEnrollment() -> {
-                    enrollmentStore.selectByUid(item.elementUid())?.let {
+                    enrollmentStore.selectByUid(item.elementUid()!!)?.let {
                         missingTeis.add(it.trackedEntityInstance()!!)
                     }
                 }
                 item.hasEvent() -> {
-                    eventStore.selectByUid(item.elementUid())?.let { event ->
+                    eventStore.selectByUid(item.elementUid()!!)?.let { event ->
                         if (event.enrollment() == null) {
                             missingEvents.add(event.uid())
                         } else {

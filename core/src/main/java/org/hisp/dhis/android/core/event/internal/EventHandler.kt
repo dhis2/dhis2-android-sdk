@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
@@ -116,7 +115,7 @@ internal class EventHandler(
                 noteHandler.handleMany(notesToSync)
             }
 
-            val relationships = EventInternalAccessor.accessRelationships(o)
+            val relationships = o.relationships
             if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
                 relationshipOrphanCleaner.deleteOrphan(o, relationships)

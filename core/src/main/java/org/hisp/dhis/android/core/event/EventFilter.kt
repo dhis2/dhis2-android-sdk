@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,56 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.event
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+@ModelBuilder
+data class EventFilter(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val program: String?,
+    val programStage: String?,
+    val description: String?,
+    val eventQueryCriteria: EventQueryCriteria?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import java.util.List;
+    fun program(): String? = program
+    fun programStage(): String? = programStage
+    fun description(): String? = description
+    fun eventQueryCriteria(): EventQueryCriteria? = eventQueryCriteria
 
-public abstract class FilterQueryCriteria {
+    fun toBuilder(): Builder = EventFilterBuilder.from(this)
 
-    @Nullable
-    public abstract Boolean followUp();
+    class Builder : EventFilterBuilder()
 
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    public abstract OrganisationUnitMode ouMode();
-
-    @Nullable
-    public abstract AssignedUserMode assignedUserMode();
-
-    @Nullable
-    public abstract String order();
-
-    @Nullable
-    public abstract List<String> displayColumnOrder();
-
-    @Nullable
-    public abstract DateFilterPeriod eventDate();
-
-    @Nullable
-    public abstract DateFilterPeriod lastUpdatedDate();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T followUp(Boolean followUp);
-
-        public abstract T organisationUnit(String organisationUnit);
-
-        public abstract T ouMode(OrganisationUnitMode ouMode);
-
-        public abstract T assignedUserMode(AssignedUserMode assignedUserMode);
-
-        public abstract T order(String order);
-
-        public abstract T displayColumnOrder(List<String> displayColumnOrder);
-
-        public abstract T eventDate(DateFilterPeriod eventDate);
-
-        public abstract T lastUpdatedDate(DateFilterPeriod lastUpdatedDate);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

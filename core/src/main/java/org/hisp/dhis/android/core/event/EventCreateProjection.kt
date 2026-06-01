@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,43 +26,45 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.event
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class EventCreateProjection(
+    val enrollment: String?,
+    val program: String,
+    val programStage: String,
+    val organisationUnit: String,
+    val attributeOptionCombo: String?,
+) {
+    fun enrollment(): String? = enrollment
+    fun program(): String = program
+    fun programStage(): String = programStage
+    fun organisationUnit(): String = organisationUnit
+    fun attributeOptionCombo(): String? = attributeOptionCombo
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterOperators;
+    fun toBuilder(): Builder = EventCreateProjectionBuilder.from(this)
 
-@AutoValue
-public abstract class EventDataFilter extends FilterOperators implements CoreObject {
+    class Builder : EventCreateProjectionBuilder()
 
-    /**
-     * The related event filter
-     */
-    @Nullable
-    public abstract String eventFilter();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    /**
-     * The data element id or data item
-     */
-    @NonNull
-    public abstract String dataItem();
-
-    public static Builder builder() {
-        return new AutoValue_EventDataFilter.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder eventFilter(String eventFilter);
-
-        public abstract Builder dataItem(String dataItem);
-
-        public abstract EventDataFilter build();
+        @JvmStatic
+        fun create(
+            enrollment: String?,
+            program: String,
+            programStage: String,
+            organisationUnit: String,
+            attributeOptionCombo: String?,
+        ): EventCreateProjection = builder()
+            .enrollment(enrollment)
+            .program(program)
+            .programStage(programStage)
+            .organisationUnit(organisationUnit)
+            .attributeOptionCombo(attributeOptionCombo)
+            .build()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,60 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event;
+package org.hisp.dhis.android.core.common
 
-import androidx.annotation.Nullable;
+@Suppress("FunctionParameterNaming", "VariableNaming")
+interface FilterOperators {
 
-import com.google.auto.value.AutoValue;
+    /** Less than or equal to */
+    val le: String?
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    /** Greater than or equal to */
+    val ge: String?
 
-@AutoValue
-public abstract class EventFilter extends BaseIdentifiableObAuVa implements CoreObject {
+    /** Greater than */
+    val gt: String?
 
-    @Nullable
-    public abstract String program();
+    /** Lesser than */
+    val lt: String?
 
-    @Nullable
-    public abstract String programStage();
+    /** Equal to */
+    val eq: String?
 
-    @Nullable
-    public abstract String description();
+    /** In a list */
+    val `in`: Set<String>?
 
-    @Nullable
-    public abstract EventQueryCriteria eventQueryCriteria();
+    /** Like */
+    val like: String?
 
-    public static Builder builder() {
-        return new AutoValue_EventFilter.Builder();
-    }
+    /** If the dataItem is of type date, then date filtering parameters are specified using this. */
+    val dateFilter: DateFilterPeriod?
 
-    public abstract Builder toBuilder();
+    fun le(): String? = le
+    fun ge(): String? = ge
+    fun gt(): String? = gt
+    fun lt(): String? = lt
+    fun eq(): String? = eq
+    fun `in`(): Set<String>? = `in`
+    fun like(): String? = like
+    fun dateFilter(): DateFilterPeriod? = dateFilter
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
+    interface Builder<T : Builder<T>> {
 
-        public abstract Builder program(String program);
+        fun le(le: String?): T
 
-        public abstract Builder programStage(String programStage);
+        fun ge(ge: String?): T
 
-        public abstract Builder description(String description);
+        fun gt(gt: String?): T
 
-        public abstract Builder eventQueryCriteria(EventQueryCriteria eventQueryCriteria);
+        fun lt(lt: String?): T
 
-        public abstract EventFilter build();
+        fun eq(eq: String?): T
+
+        fun `in`(`in`: Set<String>?): T
+
+        fun like(like: String?): T
+
+        fun dateFilter(dateFilter: DateFilterPeriod?): T
     }
 }

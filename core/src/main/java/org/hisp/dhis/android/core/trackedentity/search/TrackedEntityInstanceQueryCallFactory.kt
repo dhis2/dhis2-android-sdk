@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -116,7 +115,7 @@ internal class TrackedEntityInstanceQueryCallFactory(
             events: List<Event>,
         ): TrackedEntityInstanceQueryOnline {
             return query.copy(
-                uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
+                uids = events.mapNotNull { it.trackedEntityInstance }.distinct(),
                 dataValueFilter = emptyList(),
                 eventStatus = null,
                 eventStartDate = null,

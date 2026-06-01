@@ -83,11 +83,19 @@ class ModelBuilderProcessor(
             val implementationClass =
                 baseClass?.let { ": ${baseClass.builder}.Builder<$innerBuilderName> " } ?: ""
             val overridenFields = baseClass?.fields ?: emptyList()
-            val visibilityModifier = if (symbol.modifiers.contains(Modifier.INTERNAL)) "internal " else ""
+
+            val builderClass = symbol.declarations
+                .filterIsInstance<KSClassDeclaration>()
+                .find { it.simpleName.asString() == "Builder" }
+
+            val isClassInternal = symbol.modifiers.contains(Modifier.INTERNAL)
+            val isBuilderInternal = builderClass?.modifiers?.contains(Modifier.INTERNAL) == true
+
+            val visibilityModifier = if (isClassInternal || isBuilderInternal) "internal " else ""
 
             val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>().map { field ->
                 ClassField(
-                    name = field.simpleName.asString(),
+                    name = getPropertyName(field.simpleName.asString()),
                     type = field.type.resolve(),
                     isInternal = field.modifiers.contains(Modifier.INTERNAL),
                 )
@@ -175,6 +183,15 @@ class ModelBuilderProcessor(
         }
     }
 
+    private fun getPropertyName(name: String): String {
+        val keyWords = listOf("in", "operator", "object")
+
+        return when {
+            keyWords.contains(name) -> "`$name`"
+            else -> name
+        }
+    }
+
     companion object {
         val identifiable = BaseClass(
             "IdentifiableObject",
@@ -188,11 +205,25 @@ class ModelBuilderProcessor(
             "import org.hisp.dhis.android.core.common.BaseNameableObject",
             identifiable.fields + listOf("shortName", "displayShortName", "description", "displayDescription"),
         )
+        val filterOperators = BaseClass(
+            "FilterOperators",
+            "FilterOperators",
+            "import org.hisp.dhis.android.core.common.FilterOperators",
+            listOf("le", "ge", "gt", "lt", "eq", "`in`", "like", "dateFilter"),
+        )
+        val queryCriteria = BaseClass(
+            "FilterQueryCriteria",
+            "FilterQueryCriteria",
+            "import org.hisp.dhis.android.core.common.FilterQueryCriteria",
+            listOf("followUp", "organisationUnit", "ouMode", "assignedUserMode", "order", "displayColumnOrder", "eventDate", "lastUpdatedDate"),
+        )
 
         // The order here matters. The first matching base class is used for the builder
         val baseClasses = listOf(
             nameable,
             identifiable,
+            filterOperators,
+            queryCriteria,
         )
     }
 }

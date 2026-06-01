@@ -171,7 +171,6 @@ internal object ProgramIndicatorEvaluatorHelper {
                             metadata = metadata,
                             sqlVisitor = sqlVisitor,
                             mappingStore = mappingStore,
-                            evaluationItem = evaluationItem,
                         )
 
                     else -> {
@@ -231,7 +230,6 @@ internal object ProgramIndicatorEvaluatorHelper {
                         metadata = metadata,
                         sqlVisitor = sqlVisitor,
                         mappingStore = mappingStore,
-                        evaluationItem = evaluationItem,
                     )
 
                     else -> {
@@ -266,7 +264,7 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
     }
 
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "NestedBlockDepth")
     private suspend fun appendPICategoryWhereClause(
         attributeColumnName: String?,
         programIndicator: ProgramIndicator,
@@ -275,51 +273,54 @@ internal object ProgramIndicatorEvaluatorHelper {
         metadata: Map<String, MetadataItem>,
         sqlVisitor: CommonExpressionVisitor? = null,
         mappingStore: CategoryOptionMappingStore? = null,
-        evaluationItem: AnalyticsServiceEvaluationItem,
     ): WhereClauseBuilder {
+        val categoryItems = items.map { it as DimensionItem.CategoryItem }
+        if (categoryItems.isEmpty()) return builder
+
+        val isAttribute = (metadata[categoryItems.first().uid] as? MetadataItem.CategoryItem)
+            ?.item?.dataDimensionType() == CategoryDataDimensionType.ATTRIBUTE.name
+
         val innerBuilder = WhereClauseBuilder().apply {
-            items.map { it as DimensionItem.CategoryItem }.map { item ->
-                metadata[item.uid]?.let { it as MetadataItem.CategoryItem }.let { category ->
-                    if (category?.item?.dataDimensionType() == CategoryDataDimensionType.ATTRIBUTE.name) {
-                        attributeColumnName?.let {
-                            appendOrInSubQuery(
-                                it,
-                                getCategoryOptionClause(item.uid, item.categoryOption),
-                            )
-                        }
-                    } else {
-                        appendOperator(
-                            buildDisaggregationCategoryFilter(
-                                programIndicator = programIndicator,
-                                evaluationItem = evaluationItem,
-                                sqlVisitor = sqlVisitor!!,
-                                mappingStore = mappingStore!!,
-                            ),
+            if (isAttribute) {
+                categoryItems.forEach { item ->
+                    attributeColumnName?.let {
+                        appendOrInSubQuery(
+                            it,
+                            getCategoryOptionClause(item.uid, item.categoryOption),
                         )
                     }
                 }
+            } else {
+                appendComplexQuery(
+                    buildDisaggregationCategoryFilter(
+                        programIndicator = programIndicator,
+                        items = categoryItems,
+                        sqlVisitor = sqlVisitor!!,
+                        mappingStore = mappingStore!!,
+                    ),
+                )
             }
         }
 
-        if (innerBuilder.isEmpty) return builder
-        return builder.appendComplexQuery(innerBuilder.build())
+        return if (innerBuilder.isEmpty)  builder else builder.appendComplexQuery(innerBuilder.build())
     }
 
     @Suppress("ReturnCount")
     private suspend fun buildDisaggregationCategoryFilter(
         programIndicator: ProgramIndicator,
-        evaluationItem: AnalyticsServiceEvaluationItem,
+        items: List<DimensionItem.CategoryItem>,
         sqlVisitor: CommonExpressionVisitor,
         mappingStore: CategoryOptionMappingStore,
     ): String {
-        val categoryItemsByCategory = categoryItemsByCategory(evaluationItem)
-        if (categoryItemsByCategory.isEmpty()) return "1"
+        if (items.isEmpty()) return "1"
 
         val filtersByCategoryAndOption = getFiltersByCategoryAndOption(programIndicator, mappingStore)
         if (filtersByCategoryAndOption.isEmpty()) return "0"
 
-        val categoryFragments = categoryItemsByCategory.map { (categoryUid, items) ->
-            val itemFragments = items.map { item ->
+        val itemsByCategory = items.groupBy { (it.dimension as Dimension.Category).uid }
+
+        val categoryFragments = itemsByCategory.map { (categoryUid, categoryItems) ->
+            val itemFragments = categoryItems.map { item ->
                 val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
                     ?: return@map "0"
 
@@ -332,16 +333,6 @@ internal object ProgramIndicatorEvaluatorHelper {
         }
 
         return categoryFragments.joinToString(" AND ")
-    }
-
-    private fun categoryItemsByCategory(
-        evaluationItem: AnalyticsServiceEvaluationItem,
-    ): Map<String, List<DimensionItem.CategoryItem>> {
-        val categoryItems = evaluationItem.allDimensionItems
-            .filterIsInstance<DimensionItem.CategoryItem>()
-        if (categoryItems.isEmpty()) return emptyMap()
-
-        return categoryItems.groupBy { (it.dimension as Dimension.Category).uid }
     }
 
     private suspend fun getFiltersByCategoryAndOption(

@@ -62,7 +62,7 @@ internal fun Option.toDB(): OptionDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        optionSet = optionSet()!!.uid(),
+        optionSet = optionSet().uid(),
         sortOrder = sortOrder(),
         color = style().color(),
         icon = style().icon(),

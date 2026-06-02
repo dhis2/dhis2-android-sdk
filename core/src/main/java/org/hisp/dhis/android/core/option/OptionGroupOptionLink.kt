@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,56 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OptionGroupOptionLink(
+    val optionGroup: String,
+    val option: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun optionGroup(): String = optionGroup
+    fun option(): String = option
 
-@AutoValue
-public abstract class Option extends BaseIdentifiableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    fun toBuilder(): Builder = OptionGroupOptionLinkBuilder.from(this)
 
-    @Nullable
-    public abstract Integer sortOrder();
+    class Builder : OptionGroupOptionLinkBuilder()
 
-    @Nullable
-    public abstract ObjectWithUid optionSet();
-
-    public static Builder builder() {
-        return new AutoValue_Option.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract Option autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-
-        public Option build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

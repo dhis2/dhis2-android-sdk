@@ -46,13 +46,13 @@ internal data class OptionGroupDTO(
     override val created: String?,
     override val lastUpdated: String?,
     override val deleted: Boolean?,
-    val optionSet: ObjectWithUidDTO?,
+    val optionSet: ObjectWithUidDTO,
     val options: List<ObjectWithUidDTO> = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): OptionGroup {
         return OptionGroup.builder()
             .applyBaseIdentifiableFields(this)
-            .optionSet(optionSet?.toDomain())
+            .optionSet(optionSet.toDomain())
             .options(options.map { it.toDomain() })
             .build()
     }

@@ -76,3 +76,14 @@ ALTER TABLE CategoryOptionOrganisationUnitLink RENAME TO CategoryOptionOrganisat
 CREATE TABLE CategoryOptionOrganisationUnitLink(_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, categoryOption TEXT NOT NULL, organisationUnit TEXT, restriction TEXT NOT NULL, FOREIGN KEY(categoryOption) REFERENCES CategoryOption(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(organisationUnit) REFERENCES OrganisationUnit(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO CategoryOptionOrganisationUnitLink(_id, categoryOption, organisationUnit, restriction) SELECT _id, categoryOption, organisationUnit, restriction FROM CategoryOptionOrganisationUnitLink_Old;
 DROP TABLE IF EXISTS CategoryOptionOrganisationUnitLink_Old;
+
+# ValidationRuleExpression: make description and missingValueStrategy non-null (ANDROSDK-2310)
+
+# Remove ValidationRule rows with null leftSide/rightSide description or missingValueStrategy
+DELETE FROM ValidationRule WHERE leftSideDescription IS NULL OR leftSideMissingValueStrategy IS NULL OR rightSideDescription IS NULL OR rightSideMissingValueStrategy IS NULL;
+
+# Recreate ValidationRule with leftSideDescription, leftSideMissingValueStrategy, rightSideDescription, rightSideMissingValueStrategy as NOT NULL
+ALTER TABLE ValidationRule RENAME TO ValidationRule_Old;
+CREATE TABLE ValidationRule(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, instruction TEXT, importance TEXT, operator TEXT, periodType TEXT, skipFormValidation INTEGER, leftSideExpression TEXT, leftSideDescription TEXT NOT NULL, leftSideMissingValueStrategy TEXT NOT NULL, rightSideExpression TEXT, rightSideDescription TEXT NOT NULL, rightSideMissingValueStrategy TEXT NOT NULL, organisationUnitLevels TEXT, PRIMARY KEY(uid));
+INSERT INTO ValidationRule(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, instruction, importance, operator, periodType, skipFormValidation, leftSideExpression, leftSideDescription, leftSideMissingValueStrategy, rightSideExpression, rightSideDescription, rightSideMissingValueStrategy, organisationUnitLevels) SELECT uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, instruction, importance, operator, periodType, skipFormValidation, leftSideExpression, leftSideDescription, leftSideMissingValueStrategy, rightSideExpression, rightSideDescription, rightSideMissingValueStrategy, organisationUnitLevels FROM ValidationRule_Old;
+DROP TABLE IF EXISTS ValidationRule_Old;

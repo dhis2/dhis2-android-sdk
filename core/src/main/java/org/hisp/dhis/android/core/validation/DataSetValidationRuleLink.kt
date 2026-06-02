@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,34 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation;
+package org.hisp.dhis.android.core.validation
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-@AutoValue
-public abstract class ValidationRuleExpression {
+@ModelBuilder
+data class DataSetValidationRuleLink(
+    val dataSet: String,
+    val validationRule: String,
+) : CoreObject {
+    fun dataSet(): String = dataSet
+    fun validationRule(): String = validationRule
 
-    public abstract String expression();
+    fun toBuilder(): Builder = DataSetValidationRuleLinkBuilder.from(this)
 
-    public abstract String description();
+    class Builder : DataSetValidationRuleLinkBuilder()
 
-    public abstract MissingValueStrategy missingValueStrategy();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationRuleExpression.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder expression(String expression);
-
-        public abstract Builder description(String description);
-
-        public abstract Builder missingValueStrategy(MissingValueStrategy missingValueStrategy);
-
-        public abstract ValidationRuleExpression build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

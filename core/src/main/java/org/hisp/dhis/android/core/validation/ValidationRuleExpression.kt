@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.internal
+package org.hisp.dhis.android.core.validation
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.validation.DataSetValidationRuleLinkSamples
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.core.validation.DataSetValidationRuleLink
-import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkStoreImpl
-import org.hisp.dhis.android.persistence.validation.DataSetValidationRuleLinkTableInfo
-import org.junit.runner.RunWith
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-@RunWith(D2JunitRunner::class)
-class DataSetValidationRuleLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataSetValidationRuleLink>(
-    DataSetValidationRuleLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-    DataSetValidationRuleLinkTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
+@ModelBuilder
+data class ValidationRuleExpression(
+    val expression: String?,
+    val description: String,
+    val missingValueStrategy: MissingValueStrategy,
 ) {
-    override fun addMasterUid(): String {
-        return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink.dataSet()
-    }
+    fun expression(): String? = expression
+    fun description(): String = description
+    fun missingValueStrategy(): MissingValueStrategy = missingValueStrategy
 
-    override fun buildObject(): DataSetValidationRuleLink {
-        return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink
-    }
+    fun toBuilder(): Builder = ValidationRuleExpressionBuilder.from(this)
 
-    override fun buildObjectWithOtherMasterUid(): DataSetValidationRuleLink {
-        return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink
-            .toBuilder()
-            .dataSet("updated_dataset_uid")
-            .build()
+    class Builder : ValidationRuleExpressionBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

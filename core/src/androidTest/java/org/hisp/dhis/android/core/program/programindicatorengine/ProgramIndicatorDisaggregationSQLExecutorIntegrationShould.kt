@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attribute1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption1
@@ -44,7 +45,6 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.period201911
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.programStage1
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntity1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.trackedEntityType
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.category.CategoryOption
@@ -58,6 +58,7 @@ import org.hisp.dhis.android.core.program.CategoryOptionMapping
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.CategoryMappingStore
 import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
+import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.att
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.de
 import org.hisp.dhis.android.core.program.programindicatorengine.BaseTrackerDataIntegrationHelper.Companion.`var`
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -177,10 +178,84 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         assertThat(sumForOption2).isEqualTo("35")
     }
 
-    private suspend fun seedEvents(values: List<String>) {
-        helper.createTrackedEntity(trackedEntity1.uid(), orgunitChild1.uid(), trackedEntityType.uid())
+    @Test
+    fun should_evaluate_enrollment_program_indicator() = runTest {
+        val tei1 = seedEvents(values = listOf("5"))
+        helper.insertTrackedEntityAttributeValue(tei1, attribute1.uid, "15")
+        val tei2 = seedEvents(values = listOf("10"))
+        helper.insertTrackedEntityAttributeValue(tei2, attribute1.uid, "21")
+        val tei3 = seedEvents(values = listOf("20"))
+        helper.insertTrackedEntityAttributeValue(tei3, attribute1.uid, "30")
+
+        seedCategoryMapping(
+            listOf(
+                categoryOption1 to "${att(attribute1.uid)} < 18",
+                categoryOption2 to "${att(attribute1.uid)} >= 18",
+            ),
+        )
+
+        val pi = buildDisaggregatedProgramIndicator(
+            expression = de(programStage1.uid(), dataElement1.uid()),
+            aggregationType = AggregationType.SUM,
+            type = AnalyticsType.ENROLLMENT,
+        )
+
+        val sumForOption1 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
+        )
+        assertThat(sumForOption1).isEqualTo("5")
+
+        val sumForOption2 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption2.uid())),
+        )
+        assertThat(sumForOption2).isEqualTo("30")
+    }
+
+    @Test
+    fun should_evaluate_enrollment_count() = runTest {
+        seedEvents(values = listOf("5", "10"))
+        seedEvents(values = listOf("15", "20"))
+        seedEvents(values = listOf("25", "30"))
+
+        seedCategoryMapping(
+            listOf(
+                categoryOption1 to "${de(programStage1.uid(), dataElement1.uid())} < 11",
+                categoryOption2 to "${de(programStage1.uid(), dataElement1.uid())} >= 11",
+            ),
+        )
+
+        val pi = buildDisaggregatedProgramIndicator(
+            expression = `var`("enrollment_count"),
+            aggregationType = AggregationType.COUNT,
+            type = AnalyticsType.ENROLLMENT,
+        )
+
+        val sumForOption1 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption1.uid())),
+        )
+        assertThat(sumForOption1).isEqualTo("1")
+
+        val sumForOption2 = evaluate(
+            pi,
+            extraDimensions = listOf(DimensionItem.CategoryItem(category.uid(), categoryOption2.uid())),
+        )
+        assertThat(sumForOption2).isEqualTo("2")
+    }
+
+    private suspend fun seedEvents(values: List<String>): String {
+        val trackedEntity = generator.generate()
+        helper.createTrackedEntity(trackedEntity, orgunitChild1.uid(), trackedEntityType.uid())
         val enrollment = generator.generate()
-        helper.createEnrollment(trackedEntity1.uid(), enrollment, program.uid(), orgunitChild1.uid())
+        helper.createEnrollment(
+            trackedEntity,
+            enrollment,
+            program.uid(),
+            orgunitChild1.uid(),
+            enrollmentDate = day20191101,
+        )
 
         values.forEach { value ->
             val eventUid = generator.generate()
@@ -194,6 +269,8 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
             )
             helper.insertTrackedEntityDataValue(eventUid, dataElement1.uid(), value)
         }
+
+        return trackedEntity
     }
 
     private suspend fun seedCategoryMapping(filterList: List<Pair<CategoryOption, String>>) {
@@ -219,14 +296,19 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
     private suspend fun buildDisaggregatedProgramIndicator(
         expression: String,
         aggregationType: AggregationType,
+        type: AnalyticsType = AnalyticsType.EVENT,
     ): ProgramIndicator {
+        val boundaryTarget = when (type) {
+            AnalyticsType.EVENT -> "EVENT_DATE"
+            AnalyticsType.ENROLLMENT -> "ENROLLMENT_DATE"
+        }
         val boundaries = listOf(
             AnalyticsPeriodBoundary.builder()
-                .boundaryTarget("EVENT_DATE")
+                .boundaryTarget(boundaryTarget)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
-                .boundaryTarget("EVENT_DATE")
+                .boundaryTarget(boundaryTarget)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),
         )
@@ -236,7 +318,7 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
             .displayName("Disaggregated program indicator")
             .program(ObjectWithUid.create(program.uid()))
             .aggregationType(aggregationType)
-            .analyticsType(AnalyticsType.EVENT)
+            .analyticsType(type)
             .expression(expression)
             .filter("1") // Evaluate all events
             .analyticsPeriodBoundaries(boundaries)

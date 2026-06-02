@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OptionGroup(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val optionSet: ObjectWithUid?,
+    val options: List<ObjectWithUid>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun optionSet(): ObjectWithUid? = optionSet
+    fun options(): List<ObjectWithUid>? = options
 
-import java.util.List;
+    fun toBuilder(): Builder = OptionGroupBuilder.from(this)
 
-@AutoValue
-public abstract class OptionGroup extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : OptionGroupBuilder()
 
-    @Nullable
-    public abstract ObjectWithUid optionSet();
-
-    @Nullable
-    public abstract List<ObjectWithUid> options();
-
-    public static Builder builder() {
-        return new AutoValue_OptionGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
-
-        public abstract Builder options(@Nullable List<ObjectWithUid> options);
-
-        public abstract OptionGroup build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

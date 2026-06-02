@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ValueType
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OptionSet(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val version: Int?,
+    val valueType: ValueType?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ValueType;
+    fun version(): Int? = version
+    fun valueType(): ValueType? = valueType
 
-@AutoValue
-public abstract class OptionSet extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = OptionSetBuilder.from(this)
 
-    @Nullable
-    public abstract Integer version();
+    class Builder : OptionSetBuilder()
 
-    @Nullable
-    public abstract ValueType valueType();
-
-    public static Builder builder() {
-        return new AutoValue_OptionSet.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder version(@Nullable Integer version);
-
-        public abstract Builder valueType(@Nullable ValueType valueType);
-
-        public abstract OptionSet build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

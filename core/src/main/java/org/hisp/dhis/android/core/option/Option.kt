@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,56 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Option(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val sortOrder: Int?,
+    val optionSet: ObjectWithUid,
+    override val style: ObjectStyle,
+) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun sortOrder(): Int? = sortOrder
+    fun optionSet(): ObjectWithUid = optionSet
 
-@AutoValue
-public abstract class Option extends BaseIdentifiableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    fun toBuilder(): Builder = OptionBuilder.from(this)
 
-    @Nullable
-    public abstract Integer sortOrder();
+    class Builder : OptionBuilder()
 
-    @Nullable
-    public abstract ObjectWithUid optionSet();
-
-    public static Builder builder() {
-        return new AutoValue_Option.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract Builder optionSet(@Nullable ObjectWithUid optionSet);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract Option autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-
-        public Option build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }

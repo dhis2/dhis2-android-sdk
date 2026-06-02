@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.option;
+package org.hisp.dhis.android.core.option
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OptionGroupOptionLink(
+    val optionGroup: String,
+    val option: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun optionGroup(): String = optionGroup
+    fun option(): String = option
 
-@AutoValue
-public abstract class OptionGroupOptionLink implements CoreObject {
+    fun toBuilder(): Builder = OptionGroupOptionLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String optionGroup();
+    class Builder : OptionGroupOptionLinkBuilder()
 
-    @Nullable
-    public abstract String option();
-
-    public static Builder builder() {
-        return new AutoValue_OptionGroupOptionLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder optionGroup(String optionGroup);
-
-        public abstract Builder option(String option);
-
-        public abstract OptionGroupOptionLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -103,6 +103,26 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Test
+    fun evaluate_program_indicator_disaggregation() {
+        val genderCategoryUid = "cX5k9anHEHd"
+        val femaleOptionUid = "apsOixVZlf1"
+        val maleOptionUid = "jRbMi0aBjYn"
+
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("GSae40Fyppf"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+            .withDimension(DimensionItem.CategoryItem(genderCategoryUid, femaleOptionUid))
+            .withDimension(DimensionItem.CategoryItem(genderCategoryUid, maleOptionUid))
+            .blockingEvaluate()
+            .getOrThrow()
+
+        val valueDimensions = result.values.map { it.dimensions }
+        assertThat(valueDimensions.size).isEqualTo(2)
+        assertThat(valueDimensions.any { femaleOptionUid in it }).isTrue()
+        assertThat(valueDimensions.any { maleOptionUid in it }).isTrue()
+    }
+
+    @Test
     fun should_fail_if_unsupported_aggregation_type() = runTest {
         val dataElementStore: DataElementStore = koin.get()
         val dataElement = dataElementStore.selectByUid("g9eOBujte1U")!!

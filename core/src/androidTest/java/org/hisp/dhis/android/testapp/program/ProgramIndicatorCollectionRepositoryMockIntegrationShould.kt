@@ -129,7 +129,7 @@ class ProgramIndicatorCollectionRepositoryMockIntegrationShould : BaseMockIntegr
             .eq("p0KPaWEg3cf")
             .blockingGet()
 
-        assertThat(indicators.size).isEqualTo(3)
+        assertThat(indicators.size).isEqualTo(2)
     }
 
     @Test

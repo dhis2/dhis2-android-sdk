@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.orgunitChild1
@@ -65,7 +65,7 @@ import java.util.Date
 @RunWith(D2JunitRunner::class)
 internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrationShould() {
 
-    private val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo.uid())
+    private val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo1.uid())
 
     @Test
     fun evaluate_program_attributes() = runTest {

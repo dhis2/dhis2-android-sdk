@@ -28,8 +28,34 @@
 
 package org.hisp.dhis.android.persistence.program
 
+import androidx.room.Query
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries
-internal interface CategoryOptionMappingDaoAux : LinkDao<CategoryOptionMappingDB>
+internal interface CategoryOptionMappingDaoAux : LinkDao<CategoryOptionMappingDB> {
+
+    @Query(
+        """
+        SELECT cm.${CategoryMappingTableInfo.Columns.CATEGORY_ID} AS categoryUid,
+               com.${CategoryOptionMappingTableInfo.Columns.OPTION_ID} AS optionUid,
+               com.${CategoryOptionMappingTableInfo.Columns.FILTER} AS filterExpression
+        FROM ${CategoryOptionMappingTableInfo.TABLE_NAME} AS com
+        INNER JOIN ${CategoryMappingTableInfo.TABLE_NAME} AS cm
+            ON com.${CategoryOptionMappingTableInfo.Columns.CATEGORY_MAPPING} =
+               cm.${CategoryMappingTableInfo.Columns.UID}
+        WHERE cm.${CategoryMappingTableInfo.Columns.PROGRAM} = :programUid
+          AND cm.${CategoryMappingTableInfo.Columns.UID} IN (:mappingIds)
+    """,
+    )
+    fun selectFiltersForProgram(
+        programUid: String,
+        mappingIds: List<String>,
+    ): List<CategoryOptionFilterRow>
+}
+
+internal data class CategoryOptionFilterRow(
+    val categoryUid: String,
+    val optionUid: String,
+    val filterExpression: String,
+)

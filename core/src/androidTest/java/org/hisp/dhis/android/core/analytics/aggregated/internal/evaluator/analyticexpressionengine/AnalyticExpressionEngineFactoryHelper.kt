@@ -45,6 +45,7 @@ internal object AnalyticExpressionEngineFactoryHelper {
             koin.get(),
             koin.get(),
             koin.get(),
+            koin.get(),
             databaseAdapter,
         )
 

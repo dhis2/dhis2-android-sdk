@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMethod
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
+import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EnrollmentAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -59,6 +60,7 @@ internal class ProgramIndicatorSQLExecutor(
     private val constantStore: ConstantStore,
     private val dataElementStore: DataElementStore,
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
+    private val categoryOptionMappingStore: CategoryOptionMappingStore,
     private val databaseAdapter: DatabaseAdapter,
 ) {
 
@@ -89,25 +91,9 @@ internal class ProgramIndicatorSQLExecutor(
         val targetTable = when (programIndicator.analyticsType()) {
             AnalyticsType.EVENT ->
                 "${EventTableInfo.TABLE_INFO.name()} as $EventAlias"
+
             AnalyticsType.ENROLLMENT, null ->
                 "${EnrollmentTableInfo.TABLE_INFO.name()} as $EnrollmentAlias"
-        }
-
-        val contextWhereClause = when (programIndicator.analyticsType()) {
-            AnalyticsType.EVENT ->
-                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
-                    programIndicator,
-                    evaluationItem,
-                    metadata,
-                    queryMods,
-                )
-            AnalyticsType.ENROLLMENT, null ->
-                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
-                    programIndicator,
-                    evaluationItem,
-                    metadata,
-                    queryMods,
-                )
         }
 
         val context = ProgramIndicatorSQLContext(
@@ -121,6 +107,28 @@ internal class ProgramIndicatorSQLExecutor(
         val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
+
+        val contextWhereClause = when (programIndicator.analyticsType()) {
+            AnalyticsType.EVENT ->
+                ProgramIndicatorEvaluatorHelper.getEventWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods,
+                    sqlVisitor,
+                    categoryOptionMappingStore,
+                )
+
+            AnalyticsType.ENROLLMENT, null ->
+                ProgramIndicatorEvaluatorHelper.getEnrollmentWhereClause(
+                    programIndicator,
+                    evaluationItem,
+                    metadata,
+                    queryMods,
+                    sqlVisitor,
+                    categoryOptionMappingStore,
+                )
+        }
 
         val aggregator = ProgramIndicatorEvaluatorHelper.getAggregator(evaluationItem, programIndicator, queryMods)
         val selectExpression = CommonParser.visit(programIndicator.expression(), sqlVisitor)

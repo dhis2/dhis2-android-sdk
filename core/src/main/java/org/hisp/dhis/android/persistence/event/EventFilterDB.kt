@@ -94,7 +94,7 @@ internal fun EventFilter.toDB(): EventFilterDB {
     val eventQueryCriteria = eventQueryCriteria()?.toDB()
 
     return EventFilterDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

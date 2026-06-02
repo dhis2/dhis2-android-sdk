@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,59 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.event
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.FilterOperators
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class EventDataFilter(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriod?,
+    val eventFilter: String?,
+    val dataItem: String,
+) : FilterOperators, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterOperators;
+    fun eventFilter(): String? = eventFilter
+    fun dataItem(): String = dataItem
 
-@AutoValue
-public abstract class AttributeValueFilter extends FilterOperators implements CoreObject {
+    fun toBuilder(): Builder = EventDataFilterBuilder.from(this)
 
-    /**
-     * The related trackedEntityInstance filter
-     */
-    @Nullable
-    public abstract String trackedEntityInstanceFilter();
+    class Builder : EventDataFilterBuilder()
 
-    /**
-     * The attribute id
-     */
-    @NonNull
-    public abstract String attribute();
-
-    /**
-     * End with
-     */
-    @Nullable
-    public abstract String ew();
-
-    /**
-     * Starts with
-     */
-    @Nullable
-    public abstract String sw();
-
-    public static Builder builder() {
-        return new AutoValue_AttributeValueFilter.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder ew(String ew);
-
-        public abstract Builder sw(String sw);
-
-        public abstract AttributeValueFilter build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

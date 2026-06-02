@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.event
 
-import org.hisp.dhis.android.core.relationship.Relationship
+package org.hisp.dhis.android.core.common
 
-internal object EventInternalAccessor {
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-    @JvmStatic
-    fun accessRelationships(event: Event): List<Relationship>? {
-        return event.relationships()
-    }
+interface FilterQueryCriteria {
 
-    fun accessTrackedEntityInstance(event: Event): String? {
-        return event.trackedEntityInstance()
-    }
+    val followUp: Boolean?
+    val organisationUnit: String?
+    val ouMode: OrganisationUnitMode?
+    val assignedUserMode: AssignedUserMode?
+    val order: String?
+    val displayColumnOrder: List<String>?
+    val eventDate: DateFilterPeriod?
+    val lastUpdatedDate: DateFilterPeriod?
 
-    fun insertTrackedEntityInstance(
-        builder: Event.Builder,
-        trackedEntityInstance: String?,
-    ): Event.Builder {
-        return builder.trackedEntityInstance(trackedEntityInstance)
+    fun followUp(): Boolean? = followUp
+    fun organisationUnit(): String? = organisationUnit
+    fun ouMode(): OrganisationUnitMode? = ouMode
+    fun assignedUserMode(): AssignedUserMode? = assignedUserMode
+    fun order(): String? = order
+    fun displayColumnOrder(): List<String>? = displayColumnOrder
+    fun eventDate(): DateFilterPeriod? = eventDate
+    fun lastUpdatedDate(): DateFilterPeriod? = lastUpdatedDate
+
+    interface Builder<T : Builder<T>> {
+
+        fun followUp(followUp: Boolean?): T
+
+        fun organisationUnit(organisationUnit: String?): T
+
+        fun ouMode(ouMode: OrganisationUnitMode?): T
+
+        fun assignedUserMode(assignedUserMode: AssignedUserMode?): T
+
+        fun order(order: String?): T
+
+        fun displayColumnOrder(displayColumnOrder: List<String>?): T
+
+        fun eventDate(eventDate: DateFilterPeriod?): T
+
+        fun lastUpdatedDate(lastUpdatedDate: DateFilterPeriod?): T
     }
 }

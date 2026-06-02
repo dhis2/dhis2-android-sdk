@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipTypeCollectionRepository
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
@@ -127,7 +126,7 @@ internal class NewTrackedEntityEndpointCallFactory(
             orgUnits = query.orgUnits,
             orgUnitMode = query.orgUnitMode,
             program = query.program,
-            uids = events.mapNotNull { EventInternalAccessor.accessTrackedEntityInstance(it) }.distinct(),
+            uids = events.mapNotNull { it.trackedEntityInstance }.distinct(),
             order = query.order,
             trackedEntityType = query.trackedEntityType,
             includeDeleted = query.includeDeleted,

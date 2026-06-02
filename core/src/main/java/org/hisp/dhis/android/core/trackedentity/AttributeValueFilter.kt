@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,78 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.common;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.FilterOperators
 
-import java.util.Set;
+@ModelBuilder
+data class AttributeValueFilter(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriod?,
+    val trackedEntityInstanceFilter: String?,
+    val attribute: String,
+    val ew: String?,
+    val sw: String?,
+) : FilterOperators, CoreObject {
 
-public abstract class FilterOperators {
+    fun trackedEntityInstanceFilter(): String? = trackedEntityInstanceFilter
+    fun attribute(): String = attribute
+    fun ew(): String? = ew
+    fun sw(): String? = sw
 
-    /**
-     * Less than or equal to
-     */
-    @Nullable
-    public abstract String le();
+    fun toBuilder(): Builder = AttributeValueFilterBuilder.from(this)
 
-    /**
-     * Greater than or equal to
-     */
-    @Nullable
-    public abstract String ge();
+    class Builder : AttributeValueFilterBuilder()
 
-    /**
-     * Greater than
-     */
-    @Nullable
-    public abstract String gt();
-
-    /**
-     * Lesser than
-     */
-    @Nullable
-    public abstract String lt();
-
-    /**
-     * Equal to
-     */
-    @Nullable
-    public abstract String eq();
-
-    /**
-     * In a list
-     */
-    @Nullable
-    public abstract Set<String> in();
-
-    /**
-     * Like
-     */
-    @Nullable
-    public abstract String like();
-
-    /**
-     * If the dataItem is of type date, then date filtering parameters are specified using this.
-     */
-    @Nullable
-    public abstract DateFilterPeriod dateFilter();
-
-    public abstract static class Builder<T extends Builder> {
-
-        public abstract T le(String le);
-
-        public abstract T ge(String ge);
-
-        public abstract T gt(String gt);
-
-        public abstract T lt(String lt);
-
-        public abstract T eq(String eq);
-
-        public abstract T in(Set<String> in);
-
-        public abstract T like(String like);
-
-        public abstract T dateFilter(DateFilterPeriod dateFilter);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

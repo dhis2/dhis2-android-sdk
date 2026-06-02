@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.search;
+package org.hisp.dhis.android.core.programstageworkinglist
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.common.FilterOperators
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageWorkingListAttributeValueFilter(
+    override val le: String?,
+    override val ge: String?,
+    override val gt: String?,
+    override val lt: String?,
+    override val eq: String?,
+    override val `in`: Set<String>?,
+    override val like: String?,
+    override val dateFilter: DateFilterPeriod?,
+    val programStageWorkingList: String,
+    val attribute: String,
+    val ew: String?,
+    val sw: String?,
+) : FilterOperators, CoreObject {
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.trackedentity.search.QueryScopeOrderByItem;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
+    fun programStageWorkingList(): String = programStageWorkingList
+    fun attribute(): String = attribute
+    fun ew(): String? = ew
+    fun sw(): String? = sw
 
-@AutoValue
-public abstract class EventQueryScopeOrderByItem implements QueryScopeOrderByItem {
+    fun toBuilder(): Builder = ProgramStageWorkingListAttributeValueFilterBuilder.from(this)
 
-    public abstract EventQueryScopeOrderColumn column();
+    class Builder : ProgramStageWorkingListAttributeValueFilterBuilder()
 
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    public String toAPIString(@NonNull TrackerExporterVersion version) {
-        String apiName = column().apiName() == null ? null : column().apiName().getApiName(version);
-        return apiName == null ? null : apiName + ":" + direction().getApi();
-    }
-
-    static Builder builder() {
-        return new AutoValue_EventQueryScopeOrderByItem.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-
-        public abstract Builder column(EventQueryScopeOrderColumn column);
-
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
-
-        public abstract EventQueryScopeOrderByItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

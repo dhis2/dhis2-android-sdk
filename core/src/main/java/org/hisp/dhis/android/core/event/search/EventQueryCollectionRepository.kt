@@ -139,7 +139,7 @@ class EventQueryCollectionRepository internal constructor(
 
     fun byOrgUnitMode(): EqFilterConnector<EventQueryCollectionRepository, OrganisationUnitMode> {
         return connectorFactory.eqConnector { mode ->
-            scope.toBuilder().orgUnitMode(mode).build()
+            mode?.let { scope.toBuilder().orgUnitMode(mode).build() } ?: scope
         }
     }
 
@@ -167,7 +167,7 @@ class EventQueryCollectionRepository internal constructor(
 
     fun byIncludeDeleted(): EqFilterConnector<EventQueryCollectionRepository, Boolean> {
         return connectorFactory.eqConnector { includeDeleted ->
-            scope.toBuilder().includeDeleted(includeDeleted).build()
+            includeDeleted?.let { scope.toBuilder().includeDeleted(includeDeleted).build() } ?: scope
         }
     }
 
@@ -252,7 +252,7 @@ class EventQueryCollectionRepository internal constructor(
         return orderConnector(EventQueryScopeOrderColumn.TIMELINE)
     }
 
-    fun orderByDataElement(dataElement: String?): EqFilterConnector<EventQueryCollectionRepository, OrderByDirection> {
+    fun orderByDataElement(dataElement: String): EqFilterConnector<EventQueryCollectionRepository, OrderByDirection> {
         return orderConnector(EventQueryScopeOrderColumn.dataElement(dataElement))
     }
 
@@ -260,9 +260,11 @@ class EventQueryCollectionRepository internal constructor(
         col: EventQueryScopeOrderColumn,
     ): EqFilterConnector<EventQueryCollectionRepository, OrderByDirection> {
         return connectorFactory.eqConnector { direction ->
-            val order: MutableList<EventQueryScopeOrderByItem> = ArrayList(scope.order())
-            order.add(EventQueryScopeOrderByItem.builder().column(col).direction(direction).build())
-            scope.toBuilder().order(order).build()
+            direction?.let {
+                val order: MutableList<EventQueryScopeOrderByItem> = ArrayList(scope.order())
+                order.add(EventQueryScopeOrderByItem.builder().column(col).direction(direction).build())
+                scope.toBuilder().order(order).build()
+            } ?: scope
         }
     }
 

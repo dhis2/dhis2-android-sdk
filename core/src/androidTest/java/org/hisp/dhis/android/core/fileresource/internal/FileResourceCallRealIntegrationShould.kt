@@ -140,9 +140,9 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         val newEventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
                 existingEvent.enrollment(),
-                existingEvent.program(),
-                existingEvent.programStage(),
-                existingEvent.organisationUnit(),
+                existingEvent.program()!!,
+                existingEvent.programStage()!!,
+                existingEvent.organisationUnit()!!,
                 existingEvent.attributeOptionCombo(),
             ),
         )

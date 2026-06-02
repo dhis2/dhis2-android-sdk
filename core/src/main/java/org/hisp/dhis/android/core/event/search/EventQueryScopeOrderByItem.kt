@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,59 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programstageworkinglist;
+package org.hisp.dhis.android.core.event.search
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.trackedentity.search.QueryScopeOrderByItem
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class EventQueryScopeOrderByItem(
+    val column: EventQueryScopeOrderColumn,
+    val direction: RepositoryScope.OrderByDirection,
+) : QueryScopeOrderByItem {
+    fun column(): EventQueryScopeOrderColumn = column
+    fun direction(): RepositoryScope.OrderByDirection = direction
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterOperators;
-
-@AutoValue
-public abstract class ProgramStageWorkingListAttributeValueFilter extends FilterOperators implements CoreObject {
-
-    /**
-     * The related program stage working list
-     */
-    @NonNull
-    public abstract String programStageWorkingList();
-
-    /**
-     * The attribute id
-     */
-    @NonNull
-    public abstract String attribute();
-
-    /**
-     * End with
-     */
-    @Nullable
-    public abstract String ew();
-
-    /**
-     * Starts with
-     */
-    @Nullable
-    public abstract String sw();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageWorkingListAttributeValueFilter.Builder();
+    override fun toAPIString(version: TrackerExporterVersion): String? {
+        val apiName = column.apiName()?.getApiName(version)
+        return apiName?.let { "$it:${direction.api}" }
     }
 
-    public abstract Builder toBuilder();
+    fun toBuilder(): Builder = EventQueryScopeOrderByItemBuilder.from(this)
 
-    @AutoValue.Builder
-    public abstract static class Builder extends FilterOperators.Builder<Builder> {
-        public abstract Builder programStageWorkingList(String programStageWorkingList);
+    class Builder : EventQueryScopeOrderByItemBuilder()
 
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder ew(String ew);
-
-        public abstract Builder sw(String sw);
-
-        public abstract ProgramStageWorkingListAttributeValueFilter build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

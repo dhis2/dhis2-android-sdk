@@ -43,11 +43,11 @@ data class OptionGroup(
     override val created: Date?,
     override val lastUpdated: Date?,
     override val deleted: Boolean?,
-    val optionSet: ObjectWithUid?,
+    val optionSet: ObjectWithUid,
     val options: List<ObjectWithUid>?,
 ) : BaseIdentifiableObjectKt, CoreObject {
 
-    fun optionSet(): ObjectWithUid? = optionSet
+    fun optionSet(): ObjectWithUid = optionSet
     fun options(): List<ObjectWithUid>? = options
 
     fun toBuilder(): Builder = OptionGroupBuilder.from(this)

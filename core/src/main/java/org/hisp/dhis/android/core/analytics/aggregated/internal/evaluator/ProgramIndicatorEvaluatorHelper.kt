@@ -122,8 +122,8 @@ internal object ProgramIndicatorEvaluatorHelper {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
-        sqlVisitor: CommonExpressionVisitor? = null,
-        mappingStore: CategoryOptionMappingStore? = null,
+        sqlVisitor: CommonExpressionVisitor,
+        mappingStore: CategoryOptionMappingStore,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -186,8 +186,8 @@ internal object ProgramIndicatorEvaluatorHelper {
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
-        sqlVisitor: CommonExpressionVisitor? = null,
-        mappingStore: CategoryOptionMappingStore? = null,
+        sqlVisitor: CommonExpressionVisitor,
+        mappingStore: CategoryOptionMappingStore,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 

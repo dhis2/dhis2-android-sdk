@@ -120,7 +120,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     val result = iterateBundle(bundle, params, bundleResult, relatives, progressManager)
                     successfulSync = successfulSync && result.successfulSync
                     iterationCount++
-                } while (iterationNotFinished(bundle, params, bundleResult, iterationCount))
+                } while (
+                    result.downloadedCount > 0 &&
+                    iterationNotFinished(bundle, params, bundleResult, iterationCount)
+                )
 
                 if (successfulSync) {
                     updateLastUpdated(bundle)
@@ -176,6 +179,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 progressManager,
             )
             iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
+            iterationResult.downloadedCount += result.downloadedCount
         }
 
         return iterationResult
@@ -213,6 +217,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
                     bundleResult.bundleCount += result.count
                     bundleProgram.itemCount += result.count
+                    iterationResult.downloadedCount += result.count
                     iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
 
                     val syncStatus =
@@ -406,6 +411,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected class IterationResult(
         var successfulSync: Boolean = true,
+        var downloadedCount: Int = 0,
     )
 
     companion object {

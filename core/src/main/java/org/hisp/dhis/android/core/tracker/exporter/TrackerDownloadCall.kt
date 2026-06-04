@@ -194,6 +194,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val iterationResult = IterationResult()
 
         bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
+            var remainingPrograms = bundlePrograms
             for (bundleProgram in bundlePrograms) {
                 if (bundleResult.bundleCount < bundle.commonParams().limit) {
                     val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
@@ -224,9 +225,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
 
                     if (result.exhaustedProgram || !result.successfulSync) {
-                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = bundlePrograms
+                        remainingPrograms = remainingPrograms
                             .filter { it.program != bundleProgram.program }
                             .toMutableList()
+                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = remainingPrograms
 
                         val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
                             list.any { it.program == bundleProgram.program }

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2LogoutHandler
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2TokenRefresher
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import org.junit.*
 import org.junit.runner.RunWith
@@ -69,6 +70,9 @@ class ParentAuthenticatorPluginShould {
     @Mock
     private lateinit var logoutHandler: OpenIDConnectLogoutHandler
 
+    @Mock
+    private lateinit var openIDConnectStateSecureStore: OpenIDConnectStateSecureStore
+
     private lateinit var mockEngine: MockEngine
     private lateinit var authenticator: ParentAuthenticatorPlugin
     private lateinit var ktorClient: HttpClient
@@ -95,6 +99,7 @@ class ParentAuthenticatorPluginShould {
                 tokenRefresher,
                 userIdHelper,
                 logoutHandler,
+                openIDConnectStateSecureStore,
             ),
             OAuth2Authenticator(
                 credentialsSecureStore,

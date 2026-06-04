@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -67,6 +68,7 @@ class AccountManagerImplShould {
     private val context: Context = mock()
     private val databaseConfigurationHelper: DatabaseConfigurationHelper = mock()
     private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore = mock()
 
     private lateinit var tempDir: File
     private lateinit var accountManager: AccountManagerImpl
@@ -86,6 +88,7 @@ class AccountManagerImplShould {
             context,
             databaseConfigurationHelper,
             oauth2StateSecureStore,
+            openIDConnectStateSecureStore,
         )
     }
 
@@ -115,6 +118,7 @@ class AccountManagerImplShould {
 
         verify(databaseManager).deleteDatabase(DB_NAME, false)
         verify(oauth2StateSecureStore).remove(SERVER_URL, USERNAME)
+        verify(openIDConnectStateSecureStore).remove(SERVER_URL, USERNAME)
     }
 
     @Test

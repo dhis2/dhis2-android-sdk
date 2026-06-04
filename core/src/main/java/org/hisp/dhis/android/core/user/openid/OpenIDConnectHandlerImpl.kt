@@ -35,17 +35,27 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.koin.core.annotation.Singleton
 
 private const val RC_AUTH = 2021
 
+@Suppress("LongParameterList")
 @Singleton
 internal class OpenIDConnectHandlerImpl(
     private val context: Context,
     private val logInCall: LogInCall,
     private val logoutHandler: OpenIDConnectLogoutHandler,
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val authenticatedUserStore: AuthenticatedUserStore,
+    private val logInExceptions: LogInExceptions,
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
@@ -74,9 +84,11 @@ internal class OpenIDConnectHandlerImpl(
                 val response = AuthorizationResponse.fromIntent(intent)!!
                 downloadToken(response.createTokenExchangeRequest())
                     .observeOn(Schedulers.io())
-                    .map {
+                    .map { authState ->
                         runBlocking {
-                            logInCall.blockingLogInOpenIDConnect(serverUrl, it)
+                            val user = logInCall.blockingLogInOpenIDConnect(serverUrl, authState)
+                            openIDConnectStateSecureStore.set(serverUrl, user.username()!!, authState)
+                            user
                         }
                     }
             }
@@ -95,6 +107,37 @@ internal class OpenIDConnectHandlerImpl(
 
     override fun logOutObservable(): Observable<Unit> {
         return logoutHandler.logOutObservable()
+    }
+
+    override suspend fun suspendSetPin(pin: String): Result<Unit, D2Error> {
+        val credentials = credentialsSecureStore.get()
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.openIDConnectState == null ->
+                Result.Failure(logInExceptions.pinRequiresTokenBasedAccountError())
+            else -> {
+                val updated = credentials.copy(password = pin)
+                credentialsSecureStore.set(updated)
+                val existing = authenticatedUserStore.selectFirst()
+                if (existing == null) {
+                    Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
+                } else {
+                    authenticatedUserStore.updateOrInsertWhere(
+                        existing.toBuilder().hash(updated.getHash()).build(),
+                    )
+                    Result.Success(Unit)
+                }
+            }
+        }
+    }
+
+    override suspend fun suspendChangePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
+        val credentials = credentialsSecureStore.get()
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
+            else -> suspendSetPin(newPin)
+        }
     }
 
     private fun downloadToken(tokenRequest: TokenRequest): Single<AuthState> {

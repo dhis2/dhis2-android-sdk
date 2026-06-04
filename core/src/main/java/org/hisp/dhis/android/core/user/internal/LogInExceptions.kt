@@ -104,10 +104,10 @@ internal class LogInExceptions internal constructor(
             .build()
     }
 
-    fun pinRequiresOAuth2AccountError(): D2Error {
+    fun pinRequiresTokenBasedAccountError(): D2Error {
         return D2Error.builder()
             .errorCode(D2ErrorCode.INVALID_CONFIGURATION)
-            .errorDescription("PIN can only be set for OAuth2 accounts")
+            .errorDescription("PIN can only be set for OAuth2 or OpenID Connect accounts")
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }

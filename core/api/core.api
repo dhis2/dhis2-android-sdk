@@ -19515,19 +19515,48 @@ public final class org/hisp/dhis/android/core/util/StringUtils {
 	public final fun substring (Ljava/lang/String;II)Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
-	public abstract fun dataSet ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
-	public abstract fun validationRule ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
+	public final fun dataSet ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSet ()Ljava/lang/String;
+	public final fun getValidationRule ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun validationRule ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder {
+public final class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder : org/hisp/dhis/android/core/validation/DataSetValidationRuleLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
-	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
-	public abstract fun validationRule (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/validation/DataSetValidationRuleLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLinkBuilder$Companion;
+	protected field dataSet Ljava/lang/String;
+	protected field validationRule Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;
+	public final fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+	protected final fun getDataSet ()Ljava/lang/String;
+	protected final fun getValidationRule ()Ljava/lang/String;
+	protected final fun setDataSet (Ljava/lang/String;)V
+	protected final fun setValidationRule (Ljava/lang/String;)V
+	public final fun validationRule (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/DataSetValidationRuleLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink;)Lorg/hisp/dhis/android/core/validation/DataSetValidationRuleLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/validation/MissingValueStrategy : java/lang/Enum {
@@ -19723,21 +19752,54 @@ public final class org/hisp/dhis/android/core/validation/ValidationRuleCollectio
 	public final fun bySkipFormValidation ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/ValidationRuleExpression {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun expression ()Ljava/lang/String;
-	public abstract fun missingValueStrategy ()Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+public final class org/hisp/dhis/android/core/validation/ValidationRuleExpression {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
+	public final fun description ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun expression ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+	public final fun getMissingValueStrategy ()Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public fun hashCode ()I
+	public final fun missingValueStrategy ()Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder {
+public final class org/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder : org/hisp/dhis/android/core/validation/ValidationRuleExpressionBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
-	public abstract fun expression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
-	public abstract fun missingValueStrategy (Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/ValidationRuleExpression$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+}
+
+public class org/hisp/dhis/android/core/validation/ValidationRuleExpressionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/ValidationRuleExpressionBuilder$Companion;
+	protected field description Ljava/lang/String;
+	protected field missingValueStrategy Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+	public final fun expression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getExpression ()Ljava/lang/String;
+	protected final fun getMissingValueStrategy ()Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;
+	public final fun missingValueStrategy (Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setExpression (Ljava/lang/String;)V
+	protected final fun setMissingValueStrategy (Lorg/hisp/dhis/android/core/validation/MissingValueStrategy;)V
+}
+
+public final class org/hisp/dhis/android/core/validation/ValidationRuleExpressionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;)Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression$Builder;
 }
 
 public final class org/hisp/dhis/android/core/validation/ValidationRuleImportance : java/lang/Enum {
@@ -19783,69 +19845,185 @@ public final class org/hisp/dhis/android/core/validation/engine/ValidationEngine
 	public static fun validate (Lorg/hisp/dhis/android/core/validation/engine/ValidationEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResult {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
-	public abstract fun violations ()Ljava/util/List;
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResult {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;Ljava/util/List;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getStatus ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	public final fun getViolations ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun status ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun violations ()Ljava/util/List;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResult$Builder {
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResult$Builder : org/hisp/dhis/android/core/validation/engine/ValidationResultBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
-	public abstract fun status (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
-	public abstract fun violations (Ljava/util/List;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResult$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
 }
 
 public final class org/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus : java/lang/Enum {
 	public static final field ERROR Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
 	public static final field OK Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
 	public static fun values ()[Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation {
+public class org/hisp/dhis/android/core/validation/engine/ValidationResultBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResultBuilder$Companion;
+	protected field status Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	protected field violations Ljava/util/List;
 	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
-	public abstract fun dataElementUids ()Ljava/util/Set;
-	public abstract fun displayExpression ()Ljava/lang/String;
-	public abstract fun regeneratedExpression ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
-	public abstract fun value ()Ljava/lang/Double;
+	public fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;
+	protected final fun getStatus ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;
+	protected final fun getViolations ()Ljava/util/List;
+	protected final fun setStatus (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;)V
+	protected final fun setViolations (Ljava/util/List;)V
+	public final fun status (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$ValidationResultStatus;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
+	public final fun violations (Ljava/util/List;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
-	public abstract fun dataElementUids (Ljava/util/Set;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
-	public abstract fun displayExpression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
-	public abstract fun regeneratedExpression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
-	public abstract fun value (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/validation/engine/ValidationResult;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResult$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResultViolation {
-	public fun <init> ()V
-	public abstract fun attributeOptionComboUid ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public fun dataElementUids ()Ljava/util/Set;
-	public abstract fun leftSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
-	public abstract fun organisationUnitUid ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun rightSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun validationRule ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Companion;
+	public fun <init> (Ljava/util/Set;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/Set;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;Ljava/util/Set;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun dataElementUids ()Ljava/util/Set;
+	public final fun displayExpression ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElementUids ()Ljava/util/Set;
+	public final fun getDisplayExpression ()Ljava/lang/String;
+	public final fun getRegeneratedExpression ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public final fun regeneratedExpression ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/Double;
 }
 
-public abstract class org/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder {
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder : org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluationBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;
-	public abstract fun leftSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun organisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun rightSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
-	public abstract fun validationRule (Lorg/hisp/dhis/android/core/validation/ValidationRule;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+}
+
+public class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluationBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluationBuilder$Companion;
+	protected field dataElementUids Ljava/util/Set;
+	protected field displayExpression Ljava/lang/String;
+	protected field regeneratedExpression Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun dataElementUids (Ljava/util/Set;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+	public final fun displayExpression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+	protected final fun getDataElementUids ()Ljava/util/Set;
+	protected final fun getDisplayExpression ()Ljava/lang/String;
+	protected final fun getRegeneratedExpression ()Ljava/lang/String;
+	protected final fun getValue ()Ljava/lang/Double;
+	public final fun regeneratedExpression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+	protected final fun setDataElementUids (Ljava/util/Set;)V
+	protected final fun setDisplayExpression (Ljava/lang/String;)V
+	protected final fun setRegeneratedExpression (Ljava/lang/String;)V
+	protected final fun setValue (Ljava/lang/Double;)V
+	public final fun value (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultViolation {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/validation/ValidationRule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)V
+	public final fun attributeOptionComboUid ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun copy (Lorg/hisp/dhis/android/core/validation/ValidationRule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;Lorg/hisp/dhis/android/core/validation/ValidationRule;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;
+	public final fun dataElementUids ()Ljava/util/Set;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributeOptionComboUid ()Ljava/lang/String;
+	public final fun getLeftSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun getOrganisationUnitUid ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getRightSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun getValidationRule ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+	public fun hashCode ()I
+	public final fun leftSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun organisationUnitUid ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public final fun rightSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun validationRule ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder : org/hisp/dhis/android/core/validation/engine/ValidationResultViolationBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+}
+
+public class org/hisp/dhis/android/core/validation/engine/ValidationResultViolationBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolationBuilder$Companion;
+	protected field leftSideEvaluation Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	protected field organisationUnitUid Ljava/lang/String;
+	protected field period Ljava/lang/String;
+	protected field rightSideEvaluation Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	protected field validationRule Lorg/hisp/dhis/android/core/validation/ValidationRule;
+	public fun <init> ()V
+	public final fun attributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;
+	protected final fun getAttributeOptionComboUid ()Ljava/lang/String;
+	protected final fun getLeftSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	protected final fun getOrganisationUnitUid ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getRightSideEvaluation ()Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;
+	protected final fun getValidationRule ()Lorg/hisp/dhis/android/core/validation/ValidationRule;
+	public final fun leftSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public final fun organisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	public final fun rightSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+	protected final fun setAttributeOptionComboUid (Ljava/lang/String;)V
+	protected final fun setLeftSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)V
+	protected final fun setOrganisationUnitUid (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setRightSideEvaluation (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultSideEvaluation;)V
+	protected final fun setValidationRule (Lorg/hisp/dhis/android/core/validation/ValidationRule;)V
+	public final fun validationRule (Lorg/hisp/dhis/android/core/validation/ValidationRule;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/validation/engine/ValidationResultViolationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation;)Lorg/hisp/dhis/android/core/validation/engine/ValidationResultViolation$Builder;
 }
 
 public final class org/hisp/dhis/android/core/validation/internal/ValidationRuleCall : org/hisp/dhis/android/core/arch/call/factories/internal/UidsCallCoroutines {

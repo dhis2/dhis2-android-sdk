@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation.engine
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+@ModelBuilder
+data class ValidationResultSideEvaluation(
+    val dataElementUids: Set<DataElementOperand>,
+    val value: Double?,
+    val displayExpression: String,
+    val regeneratedExpression: String,
+) {
+    fun dataElementUids(): Set<DataElementOperand> = dataElementUids
+    fun value(): Double? = value
+    fun displayExpression(): String = displayExpression
+    fun regeneratedExpression(): String = regeneratedExpression
 
-import java.util.Set;
+    fun toBuilder(): Builder = ValidationResultSideEvaluationBuilder.from(this)
 
-@AutoValue
-public abstract class ValidationResultSideEvaluation {
+    class Builder : ValidationResultSideEvaluationBuilder()
 
-    public abstract Set<DataElementOperand> dataElementUids();
-
-    public abstract Double value();
-
-    public abstract String displayExpression();
-
-    public abstract String regeneratedExpression();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationResultSideEvaluation.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataElementUids(Set<DataElementOperand> dataElementUids);
-
-        public abstract Builder value(Double value);
-
-        public abstract Builder displayExpression(String displayExpression);
-
-        public abstract Builder regeneratedExpression(String valueExpression);
-
-        public abstract ValidationResultSideEvaluation build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

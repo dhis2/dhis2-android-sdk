@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.validation.engine;
+package org.hisp.dhis.android.core.validation.engine
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import java.util.List;
+@ModelBuilder
+data class ValidationResult(
+    val status: ValidationResultStatus,
+    val violations: List<ValidationResultViolation>,
+) {
+    fun status(): ValidationResultStatus = status
+    fun violations(): List<ValidationResultViolation> = violations
 
-@AutoValue
-public abstract class ValidationResult {
+    fun toBuilder(): Builder = ValidationResultBuilder.from(this)
 
-    public abstract ValidationResultStatus status();
+    class Builder : ValidationResultBuilder()
 
-    public abstract List<ValidationResultViolation> violations();
-
-    public static Builder builder() {
-        return new AutoValue_ValidationResult.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder status(ValidationResultStatus status);
-
-        public abstract Builder violations(List<ValidationResultViolation> violations);
-
-        public abstract ValidationResult build();
-    }
-
-    public enum ValidationResultStatus {
+    enum class ValidationResultStatus {
         OK,
-        ERROR
+        ERROR,
     }
-
 }

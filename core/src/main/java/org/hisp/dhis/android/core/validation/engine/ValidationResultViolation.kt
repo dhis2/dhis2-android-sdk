@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.validation;
 
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.validation.engine
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.validation.ValidationRule
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class ValidationResultViolation(
+    val validationRule: ValidationRule,
+    val period: String,
+    val organisationUnitUid: String,
+    val attributeOptionComboUid: String?,
+    val leftSideEvaluation: ValidationResultSideEvaluation,
+    val rightSideEvaluation: ValidationResultSideEvaluation,
+) {
+    fun validationRule(): ValidationRule = validationRule
+    fun period(): String = period
+    fun organisationUnitUid(): String = organisationUnitUid
+    fun attributeOptionComboUid(): String? = attributeOptionComboUid
+    fun leftSideEvaluation(): ValidationResultSideEvaluation = leftSideEvaluation
+    fun rightSideEvaluation(): ValidationResultSideEvaluation = rightSideEvaluation
 
-@AutoValue
-public abstract class DataSetValidationRuleLink implements CoreObject {
+    fun dataElementUids(): Set<DataElementOperand> =
+        leftSideEvaluation.dataElementUids + rightSideEvaluation.dataElementUids
 
-    @Nullable
-    public abstract String dataSet();
+    fun toBuilder(): Builder = ValidationResultViolationBuilder.from(this)
 
-    @Nullable
-    public abstract String validationRule();
+    class Builder : ValidationResultViolationBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_DataSetValidationRuleLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(String dataSet);
-
-        public abstract Builder validationRule(String validationRule);
-
-        public abstract DataSetValidationRuleLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

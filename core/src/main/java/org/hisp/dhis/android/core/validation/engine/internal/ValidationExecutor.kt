@@ -60,7 +60,7 @@ internal class ValidationExecutor(private val expressionService: ExpressionServi
                     val leftSide = buildSideResult(leftSideValue, rule.leftSide(), context)
                     val rightSide = buildSideResult(rightSideValue, rule.rightSide(), context)
                     ValidationResultViolation.builder()
-                        .period(period.periodId())
+                        .period(period.periodId()!!)
                         .organisationUnitUid(organisationUnit!!.uid())
                         .attributeOptionComboUid(attributeOptionComboId)
                         .validationRule(rule)

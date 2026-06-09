@@ -102,9 +102,9 @@ internal data class DataSetDTO(
             renderAsTabs(renderAsTabs)
             renderHorizontally(renderHorizontally)
             workflow(workflow?.toDomain())
-            dataSetElements(dataSetElements.map { it.toDomain() })
+            dataSetElements(dataSetElements.map { it.toDomain(id) })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            sections(sections.map { it.toDomain() })
+            sections(sections.map { it.toDomain(id) })
             compulsoryDataElementOperands(compulsoryDataElementOperands.map { it.toDomain() })
             dataInputPeriods(dataInputPeriods.map { it.toDomain(ObjectWithUidDTO(id)) })
             displayOptions(

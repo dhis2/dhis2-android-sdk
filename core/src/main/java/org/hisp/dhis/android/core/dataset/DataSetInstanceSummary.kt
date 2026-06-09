@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset;
 
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.dataset
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class DataSetInstanceSummary(
+    val dataSetUid: String,
+    val dataSetDisplayName: String,
+    val valueCount: Int,
+    val dataSetInstanceCount: Int,
+    val state: State,
+    val lastUpdated: Date?,
+) : CoreObject {
 
-@AutoValue
-public abstract class SectionDataElementLink implements CoreObject {
+    fun dataSetUid(): String = dataSetUid
+    fun dataSetDisplayName(): String = dataSetDisplayName
+    fun valueCount(): Int = valueCount
+    fun dataSetInstanceCount(): Int = dataSetInstanceCount
+    fun state(): State = state
+    fun lastUpdated(): Date? = lastUpdated
 
-    @Nullable
-    public abstract String section();
+    fun toBuilder(): Builder = DataSetInstanceSummaryBuilder.from(this)
 
-    @Nullable
-    public abstract String dataElement();
+    class Builder : DataSetInstanceSummaryBuilder()
 
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_SectionDataElementLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder section(String section);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract SectionDataElementLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

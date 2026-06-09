@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,53 +26,57 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.dataset
+package org.hisp.dhis.android.core.dataset
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
-import org.hisp.dhis.android.core.dataset.Section
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.indicator.Indicator
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
+import java.util.Date
 
-@Serializable
-internal data class SectionDTO(
-    override val id: String,
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class Section(
+    override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
-    override val created: String?,
-    override val lastUpdated: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
     override val deleted: Boolean?,
     val description: String?,
     val sortOrder: Int?,
     val showRowTotals: Boolean?,
     val showColumnTotals: Boolean?,
-    val dataElements: List<ObjectWithUidDTO> = emptyList(),
-    val greyedFields: List<DataElementOperandDTO> = emptyList(),
-    val indicators: List<ObjectWithUidDTO> = emptyList(),
+    val dataSet: ObjectWithUid,
+    internal val dataElementUids: List<ObjectWithUid>?,
+    val dataElements: List<DataElement>?,
+    val greyedFields: List<DataElementOperand>?,
+    val indicators: List<Indicator>?,
     val disableDataElementAutoGroup: Boolean?,
-    val displayOptions: String?,
-) : BaseIdentifiableObjectDTO {
-    fun toDomain(dataSetUid: String): Section {
-        return Section.builder().apply {
-            applyBaseIdentifiableFields(this@SectionDTO)
-            description(description)
-            sortOrder(sortOrder)
-            showRowTotals(showRowTotals)
-            showColumnTotals(showColumnTotals)
-            dataSet(ObjectWithUid(dataSetUid))
-            dataElementUids(dataElements.map { it.toDomain() })
-            greyedFields(greyedFields.map { it.toDomain() })
-            indicators(indicators.map { Indicator.builder().uid(it.id).build() })
-            disableDataElementAutoGroup(disableDataElementAutoGroup)
-            displayOptions?.let {
-                displayOptions(
-                    KotlinxJsonParser.instance.decodeFromString(SectionDisplayOptionsDTO.serializer(), it).toDomain(),
-                )
-            }
-        }.build()
+    val displayOptions: SectionDisplayOptions?,
+) : BaseIdentifiableObjectKt, CoreObject {
+
+    fun description(): String? = description
+    fun sortOrder(): Int? = sortOrder
+    fun showRowTotals(): Boolean? = showRowTotals
+    fun showColumnTotals(): Boolean? = showColumnTotals
+    fun dataSet(): ObjectWithUid = dataSet
+    fun dataElements(): List<DataElement>? = dataElements
+    fun greyedFields(): List<DataElementOperand>? = greyedFields
+    fun indicators(): List<Indicator>? = indicators
+    fun disableDataElementAutoGroup(): Boolean? = disableDataElementAutoGroup
+    fun displayOptions(): SectionDisplayOptions? = displayOptions
+
+    fun toBuilder(): Builder = SectionBuilder.from(this)
+
+    class Builder : SectionBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

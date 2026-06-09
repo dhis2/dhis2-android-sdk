@@ -38,7 +38,7 @@ internal class SectionShould : CoreObjectShould<SectionDTO>("dataset/section.jso
     @Test
     override fun map_from_json_string() {
         val sectionDTO = deserialize()
-        val section = sectionDTO.toDomain()
+        val section = sectionDTO.toDomain("BfMAe6Itzgt")
 
         assertThat(section.uid()).isEqualTo("Y2rk0vzgvAx")
         assertThat(section.code()).isEqualTo("Code123")
@@ -52,13 +52,13 @@ internal class SectionShould : CoreObjectShould<SectionDTO>("dataset/section.jso
         assertThat(section.displayName()).isEqualTo("Immunization")
 
         assertThat(section.description()).isEqualTo("Immunization dose administration")
-        assertThat(section.dataSet()!!.uid()).isEqualTo("BfMAe6Itzgt")
+        assertThat(section.dataSet().uid()).isEqualTo("BfMAe6Itzgt")
         assertThat(section.sortOrder()).isEqualTo(2)
         assertThat(section.showRowTotals()).isFalse()
         assertThat(section.showColumnTotals()).isFalse()
         assertThat(section.disableDataElementAutoGroup()).isTrue()
-        assertThat(section.dataElementUids()!!.size).isEqualTo(15)
-        assertThat(section.dataElementUids()!![0].uid()).isEqualTo("s46m5MS0hxu")
+        assertThat(section.dataElementUids!!.size).isEqualTo(15)
+        assertThat(section.dataElementUids[0].uid()).isEqualTo("s46m5MS0hxu")
         assertThat(section.greyedFields()!!.size).isEqualTo(1)
         assertThat(section.greyedFields()!![0].uid()).isEqualTo("ca8lfO062zg.Gmbgme7z9BF")
 

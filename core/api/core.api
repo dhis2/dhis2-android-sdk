@@ -6674,19 +6674,48 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistratio
 	public final fun suspendSet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
-	public abstract fun dataElementOperand ()Ljava/lang/String;
-	public abstract fun dataSet ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+public final class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
+	public final fun dataElementOperand ()Ljava/lang/String;
+	public final fun dataSet ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElementOperand ()Ljava/lang/String;
+	public final fun getDataSet ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder {
+public final class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder : org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
-	public abstract fun dataElementOperand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
-	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkBuilder$Companion;
+	protected field dataElementOperand Ljava/lang/String;
+	protected field dataSet Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;
+	public final fun dataElementOperand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+	public final fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
+	protected final fun getDataElementOperand ()Ljava/lang/String;
+	protected final fun getDataSet ()Ljava/lang/String;
+	protected final fun setDataElementOperand (Ljava/lang/String;)V
+	protected final fun setDataSet (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink;)Lorg/hisp/dhis/android/core/dataset/DataSetCompulsoryDataElementOperandLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/DataSetDisplayOptions {
@@ -6743,64 +6772,188 @@ public final class org/hisp/dhis/android/core/dataset/DataSetEditableStatus$NonE
 	public final fun getReason ()Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetElement : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
-	public abstract fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+public final class org/hisp/dhis/android/core/dataset/DataSetElement : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetElement$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+	public final fun categoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetElement;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetElement;
+	public final fun dataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getDataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetElement$Builder {
+public final class org/hisp/dhis/android/core/dataset/DataSetElement$Builder : org/hisp/dhis/android/core/dataset/DataSetElementBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetElement;
-	public abstract fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
-	public abstract fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
-	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attributeOptionComboDisplayName ()Ljava/lang/String;
-	public abstract fun attributeOptionComboUid ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun completed ()Ljava/lang/Boolean;
-	public abstract fun completedBy ()Ljava/lang/String;
-	public abstract fun completionDate ()Ljava/util/Date;
-	public abstract fun completionState ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun dataSetDisplayName ()Ljava/lang/String;
-	public abstract fun dataSetUid ()Ljava/lang/String;
-	public abstract fun dataValueState ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun organisationUnitDisplayName ()Ljava/lang/String;
-	public abstract fun organisationUnitUid ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
-	public abstract fun state ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun valueCount ()Ljava/lang/Integer;
+public final class org/hisp/dhis/android/core/dataset/DataSetElement$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstance$Builder {
+public class org/hisp/dhis/android/core/dataset/DataSetElementBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetElementBuilder$Companion;
+	protected field dataElement Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected field dataSet Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	public fun <init> ()V
-	public abstract fun attributeOptionComboDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun attributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance;
-	public abstract fun completed (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun completedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun completionDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun completionState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun dataSetDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun dataSetUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun dataValueState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun organisationUnitDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun organisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
-	public abstract fun valueCount (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetElement;
+	public final fun categoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+	public final fun dataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+	public final fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+	protected final fun getCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getDataElement ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getDataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun setCategoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setDataElement (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setDataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetElementBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetElement;)Lorg/hisp/dhis/android/core/dataset/DataSetElement$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstance : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZLjava/util/Date;Ljava/lang/String;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;)V
+	public final fun attributeOptionComboDisplayName ()Ljava/lang/String;
+	public final fun attributeOptionComboUid ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun completed ()Z
+	public final fun completedBy ()Ljava/lang/String;
+	public final fun completionDate ()Ljava/util/Date;
+	public final fun completionState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Z
+	public final fun component11 ()Ljava/util/Date;
+	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/util/Date;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component15 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component16 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZLjava/util/Date;Ljava/lang/String;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetInstance;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZLjava/util/Date;Ljava/lang/String;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance;
+	public final fun dataSetDisplayName ()Ljava/lang/String;
+	public final fun dataSetUid ()Ljava/lang/String;
+	public final fun dataValueState ()Lorg/hisp/dhis/android/core/common/State;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributeOptionComboDisplayName ()Ljava/lang/String;
+	public final fun getAttributeOptionComboUid ()Ljava/lang/String;
+	public final fun getCompleted ()Z
+	public final fun getCompletedBy ()Ljava/lang/String;
+	public final fun getCompletionDate ()Ljava/util/Date;
+	public final fun getCompletionState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getDataSetDisplayName ()Ljava/lang/String;
+	public final fun getDataSetUid ()Ljava/lang/String;
+	public final fun getDataValueState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getOrganisationUnitDisplayName ()Ljava/lang/String;
+	public final fun getOrganisationUnitUid ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun getState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getValueCount ()I
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun organisationUnitDisplayName ()Ljava/lang/String;
+	public final fun organisationUnitUid ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public final fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun valueCount ()I
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstance$Builder : org/hisp/dhis/android/core/dataset/DataSetInstanceBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstance$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/DataSetInstanceBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetInstanceBuilder$Companion;
+	protected field attributeOptionComboDisplayName Ljava/lang/String;
+	protected field attributeOptionComboUid Ljava/lang/String;
+	protected field dataSetDisplayName Ljava/lang/String;
+	protected field dataSetUid Ljava/lang/String;
+	protected field organisationUnitDisplayName Ljava/lang/String;
+	protected field organisationUnitUid Ljava/lang/String;
+	protected field period Ljava/lang/String;
+	protected field periodType Lorg/hisp/dhis/android/core/period/PeriodType;
+	public fun <init> ()V
+	public final fun attributeOptionComboDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun attributeOptionComboUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetInstance;
+	public final fun completed (Z)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun completedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun completionDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun completionState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun dataSetDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun dataSetUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun dataValueState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	protected final fun getAttributeOptionComboDisplayName ()Ljava/lang/String;
+	protected final fun getAttributeOptionComboUid ()Ljava/lang/String;
+	protected final fun getCompleted ()Z
+	protected final fun getCompletedBy ()Ljava/lang/String;
+	protected final fun getCompletionDate ()Ljava/util/Date;
+	protected final fun getCompletionState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getDataSetDisplayName ()Ljava/lang/String;
+	protected final fun getDataSetUid ()Ljava/lang/String;
+	protected final fun getDataValueState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getOrganisationUnitDisplayName ()Ljava/lang/String;
+	protected final fun getOrganisationUnitUid ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	protected final fun getState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getValueCount ()I
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun organisationUnitDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun organisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	protected final fun setAttributeOptionComboDisplayName (Ljava/lang/String;)V
+	protected final fun setAttributeOptionComboUid (Ljava/lang/String;)V
+	protected final fun setCompleted (Z)V
+	protected final fun setCompletedBy (Ljava/lang/String;)V
+	protected final fun setCompletionDate (Ljava/util/Date;)V
+	protected final fun setCompletionState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setDataSetDisplayName (Ljava/lang/String;)V
+	protected final fun setDataSetUid (Ljava/lang/String;)V
+	protected final fun setDataValueState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setOrganisationUnitDisplayName (Ljava/lang/String;)V
+	protected final fun setOrganisationUnitUid (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
+	protected final fun setState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setValueCount (I)V
+	public final fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+	public final fun valueCount (I)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstanceBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetInstance;)Lorg/hisp/dhis/android/core/dataset/DataSetInstance$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/DataSetInstanceCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -6834,27 +6987,73 @@ public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstan
 	public abstract fun suspendHasDataWriteAccess (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun dataSetDisplayName ()Ljava/lang/String;
-	public abstract fun dataSetInstanceCount ()Ljava/lang/Integer;
-	public abstract fun dataSetUid ()Ljava/lang/String;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun state ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun valueCount ()Ljava/lang/Integer;
+public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;IILorg/hisp/dhis/android/core/common/State;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;IILorg/hisp/dhis/android/core/common/State;Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;Ljava/lang/String;Ljava/lang/String;IILorg/hisp/dhis/android/core/common/State;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
+	public final fun dataSetDisplayName ()Ljava/lang/String;
+	public final fun dataSetInstanceCount ()I
+	public final fun dataSetUid ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSetDisplayName ()Ljava/lang/String;
+	public final fun getDataSetInstanceCount ()I
+	public final fun getDataSetUid ()Ljava/lang/String;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getValueCount ()I
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun valueCount ()I
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder {
+public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder : org/hisp/dhis/android/core/dataset/DataSetInstanceSummaryBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
-	public abstract fun dataSetDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun dataSetInstanceCount (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun dataSetUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
-	public abstract fun valueCount (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/DataSetInstanceSummaryBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummaryBuilder$Companion;
+	protected field dataSetDisplayName Ljava/lang/String;
+	protected field dataSetUid Ljava/lang/String;
+	protected field state Lorg/hisp/dhis/android/core/common/State;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;
+	public final fun dataSetDisplayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	public final fun dataSetInstanceCount (I)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	public final fun dataSetUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	protected final fun getDataSetDisplayName ()Ljava/lang/String;
+	protected final fun getDataSetInstanceCount ()I
+	protected final fun getDataSetUid ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getValueCount ()I
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	protected final fun setDataSetDisplayName (Ljava/lang/String;)V
+	protected final fun setDataSetInstanceCount (I)V
+	protected final fun setDataSetUid (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setValueCount (I)V
+	public final fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+	public final fun valueCount (I)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummaryBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary;)Lorg/hisp/dhis/android/core/dataset/DataSetInstanceSummary$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummaryCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -6893,50 +7092,195 @@ public final class org/hisp/dhis/android/core/dataset/DataSetNonEditableReason :
 	public static fun values ()[Lorg/hisp/dhis/android/core/dataset/DataSetNonEditableReason;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
-	public abstract fun dataSet ()Ljava/lang/String;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+public final class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
+	public final fun dataSet ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSet ()Ljava/lang/String;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder {
+public final class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder : org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
-	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun dataElements ()Ljava/util/List;
-	public abstract fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun disableDataElementAutoGroup ()Ljava/lang/Boolean;
-	public abstract fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
-	public abstract fun greyedFields ()Ljava/util/List;
-	public abstract fun indicators ()Ljava/util/List;
-	public abstract fun showColumnTotals ()Ljava/lang/Boolean;
-	public abstract fun showRowTotals ()Ljava/lang/Boolean;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+public final class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/Section$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkBuilder$Companion;
+	protected field dataSet Ljava/lang/String;
+	protected field organisationUnit Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/Section;
-	public abstract fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun disableDataElementAutoGroup (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun displayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun greyedFields (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun showColumnTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun showRowTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;
+	public final fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+	protected final fun getDataSet ()Ljava/lang/String;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+	protected final fun setDataSet (Ljava/lang/String;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink;)Lorg/hisp/dhis/android/core/dataset/DataSetOrganisationUnitLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/Section$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/Boolean;
+	public final fun component11 ()Ljava/lang/Boolean;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component14 ()Ljava/util/List;
+	public final fun component15 ()Ljava/util/List;
+	public final fun component16 ()Ljava/util/List;
+	public final fun component17 ()Ljava/lang/Boolean;
+	public final fun component18 ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/Section;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/Section;
+	public fun created ()Ljava/util/Date;
+	public final fun dataElements ()Ljava/util/List;
+	public final fun dataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun description ()Ljava/lang/String;
+	public final fun disableDataElementAutoGroup ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public final fun displayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public final fun getDataElements ()Ljava/util/List;
+	public final fun getDataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getDisableDataElementAutoGroup ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getDisplayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
+	public final fun getGreyedFields ()Ljava/util/List;
+	public final fun getIndicators ()Ljava/util/List;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getShowColumnTotals ()Ljava/lang/Boolean;
+	public final fun getShowRowTotals ()Ljava/lang/Boolean;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public fun getUid ()Ljava/lang/String;
+	public final fun greyedFields ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun indicators ()Ljava/util/List;
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun showColumnTotals ()Ljava/lang/Boolean;
+	public final fun showRowTotals ()Ljava/lang/Boolean;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/dataset/Section$Builder : org/hisp/dhis/android/core/dataset/SectionBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/dataset/Section$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/SectionBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionBuilder$Companion;
+	protected field dataSet Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/Section;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun dataElements (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun dataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun disableDataElementAutoGroup (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun displayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElementUids ()Ljava/util/List;
+	protected final fun getDataElements ()Ljava/util/List;
+	protected final fun getDataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getDisableDataElementAutoGroup ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getDisplayOptions ()Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;
+	protected final fun getGreyedFields ()Ljava/util/List;
+	protected final fun getIndicators ()Ljava/util/List;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getShowColumnTotals ()Ljava/lang/Boolean;
+	protected final fun getShowRowTotals ()Ljava/lang/Boolean;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun greyedFields (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun indicators (Ljava/util/List;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElementUids (Ljava/util/List;)V
+	protected final fun setDataElements (Ljava/util/List;)V
+	protected final fun setDataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setDisableDataElementAutoGroup (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setDisplayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)V
+	protected final fun setGreyedFields (Ljava/util/List;)V
+	protected final fun setIndicators (Ljava/util/List;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setShowColumnTotals (Ljava/lang/Boolean;)V
+	protected final fun setShowRowTotals (Ljava/lang/Boolean;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun showColumnTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun showRowTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/Section;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -6955,21 +7299,54 @@ public final class org/hisp/dhis/android/core/dataset/SectionCollectionRepositor
 	public final fun withIndicators ()Lorg/hisp/dhis/android/core/dataset/SectionCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun section ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+public final class org/hisp/dhis/android/core/dataset/SectionDataElementLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;I)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
+	public final fun dataElement ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getSection ()Ljava/lang/String;
+	public final fun getSortOrder ()I
+	public fun hashCode ()I
+	public final fun section ()Ljava/lang/String;
+	public final fun sortOrder ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder {
+public final class org/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder : org/hisp/dhis/android/core/dataset/SectionDataElementLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
-	public abstract fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionDataElementLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/SectionDataElementLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionDataElementLinkBuilder$Companion;
+	protected field dataElement Ljava/lang/String;
+	protected field section Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getSection ()Ljava/lang/String;
+	protected final fun getSortOrder ()I
+	public final fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setSection (Ljava/lang/String;)V
+	protected final fun setSortOrder (I)V
+	public final fun sortOrder (I)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionDataElementLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink;)Lorg/hisp/dhis/android/core/dataset/SectionDataElementLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/SectionDisplayOptions {
@@ -7026,21 +7403,55 @@ public final class org/hisp/dhis/android/core/dataset/SectionDisplayOptionsBuild
 	public final fun from (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
-	public abstract fun categoryOptionCombo ()Ljava/lang/String;
-	public abstract fun dataElementOperand ()Ljava/lang/String;
-	public abstract fun section ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+public final class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+	public final fun categoryOptionCombo ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
+	public final fun dataElementOperand ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCategoryOptionCombo ()Ljava/lang/String;
+	public final fun getDataElementOperand ()Ljava/lang/String;
+	public final fun getSection ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun section ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder {
+public final class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder : org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
-	public abstract fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
-	public abstract fun dataElementOperand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
-	public abstract fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkBuilder$Companion;
+	protected field categoryOptionCombo Ljava/lang/String;
+	protected field dataElementOperand Ljava/lang/String;
+	protected field section Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;
+	public final fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+	public final fun dataElementOperand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+	protected final fun getCategoryOptionCombo ()Ljava/lang/String;
+	protected final fun getDataElementOperand ()Ljava/lang/String;
+	protected final fun getSection ()Ljava/lang/String;
+	public final fun section (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
+	protected final fun setCategoryOptionCombo (Ljava/lang/String;)V
+	protected final fun setDataElementOperand (Ljava/lang/String;)V
+	protected final fun setSection (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/dataset/SectionGreyedFieldsLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink;)Lorg/hisp/dhis/android/core/dataset/SectionGreyedFieldsLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/SectionPivotMode : java/lang/Enum {

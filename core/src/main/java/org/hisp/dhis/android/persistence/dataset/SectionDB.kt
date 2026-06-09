@@ -67,7 +67,7 @@ internal data class SectionDB(
 
 internal fun Section.toDB(): SectionDB {
     return SectionDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -75,7 +75,7 @@ internal fun Section.toDB(): SectionDB {
         lastUpdated = lastUpdated().dateFormat(),
         description = description(),
         sortOrder = sortOrder(),
-        dataSet = dataSet()!!.uid(),
+        dataSet = dataSet().uid(),
         showRowTotals = showRowTotals(),
         showColumnTotals = showColumnTotals(),
         disableDataElementAutoGroup = disableDataElementAutoGroup(),

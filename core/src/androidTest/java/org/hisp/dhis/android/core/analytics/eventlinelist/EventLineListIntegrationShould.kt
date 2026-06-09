@@ -645,9 +645,11 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val programIndicator = EventLineListSamples.programIndicator(expression)
         programIndicatorStore.insert(programIndicator)
         programIndicatorLegendSetLinkStore.insert(
-            ProgramIndicatorLegendSetLink.builder().programIndicator(programIndicator.uid()).legendSet(
-                legendSet1.uid(),
-            ).build(),
+            ProgramIndicatorLegendSetLink.builder()
+                .programIndicator(programIndicator.uid())
+                .legendSet(legendSet1.uid())
+                .sortOrder(0)
+                .build(),
         )
         return programIndicator
     }

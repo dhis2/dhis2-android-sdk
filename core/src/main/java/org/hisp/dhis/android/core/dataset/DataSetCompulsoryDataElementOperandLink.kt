@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,20 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.dataset
 
-import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-internal object SectionInternalAccessor {
-    @JvmStatic
-    fun accessDataElementUids(section: Section): List<ObjectWithUid>? {
-        return section.dataElementUids()
-    }
+@ModelBuilder
+data class DataSetCompulsoryDataElementOperandLink(
+    val dataSet: String,
+    val dataElementOperand: String,
+) : CoreObject {
 
-    fun insertDataElementUids(
-        builder: Section.Builder,
-        dataElementUids: List<ObjectWithUid>?,
-    ): Section.Builder {
-        return builder.dataElementUids(dataElementUids)
+    fun dataSet(): String = dataSet
+    fun dataElementOperand(): String = dataElementOperand
+
+    fun toBuilder(): Builder = DataSetCompulsoryDataElementOperandLinkBuilder.from(this)
+
+    class Builder : DataSetCompulsoryDataElementOperandLinkBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

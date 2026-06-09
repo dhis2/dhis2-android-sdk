@@ -87,3 +87,14 @@ ALTER TABLE ValidationRule RENAME TO ValidationRule_Old;
 CREATE TABLE ValidationRule(uid TEXT NOT NULL, code TEXT, name TEXT, displayName TEXT, created TEXT, lastUpdated TEXT, shortName TEXT, displayShortName TEXT, description TEXT, displayDescription TEXT, instruction TEXT, importance TEXT, operator TEXT, periodType TEXT, skipFormValidation INTEGER, leftSideExpression TEXT, leftSideDescription TEXT NOT NULL, leftSideMissingValueStrategy TEXT NOT NULL, rightSideExpression TEXT, rightSideDescription TEXT NOT NULL, rightSideMissingValueStrategy TEXT NOT NULL, organisationUnitLevels TEXT, PRIMARY KEY(uid));
 INSERT INTO ValidationRule(uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, instruction, importance, operator, periodType, skipFormValidation, leftSideExpression, leftSideDescription, leftSideMissingValueStrategy, rightSideExpression, rightSideDescription, rightSideMissingValueStrategy, organisationUnitLevels) SELECT uid, code, name, displayName, created, lastUpdated, shortName, displayShortName, description, displayDescription, instruction, importance, operator, periodType, skipFormValidation, leftSideExpression, leftSideDescription, leftSideMissingValueStrategy, rightSideExpression, rightSideDescription, rightSideMissingValueStrategy, organisationUnitLevels FROM ValidationRule_Old;
 DROP TABLE IF EXISTS ValidationRule_Old;
+
+# SectionDataElementLink: make sortOrder non-null (ANDROSDK-2317)
+
+# Remove rows with null sortOrder
+DELETE FROM SectionDataElementLink WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE SectionDataElementLink RENAME TO SectionDataElementLink_Old;
+CREATE TABLE SectionDataElementLink(section TEXT NOT NULL, dataElement TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(section, dataElement), FOREIGN KEY(section) REFERENCES Section(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO SectionDataElementLink(section, dataElement, sortOrder) SELECT section, dataElement, sortOrder FROM SectionDataElementLink_Old;
+DROP TABLE IF EXISTS SectionDataElementLink_Old;

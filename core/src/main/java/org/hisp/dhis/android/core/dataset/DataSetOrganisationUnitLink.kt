@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,59 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetOrganisationUnitLink(
+    val dataSet: String,
+    val organisationUnit: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.State;
+    fun dataSet(): String = dataSet
+    fun organisationUnit(): String = organisationUnit
 
-import java.util.Date;
+    fun toBuilder(): Builder = DataSetOrganisationUnitLinkBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetInstanceSummary implements CoreObject {
+    class Builder : DataSetOrganisationUnitLinkBuilder()
 
-    @NonNull
-    public abstract String dataSetUid();
-
-    @NonNull
-    public abstract String dataSetDisplayName();
-
-    @NonNull
-    public abstract Integer valueCount();
-
-    @NonNull
-    public abstract Integer dataSetInstanceCount();
-
-    @NonNull
-    public abstract State state();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    public abstract DataSetInstanceSummary.Builder toBuilder();
-
-    public static DataSetInstanceSummary.Builder builder() {
-        return new AutoValue_DataSetInstanceSummary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataSetUid(String dataSetUid);
-
-        public abstract Builder dataSetDisplayName(String dataSetDisplayName);
-
-        public abstract Builder valueCount(Integer valueCount);
-
-        public abstract Builder dataSetInstanceCount(Integer dataSetInstanceCount);
-
-        public abstract Builder state(State state);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract DataSetInstanceSummary build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

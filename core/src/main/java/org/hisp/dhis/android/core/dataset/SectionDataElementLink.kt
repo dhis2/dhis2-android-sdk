@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,41 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SectionDataElementLink(
+    val section: String,
+    val dataElement: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun section(): String = section
+    fun dataElement(): String = dataElement
+    fun sortOrder(): Int = sortOrder
 
-@AutoValue
-public abstract class SectionGreyedFieldsLink implements CoreObject {
+    fun toBuilder(): Builder = SectionDataElementLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String section();
+    class Builder : SectionDataElementLinkBuilder()
 
-    @Nullable
-    public abstract String dataElementOperand();
-
-    @Nullable
-    public abstract String categoryOptionCombo();
-
-    public static Builder builder() {
-        return new AutoValue_SectionGreyedFieldsLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder section(String section);
-
-        public abstract Builder dataElementOperand(String dataElementOperand);
-
-        public abstract Builder categoryOptionCombo(String categoryOptionCombo);
-
-        public abstract SectionGreyedFieldsLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

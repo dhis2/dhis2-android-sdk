@@ -42,7 +42,7 @@ internal data class DataSetOrganisationUnitLinkDB(
 
 internal fun DataSetOrganisationUnitLink.toDB(): DataSetOrganisationUnitLinkDB {
     return DataSetOrganisationUnitLinkDB(
-        dataSet = dataSet()!!,
-        organisationUnit = organisationUnit()!!,
+        dataSet = dataSet(),
+        organisationUnit = organisationUnit(),
     )
 }

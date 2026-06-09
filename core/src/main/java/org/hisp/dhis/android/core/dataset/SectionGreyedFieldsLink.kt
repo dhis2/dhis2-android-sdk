@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,35 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class SectionGreyedFieldsLink(
+    val section: String,
+    val dataElementOperand: String,
+    val categoryOptionCombo: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun section(): String = section
+    fun dataElementOperand(): String = dataElementOperand
+    fun categoryOptionCombo(): String = categoryOptionCombo
 
-@AutoValue
-public abstract class DataSetCompulsoryDataElementOperandLink implements CoreObject {
+    fun toBuilder(): Builder = SectionGreyedFieldsLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String dataSet();
+    class Builder : SectionGreyedFieldsLinkBuilder()
 
-    @Nullable
-    public abstract String dataElementOperand();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetCompulsoryDataElementOperandLink.Builder();
-    }
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(String dataSet);
-
-        public abstract Builder dataElementOperand(String dataElementOperand);
-
-        public abstract DataSetCompulsoryDataElementOperandLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

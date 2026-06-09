@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,44 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetElement(
+    val dataSet: ObjectWithUid,
+    val dataElement: ObjectWithUid,
+    val categoryCombo: ObjectWithUid?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun dataSet(): ObjectWithUid = dataSet
+    fun dataElement(): ObjectWithUid = dataElement
+    fun categoryCombo(): ObjectWithUid? = categoryCombo
 
-@AutoValue
-public abstract class DataSetElement implements CoreObject {
+    fun toBuilder(): Builder = DataSetElementBuilder.from(this)
 
-    @Nullable
-    public abstract ObjectWithUid dataSet();
+    class Builder : DataSetElementBuilder()
 
-    @NonNull
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid categoryCombo();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetElement.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-
-        public abstract Builder dataSet(ObjectWithUid dataSet);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder categoryCombo(ObjectWithUid categoryCombo);
-
-        public abstract DataSetElement build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

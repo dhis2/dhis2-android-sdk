@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.common.AnalyticsType
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
+import org.hisp.dhis.android.network.common.dto.CategoryComboWithFallbackDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
@@ -62,6 +63,9 @@ internal data class ProgramIndicatorDTO(
     val analyticsType: String?,
     val analyticsPeriodBoundaries: List<AnalyticsPeriodBoundaryDTO>?,
     val legendSets: List<ObjectWithUidDTO>?,
+    val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
+    val attributeCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
+    val categoryMappingIds: List<String>?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): ProgramIndicator {
         return ProgramIndicator.builder()
@@ -76,6 +80,9 @@ internal data class ProgramIndicatorDTO(
             .analyticsType(analyticsType?.let { AnalyticsType.valueOf(it) })
             .analyticsPeriodBoundaries(analyticsPeriodBoundaries?.map { it.toDomain() })
             .legendSets(legendSets?.map { it.toDomain() })
+            .categoryCombo(categoryCombo.toDomain())
+            .attributeCombo(attributeCombo.toDomain())
+            .categoryMappingIds(categoryMappingIds)
             .build()
     }
 }

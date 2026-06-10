@@ -29,10 +29,16 @@
 package org.hisp.dhis.android.core.domain.aggregated.data
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface AggregatedDataDownloader {
 
+    fun flowDownload(): Flow<AggregatedD2Progress>
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<AggregatedD2Progress>
+
+    fun rxDownload(): Observable<AggregatedD2Progress>
 
     fun blockingDownload()
 }

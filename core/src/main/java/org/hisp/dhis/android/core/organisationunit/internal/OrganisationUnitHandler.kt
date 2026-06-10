@@ -153,7 +153,7 @@ internal class OrganisationUnitHandler(
             builder
                 .organisationUnit(orgUnit.uid())
                 .root(UserOrganisationUnitLinkHelper.isRoot(scope!!, user!!, orgUnit))
-                .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope, user, orgUnit))
+                .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope!!, user!!, orgUnit))
                 .build()
         }
     }

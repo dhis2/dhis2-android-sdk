@@ -28,7 +28,9 @@
 
 package org.hisp.dhis.android.core.datastore
 
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -58,16 +60,11 @@ class DataStoreCollectionRepository internal constructor(
     FilterConnectorFactory(scope) { s -> DataStoreCollectionRepository(store, call, s) },
 ),
     ReadOnlyWithUploadCollectionRepository<DataStoreEntry> {
-    override fun upload(): Observable<D2Progress> {
-        return Observable
-            .fromCallable {
-                bySyncState().`in`(State.uploadableStatesIncludingError().toList()).blockingGetWithoutChildren()
-            }
-            .flatMap { call.uploadDataStoreEntries(it) }
-    }
 
-    override fun blockingUpload() {
-        upload().blockingSubscribe()
+    override fun flowUpload(): Flow<D2Progress> = flow {
+        val entries = bySyncState().`in`(State.uploadableStatesIncludingError().toList())
+            .blockingGetWithoutChildren()
+        emitAll(call.uploadDataStoreEntries(entries))
     }
 
     fun value(namespace: String, key: String): DataStoreObjectRepository {

@@ -46,7 +46,7 @@ internal class UserUserCredentialsTransformer : TwoWayTransformer<User, UserCred
 
     override fun deTransform(t: UserCredentials): User {
         return User.builder()
-            .uid(t.username())
+            .uid(t.username()!!)
             .name(t.name())
             .displayName(t.displayName())
             .username(t.username())

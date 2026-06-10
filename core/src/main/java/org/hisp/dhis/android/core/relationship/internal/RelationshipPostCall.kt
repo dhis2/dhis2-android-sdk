@@ -52,7 +52,7 @@ internal class RelationshipPostCall(
     fun deleteRelationships(relationships: List<Relationship>): Flow<D2Progress> = flow {
         val progressManager = D2ProgressManager(null)
         for (relationship in relationships) {
-            val response = relationshipNetworkHandler.deleteRelationship(relationship.uid()!!)
+            val response = relationshipNetworkHandler.deleteRelationship(relationship.uid())
 
             response.fold(
                 onSuccess = { webResponse ->
@@ -62,11 +62,11 @@ internal class RelationshipPostCall(
                     if ((httpCode == HTTP_OK && status == ImportStatus.SUCCESS) || httpCode == HTTP_NOT_FOUND) {
                         relationshipStore.deleteByEntity(relationship)
                     } else {
-                        handleDeleteRelationshipError(relationship.uid()!!)
+                        handleDeleteRelationshipError(relationship.uid())
                     }
                 },
                 onFailure = {
-                    handleDeleteRelationshipError(relationship.uid()!!)
+                    handleDeleteRelationshipError(relationship.uid())
                 },
             )
 

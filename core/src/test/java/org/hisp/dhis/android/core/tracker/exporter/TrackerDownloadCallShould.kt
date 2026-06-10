@@ -127,7 +127,7 @@ class TrackerDownloadCallShould {
             .doReturn(payload)
         whenever(payload.items).doReturn(listOf(orgUnit))
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler).getOrganisationUnitsByUid(setOf(missingOrgUnitUid))
@@ -139,7 +139,7 @@ class TrackerDownloadCallShould {
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(emptyList())
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler, never()).getOrganisationUnitsByUid(any())
@@ -158,7 +158,7 @@ class TrackerDownloadCallShould {
             .doReturn(payload)
         whenever(payload.items).doReturn(orgUnits)
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler).getOrganisationUnitsByUid(missingUids.toSet())
@@ -170,7 +170,7 @@ class TrackerDownloadCallShould {
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(emptyList())
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         val progressList = call.download(params).toList()
 
         assertThat(progressList).isNotEmpty()

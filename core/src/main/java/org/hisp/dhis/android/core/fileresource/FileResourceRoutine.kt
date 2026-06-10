@@ -33,14 +33,12 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.common.ValueType
-import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
@@ -67,23 +65,23 @@ internal class FileResourceRoutine(
     suspend fun internalDeleteOutdatedFileResources(after: Date? = null) {
         val dataElementsUids = dataElementCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .getInternal().map(DataElement::uid)
+            .suspendGet().map { it.uid }
 
         val trackedEntityAttributesUids = trackedEntityAttributeCollectionRepository
             .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-            .getInternal().map(TrackedEntityAttribute::uid)
+            .suspendGet().map { it.uid() }
 
         val trackedEntityDataValues = trackedEntityDataValueCollectionRepository
             .byDataElement().`in`(dataElementsUids)
-            .getInternal()
+            .suspendGet()
 
         val trackedEntityAttributeValues = trackedEntityAttributeValueCollectionRepository
             .byTrackedEntityAttribute().`in`(trackedEntityAttributesUids)
-            .getInternal()
+            .suspendGet()
 
         val dataValues = dataValueCollectionRepository
             .byDataElementUid().`in`(dataElementsUids)
-            .getInternal()
+            .suspendGet()
 
         val customIcons = customIconStore.selectAll()
 
@@ -99,7 +97,7 @@ internal class FileResourceRoutine(
             .byUid().notIn(fileResourceUids.mapNotNull { it })
             .byDomain().`in`(FileResourceDomain.DATA_VALUE, FileResourceDomain.ICON)
             .byLastUpdated().before(lastUpdatedBefore)
-            .getInternal()
+            .suspendGet()
 
         deleteFileResources(fileResources)
     }

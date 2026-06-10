@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectStyle;
 import org.hisp.dhis.android.core.common.ObjectWithStyle;
@@ -42,8 +42,8 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramSection extends BaseIdentifiableObject
-        implements CoreObject, ObjectWithStyle<ProgramSection, ProgramSection.Builder> {
+public abstract class ProgramSection extends BaseIdentifiableObAuVa
+        implements CoreObject, ObjectWithStyle {
 
     @Nullable
     public abstract String description();
@@ -70,8 +70,7 @@ public abstract class ProgramSection extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<ProgramSection, Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder description(String description);
 
@@ -84,6 +83,8 @@ public abstract class ProgramSection extends BaseIdentifiableObject
         public abstract Builder formName(String formName);
 
         public abstract Builder renderType(SectionRendering renderType);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract ProgramSection autoBuild();
 

@@ -55,7 +55,7 @@ internal class LegendEvaluator(
                 val programIndicator = programIndicatorRepository
                     .byUid().eq(programIndicatorUid)
                     .withLegendSets()
-                    .one().getInternal()
+                    .one().suspendGet()
 
                 val legendSet = programIndicator?.legendSets()!![0]
 
@@ -77,7 +77,7 @@ internal class LegendEvaluator(
                 val dataElement = dataElementRepository
                     .byUid().eq(dataElementUid)
                     .withLegendSets()
-                    .one().getInternal()
+                    .one().suspendGet()
 
                 val legendSet = dataElement?.legendSets()!![0]
 
@@ -99,7 +99,7 @@ internal class LegendEvaluator(
                 val trackedEntityAttribute = trackedEntityAttributeCollectionRepository
                     .byUid().eq(trackedEntityAttributeUid)
                     .withLegendSets()
-                    .one().getInternal()
+                    .one().suspendGet()
 
                 val legendSet = trackedEntityAttribute?.legendSets()!![0]
 
@@ -121,7 +121,7 @@ internal class LegendEvaluator(
                 val indicator = indicatorRepository
                     .byUid().eq(indicatorUid)
                     .withLegendSets()
-                    .one().getInternal()
+                    .one().suspendGet()
 
                 val legendSet = indicator?.legendSets()!![0]
 
@@ -145,7 +145,7 @@ internal class LegendEvaluator(
                     .byEndValue().biggerOrEqualTo(value.toDouble())
                     .byLegendSet().eq(legendSetUid)
                     .one()
-                    .getInternal()?.uid()
+                    .suspendGet()?.uid()
             } catch (e: Exception) {
                 null
             }

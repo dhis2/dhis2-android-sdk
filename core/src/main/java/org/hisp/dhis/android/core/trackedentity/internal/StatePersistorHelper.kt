@@ -41,17 +41,15 @@ internal class StatePersistorHelper internal constructor() {
         o: O,
         forcedState: State?,
     ) where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
-        val s = getStateToSet(o, forcedState)
-        if (!stateMap.containsKey(s)) {
-            stateMap[s] = ArrayList()
+        getStateToSet(o, forcedState)?.let { s ->
+            stateMap.getOrPut(s) { ArrayList() }.add(o.uid())
         }
-        stateMap[s]!!.add(o.uid())
     }
 
     private fun <O> getStateToSet(
         o: O,
         forcedState: State?,
-    ): State where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
+    ): State? where O : ObjectWithSyncStateInterface, O : ObjectWithUidInterface {
         return forcedState
             ?: if (o.syncState() == State.UPLOADING) State.TO_UPDATE else o.syncState()
     }

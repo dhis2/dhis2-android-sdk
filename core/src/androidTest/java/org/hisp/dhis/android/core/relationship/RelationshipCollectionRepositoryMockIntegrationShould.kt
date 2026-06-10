@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.relationship
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.BaseNameableObject
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -63,7 +63,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     @Test
     fun filter_by_created() {
         val relationships = d2.relationshipModule().relationships()
-            .byCreated().eq(BaseNameableObject.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
+            .byCreated().eq(DateUtils.DATE_FORMAT.parse("2019-02-07T08:06:28.369"))
             .blockingGet()
 
         assertThat(relationships.size).isEqualTo(1)
@@ -72,7 +72,7 @@ class RelationshipCollectionRepositoryMockIntegrationShould : BaseMockIntegratio
     @Test
     fun filter_by_last_updated() {
         val relationships = d2.relationshipModule().relationships()
-            .byLastUpdated().eq(BaseNameableObject.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
+            .byLastUpdated().eq(DateUtils.DATE_FORMAT.parse("2018-02-07T08:06:28.369"))
             .blockingGet()
 
         assertThat(relationships.size).isEqualTo(1)

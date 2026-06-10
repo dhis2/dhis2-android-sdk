@@ -110,7 +110,7 @@ internal class ProgramIndicatorEngineImpl(
             .withTrackedEntityDataValues()
             .byDeleted().isFalse
             .uid(eventUid)
-            .getInternal() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
+            .suspendGet() ?: throw NoSuchElementException("Event $eventUid does not exist or is deleted.")
 
         val enrollment = event.enrollment()?.let {
             enrollmentStore.selectByUid(it)
@@ -158,7 +158,7 @@ internal class ProgramIndicatorEngineImpl(
     }
 
     private suspend fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {
-        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).getUidsInternal()
+        val programStageUids = programRepository.byProgramUid().eq(enrollment.program()).suspendGetUids()
 
         return programStageUids.associateWith { programStageUid ->
             val programStageEvents = eventRepository
@@ -168,7 +168,7 @@ internal class ProgramIndicatorEngineImpl(
                 .orderByEventDate(RepositoryScope.OrderByDirection.ASC)
                 .orderByLastUpdated(RepositoryScope.OrderByDirection.ASC)
                 .withTrackedEntityDataValues()
-                .getInternal()
+                .suspendGet()
 
             programStageEvents
         }

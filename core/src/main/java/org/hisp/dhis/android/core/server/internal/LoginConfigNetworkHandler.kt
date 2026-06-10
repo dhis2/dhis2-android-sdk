@@ -29,8 +29,13 @@
 package org.hisp.dhis.android.core.server.internal
 
 import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.OauthConfig
 
 internal interface LoginConfigNetworkHandler {
     suspend fun loginConfigFor(serverUrl: String): LoginConfig
     suspend fun loginConfig(): LoginConfig
+    suspend fun oauthConfigFor(
+        serverUrl: String,
+        oauthInfoPath: String = "/.well-known/oauth-authorization-server",
+    ): OauthConfig
 }

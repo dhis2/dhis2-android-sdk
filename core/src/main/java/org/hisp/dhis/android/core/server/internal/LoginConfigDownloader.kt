@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.server.internal
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
@@ -42,6 +43,7 @@ internal class LoginConfigDownloader(
     private val networkHandler: LoginConfigNetworkHandler,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : UntypedModuleDownloaderCoroutines {
     override suspend fun downloadMetadata() {
         val serverUrl =
@@ -49,7 +51,7 @@ internal class LoginConfigDownloader(
 
         val loginConfig =
             if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
-                networkHandler.loginConfig()
+                coroutineAPICallExecutor.wrap { networkHandler.loginConfig() }.getOrThrow()
             } else {
                 LoginConfig.createDefault(serverUrl)
             }
@@ -61,7 +63,7 @@ internal class LoginConfigDownloader(
             } else {
                 account
             }
-        }
+        } ?: emptyList()
         databasesConfiguration?.toBuilder()
             ?.accounts(updatedAccounts)
             ?.build()

@@ -33,13 +33,13 @@ import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 
 object TrackerJobObjectSamples {
 
-    fun get1(): TrackerJobObject {
-        return TrackerJobObject.builder()
-            .trackerType(TrackerImporterObjectType.EVENT)
-            .objectUid("oUid")
-            .jobUid("jUid")
-            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-            .fileResources(listOf("resource1", "resource2"))
-            .build()
+    internal fun get1(): TrackerJobObject {
+        return TrackerJobObject(
+            trackerType = TrackerImporterObjectType.EVENT,
+            objectUid = "oUid",
+            jobUid = "jUid",
+            lastUpdated = parseDate("2017-11-29T11:27:46.935"),
+            fileResources = listOf("resource1", "resource2"),
+        )
     }
 }

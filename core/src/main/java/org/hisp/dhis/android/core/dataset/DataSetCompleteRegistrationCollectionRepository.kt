@@ -27,10 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -97,15 +96,13 @@ class DataSetCompleteRegistrationCollectionRepository internal constructor(
         )
     }
 
-    override fun upload(): Observable<D2Progress> = flow {
-        val dataSetCompleteRegistrations =
-            bySyncState().`in`(*uploadableStatesIncludingError()).getWithoutChildrenInternal()
+    override fun flowUpload(): Flow<D2Progress> {
+        return flow {
+            val dataSetCompleteRegistrations =
+                bySyncState().`in`(*uploadableStatesIncludingError()).getWithoutChildrenInternal()
 
-        emitAll(postCall.uploadDataSetCompleteRegistrations(dataSetCompleteRegistrations))
-    }.asObservable()
-
-    override fun blockingUpload() {
-        upload().blockingSubscribe()
+            emitAll(postCall.uploadDataSetCompleteRegistrations(dataSetCompleteRegistrations))
+        }
     }
 
     fun byPeriod(): StringFilterConnector<DataSetCompleteRegistrationCollectionRepository> {

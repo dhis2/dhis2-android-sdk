@@ -138,32 +138,32 @@ internal class TrackerImporterPostCall internal constructor(
         payload: NewTrackerImporterPayload,
         jobUid: String,
     ): List<TrackerJobObject> {
-        val builder = TrackerJobObject
-            .builder()
-            .jobUid(jobUid)
-            .lastUpdated(Date())
+        val date = Date()
 
         val enrollments = payload.trackedEntities.flatMap { it.enrollments ?: emptyList() } + payload.enrollments
         val events = enrollments.flatMap { it.events ?: emptyList() } + payload.events
 
-        return generateTypeObjects(builder, TRACKED_ENTITY, payload.trackedEntities, payload.fileResourcesMap) +
-            generateTypeObjects(builder, ENROLLMENT, enrollments, payload.fileResourcesMap) +
-            generateTypeObjects(builder, EVENT, events, payload.fileResourcesMap) +
-            generateTypeObjects(builder, RELATIONSHIP, payload.relationships, payload.fileResourcesMap)
+        return generateTypeObjects(jobUid, date, TRACKED_ENTITY, payload.trackedEntities, payload.fileResourcesMap) +
+            generateTypeObjects(jobUid, date, ENROLLMENT, enrollments, payload.fileResourcesMap) +
+            generateTypeObjects(jobUid, date, EVENT, events, payload.fileResourcesMap) +
+            generateTypeObjects(jobUid, date, RELATIONSHIP, payload.relationships, payload.fileResourcesMap)
     }
 
     private fun generateTypeObjects(
-        builder: TrackerJobObject.Builder,
+        jobUid: String,
+        date: Date,
         objectType: TrackerImporterObjectType,
         objects: List<ObjectWithUidInterface>,
         fileResourcesMap: Map<String, List<String>>,
     ): List<TrackerJobObject> {
         return objects.map {
-            builder
-                .trackerType(objectType)
-                .objectUid(it.uid())
-                .fileResources(fileResourcesMap[it.uid()] ?: emptyList())
-                .build()
+            TrackerJobObject(
+                trackerType = objectType,
+                objectUid = it.uid(),
+                jobUid = jobUid,
+                lastUpdated = date,
+                fileResources = fileResourcesMap[it.uid()] ?: emptyList(),
+            )
         }
     }
 }

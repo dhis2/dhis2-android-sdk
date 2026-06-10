@@ -64,7 +64,7 @@ internal class EventQueryBundleInternalFactory(
             orgUnitByLimitExtractor,
         ) { it?.eventDateDownload() }
 
-        val eventFilters = (params.eventFilters()?.filter { it.program() == programUid } ?: emptyList())
+        val eventFilters = (params.eventFilters?.filter { it.program() == programUid } ?: emptyList())
 
         val eventFilterSettings = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
 
@@ -72,7 +72,7 @@ internal class EventQueryBundleInternalFactory(
             eventFilterCollectionRepository
                 .byUid().`in`(it)
                 .withEventDataFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val finalFilters = eventFilters.takeIf { it.isNotEmpty() } ?: programSettingFilters
@@ -80,15 +80,17 @@ internal class EventQueryBundleInternalFactory(
         val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
-        val builder = EventQueryBundle.builder()
-            .eventFilters(finalFilters)
-            .commonParams(commonParamsWithHash)
-
-        return commonHelper.divideByOrgUnits(
+        val orgUnitBundles = commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
             commonParams.hasLimitByOrgUnit,
-        ) {
-            builder.orgUnits(it).build()
+        )
+
+        return orgUnitBundles.map { orgUnits ->
+            EventQueryBundle(
+                commonParams = commonParamsWithHash,
+                orgUnits = orgUnits,
+                eventFilters = finalFilters,
+            )
         }
     }
 }

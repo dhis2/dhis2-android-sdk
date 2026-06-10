@@ -64,7 +64,7 @@ internal class RelationshipImportHandler internal constructor(
         relationshipUid: String,
     ) {
         val relationship =
-            (relationshipRepository.withItems().uid(relationshipUid) as RelationshipObjectRepository).getInternal()
+            (relationshipRepository.withItems().uid(relationshipUid) as RelationshipObjectRepository).suspendGet()
         val relationshipNotFoundOnServer = checkRelationshipNotFoundOnServer(importSummary)
 
         if (relationshipNotFoundOnServer) {
@@ -114,7 +114,7 @@ internal class RelationshipImportHandler internal constructor(
         val processedRelationships = getReferences(importSummaries)
 
         relationships.filterNot { processedRelationships.contains(it.uid()) }.forEach { relationship ->
-            relationshipStore.setSyncStateOrDelete(relationship.uid()!!, State.TO_UPDATE)
+            relationshipStore.setSyncStateOrDelete(relationship.uid(), State.TO_UPDATE)
             dataStatePropagator.propagateRelationshipUpdate(relationship)
         }
     }

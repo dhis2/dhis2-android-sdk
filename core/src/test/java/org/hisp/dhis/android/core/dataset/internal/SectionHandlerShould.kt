@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionInternalAccessor
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -76,7 +75,7 @@ class SectionHandlerShould {
         dataElements = mutableListOf(
             ObjectWithUid.create("dataElement_uid"),
         )
-        whenever(SectionInternalAccessor.accessDataElementUids(section)).thenReturn(dataElements)
+        whenever(section.dataElementUids).thenReturn(dataElements)
 
         val greyedFields: List<DataElementOperand> = emptyList()
         whenever(section.greyedFields()).thenReturn(greyedFields)

@@ -69,7 +69,7 @@ class ValidationExecutorShould {
     fun should_return_null_if_invalid_expression() {
         val validationRule = ValidationRule.builder()
             .uid(uidGenerator.generate())
-            .operator(ValidationRuleOperator.less_than_or_equal_to)
+            .operator(ValidationRuleOperator.LESS_THAN_OR_EQUAL_TO)
             .leftSide(
                 ValidationRuleExpression.builder()
                     .expression("5")

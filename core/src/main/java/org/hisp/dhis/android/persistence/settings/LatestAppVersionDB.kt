@@ -23,6 +23,6 @@ internal data class LatestAppVersionDB(
 internal fun LatestAppVersion.toDB(): LatestAppVersionDB {
     return LatestAppVersionDB(
         downloadURL = downloadURL(),
-        version = version()!!,
+        version = version(),
     )
 }

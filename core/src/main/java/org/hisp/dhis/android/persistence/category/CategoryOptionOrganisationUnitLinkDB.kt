@@ -34,7 +34,7 @@ internal data class CategoryOptionOrganisationUnitLinkDB(
     val id: Int = 0,
     @ParentColumn val categoryOption: String,
     val organisationUnit: String?,
-    val restriction: String?,
+    val restriction: String,
 ) : EntityDB<CategoryOptionOrganisationUnitLink> {
 
     override fun toDomain(): CategoryOptionOrganisationUnitLink {

@@ -43,8 +43,8 @@ internal data class CategoryCategoryOptionLinkDB(
 
 internal fun CategoryCategoryOptionLink.toDB(): CategoryCategoryOptionLinkDB {
     return CategoryCategoryOptionLinkDB(
-        category = category()!!,
-        categoryOption = categoryOption()!!,
+        category = category(),
+        categoryOption = categoryOption(),
         sortOrder = sortOrder(),
     )
 }

@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import io.reactivex.Completable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
@@ -41,7 +40,7 @@ import org.hisp.dhis.android.core.systeminfo.internal.ServerTimezoneManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
-class LogOutCall internal constructor(
+internal class LogOutCall internal constructor(
     private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val userIdStore: UserIdInMemoryStore,
@@ -51,24 +50,21 @@ class LogOutCall internal constructor(
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
 
-    fun logOut(): Completable {
-        return Completable.fromCallable {
-            val credentials = credentialsSecureStore.get()
-            if (credentials == null) {
-                throw D2Error.builder()
-                    .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
-                    .errorDescription("There is not any authenticated user")
-                    .errorComponent(D2ErrorComponent.SDK)
-                    .build()
-            }
-
-            updateLastAccessDate(credentials.serverUrl, credentials.username)
-            databaseManager.disableDatabase()
-            credentialsSecureStore.remove()
-            userIdStore.remove()
-            serverTimezoneManager.clearCache()
-            defaultCategoryComboManager.clearCache()
+    suspend fun logOut() {
+        val credentials = credentialsSecureStore.get()
+        if (credentials == null) {
+            throw D2Error.builder()
+                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+                .errorDescription("There is not any authenticated user")
+                .errorComponent(D2ErrorComponent.SDK)
+                .build()
         }
+        updateLastAccessDate(credentials.serverUrl, credentials.username)
+        databaseManager.disableDatabase()
+        credentialsSecureStore.remove()
+        userIdStore.remove()
+        serverTimezoneManager.clearCache()
+        defaultCategoryComboManager.clearCache()
     }
 
     private fun updateLastAccessDate(serverUrl: String, username: String) {

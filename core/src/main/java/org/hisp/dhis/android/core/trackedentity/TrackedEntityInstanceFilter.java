@@ -33,7 +33,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.DateFilterPeriod;
 import org.hisp.dhis.android.core.common.FilterPeriod;
@@ -45,8 +45,8 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
 import java.util.List;
 
 @AutoValue
-public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject implements CoreObject,
-        ObjectWithStyle<TrackedEntityInstanceFilter, TrackedEntityInstanceFilter.Builder> {
+public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObAuVa implements CoreObject,
+        ObjectWithStyle {
 
     @Nullable
     public abstract ObjectWithUid program();
@@ -102,8 +102,7 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder>
-            implements ObjectWithStyle.Builder<TrackedEntityInstanceFilter, Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder program(ObjectWithUid program);
 
@@ -114,6 +113,8 @@ public abstract class TrackedEntityInstanceFilter extends BaseIdentifiableObject
         public abstract Builder entityQueryCriteria(EntityQueryCriteria entityQueryCriteria);
 
         public abstract Builder eventFilters(List<TrackedEntityInstanceEventFilter> eventFilters);
+
+        public abstract Builder style(ObjectStyle style);
 
         abstract TrackedEntityInstanceFilter autoBuild();
 

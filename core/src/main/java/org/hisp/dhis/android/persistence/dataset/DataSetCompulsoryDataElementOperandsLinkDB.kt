@@ -42,7 +42,7 @@ internal data class DataSetCompulsoryDataElementOperandsLinkDB(
 
 internal fun DataSetCompulsoryDataElementOperandLink.toDB(): DataSetCompulsoryDataElementOperandsLinkDB {
     return DataSetCompulsoryDataElementOperandsLinkDB(
-        dataSet = dataSet()!!,
-        dataElementOperand = dataElementOperand()!!,
+        dataSet = dataSet(),
+        dataElementOperand = dataElementOperand(),
     )
 }

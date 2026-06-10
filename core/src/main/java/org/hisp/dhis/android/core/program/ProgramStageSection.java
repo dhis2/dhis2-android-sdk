@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 
 import com.google.auto.value.AutoValue;
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 import org.hisp.dhis.android.core.common.ObjectWithUid;
 import org.hisp.dhis.android.core.dataelement.DataElement;
@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.dataelement.DataElement;
 import java.util.List;
 
 @AutoValue
-public abstract class ProgramStageSection extends BaseIdentifiableObject implements CoreObject {
+public abstract class ProgramStageSection extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract Integer sortOrder();
@@ -70,7 +70,7 @@ public abstract class ProgramStageSection extends BaseIdentifiableObject impleme
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder  extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder  extends BaseIdentifiableObAuVa.Builder<Builder> {
         public abstract Builder sortOrder(Integer sortOrder);
 
         public abstract Builder programIndicators(List<ProgramIndicator> programIndicators);

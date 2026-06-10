@@ -1,3 +1,4 @@
 org.hisp.dhis.android.processor.EntityProcessorProvider
 org.hisp.dhis.android.processor.MigrationProcessorProvider
 org.hisp.dhis.android.processor.DaoQueriesProcessorProvider
+org.hisp.dhis.android.processor.ModelBuilderProcessorProvider

@@ -59,19 +59,6 @@ internal object StoreMocks {
             .build()
     }
 
-    fun generateOptionSetWithoutUid(): OptionSet {
-        return OptionSet.builder()
-            .uid(null)
-            .code("code")
-            .name("name")
-            .displayName("displayName")
-            .created(Date())
-            .lastUpdated(Date())
-            .version(1)
-            .valueType(ValueType.AGE)
-            .build()
-    }
-
     suspend fun optionSetSelectAssert(store: IdentifiableObjectStore<OptionSet>, o: OptionSet) {
         val insertedOptionSet = store.selectAll()
         assertThat(insertedOptionSet).hasSize(1)

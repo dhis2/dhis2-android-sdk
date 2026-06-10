@@ -41,7 +41,7 @@ internal data class OptionGroupOptionLinkDB(
 
 internal fun OptionGroupOptionLink.toDB(): OptionGroupOptionLinkDB {
     return OptionGroupOptionLinkDB(
-        optionGroup = optionGroup()!!,
-        option = option()!!,
+        optionGroup = optionGroup(),
+        option = option(),
     )
 }

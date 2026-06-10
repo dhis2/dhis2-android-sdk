@@ -74,6 +74,17 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods[2]).isEqualTo("201911")
     }
 
+    fun evaluate_program_indicator() {
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("GSae40Fyppf"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+            .blockingEvaluate()
+            .getOrThrow()
+
+        val value = result.values.firstOrNull()?.value
+        assertThat(value).isEqualTo("0.0")
+    }
+
     @Test
     fun remove_duplicate_periods() {
         val result = d2.analyticsModule().analytics()
@@ -89,6 +100,26 @@ class AnalyticsRepositoryIntegrationShould : BaseMockIntegrationTestFullDispatch
         assertThat(valuePeriods.size).isEqualTo(2)
         assertThat(valuePeriods[0]).isEqualTo("2021")
         assertThat(valuePeriods[1]).isEqualTo("2022")
+    }
+
+    @Test
+    fun evaluate_program_indicator_disaggregation() {
+        val genderCategoryUid = "cX5k9anHEHd"
+        val femaleOptionUid = "apsOixVZlf1"
+        val maleOptionUid = "jRbMi0aBjYn"
+
+        val result = d2.analyticsModule().analytics()
+            .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("GSae40Fyppf"))
+            .withDimension(DimensionItem.PeriodItem.Absolute("2021"))
+            .withDimension(DimensionItem.CategoryItem(genderCategoryUid, femaleOptionUid))
+            .withDimension(DimensionItem.CategoryItem(genderCategoryUid, maleOptionUid))
+            .blockingEvaluate()
+            .getOrThrow()
+
+        val valueDimensions = result.values.map { it.dimensions }
+        assertThat(valueDimensions.size).isEqualTo(2)
+        assertThat(valueDimensions.any { femaleOptionUid in it }).isTrue()
+        assertThat(valueDimensions.any { maleOptionUid in it }).isTrue()
     }
 
     @Test

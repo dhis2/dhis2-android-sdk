@@ -138,20 +138,20 @@ internal class EventCollectionRepositoryAdapter(
     suspend fun getOrganisationUnits(scope: EventQueryRepositoryScope): List<String>? {
         return when (scope.orgUnitMode()) {
             OrganisationUnitMode.ALL, OrganisationUnitMode.ACCESSIBLE ->
-                organisationUnitCollectionRepository.getUidsInternal()
+                organisationUnitCollectionRepository.suspendGetUids()
 
             OrganisationUnitMode.CAPTURE ->
                 organisationUnitCollectionRepository
-                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).getUidsInternal()
+                    .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE).suspendGetUids()
 
             OrganisationUnitMode.CHILDREN ->
                 scope.orgUnits()?.map { orgUnit ->
-                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).getUidsInternal() + orgUnit
+                    organisationUnitCollectionRepository.byParentUid().eq(orgUnit).suspendGetUids() + orgUnit
                 }?.flatten()
 
             OrganisationUnitMode.DESCENDANTS ->
                 scope.orgUnits()?.map { orgUnit ->
-                    organisationUnitCollectionRepository.byPath().like(orgUnit).getUidsInternal()
+                    organisationUnitCollectionRepository.byPath().like(orgUnit).suspendGetUids()
                 }?.flatten()
 
             OrganisationUnitMode.SELECTED ->

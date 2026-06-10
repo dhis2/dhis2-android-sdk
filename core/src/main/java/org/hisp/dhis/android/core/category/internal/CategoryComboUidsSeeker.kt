@@ -33,6 +33,7 @@ import org.hisp.dhis.android.persistence.common.querybuilders.MultipleTableQuery
 import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -64,6 +65,12 @@ internal class CategoryComboUidsSeeker(
             ),
             ProgramTableInfo.Columns.ENROLLMENT_CATEGORY_COMBO to listOf(
                 ProgramTableInfo.TABLE_INFO.name(),
+            ),
+            ProgramIndicatorTableInfo.Columns.CATEGORY_COMBO to listOf(
+                ProgramIndicatorTableInfo.TABLE_INFO.name(),
+            ),
+            ProgramIndicatorTableInfo.Columns.ATTRIBUTE_COMBO to listOf(
+                ProgramIndicatorTableInfo.TABLE_INFO.name(),
             ),
         )
     }

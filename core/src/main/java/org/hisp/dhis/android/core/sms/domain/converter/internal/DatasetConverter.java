@@ -76,8 +76,8 @@ public class DatasetConverter extends Converter<SMSDataValueSet> {
             subm.setPeriod(period);
             subm.setDataSet(dataSet);
             subm.setAttributeOptionCombo(attributeOptionComboUid);
-            subm.setValues(translateValues(dataValueSet.dataValues()));
-            subm.setComplete(dataValueSet.completed());
+            subm.setValues(translateValues(dataValueSet.getDataValues()));
+            subm.setComplete(dataValueSet.getCompleted());
             return subm;
         });
     }

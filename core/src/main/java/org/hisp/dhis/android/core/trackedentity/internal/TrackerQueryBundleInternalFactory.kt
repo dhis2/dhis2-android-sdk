@@ -67,10 +67,10 @@ internal class TrackerQueryBundleInternalFactory(
         val programStatus = getProgramStatus(params, programSettings, programUid)
 
         val programStageWorkingLists =
-            (params.programStageWorkingLists()?.filter { it.program().uid() == programUid } ?: emptyList())
+            (params.programStageWorkingLists?.filter { it.program().uid() == programUid } ?: emptyList())
 
         val trackedEntityInstanceFilters =
-            (params.trackedEntityInstanceFilters()?.filter { it.program()?.uid() == programUid } ?: emptyList())
+            (params.trackedEntityInstanceFilters?.filter { it.program()?.uid() == programUid } ?: emptyList())
 
         val filters = programSettings?.specificSettings()?.get(programUid)?.filters()?.map { it.uid() }
 
@@ -79,7 +79,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withAttributeValueFilters()
                 .withDataFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val trackedEntityInstanceFiltersSettings = filters.takeIf { !it.isNullOrEmpty() }?.let {
@@ -87,7 +87,7 @@ internal class TrackerQueryBundleInternalFactory(
                 .byUid().`in`(it)
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
-                .getInternal()
+                .suspendGet()
         }
 
         val finalWorkingLists = programStageWorkingLists.takeIf { it.isNotEmpty() }
@@ -98,16 +98,20 @@ internal class TrackerQueryBundleInternalFactory(
         val workingListsHash = WorkingListsHashHelper.calculateHashFromObjects(finalFilters, finalWorkingLists)
         val commonParamsWithHash = commonParams.copy(workingListsHash = workingListsHash)
 
-        val builder = TrackerQueryBundle.builder()
-            .commonParams(commonParamsWithHash)
-            .programStatus(programStatus)
-            .programStageWorkingLists(finalWorkingLists)
-            .trackedEntityInstanceFilters(finalFilters)
-
-        return commonHelper.divideByOrgUnits(
+        val orgUnitBundles = commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
             commonParams.hasLimitByOrgUnit,
-        ) { builder.orgUnits(it).build() }
+        )
+
+        return orgUnitBundles.map { orgUnits ->
+            TrackerQueryBundle(
+                commonParams = commonParamsWithHash,
+                orgUnits = orgUnits,
+                programStatus = programStatus,
+                trackedEntityInstanceFilters = finalFilters,
+                programStageWorkingLists = finalWorkingLists,
+            )
+        }
     }
 
     @Suppress("ReturnCount")
@@ -116,12 +120,12 @@ internal class TrackerQueryBundleInternalFactory(
         programSettings: ProgramSettings?,
         programUid: String?,
     ): EnrollmentStatus? {
-        if (params.programStatus() != null &&
+        if (params.programStatus != null &&
             (commonHelper.isGlobal(params, programUid) || commonHelper.isUserDefinedProgram(params, programUid))
         ) {
-            return enrollmentScopeToProgramStatus(params.programStatus())
+            return enrollmentScopeToProgramStatus(params.programStatus)
         }
-        if (params.uids().isNotEmpty()) {
+        if (params.uids.isNotEmpty()) {
             // Do not apply programStatus coming from Settings app if uids are explicitly defined
             return null
         }
@@ -130,8 +134,8 @@ internal class TrackerQueryBundleInternalFactory(
                 return enrollmentScopeToProgramStatus(it)
             }
         }
-        if (params.programStatus() != null && params.limitByProgram() != null && params.limitByProgram()!!) {
-            return enrollmentScopeToProgramStatus(params.programStatus())
+        if (params.programStatus != null && params.limitByProgram != null && params.limitByProgram) {
+            return enrollmentScopeToProgramStatus(params.programStatus)
         }
         programSettings?.globalSettings()?.enrollmentDownload()?.let {
             return enrollmentScopeToProgramStatus(it)

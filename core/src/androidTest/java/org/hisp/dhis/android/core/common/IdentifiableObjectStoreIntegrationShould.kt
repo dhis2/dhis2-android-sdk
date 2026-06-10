@@ -65,12 +65,6 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
         store.insert(optionSet)
     }
 
-    @Test(expected = IllegalStateException::class)
-    fun throw_exception_for_option_set_without_uid_inserting() = runTest {
-        val withoutUid = OptionSet.builder().code("code").build()
-        store.insert(withoutUid)
-    }
-
     @Test
     fun delete_existing_option_set() = runTest {
         store.insert(optionSet)
@@ -101,11 +95,6 @@ class IdentifiableObjectStoreIntegrationShould : BaseIntegrationTestWithDatabase
         store.insert(optionSet)
         store.update(updatedOptionSet)
         StoreMocks.optionSetSelectAssert(store, updatedOptionSet)
-    }
-
-    @Test(expected = RuntimeException::class)
-    fun throw_exception_updating_with_null_uid() = runTest {
-        store.update(StoreMocks.generateOptionSetWithoutUid())
     }
 
     @Test(expected = RuntimeException::class)

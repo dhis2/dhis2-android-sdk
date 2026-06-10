@@ -50,7 +50,6 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.displayShortName()).isEqualTo("WHO RMNCH Tracker")
         assertThat(program.ignoreOverdueEvents()).isFalse()
         assertThat(program.dataEntryMethod()).isFalse()
-        assertThat(program.captureCoordinates()).isTrue()
         assertThat(program.displayEnrollmentDateLabel()).isEqualTo("Date of first visit")
         assertThat(program.onlyEnrollOnce()).isFalse()
         assertThat(program.version()).isEqualTo(11)
@@ -82,5 +81,16 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.programTrackedEntityAttributes()!![0].uid()).isEqualTo("YGMlKXYa5xF")
         assertThat(program.programTrackedEntityAttributes()!![1].uid()).isEqualTo("WZWEBrkJSAm")
         assertThat(program.programSections()!![0].uid()).isEqualTo("FdpWnXhl7c1")
+
+        val categoryMappings = program.categoryMappings()!!
+        assertThat(categoryMappings.size).isEqualTo(1)
+        assertThat(categoryMappings[0].uid()).isEqualTo("catMapping001")
+        assertThat(categoryMappings[0].program()).isEqualTo("WSGAb5XwJ3Y")
+        assertThat(categoryMappings[0].categoryId()).isEqualTo("GLevLNI9wkl")
+        assertThat(categoryMappings[0].mappingName()).isEqualTo("Default mapping")
+        assertThat(categoryMappings[0].optionMappings().size).isEqualTo(1)
+        assertThat(categoryMappings[0].optionMappings()[0].categoryMapping()).isEqualTo("catMapping001")
+        assertThat(categoryMappings[0].optionMappings()[0].optionId()).isEqualTo("xYerKDKCefk")
+        assertThat(categoryMappings[0].optionMappings()[0].filter()).isEqualTo("#{condition1}")
     }
 }

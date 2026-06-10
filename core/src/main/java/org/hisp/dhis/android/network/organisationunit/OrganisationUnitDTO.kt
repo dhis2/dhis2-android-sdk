@@ -86,10 +86,10 @@ internal data class OrganisationUnitDTO(
             .build()
     }
 
-    private fun evaluateDisplayNamePath(): List<String?>? {
+    private fun evaluateDisplayNamePath(): List<String> {
         return ancestors?.let {
-            ancestors.map { it.displayName } + displayName
-        }
+            (ancestors.map { it.displayName } + displayName).filterNotNull()
+        } ?: emptyList()
     }
 
     private fun evaluateGeometry(): Geometry? {

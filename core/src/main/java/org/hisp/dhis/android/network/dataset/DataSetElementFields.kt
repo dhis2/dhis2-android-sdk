@@ -34,7 +34,6 @@ import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
 
 internal object DataSetElementFields : BaseFields<DataSetElement>() {
     val allFields = Fields.from(
-        fh.nestedFieldWithUid(Columns.DATA_SET),
         fh.nestedFieldWithUid(Columns.DATA_ELEMENT),
         fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
     )

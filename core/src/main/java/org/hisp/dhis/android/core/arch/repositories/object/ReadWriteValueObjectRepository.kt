@@ -28,19 +28,44 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface ReadWriteValueObjectRepository<M : CoreObject> : ReadWriteObjectRepository<M> {
     /**
+     * Sets the object in scope in a suspend way. The coroutine will complete when the object
+     * is updated in the database. The object will be uploaded to the server in the next upload.
+     * @param value the value to set
+     */
+    @Throws(D2Error::class)
+    suspend fun suspendSet(value: String?)
+
+    /**
      * Sets the object in scope in an asynchronous way. It returns a `Completable` which
-     * is completed when the object is updated to the database. It adds an object with a ASDASDASDASDASD
-     * which will be uploaded to the server in the next upload.
-     * @param value the object to add
+     * is completed when the object is updated to the database. The object will be uploaded
+     * to the server in the next upload.
+     * @param value the value to set
      * @return the Completable which notifies the completion
      */
-    fun set(value: String?): Completable
+    @Deprecated(message = "Use rxSet instead", ReplaceWith("rxSet(value)"))
+    fun set(value: String?): Completable = rxSet(value)
 
+    /**
+     * Sets the object in scope in an asynchronous way. It returns a `Completable` which
+     * is completed when the object is updated to the database. The object will be uploaded
+     * to the server in the next upload.
+     * @param value the value to set
+     * @return the Completable which notifies the completion
+     */
+    fun rxSet(value: String?): Completable = rxCompletable { suspendSet(value) }
+
+    /**
+     * Sets the object in scope in a synchronous way. Important: this is a blocking method and it should not be
+     * executed in the main thread. Consider the asynchronous version [.rxSet].
+     * @param value the value to set
+     */
     @Throws(D2Error::class)
-    fun blockingSet(value: String?)
+    fun blockingSet(value: String?) = runBlocking { suspendSet(value) }
 }

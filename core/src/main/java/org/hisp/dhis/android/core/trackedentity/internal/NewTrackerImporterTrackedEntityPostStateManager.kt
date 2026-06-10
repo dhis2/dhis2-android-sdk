@@ -84,21 +84,21 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
         val fileResourcesMap = mutableMapOf<State, MutableList<String>>()
 
         objects.forEach {
-            when (it.trackerType()) {
-                TrackerImporterObjectType.EVENT -> eventStore.selectByUid(it.objectUid())?.let { e ->
+            when (it.trackerType) {
+                TrackerImporterObjectType.EVENT -> eventStore.selectByUid(it.objectUid)?.let { e ->
                     h.addState(eventMap, e, forcedState)
                 }
-                TrackerImporterObjectType.ENROLLMENT -> enrollmentStore.selectByUid(it.objectUid())?.let { e ->
+                TrackerImporterObjectType.ENROLLMENT -> enrollmentStore.selectByUid(it.objectUid)?.let { e ->
                     h.addState(enrollmentMap, e, forcedState)
                 }
                 TrackerImporterObjectType.TRACKED_ENTITY ->
-                    trackedEntityInstanceStore.selectByUid(it.objectUid())
+                    trackedEntityInstanceStore.selectByUid(it.objectUid)
                         ?.let { t -> h.addState(teiMap, t, forcedState) }
-                TrackerImporterObjectType.RELATIONSHIP -> relationshipStore.selectByUid(it.objectUid())?.let { r ->
+                TrackerImporterObjectType.RELATIONSHIP -> relationshipStore.selectByUid(it.objectUid)?.let { r ->
                     h.addState(relationshipMap, r, forcedState)
                 }
             }
-            it.fileResources().forEach { id ->
+            it.fileResources.forEach { id ->
                 fileResourceStore.selectByUid(id)?.let { fr -> h.addState(fileResourcesMap, fr, forcedState) }
             }
         }

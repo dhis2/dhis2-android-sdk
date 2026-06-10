@@ -33,14 +33,14 @@ import androidx.annotation.Nullable;
 import com.google.auto.value.AutoValue;
 
 import org.hisp.dhis.android.core.common.AggregationType;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
 import org.hisp.dhis.android.core.common.CoreObject;
 
 import java.util.List;
 
 @AutoValue
 @SuppressWarnings({"PMD.ExcessivePublicCount"})
-public abstract class Visualization extends BaseIdentifiableObject implements CoreObject {
+public abstract class Visualization extends BaseIdentifiableObAuVa implements CoreObject {
 
     @Nullable
     public abstract String description();
@@ -139,7 +139,7 @@ public abstract class Visualization extends BaseIdentifiableObject implements Co
     public abstract Builder toBuilder();
 
     @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObject.Builder<Builder> {
+    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
 
         public abstract Builder description(String description);
 

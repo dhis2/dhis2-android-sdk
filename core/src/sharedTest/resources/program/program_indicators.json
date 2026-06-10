@@ -30,6 +30,15 @@
       "program": {
         "id": "lxAQ7Zs9VYR"
       },
+      "categoryCombo": {
+        "id": "m2jTvAj5kkm"
+      },
+      "attributeCombo": {
+        "id": "p0KPaWEg3cf"
+      },
+      "categoryMappingIds": [
+        "genderMappingForGSae40Fyppf"
+      ],
       "legendSets": [
         {
           "id": "TiOkbpGEud4"

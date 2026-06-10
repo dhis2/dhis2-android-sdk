@@ -73,7 +73,7 @@ class RelationshipImportHandlerShould {
             RelationshipImportHandler(relationshipStore, dataStatePropagator, relationshipCollectionRepository)
 
         whenever(relationshipCollectionRepository.withItems().uid(any())).doReturn(relationshipObjectRepository)
-        whenever(relationshipObjectRepository.getInternal()).doReturn(relationship)
+        whenever(relationshipObjectRepository.suspendGet()).doReturn(relationship)
         whenever(relationship.from()).doReturn(relationshipItem)
     }
 

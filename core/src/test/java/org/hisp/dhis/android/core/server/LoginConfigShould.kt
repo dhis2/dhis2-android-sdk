@@ -113,7 +113,7 @@ internal class LoginConfigShould : CoreObjectShould<LoginConfigDTO>(
                 false,
             ),
         ).forEach { (config, oauthEnabled) ->
-            assertThat(config.isOauthEnabled()).isEqualTo(oauthEnabled)
+            assertThat(config.isOauthEnabled).isEqualTo(oauthEnabled)
         }
     }
 }

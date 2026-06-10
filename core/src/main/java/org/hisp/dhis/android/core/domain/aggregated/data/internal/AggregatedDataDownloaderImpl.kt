@@ -29,7 +29,9 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedDataDownloader
 import org.koin.core.annotation.Singleton
@@ -39,11 +41,20 @@ internal class AggregatedDataDownloaderImpl(
     private val dataCall: AggregatedDataCall,
 ) : AggregatedDataDownloader {
 
+    override fun flowDownload(): Flow<AggregatedD2Progress> {
+        return dataCall.download()
+    }
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     override fun download(): Observable<AggregatedD2Progress> {
-        return dataCall.download().asObservable()
+        return flowDownload().asObservable()
+    }
+
+    override fun rxDownload(): Observable<AggregatedD2Progress> {
+        return flowDownload().asObservable()
     }
 
     override fun blockingDownload() {
-        download().blockingSubscribe()
+        flowDownload().collectAndWrapException()
     }
 }

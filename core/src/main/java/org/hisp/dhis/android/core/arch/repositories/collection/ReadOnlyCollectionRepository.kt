@@ -32,23 +32,41 @@ import androidx.paging.PagedList
 import androidx.paging.PagingData
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
+@Suppress("TooManyFunctions")
 interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
+    /**
+     * Get the objects in scope in a suspend way.
+     *
+     * @return The list of objects.
+     */
+    suspend fun suspendGet(): List<M>
+
     /**
      * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
      *
      * @return A `Single` object with the list of objects.
      */
-    fun get(): Single<List<M>>
+    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
+    fun get(): Single<List<M>> = rxGet()
+
+    /**
+     * Get the objects in scope in an asynchronous way, returning a `Single<List>`.
+     *
+     * @return A `Single` object with the list of objects.
+     */
+    fun rxGet(): Single<List<M>> = rxSingle { suspendGet() }
 
     /**
      * Get the list of objects in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * executed in the main thread. Consider the asynchronous version [.rxGet].
      *
      * @return List of objects
      */
-    fun blockingGet(): List<M>
+    fun blockingGet(): List<M> = runBlocking { suspendGet() }
 
     /**
      * Handy method to use in conjunction with PagedListAdapter to build paged lists.
@@ -67,34 +85,61 @@ interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
     fun getPagingData(pageSize: Int): Flow<PagingData<M>>
 
     /**
+     * Get the count of elements in a suspend way.
+     * @return The element count
+     */
+    suspend fun suspendCount(): Int
+
+    /**
      * Get the count of elements in an asynchronous way, returning a `Single`.
      * @return A `Single` object with the element count
      */
-    fun count(): Single<Int>
+    @Deprecated(message = "Use rxCount instead", ReplaceWith("rxCount()"))
+    fun count(): Single<Int> = rxCount()
+
+    /**
+     * Get the count of elements in an asynchronous way, returning a `Single`.
+     * @return A `Single` object with the element count
+     */
+    fun rxCount(): Single<Int> = rxSingle { suspendCount() }
 
     /**
      * Get the count of elements. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.count].
+     * executed in the main thread. Consider the asynchronous version [.rxCount].
      *
      * @return Element count
      */
-    fun blockingCount(): Int
+    fun blockingCount(): Int = runBlocking { suspendCount() }
+
+    /**
+     * Check if selection of objects in current scope with applied filters is empty in a suspend way.
+     * @return If selection is empty
+     */
+    suspend fun suspendIsEmpty(): Boolean
 
     /**
      * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
      * returning a `Single`.
      * @return If selection is empty
      */
-    fun isEmpty(): Single<Boolean>
+    @Deprecated(message = "Use rxIsEmpty instead", ReplaceWith("rxIsEmpty()"))
+    fun isEmpty(): Single<Boolean> = rxIsEmpty()
+
+    /**
+     * Check if selection of objects in current scope with applied filters is empty in an asynchronous way,
+     * returning a `Single`.
+     * @return If selection is empty
+     */
+    fun rxIsEmpty(): Single<Boolean> = rxSingle { suspendIsEmpty() }
 
     /**
      * Check if selection of objects with applied filters is empty in a synchronous way.
      * Important: this is a blocking method and it should not be executed in the main thread.
-     * Consider the asynchronous version [.isEmpty].
+     * Consider the asynchronous version [.rxIsEmpty].
      *
      * @return If selection is empty
      */
-    fun blockingIsEmpty(): Boolean
+    fun blockingIsEmpty(): Boolean = runBlocking { suspendIsEmpty() }
 
     /**
      * Get a [ReadOnlyObjectRepository] pointing to the first element in the list.

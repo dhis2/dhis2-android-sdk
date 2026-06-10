@@ -38,6 +38,7 @@ import java.util.Date
 import kotlin.math.ceil
 
 @Singleton
+@Suppress("TooManyFunctions")
 class PeriodHelper internal constructor(
     private val periodStore: PeriodStore,
     private val periodForDataSetManager: PeriodForDataSetManager,
@@ -68,8 +69,16 @@ class PeriodHelper internal constructor(
      * @param date       Date contained in the period
      * @return `Single` with the generated period.
      */
+    @Deprecated(
+        message = "Use rxGetPeriodForPeriodTypeAndDate instead",
+        ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date)"),
+    )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
-        return Single.just(blockingGetPeriodForPeriodTypeAndDate(periodType, date))
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
+    }
+
+    fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
     }
 
     /**
@@ -81,7 +90,15 @@ class PeriodHelper internal constructor(
      * @param periodOffset Number of periods backwards or forwards relative to 'date'
      * @return `Single` with the generated period.
      */
+    @Deprecated(
+        message = "Use rxGetPeriodForPeriodTypeAndDate instead",
+        ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset)"),
+    )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
+        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+    }
+
+    fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
         return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }
 
@@ -120,26 +137,23 @@ class PeriodHelper internal constructor(
      */
     @Throws(IllegalArgumentException::class)
     fun blockingGetPeriodForPeriodId(periodId: String): Period {
+        return runBlocking { suspendGetPeriodForPeriodId(periodId) }
+    }
+
+    @Throws(IllegalArgumentException::class)
+    suspend fun suspendGetPeriodForPeriodId(periodId: String): Period {
         val periodType = periodTypeFromPeriodId(periodId)
         val date = Date(periodParser.parse(periodId, periodType).toEpochMilliseconds())
 
-        return blockingGetPeriodForPeriodTypeAndDate(periodType, date)
+        return getPeriodForPeriodTypeAndDateInternal(periodType, date)
     }
 
-    /**
-     * Get a period object specifying a periodId.
-     * If the periodId does not exist in the database, it is inserted.
-     *
-     * @param periodId Period id.
-     * @return `Single` with the generated period.
-     * @throws IllegalArgumentException if the periodId does not match any period
-     */
-    @Throws(IllegalArgumentException::class)
-    fun getPeriodForPeriodId(periodId: String): Single<Period> {
-        return Single.just(blockingGetPeriodForPeriodId(periodId))
-    }
-
+    @Deprecated(message = "Use rxGetPeriodsForDataSet instead", ReplaceWith("rxGetPeriodsForDataSet(dataSetUid)"))
     fun getPeriodsForDataSet(dataSetUid: String): Single<List<Period>> {
+        return periodForDataSetManager.getPeriodsForDataSet(dataSetUid)
+    }
+
+    fun rxGetPeriodsForDataSet(dataSetUid: String): Single<List<Period>> {
         return periodForDataSetManager.getPeriodsForDataSet(dataSetUid)
     }
 

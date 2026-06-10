@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteStore
@@ -152,9 +151,9 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         val missingItems = relatedItems.filterNotNull().filter { item ->
             when {
-                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid(), payload)
-                item.hasEnrollment() -> isMissingEnrollment(item.elementUid(), payload)
-                item.hasEvent() -> isMissingEvent(item.elementUid(), payload)
+                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid()!!, payload)
+                item.hasEnrollment() -> isMissingEnrollment(item.elementUid()!!, payload)
+                item.hasEvent() -> isMissingEvent(item.elementUid()!!, payload)
                 else -> false
             }
         }
@@ -164,14 +163,14 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         missingItems.forEach { item ->
             when {
-                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid())
+                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid()!!)
                 item.hasEnrollment() -> {
-                    enrollmentStore.selectByUid(item.elementUid())?.let {
+                    enrollmentStore.selectByUid(item.elementUid()!!)?.let {
                         missingTeis.add(it.trackedEntityInstance()!!)
                     }
                 }
                 item.hasEvent() -> {
-                    eventStore.selectByUid(item.elementUid())?.let { event ->
+                    eventStore.selectByUid(item.elementUid()!!)?.let { event ->
                         if (event.enrollment() == null) {
                             missingEvents.add(event.uid())
                         } else {
@@ -254,7 +253,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             relationships = relationshipRepository.bySyncState()
                 .`in`(State.uploadableStatesIncludingError().toList())
                 .withItems()
-                .getInternal(),
+                .suspendGet(),
         )
     }
 
@@ -381,7 +380,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             } else if (tei.syncState() == State.SYNCED && enrollments.all { it.syncState() == State.SYNCED }) {
                 val events = enrollments
                     .flatMap { EnrollmentInternalAccessor.accessEvents(it) }
-                    .mapNotNull { EventInternalAccessor.insertTrackedEntityInstance(it.toBuilder(), tei.uid()).build() }
+                    .mapNotNull { it.copy(trackedEntityInstance = tei.uid()) }
                 pendingEvents.addAll(events)
                 null
             } else {

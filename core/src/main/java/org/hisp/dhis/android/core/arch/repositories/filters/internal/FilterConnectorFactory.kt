@@ -27,13 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.filters.internal
 
-import android.content.ContentValues
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope.OrderByDirection
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeKeyOrderExtractor
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 
 @SuppressWarnings("TooManyFunctions")
@@ -139,19 +137,8 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             ownLink,
             connectedAdditionalWhere,
         )
-        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
-            val ownLinkKey = contentValues.getAsString(ownLink)
-            String.format(
-                "(SELECT %s FROM %s WHERE %s = '%s' %s)",
-                externalColumn,
-                externalTable,
-                externalLink,
-                ownLinkKey,
-                connectedAdditionalWhere,
-            )
-        }
         val item =
-            RepositoryScopeOrderByItem.builder().column(column).direction(direction).keyExtractor(extractor).build()
+            RepositoryScopeOrderByItem.builder().column(column).direction(direction).build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }
 
@@ -169,23 +156,10 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
             ifTrueColumn,
             ifFalseColumn,
         )
-        val extractor = RepositoryScopeKeyOrderExtractor { contentValues: ContentValues, _: String ->
-            val conditionalValue = contentValues.getAsString(conditionalColumn)
-            val ifTrueValue = contentValues.getAsString(ifTrueColumn)
-            val ifFalseValue = contentValues.getAsString(ifFalseColumn)
-            String.format(
-                "(CASE WHEN '%s' %s THEN '%s' ELSE '%s' END)",
-                conditionalValue,
-                condition,
-                ifTrueValue,
-                ifFalseValue,
-            )
-        }
         val orderDirection = direction ?: OrderByDirection.ASC
         val item = RepositoryScopeOrderByItem.builder()
             .column(column)
             .direction(orderDirection)
-            .keyExtractor(extractor)
             .build()
         return repositoryFactory.updated(RepositoryScopeHelper.withOrderBy(scope, item))
     }

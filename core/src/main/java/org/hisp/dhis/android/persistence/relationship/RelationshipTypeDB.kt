@@ -39,7 +39,7 @@ internal data class RelationshipTypeDB(
 
 internal fun RelationshipType.toDB(): RelationshipTypeDB {
     return RelationshipTypeDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

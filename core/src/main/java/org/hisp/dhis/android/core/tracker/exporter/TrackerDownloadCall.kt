@@ -90,28 +90,28 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     ): Flow<TrackerD2Progress> = flow {
         val bundles: List<Q> = getBundles(params)
-        val programs = bundles.flatMap { it.commonParams().programs }
+        val programs = bundles.flatMap { it.commonParams.programs }
 
         progressManager.setTotalCalls(programs.size + 2)
         progressManager.setPrograms(programs)
         emit(progressManager.getProgress())
 
         for (bundle in bundles) {
-            if (bundle.commonParams().uids.isNotEmpty()) {
-                val result = queryByUids(bundle, params.overwrite(), relatives)
+            if (bundle.commonParams.uids.isNotEmpty()) {
+                val result = queryByUids(bundle, params.overwrite, relatives)
 
                 result.d2Error?.let {
                     throw it
                 }
             } else {
-                val orgunitPrograms = bundle.orgUnits()
+                val orgunitPrograms = bundle.orgUnits
                     .associateWith {
-                        bundle.commonParams().programs
+                        bundle.commonParams.programs
                             .map { ItemsByProgramCount(it, 0) }
                             .toMutableList()
                     }.toMutableMap()
 
-                val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits().toMutableList())
+                val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits.toMutableList())
 
                 var iterationCount = 0
                 var successfulSync = true
@@ -143,10 +143,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
         iterationCount: Int,
     ): Boolean {
-        return params.limitByProgram() != true &&
-            bundleResult.bundleCount < bundle.commonParams().limit &&
+        return params.limitByProgram != true &&
+            bundleResult.bundleCount < bundle.commonParams.limit &&
             bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
-            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+            iterationCount < max(bundle.commonParams.limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     @Suppress("LongParameterList")
@@ -161,7 +161,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
 
         for ((orgUnitUid, orgunitPrograms) in bundleResult.bundleOrgUnitPrograms.entries) {
-            val pendingTeis = bundle.commonParams().limit - bundleResult.bundleCount
+            val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
             val bundleLimit = min(limitPerCombo, pendingTeis)
 
             if (bundleLimit <= 0 || orgunitPrograms.isEmpty()) {
@@ -200,7 +200,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
             var remainingPrograms = bundlePrograms
             for (bundleProgram in bundlePrograms) {
-                if (bundleResult.bundleCount < bundle.commonParams().limit) {
+                if (bundleResult.bundleCount < bundle.commonParams.limit) {
                     val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
 
                     val result = if (trackerQuery != null) {
@@ -208,7 +208,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                             trackerQuery,
                             limit,
                             bundleProgram.itemCount,
-                            params.overwrite(),
+                            params.overwrite,
                             relatives,
                         )
                     } else {
@@ -256,10 +256,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
     ): Int {
         return when {
-            params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true -> {
+            params.uids.isNotEmpty() -> params.uids.size
+            params.limitByProgram != true -> {
                 val numOfCombinations = bundleResult.bundleOrgUnitPrograms.values.sumOf { it.size }
-                val pendingTeis = bundle.commonParams().limit - bundleResult.bundleCount
+                val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
 
                 if (numOfCombinations == 0 || pendingTeis == 0) {
                     0
@@ -268,7 +268,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 }
             }
 
-            else -> bundle.commonParams().limit - bundleResult.bundleCount
+            else -> bundle.commonParams.limit - bundleResult.bundleCount
         }
     }
 

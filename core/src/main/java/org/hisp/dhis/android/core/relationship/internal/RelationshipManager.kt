@@ -65,7 +65,7 @@ internal class RelationshipManager(
                     }
 
                     val relatedItem = relationshipItemStore
-                        .getForRelationshipUidAndConstraintType(relationship.uid()!!, relatedType)
+                        .getForRelationshipUidAndConstraintType(relationship.uid(), relatedType)
 
                     relatedItem?.let {
                         when (item.relationshipItemType()!!) {
@@ -87,7 +87,7 @@ internal class RelationshipManager(
             }
 
         return if (onlyAccessible) {
-            relationshipVersionManager.getOwnedRelationships(relationships, searchItem.elementUid())
+            relationshipVersionManager.getOwnedRelationships(relationships, searchItem.elementUid()!!)
         } else {
             relationships
         }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +37,7 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class WorkingListsHashCalculationShould {
 
-    private fun objectWithUid(uid: String): ObjectWithUidInterface = ObjectWithUidInterface { uid }
+    private fun objectWithUid(uid: String): ObjectWithUidInterface = ObjectWithUid.create(uid)
 
     @Test
     fun return_null_hash_when_no_objects() {

@@ -52,7 +52,7 @@ public class ValidationRuleSamples {
         return builder
                 .instruction("instruction")
                 .importance(ValidationRuleImportance.HIGH)
-                .operator(ValidationRuleOperator.compulsory_pair)
+                .operator(ValidationRuleOperator.COMPULSORY_PAIR)
                 .periodType(PeriodType.Daily)
                 .skipFormValidation(Boolean.FALSE)
                 .leftSide(ValidationRuleExpression.builder()

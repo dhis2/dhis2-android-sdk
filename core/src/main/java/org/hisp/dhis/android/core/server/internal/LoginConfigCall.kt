@@ -34,8 +34,10 @@ import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.OauthConfig
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -44,6 +46,7 @@ internal class LoginConfigCall(
     private val loginExceptions: LogInExceptions,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: LoginConfigNetworkHandler,
+    private val oAuth2SecureStore: OAuth2SecureStore,
 ) {
     suspend fun checkServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
         try {
@@ -56,9 +59,27 @@ internal class LoginConfigCall(
         val loginConfig = tryLoginConfig(sanitizedUrl)
 
         return when (loginConfig) {
-            is Result.Success<LoginConfig, D2Error> -> loginConfig
+            is Result.Success<LoginConfig, D2Error> ->
+                Result.Success(withOauthConfig(sanitizedUrl, loginConfig.value))
             is Result.Failure<LoginConfig, D2Error> -> tryPing(sanitizedUrl)
         }
+    }
+
+    private suspend fun withOauthConfig(serverUrl: String, loginConfig: LoginConfig): LoginConfig {
+        val oauthConfig = tryFetchOauthConfig(serverUrl)
+        return if (oauthConfig != null && oauthConfig.supportsRequiredFunctions()) {
+            oAuth2SecureStore.setEndpoints(oauthConfig)
+            loginConfig.apply { isOauthEnabled = true }
+        } else {
+            oAuth2SecureStore.clearEndpoints()
+            loginConfig.apply { isOauthEnabled = false }
+        }
+    }
+
+    private suspend fun tryFetchOauthConfig(serverUrl: String): OauthConfig? {
+        return coroutineAPICallExecutor.wrap(storeError = false) {
+            networkHandler.oauthConfigFor(serverUrl)
+        }.getOrNull()
     }
 
     private suspend fun tryLoginConfig(serverUrl: String): Result<LoginConfig, D2Error> {

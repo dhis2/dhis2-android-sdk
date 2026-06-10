@@ -29,10 +29,8 @@ package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
 import io.reactivex.Observable
-import io.reactivex.Single
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
@@ -66,6 +64,7 @@ class FileResourceCollectionRepository internal constructor(
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
     childrenAppenders,
@@ -78,6 +77,7 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             context,
+            dispatcher,
         )
     },
 ),
@@ -97,20 +97,9 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     @Deprecated("Check {@link #upload()}.")
-    fun blockingUpload() {
-        upload().blockingSubscribe()
-    }
+    fun blockingUpload() = Unit
 
-    override fun add(o: File): Single<String> {
-        return rxSingle { addInternal(o) }
-    }
-
-    @Throws(D2Error::class)
-    override fun blockingAdd(o: File): String {
-        return runBlocking { addInternal(o) }
-    }
-
-    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+    override suspend fun suspendAdd(o: File): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
             val dstFile = saveFile(o, generatedUid, context)

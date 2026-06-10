@@ -28,32 +28,62 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
-interface ReadOnlyObjectRepository<M> : BaseRepository {
+interface ReadOnlyObjectRepository<M : Any> : BaseRepository {
+    /**
+     * Returns the object in a suspend way.
+     * @return the object
+     */
+    suspend fun suspendGet(): M?
+
     /**
      * Returns the object in an asynchronous way, returning a `Single<M>`.
      * @return A `Single` object with the object
      */
-    fun get(): Single<M?>
+    @Deprecated(message = "Use rxGet instead", ReplaceWith("rxGet()"))
+    fun get(): Single<M> = rxGet()
+
+    /**
+     * Returns the object in an asynchronous way, returning a `Single<M>`.
+     * @return A `Single` object with the object
+     */
+    fun rxGet(): Single<M> = rxSingle {
+        suspendGet() ?: throw NullPointerException("The callable returned a null value")
+    }
 
     /**
      * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * executed in the main thread. Consider the asynchronous version [.rxGet].
      * @return the object
      */
-    fun blockingGet(): M?
+    fun blockingGet(): M? = runBlocking { suspendGet() }
+
+    /**
+     * Returns if the object exists in a suspend way.
+     * @return if the object exists
+     */
+    suspend fun suspendExists(): Boolean
 
     /**
      * Returns if the object exists in an asynchronous way, returning a `Single<Boolean>`.
      * @return if the object exists, wrapped in a `Single`
      */
-    fun exists(): Single<Boolean>
+    @Deprecated(message = "Use rxExists instead", ReplaceWith("rxExists()"))
+    fun exists(): Single<Boolean> = rxExists()
+
+    /**
+     * Returns if the object exists in an asynchronous way, returning a `Single<Boolean>`.
+     * @return if the object exists, wrapped in a `Single`
+     */
+    fun rxExists(): Single<Boolean> = rxSingle { suspendExists() }
 
     /**
      * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.exists].
+     * executed in the main thread. Consider the asynchronous version [.rxExists].
      * @return if the object exists
      */
-    fun blockingExists(): Boolean
+    fun blockingExists(): Boolean = runBlocking { suspendExists() }
 }

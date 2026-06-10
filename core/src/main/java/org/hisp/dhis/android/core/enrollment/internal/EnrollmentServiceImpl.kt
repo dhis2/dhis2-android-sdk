@@ -52,6 +52,7 @@ import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 @Singleton
 internal class EnrollmentServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
@@ -65,31 +66,48 @@ internal class EnrollmentServiceImpl(
 ) : EnrollmentService {
 
     override fun blockingIsOpen(enrollmentUid: String): Boolean {
-        val enrollment = enrollmentRepository.uid(enrollmentUid).blockingGet() ?: return true
+        return runBlocking { suspendIsOpen(enrollmentUid) }
+    }
+
+    @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
+    override fun isOpen(enrollmentUid: String): Single<Boolean> {
+        return rxSingle { suspendIsOpen(enrollmentUid) }
+    }
+
+    override fun rxIsOpen(enrollmentUid: String): Single<Boolean> {
+        return rxSingle { suspendIsOpen(enrollmentUid) }
+    }
+
+    override suspend fun suspendIsOpen(enrollmentUid: String): Boolean {
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet() ?: return true
 
         return enrollment.status()?.equals(EnrollmentStatus.ACTIVE) ?: false
     }
 
-    override fun isOpen(enrollmentUid: String): Single<Boolean> {
-        return Single.fromCallable { blockingIsOpen(enrollmentUid) }
-    }
-
-    override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
-        return rxSingle { getEnrollmentAccessInternal(trackedEntityInstanceUid, programUid) }
-    }
-
     override fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
-        return runBlocking { getEnrollmentAccessInternal(trackedEntityInstanceUid, programUid) }
+        return runBlocking { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
-    private suspend fun getEnrollmentAccessInternal(
+    @Deprecated(
+        message = "Use rxGetEnrollmentAccess instead",
+        ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"),
+    )
+    override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
+        return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+    }
+
+    override fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
+        return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+    }
+
+    override suspend fun suspendGetEnrollmentAccess(
         trackedEntityInstanceUid: String,
         programUid: String,
     ): EnrollmentAccess {
-        val program = programRepository.uid(programUid).getInternal() ?: return EnrollmentAccess.NO_ACCESS
+        val program = programRepository.uid(programUid).suspendGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
-            if (program.access()?.data()?.write() == true) {
+            if (program.access().data()?.write() == true) {
                 EnrollmentAccess.WRITE_ACCESS
             } else {
                 EnrollmentAccess.READ_ACCESS
@@ -120,13 +138,13 @@ internal class EnrollmentServiceImpl(
         }
     }
 
-    private fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
-        val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).blockingGet()
+    private suspend fun isTeiInCaptureScope(trackedEntityInstanceUid: String): Boolean {
+        val tei = trackedEntityInstanceRepository.uid(trackedEntityInstanceUid).suspendGet()
 
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(tei?.organisationUnit())
-            .blockingExists()
+            .suspendExists()
     }
 
     private suspend fun hasProgramOwnership(trackedEntityInstanceUid: String, programUid: String): Boolean {
@@ -146,34 +164,41 @@ internal class EnrollmentServiceImpl(
         return organisationUnitRepository
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(ownerOrgUnit)
-            .existsInternal()
+            .suspendExists()
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
-        val programStages = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
-            .byDeleted().isFalse.get()
-            .toFlowable().flatMapIterable { events: List<Event>? -> events }
-            .map { event: Event -> event.programStage() }
-            .toList()
-            .flatMap { currentProgramStagesUids: List<String?> ->
-                val repository = programStagesCollectionRepository.byProgramUid().eq(
-                    enrollmentRepository.uid(enrollmentUid).blockingGet()?.program(),
-                ).byAccessDataWrite().isTrue
-
-                repository.get().toFlowable()
-                    .flatMapIterable { stages: List<ProgramStage>? -> stages }
-                    .filter { programStage: ProgramStage ->
-                        !currentProgramStagesUids.contains(programStage.uid()) ||
-                            programStage.repeatable()!!
-                    }
-                    .toList()
-            }.blockingGet()
-
-        return programStages.find { !stagesToHide.contains(it.uid()) } != null
+        return runBlocking { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
+    @Deprecated(
+        message = "Use rxAllowEventCreation instead",
+        ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"),
+    )
     override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
-        return Single.fromCallable { blockingGetAllowEventCreation(enrollmentUid, stagesToHide) }
+        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
+    }
+
+    override fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
+        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
+    }
+
+    override suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
+        val currentProgramStagesUids = eventCollectionRepository.byEnrollmentUid().eq(enrollmentUid)
+            .byDeleted().isFalse.suspendGet()
+            .map { event: Event -> event.programStage() }
+
+        val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet()
+        val programStages = programStagesCollectionRepository.byProgramUid().eq(
+            enrollment?.program(),
+        ).byAccessDataWrite().isTrue
+            .suspendGet()
+            .filter { programStage: ProgramStage ->
+                !currentProgramStagesUids.contains(programStage.uid()) ||
+                    programStage.repeatable()!!
+            }
+
+        return programStages.find { !stagesToHide.contains(it.uid()) } != null
     }
 
     private suspend fun hasTempOwnership(tei: String, program: String): Boolean {

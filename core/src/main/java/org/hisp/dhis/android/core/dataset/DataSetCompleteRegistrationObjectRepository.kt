@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.UserCredentialsObjectRepository
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 class DataSetCompleteRegistrationObjectRepository internal constructor(
     private val dataSetCompleteRegistrationStore: DataSetCompleteRegistrationStore,
     private val credentialsRepository: UserCredentialsObjectRepository,
@@ -71,15 +72,19 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     },
 ),
     ReadWriteObjectRepository<DataSetCompleteRegistration> {
-    fun set(): Completable {
-        return rxCompletable { setInternal() }
+
+    @Deprecated("Use rxSet instead", replaceWith = ReplaceWith("rxSet()"))
+    fun set(): Completable = rxSet()
+
+    fun rxSet(): Completable {
+        return rxCompletable { suspendSet() }
     }
 
     fun blockingSet() {
-        runBlocking { setInternal() }
+        runBlocking { suspendSet() }
     }
 
-    private suspend fun setInternal() {
+    suspend fun suspendSet() {
         val dataSetCompleteRegistration = getWithoutChildrenInternal()
         if (dataSetCompleteRegistration == null) {
             val username = credentialsRepository.getInternal()!!.username()
@@ -112,17 +117,8 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
         }
     }
 
-    override fun delete(): Completable {
-        return rxCompletable { deleteInternal() }
-    }
-
     @Throws(D2Error::class)
-    override fun blockingDelete() {
-        runBlocking { deleteInternal() }
-    }
-
-    @Throws(D2Error::class)
-    private suspend fun deleteInternal() {
+    override suspend fun suspendDelete() {
         val dataSetCompleteRegistration = getWithoutChildrenInternal()
         if (dataSetCompleteRegistration == null) {
             throw D2Error
@@ -146,17 +142,9 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
         }
     }
 
-    override fun deleteIfExist(): Completable {
-        return rxCompletable { deleteIfExistInternal() }
-    }
-
-    override fun blockingDeleteIfExist() {
-        runBlocking { deleteIfExistInternal() }
-    }
-
-    private suspend fun deleteIfExistInternal() {
+    override suspend fun suspendDeleteIfExist() {
         try {
-            deleteInternal()
+            suspendDelete()
         } catch (d2Error: D2Error) {
             Log.v(DataSetCompleteRegistrationObjectRepository::class.java.canonicalName, d2Error.errorDescription())
         }

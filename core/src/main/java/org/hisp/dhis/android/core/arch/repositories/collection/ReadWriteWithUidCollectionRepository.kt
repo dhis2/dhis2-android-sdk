@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -35,24 +37,46 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 interface ReadWriteWithUidCollectionRepository<M, O> :
     ReadOnlyWithUidCollectionRepository<M> where M : CoreObject, M : ObjectWithUidInterface {
     /**
+     * Adds a new object to the given collection in a suspend way based on the provided CreateProjection.
+     * It returns the generated UID when the object is added to the database.
+     * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
+     * upload.
+     * @param o the CreateProjection of the object to add
+     * @return the UID
+     */
+    @Throws(D2Error::class)
+    suspend fun suspendAdd(o: O): String
+
+    /**
      * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
      * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
      * database. It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
      * upload.
-     * @param c the CreateProjection of the object to add
+     * @param o the CreateProjection of the object to add
      * @return the Single with the UID
      */
-    fun add(o: O): Single<String>
+    @Deprecated(message = "Use rxAdd instead", ReplaceWith("rxAdd(o)"))
+    fun add(o: O): Single<String> = rxAdd(o)
+
+    /**
+     * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
+     * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
+     * database. It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
+     * upload.
+     * @param o the CreateProjection of the object to add
+     * @return the Single with the UID
+     */
+    fun rxAdd(o: O): Single<String> = rxSingle { suspendAdd(o) }
 
     /**
      * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
      * It blocks the current thread and returns the generated UID.
      * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
      * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
-     * asynchronous version [.add].
-     * @param c the CreateProjection of the object to add
+     * asynchronous version [.rxAdd].
+     * @param o the CreateProjection of the object to add
      * @return the UID
      */
     @Throws(D2Error::class)
-    fun blockingAdd(o: O): String
+    fun blockingAdd(o: O): String = runBlocking { suspendAdd(o) }
 }

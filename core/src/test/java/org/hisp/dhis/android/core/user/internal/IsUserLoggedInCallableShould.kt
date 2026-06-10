@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -46,31 +46,31 @@ class IsUserLoggedInCallableShould {
     private val databaseAdapter: DatabaseAdapter = mock()
     private val credentials: Credentials = mock()
 
-    private lateinit var isUserLoggedInSingle: Single<Boolean>
+    private suspend fun isUserLoggedIn() =
+        IsUserLoggedInCallableFactory(credentialsSecureStore, databaseAdapter).suspendIsLogged()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(credentials.username).doReturn("user")
         whenever(credentials.password).doReturn("password")
-        isUserLoggedInSingle = IsUserLoggedInCallableFactory(credentialsSecureStore, databaseAdapter).isLogged
     }
 
     @Test
-    fun return_false_if_credentials_not_stored() {
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
+    fun return_false_if_credentials_not_stored() = runTest {
+        assertThat(isUserLoggedIn()).isFalse()
     }
 
     @Test
-    fun return_false_if_database_is_not_ready() {
+    fun return_false_if_database_is_not_ready() = runTest {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
         whenever(databaseAdapter.isReady).doReturn(false)
-        assertThat(isUserLoggedInSingle.blockingGet()).isFalse()
+        assertThat(isUserLoggedIn()).isFalse()
     }
 
     @Test
-    fun return_true_if_credentials_stored() {
+    fun return_true_if_credentials_stored() = runTest {
         whenever(credentialsSecureStore.get()).doReturn(credentials)
         whenever(databaseAdapter.isReady).doReturn(true)
-        assertThat(isUserLoggedInSingle.blockingGet()).isTrue()
+        assertThat(isUserLoggedIn()).isTrue()
     }
 }

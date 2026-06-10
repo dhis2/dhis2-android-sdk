@@ -68,7 +68,7 @@ internal class EventLineListServiceImpl(
     @Suppress("LongMethod", "ComplexMethod")
     private suspend fun evaluateEvents(params: EventLineListParams): List<LineListResponse> {
         val events = getEvents(params)
-        val programStage = programStageRepository.uid(params.programStage).getInternal()
+        val programStage = programStageRepository.uid(params.programStage).suspendGet()
 
         val metadataMap = getMetadataMap(
             params.dataElements,
@@ -80,7 +80,7 @@ internal class EventLineListServiceImpl(
             dataValueRepository
                 .byEvent().`in`(events.map { it.uid() })
                 .byDataElement().`in`(params.dataElements.map { it.uid })
-                .getInternal()
+                .suspendGet()
         } else {
             listOf()
         }
@@ -166,7 +166,7 @@ internal class EventLineListServiceImpl(
         }
 
         return if (params.eventDates.isNullOrEmpty()) {
-            repoBuilder.getInternal()
+            repoBuilder.suspendGet()
         } else {
             params.eventDates.flatMap { filter ->
                 var innerBuilder = repoBuilder
@@ -176,7 +176,7 @@ internal class EventLineListServiceImpl(
                 dateFilterPeriodHelper.getEndDate(filter)?.let {
                     innerBuilder = innerBuilder.byEventDate().beforeOrEqual(it)
                 }
-                innerBuilder.getInternal()
+                innerBuilder.suspendGet()
             }
         }
     }
@@ -189,7 +189,7 @@ internal class EventLineListServiceImpl(
         val dataElementNameMap = if (dataElements.isNotEmpty()) {
             dataElementRepository
                 .byUid().`in`(dataElements.map { it.uid })
-                .getInternal()
+                .suspendGet()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
@@ -198,7 +198,7 @@ internal class EventLineListServiceImpl(
         val programIndicatorNameMap = if (programIndicators.isNotEmpty()) {
             programIndicatorRepository
                 .byUid().`in`(programIndicators.map { it.uid })
-                .getInternal()
+                .suspendGet()
                 .map { it.uid()!! to it.displayName()!! }.toMap()
         } else {
             mapOf()
@@ -206,7 +206,7 @@ internal class EventLineListServiceImpl(
 
         val organisationUnitNameMap = organisationUnitRepository
             .byUid().`in`(organisationUnitUids)
-            .getInternal()
+            .suspendGet()
             .map { it.uid()!! to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap

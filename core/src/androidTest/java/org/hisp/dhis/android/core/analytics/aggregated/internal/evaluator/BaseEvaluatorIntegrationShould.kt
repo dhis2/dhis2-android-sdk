@@ -41,11 +41,15 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionComboAttributeOptionLink
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryComboLink
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryOptionLink1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCategoryOptionLink2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo2
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionComboCategoryOptionLink1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionComboCategoryOptionLink2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.constant1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
@@ -185,10 +189,10 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         ),
         dataElement1.uid() to MetadataItem.DataElementItem(dataElement1),
         dataElement2.uid() to MetadataItem.DataElementItem(dataElement2),
-        dataElementOperand.uid()!! to MetadataItem.DataElementOperandItem(
+        dataElementOperand.uid() to MetadataItem.DataElementOperandItem(
             dataElementOperand,
             dataElement1.displayName()!!,
-            categoryOptionCombo.displayName(),
+            categoryOptionCombo1.displayName(),
         ),
         period2019SunW25.periodId()!! to MetadataItem.PeriodItem(period2019SunW25),
         period201910.periodId()!! to MetadataItem.PeriodItem(period201910),
@@ -214,7 +218,8 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             listOf(period201911),
         ),
         category.uid() to MetadataItem.CategoryItem(category),
-        categoryOption.uid() to MetadataItem.CategoryOptionItem(categoryOption),
+        categoryOption1.uid() to MetadataItem.CategoryOptionItem(categoryOption1),
+        categoryOption2.uid() to MetadataItem.CategoryOptionItem(categoryOption2),
         attribute.uid() to MetadataItem.CategoryItem(attribute),
         attributeOption.uid() to MetadataItem.CategoryOptionItem(attributeOption),
     )
@@ -232,12 +237,16 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             organisationUnitGroupStore.insert(organisationUnitGroup)
 
             categoryStore.insert(category)
-            categoryOptionStore.insert(categoryOption)
-            categoryCategoryOptionStore.insert(categoryCategoryOptionLink)
+            categoryOptionStore.insert(categoryOption1)
+            categoryOptionStore.insert(categoryOption2)
+            categoryCategoryOptionStore.insert(categoryCategoryOptionLink1)
+            categoryCategoryOptionStore.insert(categoryCategoryOptionLink2)
             categoryComboStore.insert(categoryCombo)
-            categoryOptionComboStore.insert(categoryOptionCombo)
+            categoryOptionComboStore.insert(categoryOptionCombo1)
+            categoryOptionComboStore.insert(categoryOptionCombo2)
             categoryCategoryComboLinkStore.insert(categoryCategoryComboLink)
-            categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink)
+            categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink1)
+            categoryOptionComboCategoryOptionLinkStore.insert(categoryOptionComboCategoryOptionLink2)
 
             categoryStore.insert(attribute)
             categoryOptionStore.insert(attributeOption)
@@ -316,7 +325,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
         dataElementUid: String = dataElement1.uid(),
         orgunitUid: String = orgunitParent.uid(),
         periodId: String = period201912.periodId()!!,
-        categoryOptionComboUid: String = categoryOptionCombo.uid(),
+        categoryOptionComboUid: String = categoryOptionCombo1.uid(),
         attributeOptionComboUid: String = attributeOptionCombo.uid(),
     ) {
         val dataValue = DataValue.builder()
@@ -376,7 +385,7 @@ internal open class BaseEvaluatorIntegrationShould : BaseMockIntegrationTestEmpt
             .organisationUnit(orgunitChild1.uid())
             .program(program.uid())
             .deleted(false)
-            .attributeOptionCombo(categoryOptionCombo.uid())
+            .attributeOptionCombo(categoryOptionCombo1.uid())
             .build()
 
         enrollmentStore.insert(enrollment)

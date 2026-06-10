@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.common.State
 import java.util.Date
 
 internal data class NewTrackerImporterRelationship(
-    val uid: String?,
+    val uid: String,
     val deleted: Boolean?,
     val syncState: State?,
     val relationshipType: String?,
@@ -45,7 +45,7 @@ internal data class NewTrackerImporterRelationship(
     val from: NewTrackerImporterRelationshipItem?,
     val to: NewTrackerImporterRelationshipItem?,
 ) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {
-    override fun uid(): String? = uid
+    override fun uid(): String = uid
     override fun syncState(): State? = syncState
     override fun deleted(): Boolean? = deleted
 }

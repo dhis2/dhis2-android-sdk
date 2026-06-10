@@ -27,15 +27,19 @@
  */
 package org.hisp.dhis.android.core.user.oauth2
 
-import org.json.JSONObject
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
+@Serializable
 data class OAuth2State(
-    val clientId: String,
-    val keyId: String,
-    val accessToken: String?,
-    val refreshToken: String?,
-    val expiresAt: Long,
-    val scope: String?,
+    @SerialName("client_id") val clientId: String,
+    @SerialName("key_id") val keyId: String,
+    @SerialName("access_token") val accessToken: String?,
+    @SerialName("refresh_token") val refreshToken: String?,
+    @SerialName("expires_at") val expiresAt: Long,
+    @SerialName("scope") val scope: String?,
+    @SerialName("token_endpoint") val tokenEndpoint: String,
 ) {
     @Suppress("MagicNumber")
     fun needsTokenRefresh(): Boolean {
@@ -43,24 +47,12 @@ data class OAuth2State(
         return (currentTime + BUFFER) >= expiresAt
     }
 
-    fun jsonSerializeString(): String {
-        return JSONObject().apply {
-            put(KEY_CLIENT_ID, clientId)
-            put(KEY_KEY_ID, keyId)
-            put(KEY_ACCESS_TOKEN, accessToken)
-            put(KEY_REFRESH_TOKEN, refreshToken)
-            put(KEY_EXPIRES_AT, expiresAt)
-            put(KEY_SCOPE, scope)
-        }.toString()
-    }
+    fun jsonSerializeString(): String = Json.encodeToString(serializer(), this)
 
     companion object {
-        private const val KEY_CLIENT_ID = "client_id"
-        private const val KEY_KEY_ID = "key_id"
-        private const val KEY_ACCESS_TOKEN = "access_token"
-        private const val KEY_REFRESH_TOKEN = "refresh_token"
-        private const val KEY_EXPIRES_AT = "expires_at"
-        private const val KEY_SCOPE = "scope"
         private const val BUFFER = 60
+
+        fun jsonDeserialize(json: String): OAuth2State =
+            Json.decodeFromString(serializer(), json)
     }
 }

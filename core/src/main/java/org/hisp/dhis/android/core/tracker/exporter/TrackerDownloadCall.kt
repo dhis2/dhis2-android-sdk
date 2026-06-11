@@ -120,7 +120,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     val result = iterateBundle(bundle, params, bundleResult, relatives, progressManager)
                     successfulSync = successfulSync && result.successfulSync
                     iterationCount++
-                } while (iterationNotFinished(bundle, params, bundleResult, iterationCount))
+                } while (
+                    result.downloadedCount > 0 &&
+                    iterationNotFinished(bundle, params, bundleResult, iterationCount)
+                )
 
                 if (successfulSync) {
                     updateLastUpdated(bundle)
@@ -176,6 +179,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 progressManager,
             )
             iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
+            iterationResult.downloadedCount += result.downloadedCount
         }
 
         return iterationResult
@@ -194,6 +198,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val iterationResult = IterationResult()
 
         bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
+            var remainingPrograms = bundlePrograms
             for (bundleProgram in bundlePrograms) {
                 if (bundleResult.bundleCount < bundle.commonParams.limit) {
                     val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
@@ -212,6 +217,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
                     bundleResult.bundleCount += result.count
                     bundleProgram.itemCount += result.count
+                    iterationResult.downloadedCount += result.count
                     iterationResult.successfulSync = iterationResult.successfulSync && result.successfulSync
 
                     val syncStatus =
@@ -224,9 +230,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     progressManager.updateProgramSyncStatus(bundleProgram.program, syncStatus)
 
                     if (result.exhaustedProgram || !result.successfulSync) {
-                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = bundlePrograms
+                        remainingPrograms = remainingPrograms
                             .filter { it.program != bundleProgram.program }
                             .toMutableList()
+                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = remainingPrograms
 
                         val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
                             list.any { it.program == bundleProgram.program }
@@ -404,6 +411,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected class IterationResult(
         var successfulSync: Boolean = true,
+        var downloadedCount: Int = 0,
     )
 
     companion object {

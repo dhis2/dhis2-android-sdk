@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 
-internal class VisualizationColumnsRowsFiltersChildrenAppender private constructor(
+internal class VisualizationColumnsRowsFiltersChildrenAppender internal constructor(
     private val childStore: VisualizationDimensionItemStore,
 ) : ChildrenAppender<Visualization>() {
     override suspend fun appendChildren(m: Visualization): Visualization {
@@ -43,9 +43,12 @@ internal class VisualizationColumnsRowsFiltersChildrenAppender private construct
                 items
                     .groupBy { it.dimension() }
                     .map { (dimension, items) ->
+                        val nonPlaceholderItems = items.filterNot {
+                            VisualizationDimensionItemHelper.isAllItemsPlaceholder(it.dimensionItem())
+                        }
                         VisualizationDimension.builder()
                             .id(dimension)
-                            .items(items)
+                            .items(nonPlaceholderItems)
                             .build()
                     }
             }

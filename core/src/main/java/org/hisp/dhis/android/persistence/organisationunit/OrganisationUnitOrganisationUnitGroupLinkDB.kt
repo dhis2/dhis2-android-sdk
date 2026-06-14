@@ -41,7 +41,7 @@ internal data class OrganisationUnitOrganisationUnitGroupLinkDB(
 
 internal fun OrganisationUnitOrganisationUnitGroupLink.toDB(): OrganisationUnitOrganisationUnitGroupLinkDB {
     return OrganisationUnitOrganisationUnitGroupLinkDB(
-        organisationUnit = organisationUnit()!!,
-        organisationUnitGroup = organisationUnitGroup()!!,
+        organisationUnit = organisationUnit(),
+        organisationUnitGroup = organisationUnitGroup(),
     )
 }

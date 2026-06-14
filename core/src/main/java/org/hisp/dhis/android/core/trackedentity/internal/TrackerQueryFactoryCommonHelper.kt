@@ -64,7 +64,7 @@ internal class TrackerQueryFactoryCommonHelper(
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
             .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
             .build()
-        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
+        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit() }
     }
 
     private suspend fun getOrganisationUnits(

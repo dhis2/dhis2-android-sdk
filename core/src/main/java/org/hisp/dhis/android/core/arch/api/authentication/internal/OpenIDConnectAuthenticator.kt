@@ -34,6 +34,7 @@ import io.ktor.client.request.header
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import org.koin.core.annotation.Singleton
 
@@ -45,6 +46,7 @@ internal class OpenIDConnectAuthenticator(
     private val tokenRefresher: OpenIDConnectTokenRefresher,
     private val userIdHelper: UserIdAuthenticatorHelper,
     private val logoutHandler: OpenIDConnectLogoutHandler,
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
 ) {
 
     suspend fun handleTokenCall(
@@ -68,6 +70,8 @@ internal class OpenIDConnectAuthenticator(
         return if (state.needsTokenRefresh) {
             val token = tokenRefresher.blockingGetFreshToken(state)
             credentialsSecureStore.set(credentials) // Auth state internally updated
+            // Keep the per-account persisted state fresh so relogin uses the latest refresh token.
+            openIDConnectStateSecureStore.set(credentials.serverUrl, credentials.username, state)
             token
         } else {
             state.idToken!!

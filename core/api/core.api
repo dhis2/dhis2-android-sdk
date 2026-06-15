@@ -19914,11 +19914,20 @@ public final class org/hisp/dhis/android/core/user/openid/OpenIDConnectConfig {
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/openid/OpenIDConnectHandler {
+	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lorg/hisp/dhis/android/core/user/openid/IntentWithRequestCode;
+	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun handleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
 	public abstract fun logIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
 	public abstract fun logOutObservable ()Lio/reactivex/Observable;
+	public abstract fun suspendChangePin (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendSetPin (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/user/openid/OpenIDConnectHandler$DefaultImpls {
+	public static fun blockingChangePin (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun blockingSetPin (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 }
 
 public final class org/hisp/dhis/android/core/util/StringUtils {

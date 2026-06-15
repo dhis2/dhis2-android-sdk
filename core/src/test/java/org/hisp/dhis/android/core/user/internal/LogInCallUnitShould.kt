@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
@@ -46,6 +47,8 @@ import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -78,6 +81,9 @@ class LogInCallUnitShould : BaseCallShould() {
     private val generalSettingCall: GeneralSettingCall = mock()
     private val accountManager: AccountManagerImpl = mock()
     private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore = mock()
+    private val openIDConnectTokenRefresher: OpenIDConnectTokenRefresher = mock()
+    private val openIdAuthState: AuthState = mock()
 
     @Before
     @Throws(Exception::class)
@@ -113,7 +119,7 @@ class LogInCallUnitShould : BaseCallShould() {
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
-            oauth2StateSecureStore,
+            oauth2StateSecureStore, openIDConnectStateSecureStore, lazyOf(openIDConnectTokenRefresher),
         ).logIn(username, password, serverUrl)
     }
 
@@ -321,6 +327,92 @@ class LogInCallUnitShould : BaseCallShould() {
         )
     }
 
+    // OpenID Connect dispatcher tests
+
+    @Test
+    fun route_to_openid_path_with_refreshed_bearer_when_state_exists_for_account() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
+            .thenReturn(FRESH_ID_TOKEN)
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+        whenever(
+            userNetworkHandler.authenticate(credentialsCaptor.capture()),
+        ).thenReturn(apiUser)
+
+        // password is null — must NOT throw because the OpenID path skips the null check
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        verify(openIDConnectTokenRefresher).blockingGetFreshTokenOrNull(openIdAuthState)
+        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $FRESH_ID_TOKEN")
+    }
+
+    @Test
+    fun fall_back_to_stored_id_token_when_refresh_returns_null() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
+        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+        whenever(
+            userNetworkHandler.authenticate(credentialsCaptor.capture()),
+        ).thenReturn(apiUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $ID_TOKEN")
+    }
+
+    @Test
+    fun persist_credentials_with_openid_state_and_null_password_after_openid_login() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
+            .thenReturn(FRESH_ID_TOKEN)
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        verify(credentialsSecureStore).set(
+            Credentials(USERNAME, SERVER_URL, null, openIdAuthState, null),
+        )
+        verify(openIDConnectStateSecureStore).set(SERVER_URL, USERNAME, openIdAuthState)
+    }
+
+    @Test
+    fun reject_openid_login_when_pin_does_not_match_stored_hash() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
+            .thenReturn(FRESH_ID_TOKEN)
+        // Stored hash corresponds to a different PIN.
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
+    }
+
+    @Test
+    fun fall_back_to_offline_login_for_openid_when_authenticate_throws_offline() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        // Offline: refresh returns null and we fall back to the stored idToken.
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
+        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
+        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        // OpenID accounts without PIN have hash() == null because password is null on both sides.
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        verify(credentialsSecureStore).set(
+            Credentials(USERNAME, SERVER_URL, null, openIdAuthState, null),
+        )
+    }
+
     private fun oauth2State(accessToken: String): OAuth2State =
         OAuth2State(
             clientId = "client",
@@ -339,5 +431,7 @@ class LogInCallUnitShould : BaseCallShould() {
         private const val BASE_URL = "https://dhis-instance.org"
         private const val SERVER_URL = BASE_URL
         private const val ACCESS_TOKEN = "access-token-1"
+        private const val ID_TOKEN = "id-token-1"
+        private const val FRESH_ID_TOKEN = "fresh-id-token-1"
     }
 }

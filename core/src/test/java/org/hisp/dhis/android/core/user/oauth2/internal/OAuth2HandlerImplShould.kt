@@ -87,7 +87,7 @@ class OAuth2HandlerImplShould {
     fun setUp() {
         keyPair = KeyPairGenerator.getInstance("RSA").apply { initialize(KEY_SIZE) }.generateKeyPair()
         whenever(logInExceptions.noActiveSessionError()).thenReturn(sdkError("no session"))
-        whenever(logInExceptions.pinRequiresOAuth2AccountError()).thenReturn(sdkError("not oauth2"))
+        whenever(logInExceptions.pinRequiresTokenBasedAccountError()).thenReturn(sdkError("not oauth2"))
         whenever(logInExceptions.noAuthenticatedUserPersistedError()).thenReturn(sdkError("no user"))
         whenever(logInExceptions.incorrectPinError()).thenReturn(sdkError("bad pin"))
         handler = OAuth2HandlerImpl(

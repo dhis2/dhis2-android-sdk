@@ -201,7 +201,7 @@ internal class OAuth2HandlerImpl(
         val credentials = credentialsSecureStore.get()
         return when {
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
-            credentials.oauth2State == null -> Result.Failure(logInExceptions.pinRequiresOAuth2AccountError())
+            credentials.oauth2State == null -> Result.Failure(logInExceptions.pinRequiresTokenBasedAccountError())
             else -> {
                 val updated = credentials.copy(password = pin)
                 credentialsSecureStore.set(updated)

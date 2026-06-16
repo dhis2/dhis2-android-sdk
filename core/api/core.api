@@ -5826,7 +5826,7 @@ public final class org/hisp/dhis/android/core/configuration/internal/DatabasesCo
 
 public final class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/constant/Constant$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public fun code ()Ljava/lang/String;
 	public final fun component1 ()Ljava/lang/String;
@@ -5837,15 +5837,13 @@ public final class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/
 	public final fun component6 ()Ljava/util/Date;
 	public final fun component7 ()Ljava/lang/Boolean;
 	public final fun component8 ()Ljava/lang/Double;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/constant/Constant;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/constant/Constant;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;)Lorg/hisp/dhis/android/core/constant/Constant;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/constant/Constant;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/constant/Constant;
 	public fun created ()Ljava/util/Date;
 	public fun deleted ()Ljava/lang/Boolean;
 	public fun displayName ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getCode ()Ljava/lang/String;
-	public final fun getColor ()Ljava/lang/String;
 	public fun getCreated ()Ljava/util/Date;
 	public fun getDeleted ()Ljava/lang/Boolean;
 	public fun getDisplayName ()Ljava/lang/String;
@@ -5877,7 +5875,6 @@ public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis
 	public fun build ()Lorg/hisp/dhis/android/core/constant/Constant;
 	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
-	public final fun color (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
@@ -5887,7 +5884,6 @@ public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis
 	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	protected final fun getCode ()Ljava/lang/String;
-	protected final fun getColor ()Ljava/lang/String;
 	protected final fun getCreated ()Ljava/util/Date;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
 	protected final fun getDisplayName ()Ljava/lang/String;
@@ -5902,7 +5898,6 @@ public class org/hisp/dhis/android/core/constant/ConstantBuilder : org/hisp/dhis
 	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/constant/Constant$Builder;
 	protected final fun setCode (Ljava/lang/String;)V
-	protected final fun setColor (Ljava/lang/String;)V
 	protected final fun setCreated (Ljava/util/Date;)V
 	protected final fun setDeleted (Ljava/lang/Boolean;)V
 	protected final fun setDisplayName (Ljava/lang/String;)V
@@ -5925,21 +5920,6 @@ public final class org/hisp/dhis/android/core/constant/ConstantCollectionReposit
 
 public abstract interface class org/hisp/dhis/android/core/constant/ConstantModule {
 	public abstract fun constants ()Lorg/hisp/dhis/android/core/constant/ConstantCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/constant/D2LocalDate {
-	public fun <init> (III)V
-	public final fun component1 ()I
-	public final fun component2 ()I
-	public final fun component3 ()I
-	public final fun copy (III)Lorg/hisp/dhis/android/core/constant/D2LocalDate;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/constant/D2LocalDate;IIIILjava/lang/Object;)Lorg/hisp/dhis/android/core/constant/D2LocalDate;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDay ()I
-	public final fun getMonth ()I
-	public final fun getYear ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/CoreObject {

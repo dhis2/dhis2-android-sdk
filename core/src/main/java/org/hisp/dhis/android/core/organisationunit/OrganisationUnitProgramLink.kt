@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.organisationunit
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OrganisationUnitProgramLink(
+    val program: String,
+    val organisationUnit: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun program(): String = program
+    fun organisationUnit(): String = organisationUnit
 
-@AutoValue
-public abstract class OrganisationUnitGroup extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = OrganisationUnitProgramLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String shortName();
+    class Builder : OrganisationUnitProgramLinkBuilder()
 
-    @Nullable
-    public abstract String displayShortName();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitGroup.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder shortName(String shortName);
-
-        public abstract Builder displayShortName(String displayShortName);
-
-        public abstract OrganisationUnitGroup build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

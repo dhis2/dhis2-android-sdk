@@ -279,7 +279,9 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @return Repository connector
      */
     fun byIncludeDeleted(): EqFilterConnector<R, Boolean> {
-        return connectorFactory.eqConnector { scope.toBuilder().includeDeleted(it).build() }
+        return connectorFactory.eqConnector { includeDeleted ->
+            includeDeleted?.let { scope.toBuilder().includeDeleted(it).build() } ?: scope
+        }
     }
 
     /**
@@ -349,7 +351,9 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
      * @return Repository connector
      */
     fun allowOnlineCache(): EqFilterConnector<R, Boolean> {
-        return connectorFactory.eqConnector { scope.toBuilder().allowOnlineCache(it).build() }
+        return connectorFactory.eqConnector { onlineCache ->
+            onlineCache?.let { scope.toBuilder().allowOnlineCache(onlineCache).build() } ?: scope
+        }
     }
 
     fun excludeUids(): ListFilterConnector<R, String> {
@@ -494,9 +498,11 @@ abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constru
     private fun orderConnector(
         col: TrackedEntityInstanceQueryScopeOrderColumn,
     ): EqFilterConnector<R, RepositoryScope.OrderByDirection> {
-        return connectorFactory.eqConnector { direction: RepositoryScope.OrderByDirection? ->
-            val order = TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(direction).build()
-            scope.toBuilder().order(scope.order() + order).build()
+        return connectorFactory.eqConnector { direction ->
+            direction?.let {
+                val order = TrackedEntityInstanceQueryScopeOrderByItem.builder().column(col).direction(it).build()
+                scope.toBuilder().order(scope.order() + order).build()
+            } ?: scope
         }
     }
 }

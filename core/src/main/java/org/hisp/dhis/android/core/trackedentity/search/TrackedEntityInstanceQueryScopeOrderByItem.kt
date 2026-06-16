@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,50 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityInstanceQueryScopeOrderByItem(
+    val column: TrackedEntityInstanceQueryScopeOrderColumn,
+    val direction: RepositoryScope.OrderByDirection,
+) : QueryScopeOrderByItem {
 
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.event.EventStatus;
+    fun column(): TrackedEntityInstanceQueryScopeOrderColumn = column
+    fun direction(): RepositoryScope.OrderByDirection = direction
 
-import java.util.List;
-
-@AutoValue
-public abstract class TrackedEntityInstanceQueryEventFilter {
-
-    @Nullable
-    public abstract String programStage();
-
-    @Nullable
-    public abstract List<EventStatus> eventStatus();
-
-    @Nullable
-    public abstract AssignedUserMode assignedUserMode();
-
-    @Nullable
-    public abstract DateFilterPeriod eventDate();
-
-    abstract TrackedEntityInstanceQueryEventFilter.Builder toBuilder();
-
-    static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryEventFilter.Builder();
+    override fun toAPIString(version: TrackerExporterVersion): String? {
+        val apiName = column.apiName()?.getApiName(version)
+        return apiName?.let { "$it:${direction.api}" }
     }
 
-    @AutoValue.Builder
-    abstract static class Builder {
+    fun toBuilder(): Builder = TrackedEntityInstanceQueryScopeOrderByItemBuilder.from(this)
 
-        public abstract Builder programStage(String programStage);
+    class Builder : TrackedEntityInstanceQueryScopeOrderByItemBuilder()
 
-        public abstract Builder eventStatus(List<EventStatus> eventStatus);
+    companion object {
+        internal val DEFAULT_TRACKER_ORDER = builder()
+            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
+            .direction(RepositoryScope.OrderByDirection.DESC)
+            .build()
 
-        public abstract Builder eventDate(DateFilterPeriod dateFilterPeriod);
-
-        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
-
-        public abstract TrackedEntityInstanceQueryEventFilter build();
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

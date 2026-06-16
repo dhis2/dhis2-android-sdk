@@ -29,8 +29,6 @@
 package org.hisp.dhis.android.core.enrollment
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.arch.helpers.CoordinateHelper
-import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.DataObjectKt
 import org.hisp.dhis.android.core.common.DeletableDataObjectKt
 import org.hisp.dhis.android.core.common.Geometry
@@ -60,7 +58,6 @@ data class Enrollment(
     val status: EnrollmentStatus?,
     val trackedEntityInstance: String?,
     val attributeOptionCombo: String,
-    internal val coordinate: Coordinates?,
     val geometry: Geometry?,
     internal val events: List<Event>?,
     val notes: List<Note>?,
@@ -81,8 +78,6 @@ data class Enrollment(
     fun status(): EnrollmentStatus? = status
     fun trackedEntityInstance(): String? = trackedEntityInstance
     fun attributeOptionCombo(): String = attributeOptionCombo
-    @Deprecated("Deprecated since 2.30, use geometry() instead")
-    internal fun coordinate(): Coordinates? = coordinate
     fun geometry(): Geometry? = geometry
     internal fun events(): List<Event>? = events
     fun notes(): List<Note>? = notes
@@ -94,17 +89,7 @@ data class Enrollment(
 
     fun toBuilder(): Builder = EnrollmentBuilder.from(this)
 
-    class Builder : EnrollmentBuilder() {
-        override fun build(): Enrollment {
-            val currentGeometry = geometry
-            if (currentGeometry == null) {
-                coordinate?.let { geometry(CoordinateHelper.getGeometryFromCoordinates(it)) }
-            } else {
-                coordinate(CoordinateHelper.getCoordinatesFromGeometry(currentGeometry))
-            }
-            return super.build()
-        }
-    }
+    class Builder : EnrollmentBuilder()
 
     companion object {
         @JvmStatic

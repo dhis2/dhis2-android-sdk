@@ -7926,7 +7926,7 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 
 public final class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/DeletableDataObjectKt, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/enrollment/Enrollment$Companion;
-	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Coordinates;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)V
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)V
 	public final fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	public final fun attributeOptionCombo ()Ljava/lang/String;
 	public static final fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
@@ -7939,10 +7939,10 @@ public final class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/d
 	public final fun component14 ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 	public final fun component15 ()Ljava/lang/String;
 	public final fun component16 ()Ljava/lang/String;
-	public final fun component18 ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun component17 ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun component19 ()Ljava/util/List;
 	public final fun component2 ()Lorg/hisp/dhis/android/core/common/State;
-	public final fun component20 ()Ljava/util/List;
-	public final fun component22 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component21 ()Lorg/hisp/dhis/android/core/common/State;
 	public final fun component3 ()Ljava/lang/Boolean;
 	public final fun component4 ()Ljava/util/Date;
 	public final fun component5 ()Ljava/util/Date;
@@ -7950,8 +7950,8 @@ public final class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/d
 	public final fun component7 ()Ljava/util/Date;
 	public final fun component8 ()Ljava/lang/String;
 	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Coordinates;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/enrollment/Enrollment;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Coordinates;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/enrollment/Enrollment;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
 	public final fun created ()Ljava/util/Date;
 	public final fun createdAtClient ()Ljava/util/Date;
 	public fun deleted ()Ljava/lang/Boolean;
@@ -7996,7 +7996,6 @@ public final class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/d
 
 public final class org/hisp/dhis/android/core/enrollment/Enrollment$Builder : org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	public fun <init> ()V
-	public fun build ()Lorg/hisp/dhis/android/core/enrollment/Enrollment;
 }
 
 public final class org/hisp/dhis/android/core/enrollment/Enrollment$Companion {
@@ -8032,7 +8031,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun getAggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
 	protected final fun getCompletedDate ()Ljava/util/Date;
-	protected final fun getCoordinate ()Lorg/hisp/dhis/android/core/common/Coordinates;
 	protected final fun getCreated ()Ljava/util/Date;
 	protected final fun getCreatedAtClient ()Ljava/util/Date;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
@@ -8060,7 +8058,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun setAggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
 	protected final fun setCompletedDate (Ljava/util/Date;)V
-	protected final fun setCoordinate (Lorg/hisp/dhis/android/core/common/Coordinates;)V
 	protected final fun setCreated (Ljava/util/Date;)V
 	protected final fun setCreatedAtClient (Ljava/util/Date;)V
 	protected final fun setDeleted (Ljava/lang/Boolean;)V

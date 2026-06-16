@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.sms.mockrepos.testobjects
 
-import nl.jqno.equalsverifier.internal.reflection.Tuple
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -53,9 +52,13 @@ object MockObjects {
     const val enrollmentUidWithNullEvents = "aQr0XnMVyIq"
     const val enrollmentUidWithoutEvents = "hQKhXnMVLIm"
     const val enrollmentUidWithoutGeometry = "e5xQ7RriVpK"
+
     @JvmField val enrollmentDate = sampleDate
+
     @JvmField val incidentDate = sampleDate
+
     @JvmField val completedDate = sampleDate
+
     @JvmField val enrollmentStatus = EnrollmentStatus.ACTIVE
     const val latitude = 1.234F
     const val longitude = -0.123F
@@ -68,8 +71,11 @@ object MockObjects {
     const val categoryOptionCombo = "HllvX50cXC0"
     const val eventUid = "gqmgkrLT3XH"
     const val programStage = "bUzhUa4QWbQ"
+
     @JvmField val eventDate = sampleDate
+
     @JvmField val dueDate = sampleDate
+
     @JvmField val eventStatus = EventStatus.COMPLETED
     const val period = "2019"
     const val relationship = "Tj1ddhpeCFL"

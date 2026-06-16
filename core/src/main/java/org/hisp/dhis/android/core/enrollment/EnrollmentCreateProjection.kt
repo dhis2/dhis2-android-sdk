@@ -60,7 +60,7 @@ data class EnrollmentCreateProjection(
                 organisationUnit = organisationUnit,
                 program = program,
                 trackedEntityInstance = trackedEntityInstance,
-                attributeOptionCombo = null
+                attributeOptionCombo = null,
             )
         }
 
@@ -75,7 +75,7 @@ data class EnrollmentCreateProjection(
                 organisationUnit = organisationUnit,
                 program = program,
                 trackedEntityInstance = trackedEntityInstance,
-                attributeOptionCombo = attributeOptionCombo
+                attributeOptionCombo = attributeOptionCombo,
             )
         }
     }

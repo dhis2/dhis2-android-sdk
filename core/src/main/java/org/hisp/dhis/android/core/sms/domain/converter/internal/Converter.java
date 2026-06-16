@@ -110,11 +110,11 @@ public abstract class Converter<P> {
         return localDbRepository;
     }
 
-    abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user, int submissionId);
+    protected abstract Single<? extends SMSSubmission> convert(@NonNull P dataItem, String user, int submissionId);
 
     public abstract Completable updateSubmissionState(State state);
 
-    abstract Single<P> readItemFromDb();
+    protected abstract Single<P> readItemFromDb();
 
     private class CompressionData {
         final String user;

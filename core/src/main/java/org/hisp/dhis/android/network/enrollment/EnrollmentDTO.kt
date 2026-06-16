@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.enrollment
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.CategoryOptionComboWithFallbackDTO
@@ -85,7 +84,7 @@ internal data class EnrollmentDTO(
             trackedEntityInstance(trackedEntityInstance)
             geometry(geometry?.toDomain())
             attributeOptionCombo(CategoryOptionComboWithFallbackDTO(null).toDomain())
-            EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
+            events(events?.map { it.toDomain() })
             notes(notes?.map { it.toDomain(enrollment = enrollment) })
             relationships(relationships?.map { it.toDomain() })
         }.build()
@@ -109,8 +108,8 @@ internal fun Enrollment.toDto(): EnrollmentDTO {
         status = this.status()?.name,
         trackedEntityInstance = this.trackedEntityInstance(),
         geometry = this.geometry()?.toDto(),
-        events = EnrollmentInternalAccessor.accessEvents(this)?.map { it.toDto() },
+        events = this.events()?.map { it.toDto() },
         notes = this.notes()?.map { it.toDto() },
-        relationships = EnrollmentInternalAccessor.accessRelationships(this)?.map { it.toDto() },
+        relationships = this.relationships()?.map { it.toDto() },
     )
 }

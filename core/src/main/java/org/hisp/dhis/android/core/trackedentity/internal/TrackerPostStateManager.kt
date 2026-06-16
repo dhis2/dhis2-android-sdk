@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -76,7 +75,7 @@ internal class TrackerPostStateManager internal constructor(
             h.addState(teiMap, instance, forcedState)
             TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)?.forEach { enrollment ->
                 h.addState(enrollmentMap, enrollment, forcedState)
-                for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
+                for (event in enrollment.events().orEmpty()) {
                     h.addState(eventMap, event, forcedState)
                 }
             }

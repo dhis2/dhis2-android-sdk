@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.util.toJavaDate

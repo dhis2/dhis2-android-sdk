@@ -54,6 +54,6 @@ internal class ProgramIndicatorLegendSetLinkStoreImpl(
             .appendKeyStringValue(ProgramIndicatorLegendSetLinkTableInfo.Columns.PROGRAM_INDICATOR, programIndicatorUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()!!) }
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
     }
 }

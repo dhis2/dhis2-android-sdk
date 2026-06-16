@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class IndicatorLegendSetLink(
+    val indicator: String,
+    val legendSet: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun indicator(): String = indicator
+    fun legendSet(): String = legendSet
+    fun sortOrder(): Int = sortOrder
 
-@AutoValue
-public abstract class Legend extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = IndicatorLegendSetLinkBuilder.from(this)
 
-    @Nullable
-    public abstract Double startValue();
+    class Builder : IndicatorLegendSetLinkBuilder()
 
-    @Nullable
-    public abstract Double endValue();
-
-    @Nullable
-    public abstract String color();
-
-    @Nullable
-    public abstract ObjectWithUid legendSet();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Legend.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder startValue(Double startValue);
-
-        public abstract Builder endValue(Double endValue);
-
-        public abstract Builder color(String color);
-
-        public abstract Builder legendSet(ObjectWithUid legendSet);
-
-        public abstract Legend build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

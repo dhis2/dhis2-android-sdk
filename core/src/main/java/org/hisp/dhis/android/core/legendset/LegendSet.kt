@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class LegendSet(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val symbolizer: String?,
+    val legends: List<Legend>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun symbolizer(): String? = symbolizer
+    fun legends(): List<Legend>? = legends
 
-@AutoValue
-public abstract class ProgramIndicatorLegendSetLink implements CoreObject {
+    fun toBuilder(): Builder = LegendSetBuilder.from(this)
 
-    @Nullable
-    public abstract String programIndicator();
+    class Builder : LegendSetBuilder()
 
-    @Nullable
-    public abstract String legendSet();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramIndicatorLegendSetLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder programIndicator(String programIndicator);
-
-        public abstract Builder legendSet(String legendSet);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract ProgramIndicatorLegendSetLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

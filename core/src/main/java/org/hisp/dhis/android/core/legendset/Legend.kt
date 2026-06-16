@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,39 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Legend(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val startValue: Double?,
+    val endValue: Double?,
+    val color: String?,
+    val legendSet: ObjectWithUid?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun startValue(): Double? = startValue
+    fun endValue(): Double? = endValue
+    fun color(): String? = color
+    fun legendSet(): ObjectWithUid? = legendSet
 
-@AutoValue
-public abstract class IndicatorLegendSetLink implements CoreObject {
-    @Nullable
-    public abstract String indicator();
+    fun toBuilder(): Builder = LegendBuilder.from(this)
 
-    @Nullable
-    public abstract String legendSet();
+    class Builder : LegendBuilder()
 
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_IndicatorLegendSetLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder indicator(String indicator);
-
-        public abstract Builder legendSet(String legendSet);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract IndicatorLegendSetLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

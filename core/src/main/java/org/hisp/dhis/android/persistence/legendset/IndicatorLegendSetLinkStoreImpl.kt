@@ -56,6 +56,6 @@ internal class IndicatorLegendSetLinkStoreImpl(
             )
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()!!) }
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.legendSet()) }
     }
 }

@@ -30,7 +30,7 @@ import org.hisp.dhis.android.processor.ParentColumn
 internal data class DataElementLegendSetLinkDB(
     @ParentColumn val dataElement: String,
     val legendSet: String,
-    val sortOrder: Int?,
+    val sortOrder: Int,
 ) : EntityDB<DataElementLegendSetLink> {
 
     override fun toDomain(): DataElementLegendSetLink {
@@ -44,8 +44,8 @@ internal data class DataElementLegendSetLinkDB(
 
 internal fun DataElementLegendSetLink.toDB(): DataElementLegendSetLinkDB {
     return DataElementLegendSetLinkDB(
-        dataElement = dataElement()!!,
-        legendSet = legendSet()!!,
+        dataElement = dataElement(),
+        legendSet = legendSet(),
         sortOrder = sortOrder(),
     )
 }

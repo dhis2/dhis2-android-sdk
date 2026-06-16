@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.sms;
 
 import org.hisp.dhis.android.core.datavalue.DataValue;
 import org.hisp.dhis.android.core.sms.domain.interactor.QrCodeCase;
-import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
 import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
 import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockObjects;
@@ -57,9 +56,9 @@ import org.junit.runners.JUnit4;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -189,9 +188,8 @@ public class ConvertTest {
         assertEquals(s.getDataSet().uid, MockObjects.dataSetUid);
         assertEquals(s.getPeriod(), MockObjects.period);
 
-        SMSDataValueSet mockSMSDataValueSet = MockObjects.getSMSDataValueSet();
         for (SMSDataValue item : s.getValues()) {
-            assertTrue(containsDataValue(mockSMSDataValueSet.getDataValues(), item));
+            assertTrue(containsDataValue(MockObjects.getDataValues(), item));
         }
         assertEquals(s.isComplete(), MockObjects.isCompleted);
     }
@@ -250,7 +248,7 @@ public class ConvertTest {
         return subm;
     }
 
-    private boolean containsTeiDataValue(ArrayList<TrackedEntityDataValue> values,
+    private boolean containsTeiDataValue(List<TrackedEntityDataValue> values,
                                          SMSDataValue item) {
         for (TrackedEntityDataValue value : values) {
             if (Objects.equals(value.dataElement(), item.getDataElement().uid) &&
@@ -261,7 +259,7 @@ public class ConvertTest {
         return false;
     }
 
-    private boolean containsAttributeValue(ArrayList<TrackedEntityAttributeValue> values,
+    private boolean containsAttributeValue(List<TrackedEntityAttributeValue> values,
                                            SMSAttributeValue item) {
         for (TrackedEntityAttributeValue value : values) {
             if (Objects.equals(value.trackedEntityAttribute(), item.getAttribute().uid) &&

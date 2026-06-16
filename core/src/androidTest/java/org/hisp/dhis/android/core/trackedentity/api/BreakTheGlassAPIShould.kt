@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.ImportStatus
@@ -212,7 +211,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun validEnrollment(): Enrollment {
-        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), listOf(validEvent()))
+        return Enrollment.builder()
+            .events(listOf(validEvent()))
             .uid(uidGenerator.generate())
             .organisationUnit(captureOrgunit)
             .program(program)
@@ -234,14 +234,14 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
             validTei().toBuilder(),
             listOf(
-                EnrollmentInternalAccessor.insertEvents(
-                    validEnrollment().toBuilder(),
-                    listOf(
-                        validEvent().toBuilder()
-                            .organisationUnit(searchOrgunit)
-                            .build(),
-                    ),
-                )
+                validEnrollment().toBuilder()
+                    .events(
+                        listOf(
+                            validEvent().toBuilder()
+                                .organisationUnit(searchOrgunit)
+                                .build(),
+                        ),
+                    )
                     .build(),
             ),
         )
@@ -252,7 +252,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         return TrackedEntityInstanceInternalAccessor.insertEnrollments(
             validTei().toBuilder(),
             listOf(
-                EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(), listOf(validEvent()))
+                validEnrollment().toBuilder().events(listOf(validEvent()))
                     .organisationUnit(searchOrgunit).build(),
             ),
         )

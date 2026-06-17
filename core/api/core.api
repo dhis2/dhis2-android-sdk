@@ -19260,44 +19260,254 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter {
-	public fun <init> ()V
-	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
-	public abstract fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventStatus ()Ljava/util/List;
-	public abstract fun programStage ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventStatus ()Ljava/util/List;
+	public final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventStatus ()Ljava/util/List;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun programStage ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder {
 	public fun <init> ()V
-	public abstract fun allowOnlineCache ()Ljava/lang/Boolean;
-	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
-	public fun attribute ()Ljava/util/List;
-	public abstract fun dataValue ()Ljava/util/List;
-	public abstract fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public static fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
-	public abstract fun enrollmentStatus ()Ljava/util/List;
-	public abstract fun eventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventFilters ()Ljava/util/List;
-	public abstract fun eventStatus ()Ljava/util/List;
-	public abstract fun excludedUids ()Ljava/util/Set;
-	public abstract fun filter ()Ljava/util/List;
-	public abstract fun followUp ()Ljava/lang/Boolean;
-	public abstract fun incidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun includeDeleted ()Ljava/lang/Boolean;
-	public abstract fun lastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun mode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
-	public abstract fun order ()Ljava/util/List;
-	public abstract fun orgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
-	public abstract fun orgUnits ()Ljava/util/List;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun programDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun programStage ()Ljava/lang/String;
-	public abstract fun query ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
-	public abstract fun states ()Ljava/util/List;
-	public abstract fun trackedEntityType ()Ljava/lang/String;
-	public abstract fun uids ()Ljava/util/List;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder$Companion;
+	public fun <init> ()V
+	public final fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public final fun eventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public final fun eventStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	protected final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	protected final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventStatus ()Ljava/util/List;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	protected final fun setAssignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)V
+	protected final fun setEventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventStatus (Ljava/util/List;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)V
+	public final fun allowOnlineCache ()Z
+	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun attribute ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component11 ()Ljava/util/List;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component15 ()Ljava/util/List;
+	public final fun component16 ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun component17 ()Ljava/lang/String;
+	public final fun component18 ()Z
+	public final fun component19 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component20 ()Ljava/lang/Boolean;
+	public final fun component21 ()Ljava/util/List;
+	public final fun component22 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component23 ()Ljava/util/List;
+	public final fun component24 ()Z
+	public final fun component25 ()Ljava/util/Set;
+	public final fun component26 ()Ljava/util/List;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun copy (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun dataValue ()Ljava/util/List;
+	public final fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public static final fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun enrollmentStatus ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventFilters ()Ljava/util/List;
+	public final fun eventStatus ()Ljava/util/List;
+	public final fun excludedUids ()Ljava/util/Set;
+	public final fun filter ()Ljava/util/List;
+	public final fun followUp ()Ljava/lang/Boolean;
+	public final fun getAllowOnlineCache ()Z
+	public final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun getDataValue ()Ljava/util/List;
+	public final fun getDueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEnrollmentStatus ()Ljava/util/List;
+	public final fun getEventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventFilters ()Ljava/util/List;
+	public final fun getEventStatus ()Ljava/util/List;
+	public final fun getExcludedUids ()Ljava/util/Set;
+	public final fun getFilter ()Ljava/util/List;
+	public final fun getFollowUp ()Ljava/lang/Boolean;
+	public final fun getIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getIncludeDeleted ()Z
+	public final fun getLastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getMode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun getOrder ()Ljava/util/List;
+	public final fun getOrgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun getOrgUnits ()Ljava/util/List;
+	public final fun getProgram ()Ljava/lang/String;
+	public final fun getProgramDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public final fun getQuery ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun getStates ()Ljava/util/List;
+	public final fun getTrackedEntityType ()Ljava/lang/String;
+	public final fun getUids ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun incidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun includeDeleted ()Z
+	public final fun lastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun mode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun order ()Ljava/util/List;
+	public final fun orgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun orgUnits ()Ljava/util/List;
+	public final fun program ()Ljava/lang/String;
+	public final fun programDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun programStage ()Ljava/lang/String;
+	public final fun query ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun states ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityType ()Ljava/lang/String;
+	public final fun uids ()Ljava/util/List;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder {
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder$Companion;
+	protected field dataValue Ljava/util/List;
+	protected field eventFilters Ljava/util/List;
+	protected field filter Ljava/util/List;
+	protected field mode Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	protected field order Ljava/util/List;
+	protected field orgUnits Ljava/util/List;
+	public fun <init> ()V
+	public final fun allowOnlineCache (Z)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun dataValue (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun dueDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun enrollmentStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventCreatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun excludedUids (Ljava/util/Set;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun filter (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	protected final fun getAllowOnlineCache ()Z
+	protected final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	protected final fun getDataValue ()Ljava/util/List;
+	protected final fun getDueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEnrollmentStatus ()Ljava/util/List;
+	protected final fun getEventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventFilters ()Ljava/util/List;
+	protected final fun getEventStatus ()Ljava/util/List;
+	protected final fun getExcludedUids ()Ljava/util/Set;
+	protected final fun getFilter ()Ljava/util/List;
+	protected final fun getFollowUp ()Ljava/lang/Boolean;
+	protected final fun getIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getIncludeDeleted ()Z
+	protected final fun getLastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getMode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	protected final fun getOrder ()Ljava/util/List;
+	protected final fun getOrgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	protected final fun getOrgUnits ()Ljava/util/List;
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getProgramDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	protected final fun getQuery ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	protected final fun getStates ()Ljava/util/List;
+	protected final fun getTrackedEntityType ()Ljava/lang/String;
+	protected final fun getUids ()Ljava/util/List;
+	public final fun incidentDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun includeDeleted (Z)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun lastUpdatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun mode (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun order (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun orgUnitMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun orgUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun programDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun query (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	protected final fun setAllowOnlineCache (Z)V
+	protected final fun setAssignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)V
+	protected final fun setDataValue (Ljava/util/List;)V
+	protected final fun setDueDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEnrollmentStatus (Ljava/util/List;)V
+	protected final fun setEventCreatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventFilters (Ljava/util/List;)V
+	protected final fun setEventStatus (Ljava/util/List;)V
+	protected final fun setExcludedUids (Ljava/util/Set;)V
+	protected final fun setFilter (Ljava/util/List;)V
+	protected final fun setFollowUp (Ljava/lang/Boolean;)V
+	protected final fun setIncidentDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setIncludeDeleted (Z)V
+	protected final fun setLastUpdatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setMode (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;)V
+	protected final fun setOrder (Ljava/util/List;)V
+	protected final fun setOrgUnitMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)V
+	protected final fun setOrgUnits (Ljava/util/List;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setProgramDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+	protected final fun setQuery (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;)V
+	protected final fun setStates (Ljava/util/List;)V
+	protected final fun setTrackedEntityType (Ljava/lang/String;)V
+	protected final fun setUids (Ljava/util/List;)V
+	public final fun states (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun uids (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName {
@@ -19330,30 +19540,114 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
-	public static field DEFAULT_TRACKER_ORDER Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
-	public fun <init> ()V
-	public abstract fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public abstract fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public final fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public final fun copy (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public final fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColumn ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun getDirection ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun hashCode ()I
 	public fun toAPIString (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn {
-	public static final field COMPLETION_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field CREATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ENROLLMENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ENROLLMENT_STATUS Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field EVENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field INCIDENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field LAST_UPDATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ORGUNIT_NAME Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder {
 	public fun <init> ()V
-	public abstract fun apiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
-	public static fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
-	public fun hasApiName ()Z
-	public abstract fun type ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
-	public abstract fun value ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder$Companion;
+	protected field column Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected field direction Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public final fun column (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public final fun direction (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	protected final fun getColumn ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected final fun getDirection ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	protected final fun setColumn (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)V
+	protected final fun setDirection (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;)V
+	public final fun apiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getApiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public final fun getType ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun getValue ()Ljava/lang/String;
+	public final fun hasApiName ()Z
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun value ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type : java/lang/Enum {
+	public static final field ATTRIBUTE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field COMPLETION_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field CREATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ENROLLMENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ENROLLMENT_STATUS Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field EVENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field INCIDENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field LAST_UPDATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ORGUNIT_NAME Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static fun values ()[Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder$Companion;
+	protected field type Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public fun <init> ()V
+	public final fun apiName (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected final fun getApiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	protected final fun getValue ()Ljava/lang/String;
+	protected final fun setApiName (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun type (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchCollectionRepository : org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchOperators, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {

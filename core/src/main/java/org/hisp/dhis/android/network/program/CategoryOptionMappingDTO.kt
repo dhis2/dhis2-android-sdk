@@ -34,13 +34,13 @@ import org.hisp.dhis.android.core.program.CategoryOptionMapping
 @Serializable
 internal data class CategoryOptionMappingDTO(
     val optionId: String,
-    val filter: String,
+    val filter: String? = null,
 ) {
     fun toDomain(categoryMappingId: String): CategoryOptionMapping {
         return CategoryOptionMapping.builder()
             .categoryMapping(categoryMappingId)
             .optionId(optionId)
-            .filter(filter)
+            .filter(filter!!)
             .build()
     }
 }

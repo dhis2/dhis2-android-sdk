@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,86 +26,63 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.core.note
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class NoteCreateProjection(
+    val noteType: Note.NoteType?,
+    val event: String?,
+    val enrollment: String?,
+    val value: String?,
+) {
+    fun noteType(): Note.NoteType? = noteType
+    fun event(): String? = event
+    fun enrollment(): String? = enrollment
+    fun value(): String? = value
 
-@AutoValue
-public abstract class NoteCreateProjection {
+    fun toBuilder(): Builder = NoteCreateProjectionBuilder.from(this)
 
-    @Nullable
-    public abstract Note.NoteType noteType();
+    class Builder : NoteCreateProjectionBuilder() {
+        override fun build(): NoteCreateProjection {
+            when {
+                noteType == null ->
+                    throw IllegalArgumentException("Note type is null")
 
-    @Nullable
-    public abstract String event();
+                noteType == Note.NoteType.ENROLLMENT_NOTE && enrollment == null ->
+                    throw IllegalArgumentException("Enrollment note type need an enrollment uid")
 
-    @Nullable
-    public abstract String enrollment();
-
-    @Nullable
-    public abstract String value();
-
-    /**
-     * @deprecated replaced by {@link #create(Note.NoteType, String, String)}
-     */
-    @Deprecated
-    public static NoteCreateProjection create(String enrollment, String value) {
-        return builder()
-                .noteType(Note.NoteType.ENROLLMENT_NOTE)
-                .enrollment(enrollment)
-                .value(value)
-                .build();
-    }
-
-    public static NoteCreateProjection create(Note.NoteType noteType, String ownerUid, String value) {
-        Builder builder = builder()
-                .noteType(noteType)
-                .value(value);
-
-        if (noteType == Note.NoteType.ENROLLMENT_NOTE) {
-            return builder.enrollment(ownerUid).build();
-        } else if (noteType == Note.NoteType.EVENT_NOTE) {
-            return builder.event(ownerUid).build();
-        } else {
-            throw new IllegalArgumentException("Unknown note type");
+                noteType == Note.NoteType.EVENT_NOTE && event == null ->
+                    throw IllegalArgumentException("Event note type need an event uid")
+            }
+            return super.build()
         }
     }
 
-    public static Builder builder() {
-        return new AutoValue_NoteCreateProjection.Builder();
-    }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
 
-    public abstract Builder toBuilder();
+        @Deprecated("replaced by create(Note.NoteType, String, String)")
+        @JvmStatic
+        fun create(enrollment: String, value: String): NoteCreateProjection {
+            return NoteCreateProjection(
+                noteType = Note.NoteType.ENROLLMENT_NOTE,
+                event = null,
+                enrollment = enrollment,
+                value = value
+            )
+        }
 
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder noteType(Note.NoteType noteType);
-
-        public abstract Builder event(String event);
-
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract Builder value(String value);
-
-        abstract NoteCreateProjection autoBuild();
-
-        // Auxiliary fields
-        abstract Note.NoteType noteType();
-        abstract String event();
-        abstract String enrollment();
-
-        public NoteCreateProjection build() {
-            if (noteType() == null) {
-                throw new IllegalArgumentException("Note type is null");
-            } else if (noteType() == Note.NoteType.ENROLLMENT_NOTE && enrollment() == null) {
-                throw new IllegalArgumentException("Enrollment note type need an enrollment uid");
-            } else if (noteType() == Note.NoteType.EVENT_NOTE && event() == null) {
-                throw new IllegalArgumentException("Event note type need an event uid");
-            }
-
-            return autoBuild();
+        @JvmStatic
+        fun create(noteType: Note.NoteType, ownerUid: String, value: String): NoteCreateProjection {
+            return NoteCreateProjection(
+                noteType = noteType,
+                event = if (noteType == Note.NoteType.EVENT_NOTE) ownerUid else null,
+                enrollment = if (noteType == Note.NoteType.ENROLLMENT_NOTE) ownerUid else null,
+                value = value
+            )
         }
     }
 }

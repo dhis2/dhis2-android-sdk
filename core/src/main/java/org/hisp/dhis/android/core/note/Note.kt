@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,79 +26,58 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.note;
+package org.hisp.dhis.android.core.note
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
+import org.hisp.dhis.android.core.common.State
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Note(
+    override val uid: String,
+    override val syncState: State?,
+    override val deleted: Boolean?,
+    val noteType: NoteType?,
+    val event: String?,
+    val enrollment: String?,
+    val value: String?,
+    val storedBy: String?,
+    val storedDate: String?,
+) : ObjectWithUidInterfaceKt, DataObjectKt, DeletableDataObjectKt {
 
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
-
-@AutoValue
-public abstract class Note extends BaseDeletableDataObject implements ObjectWithUidInterface {
-
-    public enum NoteType {
+    enum class NoteType {
         ENROLLMENT_NOTE,
-        EVENT_NOTE
+        EVENT_NOTE,
     }
 
-    public abstract String uid();
+    fun noteType(): NoteType? = noteType
+    fun event(): String? = event
+    fun enrollment(): String? = enrollment
+    fun value(): String? = value
+    fun storedBy(): String? = storedBy
+    fun storedDate(): String? = storedDate
 
-    @Nullable
-    public abstract NoteType noteType();
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState()
 
-    @Nullable
-    public abstract String event();
+    fun toBuilder(): Builder = NoteBuilder.from(this)
 
-    @Nullable
-    public abstract String enrollment();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract String storedBy();
-
-    @Nullable
-    public abstract String storedDate();
-
-    public static Builder builder() {
-        return new AutoValue_Note.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDeletableDataObject.Builder<Builder> {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder noteType(NoteType noteType);
-
-        public abstract Builder event(String event);
-
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder storedBy(String storedBy);
-
-        public abstract Builder storedDate(String storedDate);
-
-        abstract Note autoBuild();
-
-        // Auxiliary fields
-        abstract String uid();
-
-        public Note build() {
+    class Builder : NoteBuilder() {
+        override fun build(): Note {
             try {
-                uid();
-            } catch (IllegalStateException e) {
-                uid(new UidGeneratorImpl().generate());
+                uid
+            } catch (ignored: UninitializedPropertyAccessException) {
+                uid(UidGeneratorImpl().generate())
             }
-
-            return autoBuild();
+            return super.build()
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

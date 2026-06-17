@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,75 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.fileresource;
+package org.hisp.dhis.android.core.fileresource
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@Suppress("TooManyFunctions")
+@ModelBuilder
+data class FileResource(
+    val uid: String,
+    val name: String?,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val contentType: String?,
+    val contentLength: Long?,
+    val path: String?,
+    override val syncState: State?,
+    val domain: FileResourceDomain?,
+    internal val storageStatus: FileResourceStorageStatus?,
+) : DataObjectKt, ObjectWithUidInterface {
 
-import org.hisp.dhis.android.core.common.BaseDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    override fun uid(): String = uid
+    fun name(): String? = name
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    fun contentType(): String? = contentType
+    fun contentLength(): Long? = contentLength
+    fun path(): String? = path
+    fun domain(): FileResourceDomain? = domain
+    internal fun storageStatus(): FileResourceStorageStatus? = storageStatus
 
-import java.util.Date;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-@AutoValue
-public abstract class FileResource extends BaseDataObject implements ObjectWithUidInterface {
+    fun toBuilder(): Builder = FileResourceBuilder.from(this)
 
-    @Nullable
-    public abstract String uid();
+    class Builder : FileResourceBuilder()
 
-    @Nullable
-    public abstract String name();
-
-    @Nullable
-    public abstract Date created();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract String contentType();
-
-    @Nullable
-    public abstract Long contentLength();
-
-    @Nullable
-    public abstract String path();
-
-    @Nullable
-    public abstract FileResourceDomain domain();
-
-    @Nullable
-    abstract FileResourceStorageStatus storageStatus();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_FileResource.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
-
-        public abstract Builder uid(@NonNull String uid);
-
-        public abstract Builder name(@NonNull String name);
-
-        public abstract Builder created(@NonNull Date created);
-
-        public abstract Builder lastUpdated(@NonNull Date lastUpdated);
-
-        public abstract Builder contentType(@NonNull String contentType);
-
-        public abstract Builder contentLength(@NonNull Long contentLength);
-
-        public abstract Builder path(@NonNull String path);
-
-        public abstract Builder domain(FileResourceDomain domain);
-
-        abstract Builder storageStatus(FileResourceStorageStatus storageStatus);
-
-        public abstract FileResource build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

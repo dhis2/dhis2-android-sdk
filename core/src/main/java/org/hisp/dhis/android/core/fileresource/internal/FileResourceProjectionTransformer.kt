@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
@@ -41,6 +42,7 @@ internal class FileResourceProjectionTransformer : Transformer<File, FileResourc
     override fun transform(o: File): FileResource {
         val creationDate = Date()
         return FileResource.builder()
+            .uid(UidGeneratorImpl().generate())
             .syncState(State.TO_POST)
             .created(creationDate)
             .lastUpdated(creationDate)

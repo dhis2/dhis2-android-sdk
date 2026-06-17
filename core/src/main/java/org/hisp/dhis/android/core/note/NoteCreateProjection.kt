@@ -71,7 +71,7 @@ data class NoteCreateProjection(
                 noteType = Note.NoteType.ENROLLMENT_NOTE,
                 event = null,
                 enrollment = enrollment,
-                value = value
+                value = value,
             )
         }
 
@@ -81,7 +81,7 @@ data class NoteCreateProjection(
                 noteType = noteType,
                 event = if (noteType == Note.NoteType.EVENT_NOTE) ownerUid else null,
                 enrollment = if (noteType == Note.NoteType.ENROLLMENT_NOTE) ownerUid else null,
-                value = value
+                value = value,
             )
         }
     }

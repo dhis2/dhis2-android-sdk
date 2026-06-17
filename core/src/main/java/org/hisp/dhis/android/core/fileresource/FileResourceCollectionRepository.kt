@@ -105,7 +105,7 @@ class FileResourceCollectionRepository internal constructor(
             val dstFile = saveFile(o, generatedUid, context)
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()
             store.insert(fileResource)
-            fileResource.uid()!!
+            fileResource.uid()
         } catch (e: Exception) {
             throw D2Error
                 .builder()

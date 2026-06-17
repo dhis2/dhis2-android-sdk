@@ -83,7 +83,7 @@ public class TrackerEventConverter extends Converter<Event> {
     }
 
     @Override
-    Single<Event> readItemFromDb() {
+    protected Single<Event> readItemFromDb() {
         return getLocalDbRepository().getTrackerEventToSubmit(eventUid);
     }
 }

@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
@@ -164,8 +163,8 @@ internal class LocalDbRepositoryImpl(
         return Single.fromCallable {
             val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet()!!
             val events = getEventsForEnrollment(enrollmentUid).blockingGet()
-            val enrollmentWithEvents = EnrollmentInternalAccessor
-                .insertEvents(enrollment.toBuilder(), events)
+            val enrollmentWithEvents = enrollment.toBuilder()
+                .events(events)
                 .build()
             val trackedEntityInstance = getTrackedEntityInstance(enrollment.trackedEntityInstance()).blockingGet()
             TrackedEntityInstanceInternalAccessor
@@ -204,7 +203,7 @@ internal class LocalDbRepositoryImpl(
     override fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable {
         return rxCompletable {
             val enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)[0]
-            val events = EnrollmentInternalAccessor.accessEvents(enrollment)
+            val events = enrollment.events()
             events?.forEach { event ->
                 eventStore.setSyncState(event.uid(), state)
                 dataStatePropagator.propagateEventUpdate(event)

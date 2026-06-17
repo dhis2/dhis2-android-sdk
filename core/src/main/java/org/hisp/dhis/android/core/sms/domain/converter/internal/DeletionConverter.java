@@ -50,7 +50,7 @@ public class DeletionConverter extends Converter<String> {
     }
 
     @Override
-    Single<? extends SMSSubmission> convert(@NonNull String uid, String user, int submissionId) {
+    protected Single<? extends SMSSubmission> convert(@NonNull String uid, String user, int submissionId) {
         return Single.fromCallable(() -> {
             DeleteSMSSubmission subm = new DeleteSMSSubmission();
             subm.setSubmissionID(submissionId);
@@ -66,7 +66,7 @@ public class DeletionConverter extends Converter<String> {
     }
 
     @Override
-    Single<String> readItemFromDb() {
+    protected Single<String> readItemFromDb() {
         return Single.just(eventUid);
     }
 }

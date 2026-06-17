@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor.accessEvents
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
@@ -77,7 +76,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
             accessEnrollments(tei).forEach { enrollment ->
                 addEnrollmentToWrapper(wrapper, enrollment, tei.trackedEntityAttributeValues(), programAttributeMap)
 
-                accessEvents(enrollment).forEach { event ->
+                enrollment.events()?.forEach { event ->
                     addEventToWrapper(wrapper, event)
                 }
             }

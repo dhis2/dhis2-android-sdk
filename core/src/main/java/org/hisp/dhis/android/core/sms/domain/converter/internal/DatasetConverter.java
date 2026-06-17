@@ -67,7 +67,10 @@ public class DatasetConverter extends Converter<SMSDataValueSet> {
     }
 
     @Override
-    Single<? extends SMSSubmission> convert(@NonNull SMSDataValueSet dataValueSet, String user, int submissionId) {
+    protected Single<? extends SMSSubmission> convert(
+            @NonNull SMSDataValueSet dataValueSet,
+            String user, int submissionId
+    ) {
         return Single.fromCallable(() -> {
             AggregateDatasetSMSSubmission subm = new AggregateDatasetSMSSubmission();
             subm.setSubmissionID(submissionId);
@@ -101,7 +104,7 @@ public class DatasetConverter extends Converter<SMSDataValueSet> {
     }
 
     @Override
-    Single<SMSDataValueSet> readItemFromDb() {
+    protected Single<SMSDataValueSet> readItemFromDb() {
         return getLocalDbRepository().getDataValueSet(dataSet, orgUnit, period, attributeOptionComboUid);
     }
 }

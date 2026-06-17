@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -225,7 +224,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         val events = payload.trackedEntityInstances.flatMap {
             TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
         }.flatMap {
-            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+            it.events() ?: emptyList()
         } + payload.events
 
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
@@ -274,7 +273,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
 
         val events = enrollments.flatMap {
-            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+            it.events() ?: emptyList()
         } + payload.events
 
         val eventItems = events.map {
@@ -318,7 +317,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
             val notes = extraData.notes.filter { it.enrollment() == enrollment.uid() }
 
-            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events)
+            enrollment.toBuilder().events(events)
                 .notes(notes)
                 .build()
         } ?: emptyList()
@@ -379,7 +378,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
                 tei
             } else if (tei.syncState() == State.SYNCED && enrollments.all { it.syncState() == State.SYNCED }) {
                 val events = enrollments
-                    .flatMap { EnrollmentInternalAccessor.accessEvents(it) }
+                    .flatMap { it.events().orEmpty() }
                     .mapNotNull { it.copy(trackedEntityInstance = tei.uid()) }
                 pendingEvents.addAll(events)
                 null

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import com.google.common.truth.Truth
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -125,7 +124,7 @@ class TrackedEntityInstanceUidHelperShould {
 
     private fun addToEvent(organisationUnitId: String) {
         whenever(event.organisationUnit()).thenReturn(organisationUnitId)
-        whenever(EnrollmentInternalAccessor.accessEvents(enrollment)).thenReturn(listOf(event))
+        whenever(enrollment.events()).thenReturn(listOf(event))
         whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(listOf(enrollment))
     }
 }

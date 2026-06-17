@@ -51,7 +51,10 @@ public class RelationshipConverter extends Converter<Relationship> {
     }
 
     @Override
-    Single<? extends SMSSubmission> convert(@NonNull Relationship relationship, String user, int submissionId) {
+    protected Single<? extends SMSSubmission> convert(
+            @NonNull Relationship relationship,
+            String user, int submissionId
+    ) {
         return Single.fromCallable(() -> {
             RelationshipSMSSubmission subm = new RelationshipSMSSubmission();
             subm.setSubmissionID(submissionId);
@@ -70,7 +73,7 @@ public class RelationshipConverter extends Converter<Relationship> {
     }
 
     @Override
-    Single<Relationship> readItemFromDb() {
+    protected Single<Relationship> readItemFromDb() {
         return getLocalDbRepository().getRelationship(relationshipUid);
     }
 }

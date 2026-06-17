@@ -42,7 +42,7 @@ internal class FileResourceProjectionTransformer : Transformer<File, FileResourc
     override fun transform(o: File): FileResource {
         val creationDate = Date()
         return FileResource.builder()
-            .uid(UidGeneratorImpl().generate())
+            .uid(o.name)
             .syncState(State.TO_POST)
             .created(creationDate)
             .lastUpdated(creationDate)

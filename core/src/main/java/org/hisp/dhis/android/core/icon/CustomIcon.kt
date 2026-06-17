@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.icon;
+package org.hisp.dhis.android.core.icon
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class CustomIcon(
+    val key: String,
+    val fileResource: ObjectWithUid,
+    val href: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun key(): String = key
+    fun fileResource(): ObjectWithUid = fileResource
+    fun href(): String = href
 
-@AutoValue
-public abstract class CustomIcon implements CoreObject {
+    fun toBuilder(): Builder = CustomIconBuilder.from(this)
 
-    @NonNull
-    public abstract String key();
+    class Builder : CustomIconBuilder()
 
-    @NonNull
-    public abstract ObjectWithUid fileResource();
-
-    @NonNull
-    public abstract String href();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CustomIcon.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder key(String key);
-
-        public abstract Builder fileResource(ObjectWithUid fileResource);
-
-        public abstract Builder href(String href);
-
-        public abstract CustomIcon build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -39,6 +39,7 @@ internal interface FilterOperatorsDB {
     val inProperty: StringSetDB?
     val like: String?
     val dateFilter: DateFilterPeriodDB?
+    val isEmpty: Boolean?
 }
 
 internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
@@ -51,5 +52,6 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDB): T where
     item.inProperty?.let { `in`(it.toDomain()) }
     like(item.like)
     item.dateFilter?.let { dateFilter(it.toDomain()) }
+    isEmpty(item.isEmpty)
     return this
 }

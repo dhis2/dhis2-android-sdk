@@ -43,6 +43,8 @@ data class ProgramStageWorkingListEventDataFilter(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriod?,
+    @get:JvmName("getIsEmpty")
+    override val isEmpty: Boolean?,
     val programStageWorkingList: String,
     val dataItem: String,
 ) : FilterOperators, CoreObject {

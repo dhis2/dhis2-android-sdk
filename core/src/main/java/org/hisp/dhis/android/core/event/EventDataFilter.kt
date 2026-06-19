@@ -43,6 +43,8 @@ data class EventDataFilter(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriod?,
+    @get:JvmName("getIsEmpty")
+    override val isEmpty: Boolean?,
     val eventFilter: String?,
     val dataItem: String,
 ) : FilterOperators, CoreObject {

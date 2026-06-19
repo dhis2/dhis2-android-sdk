@@ -44,6 +44,7 @@ internal data class ProgramStageWorkingListEventDataFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
+    override val isEmpty: Boolean?,
     val dataItem: String,
 ) : FilterOperatorsDTO {
     fun toDomain(programStageWorkingList: String): ProgramStageWorkingListEventDataFilter {

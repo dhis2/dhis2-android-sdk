@@ -70,6 +70,7 @@ internal data class EventDataFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
+    override val isEmpty: Boolean?,
 ) : EntityDB<EventDataFilter>, FilterOperatorsDB {
     override fun toDomain(): EventDataFilter {
         return EventDataFilter.builder()
@@ -92,5 +93,6 @@ internal fun EventDataFilter.toDB(): EventDataFilterDB {
         inProperty = `in`()?.toDB(),
         like = like(),
         dateFilter = dateFilter()?.toDB(),
+        isEmpty = isEmpty,
     )
 }

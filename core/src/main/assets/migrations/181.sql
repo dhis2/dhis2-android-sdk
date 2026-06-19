@@ -98,3 +98,9 @@ ALTER TABLE SectionDataElementLink RENAME TO SectionDataElementLink_Old;
 CREATE TABLE SectionDataElementLink(section TEXT NOT NULL, dataElement TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(section, dataElement), FOREIGN KEY(section) REFERENCES Section(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO SectionDataElementLink(section, dataElement, sortOrder) SELECT section, dataElement, sortOrder FROM SectionDataElementLink_Old;
 DROP TABLE IF EXISTS SectionDataElementLink_Old;
+
+# Add isEmpty to  FilterOperator tables table (ANDROSDK-2309)
+ALTER TABLE AttributeValueFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE EventDataFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE ProgramStageWorkingListAttributeValueFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE ProgramStageWorkingListEventDataFilterDB ADD COLUMN isEmpty INTEGER;

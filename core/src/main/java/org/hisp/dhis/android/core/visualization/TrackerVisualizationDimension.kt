@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class TrackerVisualizationDimension(
+    val trackerVisualization: String,
+    val position: LayoutPosition,
+    val dimension: String,
+    val dimensionType: String?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val items: List<ObjectWithUid>?,
+    val filter: String?,
+    val repetition: TrackerVisualizationDimensionRepetition?,
+    val sortOrder: Int?,
+) : CoreObject {
+    fun trackerVisualization(): String = trackerVisualization
+    fun position(): LayoutPosition = position
+    fun dimension(): String = dimension
+    fun dimensionType(): String? = dimensionType
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun items(): List<ObjectWithUid>? = items
+    fun filter(): String? = filter
+    fun repetition(): TrackerVisualizationDimensionRepetition? = repetition
+    fun sortOrder(): Int? = sortOrder
 
-import org.hisp.dhis.android.core.common.SortingDirection;
+    fun toBuilder(): Builder = TrackerVisualizationDimensionBuilder.from(this)
 
-@AutoValue
-public abstract class TrackerVisualizationSorting {
+    class Builder : TrackerVisualizationDimensionBuilder()
 
-    @NonNull
-    public abstract String dimension();
-
-    @NonNull
-    public abstract SortingDirection direction();
-
-    public static Builder builder() {
-        return new AutoValue_TrackerVisualizationSorting.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dimension(String dimension);
-
-        public abstract Builder direction(SortingDirection direction);
-
-        public abstract TrackerVisualizationSorting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

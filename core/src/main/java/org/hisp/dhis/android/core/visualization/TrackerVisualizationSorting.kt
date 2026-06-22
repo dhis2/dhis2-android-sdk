@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.SortingDirection
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackerVisualizationSorting(
+    val dimension: String,
+    val direction: SortingDirection,
+) {
+    fun dimension(): String = dimension
+    fun direction(): SortingDirection = direction
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun toBuilder(): Builder = TrackerVisualizationSortingBuilder.from(this)
 
-import java.util.List;
+    class Builder : TrackerVisualizationSortingBuilder()
 
-@AutoValue
-public abstract class CategoryDimension {
-
-    @Nullable
-    public abstract ObjectWithUid category();
-
-    @Nullable
-    public abstract List<ObjectWithUid> categoryOptions();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryDimension.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder category(ObjectWithUid category);
-
-        public abstract Builder categoryOptions(List<ObjectWithUid> categoryOptions);
-
-        public abstract CategoryDimension build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

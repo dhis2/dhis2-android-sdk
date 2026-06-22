@@ -103,10 +103,10 @@ internal class TrackerVisualizationMapper(
         } ?: emptyList()
     }
 
-    private suspend fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    private suspend fun mapOrganisationUnit(item: TrackerVisualizationDimension): TrackerLineListItem {
         return TrackerLineListItem.OrganisationUnitItem(
             programUid = item.program()?.uid(),
-            filters = item.items()?.mapNotNull { it.uid() }?.mapNotNull { uid ->
+            filters = item.items()?.map { it.uid() }?.mapNotNull { uid ->
                 val relativeOrgunit = RelativeOrganisationUnit.entries.find { it.name == uid }
 
                 when {
@@ -150,30 +150,24 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    private fun mapProgramIndicator(item: TrackerVisualizationDimension): TrackerLineListItem? {
-        return item.dimension()?.let { uid ->
-            TrackerLineListItem.ProgramIndicator(uid, mapDataFilters(item))
-        }
+    private fun mapProgramIndicator(item: TrackerVisualizationDimension): TrackerLineListItem {
+        return TrackerLineListItem.ProgramIndicator(item.dimension(), mapDataFilters(item))
     }
 
-    private fun mapProgramAttribute(item: TrackerVisualizationDimension): TrackerLineListItem? {
-        return item.dimension()?.let { uid ->
-            TrackerLineListItem.ProgramAttribute(uid, mapDataFilters(item))
-        }
+    private fun mapProgramAttribute(item: TrackerVisualizationDimension): TrackerLineListItem {
+        return TrackerLineListItem.ProgramAttribute(item.dimension(), mapDataFilters(item))
     }
 
     private fun mapProgramDataElement(
         item: TrackerVisualizationDimension,
         trackerVisualization: TrackerVisualization,
-    ): TrackerLineListItem? {
-        return item.dimension()?.let { uid ->
-            TrackerLineListItem.ProgramDataElement(
-                uid,
-                item.programStage()?.uid() ?: trackerVisualization.programStage()!!.uid(),
-                mapDataFilters(item),
-                item.repetition()?.indexes(),
-            )
-        }
+    ): TrackerLineListItem {
+        return TrackerLineListItem.ProgramDataElement(
+            item.dimension(),
+            item.programStage()?.uid() ?: trackerVisualization.programStage()!!.uid(),
+            mapDataFilters(item),
+            item.repetition()?.indexes(),
+        )
     }
 
     internal fun mapDataX(item: TrackerVisualizationDimension): TrackerLineListItem? {
@@ -199,14 +193,12 @@ internal class TrackerVisualizationMapper(
         }
     }
 
-    internal fun mapCategory(item: TrackerVisualizationDimension): TrackerLineListItem? {
+    internal fun mapCategory(item: TrackerVisualizationDimension): TrackerLineListItem {
         val filters = item.items()
             .takeIf { !it.isNullOrEmpty() }
             ?.let { listOf(DataFilter.In(it.map { it.uid() })) }
             ?: emptyList()
-        return item.dimension()?.let { uid ->
-            TrackerLineListItem.Category(uid, filters)
-        }
+        return TrackerLineListItem.Category(item.dimension(), filters)
     }
 
     @Suppress("ComplexMethod")
@@ -242,7 +234,8 @@ internal class TrackerVisualizationMapper(
     }
 
     internal fun mapDateFilters(item: TrackerVisualizationDimension): List<DateFilter> {
-        return item.items()?.mapNotNull { it.uid() }?.map { uid ->
+        return item.items()?.map { i ->
+            val uid = i.uid()
             val relativePeriod = RelativePeriod.entries.find { it.name == uid }
 
             when {

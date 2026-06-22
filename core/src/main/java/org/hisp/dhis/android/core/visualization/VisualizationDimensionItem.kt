@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class VisualizationDimensionItem(
+    val visualization: String,
+    val position: LayoutPosition,
+    val dimension: String,
+    val dimensionItem: String,
+    val dimensionItemType: String?,
+    val sortOrder: Int?,
+) : CoreObject {
+    fun visualization(): String = visualization
+    fun position(): LayoutPosition = position
+    fun dimension(): String = dimension
+    fun dimensionItem(): String = dimensionItem
+    fun dimensionItemType(): String? = dimensionItemType
+    fun sortOrder(): Int? = sortOrder
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = VisualizationDimensionItemBuilder.from(this)
 
-@AutoValue
-public abstract class VisualizationCategoryDimensionLink implements CoreObject {
+    class Builder : VisualizationDimensionItemBuilder()
 
-    @NonNull
-    public abstract String visualization();
-
-    @NonNull
-    public abstract String category();
-
-    @Nullable
-    public abstract String categoryOption();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationCategoryDimensionLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder visualization(String visualization);
-
-        public abstract Builder category(String category);
-
-        public abstract Builder categoryOption(String categoryOption);
-
-        public abstract VisualizationCategoryDimensionLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

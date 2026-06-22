@@ -21374,21 +21374,6 @@ public final class org/hisp/dhis/android/core/validation/internal/ValidationRule
 public final class org/hisp/dhis/android/core/validation/internal/ValidationRuleCall$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/CategoryDimension {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
-	public abstract fun category ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun categoryOptions ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/visualization/CategoryDimension$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/CategoryDimension;
-	public abstract fun category (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
-	public abstract fun categoryOptions (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/CategoryDimension$Builder;
-}
-
 public final class org/hisp/dhis/android/core/visualization/DataDimensionItemType : java/lang/Enum {
 	public static final field DATA_ELEMENT Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
 	public static final field DATA_ELEMENT_OPERAND Lorg/hisp/dhis/android/core/visualization/DataDimensionItemType;
@@ -21482,35 +21467,148 @@ public final class org/hisp/dhis/android/core/visualization/LegendStyle : java/l
 	public static fun values ()[Lorg/hisp/dhis/android/core/visualization/LegendStyle;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualization : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun columns ()Ljava/util/List;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun filters ()Ljava/util/List;
-	public abstract fun outputType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun sorting ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualization : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun columns ()Ljava/util/List;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component15 ()Ljava/util/List;
+	public final fun component16 ()Ljava/util/List;
+	public final fun component17 ()Ljava/util/List;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun description ()Ljava/lang/String;
+	public final fun displayDescription ()Ljava/lang/String;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filters ()Ljava/util/List;
+	public fun getCode ()Ljava/lang/String;
+	public final fun getColumns ()Ljava/util/List;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getDisplayDescription ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getFilters ()Ljava/util/List;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getOutputType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getSorting ()Ljava/util/List;
+	public final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun outputType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun sorting ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun type ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualization$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualization$Builder : org/hisp/dhis/android/core/visualization/TrackerVisualizationBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;
-	public abstract fun columns (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun outputType (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun sorting (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualization$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+}
+
+public class org/hisp/dhis/android/core/visualization/TrackerVisualizationBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun columns (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getColumns ()Ljava/util/List;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getDisplayDescription ()Ljava/lang/String;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getFilters ()Ljava/util/List;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getOutputType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getSorting ()Ljava/util/List;
+	protected final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun outputType (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setColumns (Ljava/util/List;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setDisplayDescription (Ljava/lang/String;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setFilters (Ljava/util/List;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setOutputType (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setSorting (Ljava/util/List;)V
+	protected final fun setTrackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun sorting (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/TrackerVisualization;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
 }
 
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -21524,48 +21622,133 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public final fun withColumnsAndFilters ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun dimension ()Ljava/lang/String;
-	public abstract fun dimensionType ()Ljava/lang/String;
-	public abstract fun filter ()Ljava/lang/String;
-	public abstract fun items ()Ljava/util/List;
-	public abstract fun position ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun repetition ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun trackerVisualization ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;Ljava/lang/Integer;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/Integer;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;Ljava/lang/Integer;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;
+	public final fun dimension ()Ljava/lang/String;
+	public final fun dimensionType ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filter ()Ljava/lang/String;
+	public final fun getDimension ()Ljava/lang/String;
+	public final fun getDimensionType ()Ljava/lang/String;
+	public final fun getFilter ()Ljava/lang/String;
+	public final fun getItems ()Ljava/util/List;
+	public final fun getPosition ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getRepetition ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public final fun getTrackerVisualization ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun items ()Ljava/util/List;
+	public final fun position ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun repetition ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackerVisualization ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder {
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder : org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;
-	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun dimensionType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun filter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun items (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun position (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun repetition (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
-	public abstract fun trackerVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
-	public abstract fun indexes ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder {
+public class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionBuilder$Companion;
+	protected field dimension Ljava/lang/String;
+	protected field position Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	protected field trackerVisualization Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
-	public abstract fun indexes (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;
+	public final fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun dimensionType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun filter (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	protected final fun getDimension ()Ljava/lang/String;
+	protected final fun getDimensionType ()Ljava/lang/String;
+	protected final fun getFilter ()Ljava/lang/String;
+	protected final fun getItems ()Ljava/util/List;
+	protected final fun getPosition ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getRepetition ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getTrackerVisualization ()Ljava/lang/String;
+	public final fun items (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun position (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun repetition (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	protected final fun setDimension (Ljava/lang/String;)V
+	protected final fun setDimensionType (Ljava/lang/String;)V
+	protected final fun setFilter (Ljava/lang/String;)V
+	protected final fun setItems (Ljava/util/List;)V
+	protected final fun setPosition (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setRepetition (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setTrackerVisualization (Ljava/lang/String;)V
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+	public final fun trackerVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimension$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndexes ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun indexes ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder : org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetitionBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+}
+
+public class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetitionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetitionBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;
+	protected final fun getIndexes ()Ljava/util/List;
+	public final fun indexes (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
+	protected final fun setIndexes (Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetitionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationDimensionRepetition$Builder;
 }
 
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType : java/lang/Enum {
@@ -21577,19 +21760,48 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public static fun values ()[Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
-	public abstract fun dimension ()Ljava/lang/String;
-	public abstract fun direction ()Lorg/hisp/dhis/android/core/common/SortingDirection;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/SortingDirection;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/SortingDirection;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
+	public final fun dimension ()Ljava/lang/String;
+	public final fun direction ()Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDimension ()Ljava/lang/String;
+	public final fun getDirection ()Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder {
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder : org/hisp/dhis/android/core/visualization/TrackerVisualizationSortingBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
-	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
-	public abstract fun direction (Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+}
+
+public class org/hisp/dhis/android/core/visualization/TrackerVisualizationSortingBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSortingBuilder$Companion;
+	protected field dimension Ljava/lang/String;
+	protected field direction Lorg/hisp/dhis/android/core/common/SortingDirection;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;
+	public final fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	public final fun direction (Lorg/hisp/dhis/android/core/common/SortingDirection;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
+	protected final fun getDimension ()Ljava/lang/String;
+	protected final fun getDirection ()Lorg/hisp/dhis/android/core/common/SortingDirection;
+	protected final fun setDimension (Ljava/lang/String;)V
+	protected final fun setDirection (Lorg/hisp/dhis/android/core/common/SortingDirection;)V
+}
+
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationSortingBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting;)Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationSorting$Builder;
 }
 
 public final class org/hisp/dhis/android/core/visualization/TrackerVisualizationType : java/lang/Enum {
@@ -21615,92 +21827,268 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public static fun values ()[Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/Visualization : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun colSubTotals ()Ljava/lang/Boolean;
-	public abstract fun colTotals ()Ljava/lang/Boolean;
-	public abstract fun columns ()Ljava/util/List;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun digitGroupSeparator ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
-	public abstract fun displayDensity ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun displayFormName ()Ljava/lang/String;
-	public abstract fun displaySubtitle ()Ljava/lang/String;
-	public abstract fun displayTitle ()Ljava/lang/String;
-	public abstract fun filters ()Ljava/util/List;
-	public abstract fun hideEmptyColumns ()Ljava/lang/Boolean;
-	public abstract fun hideEmptyRowItems ()Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;
-	public abstract fun hideEmptyRows ()Ljava/lang/Boolean;
-	public abstract fun hideLegend ()Ljava/lang/Boolean;
-	public abstract fun hideSubtitle ()Ljava/lang/Boolean;
-	public abstract fun hideTitle ()Ljava/lang/Boolean;
-	public abstract fun legend ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
-	public abstract fun noSpaceBetweenColumns ()Ljava/lang/Boolean;
-	public abstract fun percentStackedValues ()Ljava/lang/Boolean;
-	public abstract fun rowSubTotals ()Ljava/lang/Boolean;
-	public abstract fun rowTotals ()Ljava/lang/Boolean;
-	public abstract fun rows ()Ljava/util/List;
-	public abstract fun showDimensionLabels ()Ljava/lang/Boolean;
-	public abstract fun showHierarchy ()Ljava/lang/Boolean;
-	public abstract fun skipRounding ()Ljava/lang/Boolean;
-	public abstract fun subtitle ()Ljava/lang/String;
-	public abstract fun title ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun type ()Lorg/hisp/dhis/android/core/visualization/VisualizationType;
+public final class org/hisp/dhis/android/core/visualization/Visualization : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/Visualization$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/VisualizationType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;Lorg/hisp/dhis/android/core/visualization/DisplayDensity;Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;Lorg/hisp/dhis/android/core/common/AggregationType;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun colSubTotals ()Ljava/lang/Boolean;
+	public final fun colTotals ()Ljava/lang/Boolean;
+	public final fun columns ()Ljava/util/List;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/String;
+	public final fun component14 ()Ljava/lang/String;
+	public final fun component15 ()Lorg/hisp/dhis/android/core/visualization/VisualizationType;
+	public final fun component16 ()Ljava/lang/Boolean;
+	public final fun component17 ()Ljava/lang/Boolean;
+	public final fun component18 ()Ljava/lang/Boolean;
+	public final fun component19 ()Ljava/lang/Boolean;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component20 ()Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;
+	public final fun component21 ()Ljava/lang/Boolean;
+	public final fun component22 ()Ljava/lang/Boolean;
+	public final fun component23 ()Ljava/lang/Boolean;
+	public final fun component24 ()Ljava/lang/Boolean;
+	public final fun component25 ()Ljava/lang/Boolean;
+	public final fun component26 ()Ljava/lang/Boolean;
+	public final fun component27 ()Ljava/lang/Boolean;
+	public final fun component28 ()Ljava/lang/Boolean;
+	public final fun component29 ()Ljava/lang/Boolean;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component30 ()Ljava/lang/Boolean;
+	public final fun component31 ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	public final fun component32 ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
+	public final fun component33 ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
+	public final fun component34 ()Lorg/hisp/dhis/android/core/common/AggregationType;
+	public final fun component35 ()Ljava/util/List;
+	public final fun component36 ()Ljava/util/List;
+	public final fun component37 ()Ljava/util/List;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/VisualizationType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;Lorg/hisp/dhis/android/core/visualization/DisplayDensity;Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;Lorg/hisp/dhis/android/core/common/AggregationType;Ljava/util/List;Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/Visualization;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/VisualizationType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;Lorg/hisp/dhis/android/core/visualization/DisplayDensity;Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;Lorg/hisp/dhis/android/core/common/AggregationType;Ljava/util/List;Ljava/util/List;Ljava/util/List;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/Visualization;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun description ()Ljava/lang/String;
+	public final fun digitGroupSeparator ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
+	public final fun displayDensity ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
+	public final fun displayDescription ()Ljava/lang/String;
+	public final fun displayFormName ()Ljava/lang/String;
+	public fun displayName ()Ljava/lang/String;
+	public final fun displaySubtitle ()Ljava/lang/String;
+	public final fun displayTitle ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filters ()Ljava/util/List;
+	public final fun getAggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
+	public fun getCode ()Ljava/lang/String;
+	public final fun getColSubTotals ()Ljava/lang/Boolean;
+	public final fun getColTotals ()Ljava/lang/Boolean;
+	public final fun getColumns ()Ljava/util/List;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getDigitGroupSeparator ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
+	public final fun getDisplayDensity ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
+	public final fun getDisplayDescription ()Ljava/lang/String;
+	public final fun getDisplayFormName ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getDisplaySubtitle ()Ljava/lang/String;
+	public final fun getDisplayTitle ()Ljava/lang/String;
+	public final fun getFilters ()Ljava/util/List;
+	public final fun getHideEmptyColumns ()Ljava/lang/Boolean;
+	public final fun getHideEmptyRowItems ()Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;
+	public final fun getHideEmptyRows ()Ljava/lang/Boolean;
+	public final fun getHideLegend ()Ljava/lang/Boolean;
+	public final fun getHideSubtitle ()Ljava/lang/Boolean;
+	public final fun getHideTitle ()Ljava/lang/Boolean;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLegend ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	public fun getName ()Ljava/lang/String;
+	public final fun getNoSpaceBetweenColumns ()Ljava/lang/Boolean;
+	public final fun getPercentStackedValues ()Ljava/lang/Boolean;
+	public final fun getRowSubTotals ()Ljava/lang/Boolean;
+	public final fun getRowTotals ()Ljava/lang/Boolean;
+	public final fun getRows ()Ljava/util/List;
+	public final fun getShowDimensionLabels ()Ljava/lang/Boolean;
+	public final fun getShowHierarchy ()Ljava/lang/Boolean;
+	public final fun getSkipRounding ()Ljava/lang/Boolean;
+	public final fun getSubtitle ()Ljava/lang/String;
+	public final fun getTitle ()Ljava/lang/String;
+	public final fun getType ()Lorg/hisp/dhis/android/core/visualization/VisualizationType;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun hideEmptyColumns ()Ljava/lang/Boolean;
+	public final fun hideEmptyRowItems ()Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;
+	public final fun hideEmptyRows ()Ljava/lang/Boolean;
+	public final fun hideLegend ()Ljava/lang/Boolean;
+	public final fun hideSubtitle ()Ljava/lang/Boolean;
+	public final fun hideTitle ()Ljava/lang/Boolean;
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun legend ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	public fun name ()Ljava/lang/String;
+	public final fun noSpaceBetweenColumns ()Ljava/lang/Boolean;
+	public final fun percentStackedValues ()Ljava/lang/Boolean;
+	public final fun rowSubTotals ()Ljava/lang/Boolean;
+	public final fun rowTotals ()Ljava/lang/Boolean;
+	public final fun rows ()Ljava/util/List;
+	public final fun showDimensionLabels ()Ljava/lang/Boolean;
+	public final fun showHierarchy ()Ljava/lang/Boolean;
+	public final fun skipRounding ()Ljava/lang/Boolean;
+	public final fun subtitle ()Ljava/lang/String;
+	public final fun title ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/visualization/VisualizationType;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/Visualization$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/visualization/Visualization$Builder : org/hisp/dhis/android/core/visualization/VisualizationBuilder {
 	public fun <init> ()V
-	public abstract fun aggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/Visualization;
-	public abstract fun colSubTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun colTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun columns (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun digitGroupSeparator (Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun displayDensity (Lorg/hisp/dhis/android/core/visualization/DisplayDensity;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun displayFormName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun displaySubtitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun displayTitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideEmptyColumns (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideEmptyRowItems (Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideEmptyRows (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideLegend (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideSubtitle (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun hideTitle (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun legend (Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun noSpaceBetweenColumns (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun percentStackedValues (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun rowSubTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun rowTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun rows (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun showDimensionLabels (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun showHierarchy (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun skipRounding (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun subtitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun title (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
-	public abstract fun type (Lorg/hisp/dhis/android/core/visualization/VisualizationType;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
-	public abstract fun category ()Ljava/lang/String;
-	public abstract fun categoryOption ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
-	public abstract fun visualization ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/visualization/Visualization$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder {
+public class org/hisp/dhis/android/core/visualization/VisualizationBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationBuilder$Companion;
+	protected field uid Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink;
-	public abstract fun category (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
-	public abstract fun categoryOption (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
-	public abstract fun visualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationCategoryDimensionLink$Builder;
+	public final fun aggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/Visualization;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun colSubTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun colTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun columns (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun digitGroupSeparator (Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun displayDensity (Lorg/hisp/dhis/android/core/visualization/DisplayDensity;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun displayFormName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun displaySubtitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun displayTitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	protected final fun getAggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getColSubTotals ()Ljava/lang/Boolean;
+	protected final fun getColTotals ()Ljava/lang/Boolean;
+	protected final fun getColumns ()Ljava/util/List;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getDigitGroupSeparator ()Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;
+	protected final fun getDisplayDensity ()Lorg/hisp/dhis/android/core/visualization/DisplayDensity;
+	protected final fun getDisplayDescription ()Ljava/lang/String;
+	protected final fun getDisplayFormName ()Ljava/lang/String;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getDisplaySubtitle ()Ljava/lang/String;
+	protected final fun getDisplayTitle ()Ljava/lang/String;
+	protected final fun getFilters ()Ljava/util/List;
+	protected final fun getHideEmptyColumns ()Ljava/lang/Boolean;
+	protected final fun getHideEmptyRowItems ()Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;
+	protected final fun getHideEmptyRows ()Ljava/lang/Boolean;
+	protected final fun getHideLegend ()Ljava/lang/Boolean;
+	protected final fun getHideSubtitle ()Ljava/lang/Boolean;
+	protected final fun getHideTitle ()Ljava/lang/Boolean;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLegend ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getNoSpaceBetweenColumns ()Ljava/lang/Boolean;
+	protected final fun getPercentStackedValues ()Ljava/lang/Boolean;
+	protected final fun getRowSubTotals ()Ljava/lang/Boolean;
+	protected final fun getRowTotals ()Ljava/lang/Boolean;
+	protected final fun getRows ()Ljava/util/List;
+	protected final fun getShowDimensionLabels ()Ljava/lang/Boolean;
+	protected final fun getShowHierarchy ()Ljava/lang/Boolean;
+	protected final fun getSkipRounding ()Ljava/lang/Boolean;
+	protected final fun getSubtitle ()Ljava/lang/String;
+	protected final fun getTitle ()Ljava/lang/String;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/visualization/VisualizationType;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun hideEmptyColumns (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun hideEmptyRowItems (Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun hideEmptyRows (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun hideLegend (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun hideSubtitle (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun hideTitle (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun legend (Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun noSpaceBetweenColumns (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun percentStackedValues (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun rowSubTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun rowTotals (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun rows (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	protected final fun setAggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)V
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setColSubTotals (Ljava/lang/Boolean;)V
+	protected final fun setColTotals (Ljava/lang/Boolean;)V
+	protected final fun setColumns (Ljava/util/List;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setDigitGroupSeparator (Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;)V
+	protected final fun setDisplayDensity (Lorg/hisp/dhis/android/core/visualization/DisplayDensity;)V
+	protected final fun setDisplayDescription (Ljava/lang/String;)V
+	protected final fun setDisplayFormName (Ljava/lang/String;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setDisplaySubtitle (Ljava/lang/String;)V
+	protected final fun setDisplayTitle (Ljava/lang/String;)V
+	protected final fun setFilters (Ljava/util/List;)V
+	protected final fun setHideEmptyColumns (Ljava/lang/Boolean;)V
+	protected final fun setHideEmptyRowItems (Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;)V
+	protected final fun setHideEmptyRows (Ljava/lang/Boolean;)V
+	protected final fun setHideLegend (Ljava/lang/Boolean;)V
+	protected final fun setHideSubtitle (Ljava/lang/Boolean;)V
+	protected final fun setHideTitle (Ljava/lang/Boolean;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLegend (Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setNoSpaceBetweenColumns (Ljava/lang/Boolean;)V
+	protected final fun setPercentStackedValues (Ljava/lang/Boolean;)V
+	protected final fun setRowSubTotals (Ljava/lang/Boolean;)V
+	protected final fun setRowTotals (Ljava/lang/Boolean;)V
+	protected final fun setRows (Ljava/util/List;)V
+	protected final fun setShowDimensionLabels (Ljava/lang/Boolean;)V
+	protected final fun setShowHierarchy (Ljava/lang/Boolean;)V
+	protected final fun setSkipRounding (Ljava/lang/Boolean;)V
+	protected final fun setSubtitle (Ljava/lang/String;)V
+	protected final fun setTitle (Ljava/lang/String;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/visualization/VisualizationType;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun showDimensionLabels (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun showHierarchy (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun skipRounding (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun subtitle (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun title (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public final fun type (Lorg/hisp/dhis/android/core/visualization/VisualizationType;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/Visualization;)Lorg/hisp/dhis/android/core/visualization/Visualization$Builder;
 }
 
 public final class org/hisp/dhis/android/core/visualization/VisualizationCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -21736,61 +22124,171 @@ public final class org/hisp/dhis/android/core/visualization/VisualizationCollect
 	public final fun withColumnsRowsAndFilters ()Lorg/hisp/dhis/android/core/visualization/VisualizationCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationDimension {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
-	public abstract fun id ()Ljava/lang/String;
-	public abstract fun items ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimension {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getItems ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun id ()Ljava/lang/String;
+	public final fun items ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationDimension$Builder {
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimension$Builder : org/hisp/dhis/android/core/visualization/VisualizationDimensionBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;
-	public abstract fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
-	public abstract fun items (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun dimension ()Ljava/lang/String;
-	public abstract fun dimensionItem ()Ljava/lang/String;
-	public abstract fun dimensionItemType ()Ljava/lang/String;
-	public abstract fun position ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun visualization ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimension$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder {
+public class org/hisp/dhis/android/core/visualization/VisualizationDimensionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionBuilder$Companion;
+	protected field id Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;
-	public abstract fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun dimensionItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun dimensionItemType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun position (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
-	public abstract fun visualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;
+	protected final fun getId ()Ljava/lang/String;
+	protected final fun getItems ()Ljava/util/List;
+	public final fun id (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
+	public final fun items (Ljava/util/List;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
+	protected final fun setId (Ljava/lang/String;)V
+	protected final fun setItems (Ljava/util/List;)V
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationLegend {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
-	public abstract fun set ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun showKey ()Ljava/lang/Boolean;
-	public abstract fun strategy ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
-	public abstract fun style ()Lorg/hisp/dhis/android/core/visualization/LegendStyle;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/VisualizationDimension;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimension$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/visualization/VisualizationLegend$Builder {
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/LayoutPosition;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;
+	public final fun dimension ()Ljava/lang/String;
+	public final fun dimensionItem ()Ljava/lang/String;
+	public final fun dimensionItemType ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDimension ()Ljava/lang/String;
+	public final fun getDimensionItem ()Ljava/lang/String;
+	public final fun getDimensionItemType ()Ljava/lang/String;
+	public final fun getPosition ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public final fun getVisualization ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun position ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun visualization ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder : org/hisp/dhis/android/core/visualization/VisualizationDimensionItemBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
-	public abstract fun set (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
-	public abstract fun showKey (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
-	public abstract fun strategy (Lorg/hisp/dhis/android/core/visualization/LegendStrategy;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
-	public abstract fun style (Lorg/hisp/dhis/android/core/visualization/LegendStyle;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+}
+
+public class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItemBuilder$Companion;
+	protected field dimension Ljava/lang/String;
+	protected field dimensionItem Ljava/lang/String;
+	protected field position Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	protected field visualization Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;
+	public final fun dimension (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public final fun dimensionItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public final fun dimensionItemType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	protected final fun getDimension ()Ljava/lang/String;
+	protected final fun getDimensionItem ()Ljava/lang/String;
+	protected final fun getDimensionItemType ()Ljava/lang/String;
+	protected final fun getPosition ()Lorg/hisp/dhis/android/core/visualization/LayoutPosition;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getVisualization ()Ljava/lang/String;
+	public final fun position (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	protected final fun setDimension (Ljava/lang/String;)V
+	protected final fun setDimensionItem (Ljava/lang/String;)V
+	protected final fun setDimensionItemType (Ljava/lang/String;)V
+	protected final fun setPosition (Lorg/hisp/dhis/android/core/visualization/LayoutPosition;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setVisualization (Ljava/lang/String;)V
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+	public final fun visualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationDimensionItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem;)Lorg/hisp/dhis/android/core/visualization/VisualizationDimensionItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationLegend {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/LegendStrategy;Lorg/hisp/dhis/android/core/visualization/LegendStyle;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Ljava/lang/Boolean;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/visualization/LegendStyle;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/LegendStrategy;Lorg/hisp/dhis/android/core/visualization/LegendStyle;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/LegendStrategy;Lorg/hisp/dhis/android/core/visualization/LegendStyle;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getShowKey ()Ljava/lang/Boolean;
+	public final fun getStrategy ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
+	public final fun getStyle ()Lorg/hisp/dhis/android/core/visualization/LegendStyle;
+	public fun hashCode ()I
+	public final fun set ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun showKey ()Ljava/lang/Boolean;
+	public final fun strategy ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
+	public final fun style ()Lorg/hisp/dhis/android/core/visualization/LegendStyle;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationLegend$Builder : org/hisp/dhis/android/core/visualization/VisualizationLegendBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationLegend$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+}
+
+public class org/hisp/dhis/android/core/visualization/VisualizationLegendBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/visualization/VisualizationLegendBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;
+	protected final fun getSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getShowKey ()Ljava/lang/Boolean;
+	protected final fun getStrategy ()Lorg/hisp/dhis/android/core/visualization/LegendStrategy;
+	protected final fun getStyle ()Lorg/hisp/dhis/android/core/visualization/LegendStyle;
+	public final fun set (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+	protected final fun setSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setShowKey (Ljava/lang/Boolean;)V
+	protected final fun setStrategy (Lorg/hisp/dhis/android/core/visualization/LegendStrategy;)V
+	protected final fun setStyle (Lorg/hisp/dhis/android/core/visualization/LegendStyle;)V
+	public final fun showKey (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+	public final fun strategy (Lorg/hisp/dhis/android/core/visualization/LegendStrategy;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+	public final fun style (Lorg/hisp/dhis/android/core/visualization/LegendStyle;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
+}
+
+public final class org/hisp/dhis/android/core/visualization/VisualizationLegendBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;)Lorg/hisp/dhis/android/core/visualization/VisualizationLegend$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/visualization/VisualizationModule {

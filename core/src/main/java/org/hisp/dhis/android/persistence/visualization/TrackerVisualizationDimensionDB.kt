@@ -71,9 +71,9 @@ internal data class TrackerVisualizationDimensionDB(
 
 internal fun TrackerVisualizationDimension.toDB(): TrackerVisualizationDimensionDB {
     return TrackerVisualizationDimensionDB(
-        trackerVisualization = trackerVisualization()!!,
-        position = position()!!.name,
-        dimension = dimension()!!,
+        trackerVisualization = trackerVisualization(),
+        position = position().name,
+        dimension = dimension(),
         dimensionType = dimensionType(),
         program = program()?.uid(),
         programStage = programStage()?.uid(),

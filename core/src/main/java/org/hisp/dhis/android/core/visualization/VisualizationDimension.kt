@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,56 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class VisualizationDimension(
+    val id: String,
+    val items: List<VisualizationDimensionItem>?,
+) {
+    fun id(): String = id
+    fun items(): List<VisualizationDimensionItem>? = items
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = VisualizationDimensionBuilder.from(this)
 
-@AutoValue
-public abstract class VisualizationDimensionItem implements CoreObject {
+    class Builder : VisualizationDimensionBuilder()
 
-    @Nullable
-    public abstract String visualization();
-
-    @Nullable
-    public abstract LayoutPosition position();
-
-    @Nullable
-    public abstract String dimension();
-
-    @Nullable
-    public abstract String dimensionItem();
-
-    @Nullable
-    public abstract String dimensionItemType();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationDimensionItem.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder visualization(String visualization);
-
-        public abstract Builder position(LayoutPosition position);
-
-        public abstract Builder dimension(String dimension);
-
-        public abstract Builder dimensionItem(String dimensionItem);
-
-        public abstract Builder dimensionItemType(String dimensionItemType);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract VisualizationDimensionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -82,49 +82,45 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     private fun extractDataDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
         return items?.mapNotNull { item ->
             val dataType = DataDimensionItemType.entries.find { it.name == item.dimensionItemType() }
+            val uid = item.dimensionItem()
 
             when (dataType) {
                 DataDimensionItemType.INDICATOR ->
-                    item.dimensionItem()?.let { DimensionItem.DataItem.IndicatorItem(it) }
+                    DimensionItem.DataItem.IndicatorItem(uid)
 
                 DataDimensionItemType.DATA_ELEMENT ->
-                    item.dimensionItem()?.let { DimensionItem.DataItem.DataElementItem(it) }
+                    DimensionItem.DataItem.DataElementItem(uid)
 
-                DataDimensionItemType.DATA_ELEMENT_OPERAND ->
-                    item.dimensionItem()?.let {
-                        val (dataElement, coc) = composedUidOperandRegex.find(it)!!.destructured
-                        DimensionItem.DataItem.DataElementOperandItem(dataElement, coc)
-                    }
+                DataDimensionItemType.DATA_ELEMENT_OPERAND -> {
+                    val (dataElement, coc) = composedUidOperandRegex.find(uid)!!.destructured
+                    DimensionItem.DataItem.DataElementOperandItem(dataElement, coc)
+                }
 
                 DataDimensionItemType.PROGRAM_INDICATOR ->
-                    item.dimensionItem()?.let { DimensionItem.DataItem.ProgramIndicatorItem(it) }
+                    DimensionItem.DataItem.ProgramIndicatorItem(uid)
 
-                DataDimensionItemType.PROGRAM_DATA_ELEMENT ->
-                    item.dimensionItem()?.let {
-                        val (program, dataElement) = composedUidOperandRegex.find(it)!!.destructured
-                        DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
-                    }
+                DataDimensionItemType.PROGRAM_DATA_ELEMENT -> {
+                    val (program, dataElement) = composedUidOperandRegex.find(uid)!!.destructured
+                    DimensionItem.DataItem.EventDataItem.DataElement(program, dataElement)
+                }
 
-                DataDimensionItemType.PROGRAM_ATTRIBUTE ->
-                    item.dimensionItem()?.let {
-                        val (program, attribute) = composedUidOperandRegex.find(it)!!.destructured
-                        DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
-                    }
+                DataDimensionItemType.PROGRAM_ATTRIBUTE -> {
+                    val (program, attribute) = composedUidOperandRegex.find(uid)!!.destructured
+                    DimensionItem.DataItem.EventDataItem.Attribute(program, attribute)
+                }
 
                 DataDimensionItemType.EXPRESSION_DIMENSION_ITEM ->
-                    item.dimensionItem()?.let { DimensionItem.DataItem.ExpressionDimensionItem(it) }
+                    DimensionItem.DataItem.ExpressionDimensionItem(uid)
 
-                DataDimensionItemType.PROGRAM_ATTRIBUTE_OPTION ->
-                    item.dimensionItem()?.let {
-                        val (program, attribute, option) = tripleComposedUidOperandRegex.find(it)!!.destructured
-                        DimensionItem.DataItem.EventDataItem.AttributeOption(program, attribute, option)
-                    }
+                DataDimensionItemType.PROGRAM_ATTRIBUTE_OPTION -> {
+                    val (program, attribute, option) = tripleComposedUidOperandRegex.find(uid)!!.destructured
+                    DimensionItem.DataItem.EventDataItem.AttributeOption(program, attribute, option)
+                }
 
-                DataDimensionItemType.PROGRAM_DATA_ELEMENT_OPTION ->
-                    item.dimensionItem()?.let {
-                        val (program, dataElement, option) = tripleComposedUidOperandRegex.find(it)!!.destructured
-                        DimensionItem.DataItem.EventDataItem.DataElementOption(program, dataElement, option)
-                    }
+                DataDimensionItemType.PROGRAM_DATA_ELEMENT_OPTION -> {
+                    val (program, dataElement, option) = tripleComposedUidOperandRegex.find(uid)!!.destructured
+                    DimensionItem.DataItem.EventDataItem.DataElementOption(program, dataElement, option)
+                }
 
                 else ->
                     null
@@ -133,7 +129,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     }
 
     private suspend fun extractOrgunitDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
-        return items?.mapNotNull { it.dimensionItem() }?.map { item ->
+        return items?.map { it.dimensionItem() }?.map { item ->
             val relativeOrgUnit = RelativeOrganisationUnit.entries.find { it.name == item }
 
             when {
@@ -159,7 +155,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     }
 
     private fun extractPeriodDimensionItems(items: List<VisualizationDimensionItem>?): List<DimensionItem> {
-        return items?.mapNotNull { it.dimensionItem() }?.map { item ->
+        return items?.map { it.dimensionItem() }?.map { item ->
             val relativePeriod = RelativePeriod.entries.find { it.name == item }
 
             if (relativePeriod != null) {
@@ -179,7 +175,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
                 if (items.isNullOrEmpty()) {
                     categoryOptionLinkStore.selectLinksForMasterUid(category.uid()).mapNotNull { it.categoryOption() }
                 } else {
-                    items.mapNotNull { it.dimensionItem() }
+                    items.map { it.dimensionItem() }
                 }
 
             categoryOptions.map { DimensionItem.CategoryItem(category.uid(), it) }

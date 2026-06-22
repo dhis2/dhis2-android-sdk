@@ -38,12 +38,12 @@ internal data class VisualizationDimensionItemDTO(
     val dimensionItemType: String?,
 ) {
     fun toDomain(visualization: String, position: LayoutPosition, dimension: String?): VisualizationDimensionItem {
-        return VisualizationDimensionItem.builder()
-            .visualization(visualization)
-            .position(position)
-            .dimension(dimension)
-            .dimensionItem(dimensionItem)
-            .dimensionItemType(dimensionItemType)
-            .build()
+        return VisualizationDimensionItem.builder().apply {
+            visualization(visualization)
+            position(position)
+            dimension?.let { dimension(it) }
+            dimensionItem?.let { dimensionItem(it) }
+            dimensionItemType(dimensionItemType)
+        }.build()
     }
 }

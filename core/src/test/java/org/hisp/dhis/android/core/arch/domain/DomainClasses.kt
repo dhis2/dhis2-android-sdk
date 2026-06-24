@@ -120,7 +120,6 @@ import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.validation.ValidationRule
-import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.Visualization
 
 internal val domainClasses = listOf(
@@ -132,7 +131,6 @@ internal val domainClasses = listOf(
     CategoryCategoryComboLink::class.java,
     CategoryCategoryOptionLink::class.java,
     CategoryCombo::class.java,
-    CategoryDimension::class.java,
     CategoryOption::class.java,
     CategoryOptionCombo::class.java,
     Configuration::class.java,

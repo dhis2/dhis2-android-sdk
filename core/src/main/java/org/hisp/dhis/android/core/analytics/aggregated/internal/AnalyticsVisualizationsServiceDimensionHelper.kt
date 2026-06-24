@@ -60,22 +60,21 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
     private val periodDimension = "pe"
 
     suspend fun getDimensionItems(dimensions: List<VisualizationDimension>?): List<DimensionItem> {
-        return dimensions?.map { dimension ->
+        return dimensions?.flatMap { dimension ->
             when (dimension.id()) {
                 dataDimension -> extractDataDimensionItems(dimension.items())
                 orgUnitDimension -> extractOrgunitDimensionItems(dimension.items())
                 periodDimension -> extractPeriodDimensionItems(dimension.items())
                 else -> {
-                    dimension.id()?.let {
-                        if (singleUidRegex.matches(it)) {
-                            extractUidDimensionItems(dimension.items(), it)
-                        } else {
-                            emptyList()
-                        }
-                    } ?: emptyList()
+                    val dimensionId = dimension.id()
+                    if (singleUidRegex.matches(dimensionId)) {
+                        extractUidDimensionItems(dimension.items(), dimensionId)
+                    } else {
+                        emptyList()
+                    }
                 }
             }
-        }?.flatten() ?: emptyList()
+        } ?: emptyList()
     }
 
     @Suppress("ComplexMethod")
@@ -173,7 +172,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
         return categoryStore.selectByUid(uid)?.let { category ->
             val categoryOptions =
                 if (items.isNullOrEmpty()) {
-                    categoryOptionLinkStore.selectLinksForMasterUid(category.uid()).mapNotNull { it.categoryOption() }
+                    categoryOptionLinkStore.selectLinksForMasterUid(category.uid()).map { it.categoryOption() }
                 } else {
                     items.map { it.dimensionItem() }
                 }
@@ -196,7 +195,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
                 periodDimension -> Dimension.Period
                 orgUnitDimension -> Dimension.OrganisationUnit
                 else -> {
-                    if (singleUidRegex.matches(dimension.id()!!)) {
+                    if (singleUidRegex.matches(dimension.id())) {
                         extractUidDimension(dimension)
                     } else {
                         null
@@ -208,7 +207,7 @@ internal class AnalyticsVisualizationsServiceDimensionHelper(
 
     private fun extractUidDimension(dimension: VisualizationDimension): Dimension? {
         return if (dimension.items()?.all { it.dimensionItemType() == "CATEGORY_OPTION" } == true) {
-            Dimension.Category(dimension.id()!!)
+            Dimension.Category(dimension.id())
         } else {
             null
         }

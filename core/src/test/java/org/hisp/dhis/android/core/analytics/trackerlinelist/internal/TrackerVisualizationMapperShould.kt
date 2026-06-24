@@ -35,7 +35,9 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitLevelStore
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
+import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimensionBuilder
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -50,7 +52,8 @@ class TrackerVisualizationMapperShould {
 
     @Test
     fun should_map_data_filters() {
-        val item = TrackerVisualizationDimension.builder()
+        val item = trackerVisualizationDimensionBuilder()
+            .dimension("uid1")
             .filter("GT:6:ILIKE:ar:NE:4:NE:NV")
             .build()
 
@@ -66,7 +69,8 @@ class TrackerVisualizationMapperShould {
 
     @Test
     fun should_map_date_filters() {
-        val item = TrackerVisualizationDimension.builder()
+        val item = trackerVisualizationDimensionBuilder()
+            .dimension("uid1")
             .items(
                 listOf(
                     ObjectWithUid.create("202403"),
@@ -85,7 +89,7 @@ class TrackerVisualizationMapperShould {
 
     @Test
     fun should_map_program_status() {
-        val item = TrackerVisualizationDimension.builder()
+        val item = trackerVisualizationDimensionBuilder()
             .dimensionType("dataX")
             .dimension("programStatus")
             .items(
@@ -120,7 +124,7 @@ class TrackerVisualizationMapperShould {
         val categoryOption1 = "categoryOption1"
         val categoryOption2 = "categoryOption2"
 
-        val item = TrackerVisualizationDimension.builder()
+        val item = trackerVisualizationDimensionBuilder()
             .dimensionType(categoryType)
             .dimension(categoryId)
             .items(
@@ -145,5 +149,11 @@ class TrackerVisualizationMapperShould {
                 ),
             ),
         )
+    }
+
+    private fun trackerVisualizationDimensionBuilder(): TrackerVisualizationDimensionBuilder {
+        return TrackerVisualizationDimension.builder()
+            .trackerVisualization("tracker_visualization")
+            .position(LayoutPosition.COLUMN)
     }
 }

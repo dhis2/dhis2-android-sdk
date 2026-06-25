@@ -10522,31 +10522,82 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorComponent : jav
 	public static fun values ()[Lorg/hisp/dhis/android/core/maintenance/D2ErrorComponent;
 }
 
-public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun fromColumn ()Ljava/lang/String;
-	public abstract fun fromObjectRow ()Ljava/lang/String;
-	public abstract fun fromObjectUid ()Ljava/lang/String;
-	public abstract fun fromTable ()Ljava/lang/String;
-	public abstract fun notFoundValue ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun toColumn ()Ljava/lang/String;
-	public abstract fun toTable ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
+	public final fun created ()Ljava/util/Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun fromColumn ()Ljava/lang/String;
+	public final fun fromObjectRow ()Ljava/lang/String;
+	public final fun fromObjectUid ()Ljava/lang/String;
+	public final fun fromTable ()Ljava/lang/String;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getFromColumn ()Ljava/lang/String;
+	public final fun getFromObjectRow ()Ljava/lang/String;
+	public final fun getFromObjectUid ()Ljava/lang/String;
+	public final fun getFromTable ()Ljava/lang/String;
+	public final fun getNotFoundValue ()Ljava/lang/String;
+	public final fun getToColumn ()Ljava/lang/String;
+	public final fun getToTable ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun notFoundValue ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun toColumn ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public final fun toTable ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder {
+public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder : org/hisp/dhis/android/core/maintenance/ForeignKeyViolationBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun fromColumn (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun fromObjectRow (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun fromObjectUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun fromTable (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun notFoundValue (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun toColumn (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
-	public abstract fun toTable (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+}
+
+public class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolationBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun fromColumn (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun fromObjectRow (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun fromObjectUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun fromTable (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getFromColumn ()Ljava/lang/String;
+	protected final fun getFromObjectRow ()Ljava/lang/String;
+	protected final fun getFromObjectUid ()Ljava/lang/String;
+	protected final fun getFromTable ()Ljava/lang/String;
+	protected final fun getNotFoundValue ()Ljava/lang/String;
+	protected final fun getToColumn ()Ljava/lang/String;
+	protected final fun getToTable ()Ljava/lang/String;
+	public final fun notFoundValue (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setFromColumn (Ljava/lang/String;)V
+	protected final fun setFromObjectRow (Ljava/lang/String;)V
+	protected final fun setFromObjectUid (Ljava/lang/String;)V
+	protected final fun setFromTable (Ljava/lang/String;)V
+	protected final fun setNotFoundValue (Ljava/lang/String;)V
+	protected final fun setToColumn (Ljava/lang/String;)V
+	protected final fun setToTable (Ljava/lang/String;)V
+	public final fun toColumn (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+	public final fun toTable (Ljava/lang/String;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
+}
+
+public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation;)Lorg/hisp/dhis/android/core/maintenance/ForeignKeyViolation$Builder;
 }
 
 public final class org/hisp/dhis/android/core/maintenance/ForeignKeyViolationCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {

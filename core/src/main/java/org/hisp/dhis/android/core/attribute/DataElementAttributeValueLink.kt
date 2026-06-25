@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator;
+package org.hisp.dhis.android.core.attribute
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataElementAttributeValueLink(
+    val dataElement: String,
+    val attribute: String,
+    val value: String?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun dataElement(): String = dataElement
+    fun attribute(): String = attribute
+    fun value(): String? = value
 
-@AutoValue
-public abstract class IndicatorType extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = DataElementAttributeValueLinkBuilder.from(this)
 
-    @Nullable
-    public abstract Boolean number();
+    class Builder : DataElementAttributeValueLinkBuilder()
 
-    @Nullable
-    public abstract Integer factor();
-
-    public static Builder builder() {
-        return new AutoValue_IndicatorType.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder number(Boolean number);
-
-        public abstract Builder factor(Integer factor);
-
-        public abstract IndicatorType build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

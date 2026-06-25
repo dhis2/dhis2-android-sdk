@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,42 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.attribute
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageAttributeValueLink(
+    val programStage: String,
+    val attribute: String,
+    val value: String?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun programStage(): String = programStage
+    fun attribute(): String = attribute
+    fun value(): String? = value
 
-@AutoValue
-public abstract class DataElementAttributeValueLink implements CoreObject {
+    fun toBuilder(): Builder = ProgramStageAttributeValueLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String dataElement();
+    class Builder : ProgramStageAttributeValueLinkBuilder()
 
-    @Nullable
-    public abstract String attribute();
-
-    @Nullable
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_DataElementAttributeValueLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder value(String value);
-
-        public abstract DataElementAttributeValueLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

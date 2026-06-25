@@ -42,7 +42,7 @@ internal data class DataSetIndicatorLinkDB(
 
 internal fun DataSetIndicatorLink.toDB(): DataSetIndicatorLinkDB {
     return DataSetIndicatorLinkDB(
-        dataSet = dataSet()!!,
-        indicator = indicator()!!,
+        dataSet = dataSet(),
+        indicator = indicator(),
     )
 }

@@ -26,44 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer;
+package org.hisp.dhis.android.core.map.layer
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class MapLayerImageryProvider(
+    val mapLayer: String,
+    val attribution: String,
+    val coverageAreas: List<MapLayerImageryProviderArea>?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun mapLayer(): String = mapLayer
+    fun attribution(): String = attribution
+    fun coverageAreas(): List<MapLayerImageryProviderArea>? = coverageAreas
 
-import java.util.List;
+    fun toBuilder(): Builder = MapLayerImageryProviderBuilder.from(this)
 
-@AutoValue
-public abstract class MapLayerImageryProvider implements CoreObject {
+    class Builder : MapLayerImageryProviderBuilder()
 
-    @NonNull
-    public abstract String mapLayer();
-
-    @NonNull
-    public abstract String attribution();
-
-    @Nullable
-    public abstract List<MapLayerImageryProviderArea> coverageAreas();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayerImageryProvider.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder mapLayer(String mapLayer);
-
-        public abstract Builder attribution(String attribution);
-
-        public abstract Builder coverageAreas(List<MapLayerImageryProviderArea> coverageAreas);
-
-        public abstract MapLayerImageryProvider build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

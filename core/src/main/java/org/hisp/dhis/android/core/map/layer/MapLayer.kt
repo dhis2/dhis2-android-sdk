@@ -26,108 +26,55 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer;
+package org.hisp.dhis.android.core.map.layer
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class MapLayer(
+    override val uid: String,
+    val name: String,
+    val displayName: String,
+    val external: Boolean,
+    val mapLayerPosition: MapLayerPosition,
+    val style: String?,
+    val imageUrl: String,
+    val subdomains: List<String>?,
+    val subdomainPlaceholder: String?,
+    val imageryProviders: List<MapLayerImageryProvider>?,
+    val code: String?,
+    val mapService: MapService?,
+    val imageFormat: ImageFormat?,
+    val layers: String?,
+    val linkedLayerUid: String?,
+) : CoreObject, ObjectWithUidInterfaceKt {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun name(): String = name
+    fun displayName(): String = displayName
+    fun external(): Boolean = external
+    fun mapLayerPosition(): MapLayerPosition = mapLayerPosition
+    fun style(): String? = style
+    fun imageUrl(): String = imageUrl
+    fun subdomains(): List<String>? = subdomains
+    fun subdomainPlaceholder(): String? = subdomainPlaceholder
+    fun imageryProviders(): List<MapLayerImageryProvider>? = imageryProviders
+    fun code(): String? = code
+    fun mapService(): MapService? = mapService
+    fun imageFormat(): ImageFormat? = imageFormat
+    fun layers(): String? = layers
+    fun linkedLayerUid(): String? = linkedLayerUid
 
-import java.util.List;
+    fun toBuilder(): Builder = MapLayerBuilder.from(this)
 
-@AutoValue
-public abstract class MapLayer implements CoreObject, ObjectWithUidInterface {
+    class Builder : MapLayerBuilder()
 
-    public static final String IMAGERY_PROVIDERS = "imageryProviders";
+    companion object {
+        const val IMAGERY_PROVIDERS = "imageryProviders"
 
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    @NonNull
-    public abstract String name();
-
-    @NonNull
-    public abstract String displayName();
-
-    @NonNull
-    public abstract Boolean external();
-
-    @NonNull
-    public abstract MapLayerPosition mapLayerPosition();
-
-    @Nullable
-    public abstract String style();
-
-    @NonNull
-    public abstract String imageUrl();
-
-    @Nullable
-    public abstract List<String> subdomains();
-
-    @Nullable
-    public abstract String subdomainPlaceholder();
-
-    @Nullable
-    public abstract List<MapLayerImageryProvider> imageryProviders();
-
-    @Nullable
-    public abstract String code();
-
-    @Nullable
-    public abstract MapService mapService();
-
-    @Nullable
-    public abstract ImageFormat imageFormat();
-
-    @Nullable
-    public abstract String layers();
-
-    @Nullable
-    public abstract String linkedLayerUid();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayer.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder name(String name);
-
-        public abstract Builder displayName(String displayName);
-
-        public abstract Builder code(String code);
-
-        public abstract Builder external(Boolean external);
-
-        public abstract Builder mapLayerPosition(MapLayerPosition mapLayerPosition);
-
-        public abstract Builder style(String style);
-
-        public abstract Builder imageUrl(String imageUrl);
-
-        public abstract Builder subdomains(List<String> subdomains);
-
-        public abstract Builder subdomainPlaceholder(String subdomainPlaceholder);
-
-        public abstract Builder imageryProviders(List<MapLayerImageryProvider> imageryProviders);
-
-        public abstract Builder mapService(MapService mapService);
-
-        public abstract Builder imageFormat(ImageFormat imageFormat);
-
-        public abstract Builder layers(String layers);
-
-        public abstract Builder linkedLayerUid(String linkedLayerUid);
-
-        public abstract MapLayer build();
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

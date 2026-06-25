@@ -26,39 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer;
+package org.hisp.dhis.android.core.map.layer
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class MapLayerImageryProviderArea(
+    val bbox: List<Double>?,
+    val zoomMax: Int,
+    val zoomMin: Int,
+) {
 
-import java.util.List;
+    fun bbox(): List<Double>? = bbox
+    fun zoomMax(): Int = zoomMax
+    fun zoomMin(): Int = zoomMin
 
-@AutoValue
-public abstract class MapLayerImageryProviderArea {
+    fun toBuilder(): Builder = MapLayerImageryProviderAreaBuilder.from(this)
 
-    @Nullable
-    public abstract List<Double> bbox();
+    class Builder : MapLayerImageryProviderAreaBuilder()
 
-    public abstract int zoomMax();
-
-    public abstract int zoomMin();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayerImageryProviderArea.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder bbox(List<Double> bbox);
-
-        public abstract Builder zoomMax(int zoomMax);
-
-        public abstract Builder zoomMin(int zoomMin);
-
-        public abstract MapLayerImageryProviderArea build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -139,3 +139,14 @@ ALTER TABLE EventDataFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE ProgramStageWorkingListAttributeValueFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE ProgramStageWorkingListEventDataFilter ADD COLUMN isEmpty INTEGER;
 
+# MapLayer: make external non-null (ANDROSDK-2330)
+
+# Remove rows with null external
+DELETE FROM MapLayer WHERE external IS NULL;
+
+# Recreate table with external as NOT NULL
+ALTER TABLE MapLayer RENAME TO MapLayer_Old;
+CREATE TABLE MapLayer(uid TEXT NOT NULL, name TEXT NOT NULL, displayName TEXT NOT NULL, external INTEGER NOT NULL, mapLayerPosition TEXT NOT NULL, style TEXT, imageUrl TEXT NOT NULL, subdomains TEXT, subdomainPlaceholder TEXT, code TEXT, mapService TEXT, imageFormat TEXT, layers TEXT, linkedLayerUid TEXT, PRIMARY KEY(uid));
+INSERT INTO MapLayer(uid, name, displayName, external, mapLayerPosition, style, imageUrl, subdomains, subdomainPlaceholder, code, mapService, imageFormat, layers, linkedLayerUid) SELECT uid, name, displayName, external, mapLayerPosition, style, imageUrl, subdomains, subdomainPlaceholder, code, mapService, imageFormat, layers, linkedLayerUid FROM MapLayer_Old;
+DROP TABLE IF EXISTS MapLayer_Old;
+

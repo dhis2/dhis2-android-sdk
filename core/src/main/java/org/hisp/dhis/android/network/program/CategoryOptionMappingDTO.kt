@@ -36,11 +36,13 @@ internal data class CategoryOptionMappingDTO(
     val optionId: String,
     val filter: String? = null,
 ) {
-    fun toDomain(categoryMappingId: String): CategoryOptionMapping {
-        return CategoryOptionMapping.builder()
-            .categoryMapping(categoryMappingId)
-            .optionId(optionId)
-            .filter(filter!!)
-            .build()
+    fun toDomain(categoryMappingId: String): CategoryOptionMapping? {
+        return filter?.let {
+            CategoryOptionMapping.builder()
+                .optionId(optionId)
+                .categoryMapping(categoryMappingId)
+                .filter(it)
+                .build()
+        }
     }
 }

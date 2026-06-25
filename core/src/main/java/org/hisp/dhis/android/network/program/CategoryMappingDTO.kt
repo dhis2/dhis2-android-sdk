@@ -44,7 +44,7 @@ internal data class CategoryMappingDTO(
             .program(programUid)
             .categoryId(categoryId)
             .mappingName(mappingName)
-            .optionMappings(optionMappings.filter { it.filter != null }.map { it.toDomain(id) })
+            .optionMappings(optionMappings.mapNotNull { it.toDomain(id) })
             .build()
     }
 }

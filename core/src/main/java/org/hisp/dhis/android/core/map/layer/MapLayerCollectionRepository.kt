@@ -86,7 +86,7 @@ class MapLayerCollectionRepository internal constructor(
     }
 
     fun withImageryProviders(): MapLayerCollectionRepository {
-        return cf.withChild(MapLayer.IMAGERY_PROVIDERS)
+        return cf.withChild(IMAGERY_PROVIDERS)
     }
 
     fun byMapService(): EnumFilterConnector<MapLayerCollectionRepository, MapService> {
@@ -106,8 +106,10 @@ class MapLayerCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private const val IMAGERY_PROVIDERS = "imageryProviders"
+
         val childrenAppenders: ChildrenAppenderGetter<MapLayer> = mapOf(
-            MapLayer.IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender::create,
+            IMAGERY_PROVIDERS to MapLayerImagerProviderChildrenAppender::create,
         )
     }
 }

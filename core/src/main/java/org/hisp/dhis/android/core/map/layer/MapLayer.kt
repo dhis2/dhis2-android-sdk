@@ -72,8 +72,6 @@ data class MapLayer(
     class Builder : MapLayerBuilder()
 
     companion object {
-        const val IMAGERY_PROVIDERS = "imageryProviders"
-
         @JvmStatic
         fun builder(): Builder = Builder()
     }

@@ -7924,53 +7924,82 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/Ag
 	public final fun from (Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync;)Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSync$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun completedDate ()Ljava/util/Date;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun createdAtClient ()Ljava/util/Date;
-	public abstract fun enrollmentDate ()Ljava/util/Date;
-	public abstract fun followUp ()Ljava/lang/Boolean;
-	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
-	public abstract fun incidentDate ()Ljava/util/Date;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun lastUpdatedAtClient ()Ljava/util/Date;
-	public abstract fun notes ()Ljava/util/List;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun program ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/enrollment/Enrollment : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/DeletableDataObjectKt, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/enrollment/Enrollment$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)V
+	public final fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun completedDate ()Ljava/util/Date;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/util/Date;
+	public final fun component11 ()Ljava/util/Date;
+	public final fun component12 ()Ljava/util/Date;
+	public final fun component13 ()Ljava/lang/Boolean;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public final fun component15 ()Ljava/lang/String;
+	public final fun component16 ()Ljava/lang/String;
+	public final fun component17 ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun component19 ()Ljava/util/List;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component21 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/util/Date;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/enrollment/Enrollment;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/enrollment/Enrollment;
+	public final fun created ()Ljava/util/Date;
+	public final fun createdAtClient ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun enrollmentDate ()Ljava/util/Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun followUp ()Ljava/lang/Boolean;
+	public final fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun getAggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getCompletedDate ()Ljava/util/Date;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getCreatedAtClient ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getEnrollmentDate ()Ljava/util/Date;
+	public final fun getFollowUp ()Ljava/lang/Boolean;
+	public final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun getIncidentDate ()Ljava/util/Date;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLastUpdatedAtClient ()Ljava/util/Date;
+	public final fun getNotes ()Ljava/util/List;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getProgram ()Ljava/lang/String;
+	public final fun getStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun incidentDate ()Ljava/util/Date;
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun lastUpdatedAtClient ()Ljava/util/Date;
+	public final fun notes ()Ljava/util/List;
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun program ()Ljava/lang/String;
 	public fun state ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun trackedEntityInstance ()Ljava/lang/String;
-	public abstract fun uid ()Ljava/lang/String;
+	public final fun status ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/Enrollment$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public final class org/hisp/dhis/android/core/enrollment/Enrollment$Builder : org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	public fun <init> ()V
-	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public fun build ()Lorg/hisp/dhis/android/core/enrollment/Enrollment;
-	public abstract fun completedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun enrollmentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun incidentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun lastUpdatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun notes (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun relationships (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
-	public fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun status (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+}
+
+public final class org/hisp/dhis/android/core/enrollment/Enrollment$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 }
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentAccess : java/lang/Enum {
@@ -7982,6 +8011,79 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentAccess : java
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentAccess;
 	public static fun values ()[Lorg/hisp/dhis/android/core/enrollment/EnrollmentAccess;
+}
+
+public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/enrollment/EnrollmentBuilder$Companion;
+	protected field attributeOptionCombo Ljava/lang/String;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public final fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/enrollment/Enrollment;
+	public final fun completedDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun enrollmentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	protected final fun getAggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getCompletedDate ()Ljava/util/Date;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getCreatedAtClient ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getEnrollmentDate ()Ljava/util/Date;
+	protected final fun getEvents ()Ljava/util/List;
+	protected final fun getFollowUp ()Ljava/lang/Boolean;
+	protected final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	protected final fun getIncidentDate ()Ljava/util/Date;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLastUpdatedAtClient ()Ljava/util/Date;
+	protected final fun getNotes ()Ljava/util/List;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getRelationships ()Ljava/util/List;
+	protected final fun getStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun incidentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun lastUpdatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun notes (Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	protected final fun setAggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setCompletedDate (Ljava/util/Date;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setCreatedAtClient (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setEnrollmentDate (Ljava/util/Date;)V
+	protected final fun setEvents (Ljava/util/List;)V
+	protected final fun setFollowUp (Ljava/lang/Boolean;)V
+	protected final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)V
+	protected final fun setIncidentDate (Ljava/util/Date;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLastUpdatedAtClient (Ljava/util/Date;)V
+	protected final fun setNotes (Ljava/util/List;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setRelationships (Ljava/util/List;)V
+	protected final fun setStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun status (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+}
+
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/enrollment/Enrollment;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
 }
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl {
@@ -8016,32 +8118,65 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentCollectionRep
 	public final fun withNotes ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection {
-	public fun <init> ()V
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
-	public static fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
-	public static fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
-	public abstract fun trackedEntityInstance ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection {
+	public static final field Companion Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getProgram ()Ljava/lang/String;
+	public final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun program ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder {
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder : org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjectionBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
-	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
 }
 
-public final class org/hisp/dhis/android/core/enrollment/EnrollmentInternalAccessor {
-	public static fun accessEvents (Lorg/hisp/dhis/android/core/enrollment/Enrollment;)Ljava/util/List;
-	public static fun accessRelationships (Lorg/hisp/dhis/android/core/enrollment/Enrollment;)Ljava/util/List;
-	public static fun insertEvents (Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
-	public static fun insertRelationships (Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/enrollment/Enrollment$Builder;
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+}
+
+public class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjectionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjectionBuilder$Companion;
+	protected field organisationUnit Ljava/lang/String;
+	protected field program Ljava/lang/String;
+	protected field trackedEntityInstance Ljava/lang/String;
+	public fun <init> ()V
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
+	public final fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
+}
+
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentCreateProjectionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentCreateProjection$Builder;
 }
 
 public abstract interface class org/hisp/dhis/android/core/enrollment/EnrollmentModule {
@@ -9787,57 +9922,212 @@ public final class org/hisp/dhis/android/core/indicator/internal/IndicatorModule
 	public fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun legendSet ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
+public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;I)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
+	public final fun dataElement ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getLegendSet ()Ljava/lang/String;
+	public final fun getSortOrder ()I
+	public fun hashCode ()I
+	public final fun legendSet ()Ljava/lang/String;
+	public final fun sortOrder ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder {
+public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder : org/hisp/dhis/android/core/legendset/DataElementLegendSetLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
-	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
-	public abstract fun indicator ()Ljava/lang/String;
-	public abstract fun legendSet ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder {
+public class org/hisp/dhis/android/core/legendset/DataElementLegendSetLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLinkBuilder$Companion;
+	protected field dataElement Ljava/lang/String;
+	protected field legendSet Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
-	public abstract fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
-	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getLegendSet ()Ljava/lang/String;
+	protected final fun getSortOrder ()I
+	public final fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setLegendSet (Ljava/lang/String;)V
+	protected final fun setSortOrder (I)V
+	public final fun sortOrder (I)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/Legend : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
-	public abstract fun color ()Ljava/lang/String;
-	public abstract fun endValue ()Ljava/lang/Double;
-	public abstract fun legendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun startValue ()Ljava/lang/Double;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink;)Lorg/hisp/dhis/android/core/legendset/DataElementLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/Legend$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;I)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIndicator ()Ljava/lang/String;
+	public final fun getLegendSet ()Ljava/lang/String;
+	public final fun getSortOrder ()I
+	public fun hashCode ()I
+	public final fun indicator ()Ljava/lang/String;
+	public final fun legendSet ()Ljava/lang/String;
+	public final fun sortOrder ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder : org/hisp/dhis/android/core/legendset/IndicatorLegendSetLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/Legend;
-	public abstract fun color (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
-	public abstract fun endValue (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
-	public abstract fun legendSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
-	public abstract fun startValue (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLinkBuilder$Companion;
+	protected field indicator Ljava/lang/String;
+	protected field legendSet Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;
+	protected final fun getIndicator ()Ljava/lang/String;
+	protected final fun getLegendSet ()Ljava/lang/String;
+	protected final fun getSortOrder ()I
+	public final fun indicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+	public final fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+	protected final fun setIndicator (Ljava/lang/String;)V
+	protected final fun setLegendSet (Ljava/lang/String;)V
+	protected final fun setSortOrder (I)V
+	public final fun sortOrder (I)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/Legend : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/Legend$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun color ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/Double;
+	public final fun component9 ()Ljava/lang/Double;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/legendset/Legend;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/legendset/Legend;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/legendset/Legend;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public final fun endValue ()Ljava/lang/Double;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public final fun getColor ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getEndValue ()Ljava/lang/Double;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLegendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun getName ()Ljava/lang/String;
+	public final fun getStartValue ()Ljava/lang/Double;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun legendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun name ()Ljava/lang/String;
+	public final fun startValue ()Ljava/lang/Double;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/legendset/Legend$Builder : org/hisp/dhis/android/core/legendset/LegendBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/legendset/Legend$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+}
+
+public class org/hisp/dhis/android/core/legendset/LegendBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/LegendBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/legendset/Legend;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public final fun color (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public final fun endValue (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getColor ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getEndValue ()Ljava/lang/Double;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLegendSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getStartValue ()Ljava/lang/Double;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public final fun legendSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setColor (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setEndValue (Ljava/lang/Double;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLegendSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setStartValue (Ljava/lang/Double;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun startValue (Ljava/lang/Double;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/LegendBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/legendset/Legend;)Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
 }
 
 public final class org/hisp/dhis/android/core/legendset/LegendCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -9847,19 +10137,100 @@ public final class org/hisp/dhis/android/core/legendset/LegendCollectionReposito
 	public final fun byStartValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/LegendSet : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
-	public abstract fun legends ()Ljava/util/List;
-	public abstract fun symbolizer ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+public final class org/hisp/dhis/android/core/legendset/LegendSet : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/LegendSet$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/legendset/LegendSet;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/legendset/LegendSet;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/legendset/LegendSet;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLegends ()Ljava/util/List;
+	public fun getName ()Ljava/lang/String;
+	public final fun getSymbolizer ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun legends ()Ljava/util/List;
+	public fun name ()Ljava/lang/String;
+	public final fun symbolizer ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/LegendSet$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/legendset/LegendSet$Builder : org/hisp/dhis/android/core/legendset/LegendSetBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/LegendSet;
-	public abstract fun legends (Ljava/util/List;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
-	public abstract fun symbolizer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/LegendSet$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+}
+
+public class org/hisp/dhis/android/core/legendset/LegendSetBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/LegendSetBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/legendset/LegendSet;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLegends ()Ljava/util/List;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getSymbolizer ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public final fun legends (Ljava/util/List;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLegends (Ljava/util/List;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setSymbolizer (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun symbolizer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/LegendSetBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/legendset/LegendSet;)Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
 }
 
 public final class org/hisp/dhis/android/core/legendset/LegendSetCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -9872,21 +10243,54 @@ public abstract interface class org/hisp/dhis/android/core/legendset/LegendSetMo
 	public abstract fun legends ()Lorg/hisp/dhis/android/core/legendset/LegendCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
-	public abstract fun legendSet ()Ljava/lang/String;
-	public abstract fun programIndicator ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+public final class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;I)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLegendSet ()Ljava/lang/String;
+	public final fun getProgramIndicator ()Ljava/lang/String;
+	public final fun getSortOrder ()I
+	public fun hashCode ()I
+	public final fun legendSet ()Ljava/lang/String;
+	public final fun programIndicator ()Ljava/lang/String;
+	public final fun sortOrder ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder {
+public final class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder : org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
-	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
-	public abstract fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkBuilder$Companion;
+	protected field legendSet Ljava/lang/String;
+	protected field programIndicator Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;
+	protected final fun getLegendSet ()Ljava/lang/String;
+	protected final fun getProgramIndicator ()Ljava/lang/String;
+	protected final fun getSortOrder ()I
+	public final fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+	public final fun programIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+	protected final fun setLegendSet (Ljava/lang/String;)V
+	protected final fun setProgramIndicator (Ljava/lang/String;)V
+	protected final fun setSortOrder (I)V
+	public final fun sortOrder (I)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink;)Lorg/hisp/dhis/android/core/legendset/ProgramIndicatorLegendSetLink$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/maintenance/D2Error : java/lang/Exception, org/hisp/dhis/android/core/common/CoreObject {
@@ -10956,19 +11360,100 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitC
 	public final fun withProgramUids ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
-	public abstract fun displayShortName ()Ljava/lang/String;
-	public abstract fun shortName ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public final fun displayShortName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getDisplayShortName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getShortName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun shortName ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder : org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;
-	public abstract fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
-	public abstract fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+}
+
+public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public final fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getDisplayShortName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getShortName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setDisplayShortName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setShortName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun shortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroupCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -10976,17 +11461,94 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitG
 	public final fun byShortName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
-	public abstract fun level ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLevel ()Ljava/lang/Integer;
+	public fun getName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public final fun level ()Ljava/lang/Integer;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder : org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;
-	public abstract fun level (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+}
+
+public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLevel ()Ljava/lang/Integer;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public final fun level (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLevel (Ljava/lang/Integer;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevelCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -11012,34 +11574,92 @@ public abstract interface class org/hisp/dhis/android/core/organisationunit/Orga
 	public abstract fun organisationUnits ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun organisationUnitGroup ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getOrganisationUnitGroup ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun organisationUnitGroup ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder : org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
-	public abstract fun organisationUnitGroup (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder {
+public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkBuilder$Companion;
+	protected field organisationUnit Ljava/lang/String;
+	protected field organisationUnitGroup Ljava/lang/String;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
-	public abstract fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getOrganisationUnitGroup ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+	public final fun organisationUnitGroup (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setOrganisationUnitGroup (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitOrganisationUnitGroupLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getProgram ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun program ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder : org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkBuilder$Companion;
+	protected field organisationUnit Ljava/lang/String;
+	protected field program Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getProgram ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink;)Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitProgramLink$Builder;
 }
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitService {
@@ -11056,9 +11676,10 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitS
 
 public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitTree {
 	public static final field DELIMITER Ljava/lang/String;
-	public static fun findRoots (Ljava/util/List;)Ljava/util/Set;
-	public static fun findRootsOutsideSearchScope (Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
-	public static fun getCaptureOrgUnitsInSearchScope (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitTree;
+	public final fun findRoots (Ljava/util/List;)Ljava/util/Set;
+	public final fun findRootsOutsideSearchScope (Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
+	public final fun getCaptureOrgUnitsInSearchScope (Ljava/util/List;Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
 }
 
 public abstract interface class org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem : org/hisp/dhis/antlr/AntlrExprItem {
@@ -16910,31 +17531,34 @@ public class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepos
 }
 
 public abstract class org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
+	protected abstract fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
 	public fun readAndConvert ()Lio/reactivex/Single;
 	public fun readAndConvert (I)Lio/reactivex/Single;
+	protected abstract fun readItemFromDb ()Lio/reactivex/Single;
 	public abstract fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
 public class org/hisp/dhis/android/core/sms/domain/converter/internal/DatasetConverter : org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	protected synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun convert (Lorg/hisp/dhis/android/core/sms/domain/model/internal/SMSDataValueSet;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun readItemFromDb ()Lio/reactivex/Single;
 	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
 public class org/hisp/dhis/android/core/sms/domain/converter/internal/DeletionConverter : org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;)V
-	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
-}
-
-public class org/hisp/dhis/android/core/sms/domain/converter/internal/EnrollmentConverter : org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
-	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;)V
-	public synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
-	public fun convert (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;Ljava/lang/String;I)Lio/reactivex/Single;
-	public fun readItemFromDb ()Lio/reactivex/Single;
+	protected synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun convert (Ljava/lang/String;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun readItemFromDb ()Lio/reactivex/Single;
 	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
 public class org/hisp/dhis/android/core/sms/domain/converter/internal/RelationshipConverter : org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;)V
+	protected synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun convert (Lorg/hisp/dhis/android/core/relationship/Relationship;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun readItemFromDb ()Lio/reactivex/Single;
 	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
@@ -16942,6 +17566,7 @@ public class org/hisp/dhis/android/core/sms/domain/converter/internal/SimpleEven
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;)V
 	public synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
 	public fun convert (Lorg/hisp/dhis/android/core/event/Event;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun readItemFromDb ()Lio/reactivex/Single;
 	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
@@ -16949,6 +17574,7 @@ public class org/hisp/dhis/android/core/sms/domain/converter/internal/TrackerEve
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Ljava/lang/String;)V
 	public synthetic fun convert (Ljava/lang/Object;Ljava/lang/String;I)Lio/reactivex/Single;
 	public fun convert (Lorg/hisp/dhis/android/core/event/Event;Ljava/lang/String;I)Lio/reactivex/Single;
+	protected fun readItemFromDb ()Lio/reactivex/Single;
 	public fun updateSubmissionState (Lorg/hisp/dhis/android/core/common/State;)Lio/reactivex/Completable;
 }
 
@@ -18634,44 +19260,254 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter {
-	public fun <init> ()V
-	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
-	public abstract fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventStatus ()Ljava/util/List;
-	public abstract fun programStage ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventStatus ()Ljava/util/List;
+	public final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventStatus ()Ljava/util/List;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun programStage ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder {
 	public fun <init> ()V
-	public abstract fun allowOnlineCache ()Ljava/lang/Boolean;
-	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
-	public fun attribute ()Ljava/util/List;
-	public abstract fun dataValue ()Ljava/util/List;
-	public abstract fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public static fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
-	public abstract fun enrollmentStatus ()Ljava/util/List;
-	public abstract fun eventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventFilters ()Ljava/util/List;
-	public abstract fun eventStatus ()Ljava/util/List;
-	public abstract fun excludedUids ()Ljava/util/Set;
-	public abstract fun filter ()Ljava/util/List;
-	public abstract fun followUp ()Ljava/lang/Boolean;
-	public abstract fun incidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun includeDeleted ()Ljava/lang/Boolean;
-	public abstract fun lastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun mode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
-	public abstract fun order ()Ljava/util/List;
-	public abstract fun orgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
-	public abstract fun orgUnits ()Ljava/util/List;
-	public abstract fun program ()Ljava/lang/String;
-	public abstract fun programDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun programStage ()Ljava/lang/String;
-	public abstract fun query ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
-	public abstract fun states ()Ljava/util/List;
-	public abstract fun trackedEntityType ()Ljava/lang/String;
-	public abstract fun uids ()Ljava/util/List;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder$Companion;
+	public fun <init> ()V
+	public final fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;
+	public final fun eventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	public final fun eventStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	protected final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	protected final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventStatus ()Ljava/util/List;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+	protected final fun setAssignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)V
+	protected final fun setEventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventStatus (Ljava/util/List;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilterBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryEventFilter$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)V
+	public final fun allowOnlineCache ()Z
+	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun attribute ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component11 ()Ljava/util/List;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component14 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component15 ()Ljava/util/List;
+	public final fun component16 ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun component17 ()Ljava/lang/String;
+	public final fun component18 ()Z
+	public final fun component19 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component20 ()Ljava/lang/Boolean;
+	public final fun component21 ()Ljava/util/List;
+	public final fun component22 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component23 ()Ljava/util/List;
+	public final fun component24 ()Z
+	public final fun component25 ()Ljava/util/Set;
+	public final fun component26 ()Ljava/util/List;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun copy (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun dataValue ()Ljava/util/List;
+	public final fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public static final fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun enrollmentStatus ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventFilters ()Ljava/util/List;
+	public final fun eventStatus ()Ljava/util/List;
+	public final fun excludedUids ()Ljava/util/Set;
+	public final fun filter ()Ljava/util/List;
+	public final fun followUp ()Ljava/lang/Boolean;
+	public final fun getAllowOnlineCache ()Z
+	public final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun getDataValue ()Ljava/util/List;
+	public final fun getDueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEnrollmentStatus ()Ljava/util/List;
+	public final fun getEventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventFilters ()Ljava/util/List;
+	public final fun getEventStatus ()Ljava/util/List;
+	public final fun getExcludedUids ()Ljava/util/Set;
+	public final fun getFilter ()Ljava/util/List;
+	public final fun getFollowUp ()Ljava/lang/Boolean;
+	public final fun getIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getIncludeDeleted ()Z
+	public final fun getLastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getMode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun getOrder ()Ljava/util/List;
+	public final fun getOrgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun getOrgUnits ()Ljava/util/List;
+	public final fun getProgram ()Ljava/lang/String;
+	public final fun getProgramDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getProgramStage ()Ljava/lang/String;
+	public final fun getQuery ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun getStates ()Ljava/util/List;
+	public final fun getTrackedEntityType ()Ljava/lang/String;
+	public final fun getUids ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun incidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun includeDeleted ()Z
+	public final fun lastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun mode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	public final fun order ()Ljava/util/List;
+	public final fun orgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun orgUnits ()Ljava/util/List;
+	public final fun program ()Ljava/lang/String;
+	public final fun programDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun programStage ()Ljava/lang/String;
+	public final fun query ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	public final fun states ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityType ()Ljava/lang/String;
+	public final fun uids ()Ljava/util/List;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder {
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder$Companion;
+	protected field dataValue Ljava/util/List;
+	protected field eventFilters Ljava/util/List;
+	protected field filter Ljava/util/List;
+	protected field mode Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	protected field order Ljava/util/List;
+	protected field orgUnits Ljava/util/List;
+	public fun <init> ()V
+	public final fun allowOnlineCache (Z)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun dataValue (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun dueDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun enrollmentStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventCreatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun eventStatus (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun excludedUids (Ljava/util/Set;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun filter (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	protected final fun getAllowOnlineCache ()Z
+	protected final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	protected final fun getDataValue ()Ljava/util/List;
+	protected final fun getDueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEnrollmentStatus ()Ljava/util/List;
+	protected final fun getEventCreatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventFilters ()Ljava/util/List;
+	protected final fun getEventStatus ()Ljava/util/List;
+	protected final fun getExcludedUids ()Ljava/util/Set;
+	protected final fun getFilter ()Ljava/util/List;
+	protected final fun getFollowUp ()Ljava/lang/Boolean;
+	protected final fun getIncidentDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getIncludeDeleted ()Z
+	protected final fun getLastUpdatedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getMode ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
+	protected final fun getOrder ()Ljava/util/List;
+	protected final fun getOrgUnitMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	protected final fun getOrgUnits ()Ljava/util/List;
+	protected final fun getProgram ()Ljava/lang/String;
+	protected final fun getProgramDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getProgramStage ()Ljava/lang/String;
+	protected final fun getQuery ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
+	protected final fun getStates ()Ljava/util/List;
+	protected final fun getTrackedEntityType ()Ljava/lang/String;
+	protected final fun getUids ()Ljava/util/List;
+	public final fun incidentDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun includeDeleted (Z)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun lastUpdatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun mode (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun order (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun orgUnitMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun orgUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun program (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun programDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun programStage (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun query (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	protected final fun setAllowOnlineCache (Z)V
+	protected final fun setAssignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)V
+	protected final fun setDataValue (Ljava/util/List;)V
+	protected final fun setDueDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEnrollmentStatus (Ljava/util/List;)V
+	protected final fun setEventCreatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventFilters (Ljava/util/List;)V
+	protected final fun setEventStatus (Ljava/util/List;)V
+	protected final fun setExcludedUids (Ljava/util/Set;)V
+	protected final fun setFilter (Ljava/util/List;)V
+	protected final fun setFollowUp (Ljava/lang/Boolean;)V
+	protected final fun setIncidentDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setIncludeDeleted (Z)V
+	protected final fun setLastUpdatedDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setMode (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;)V
+	protected final fun setOrder (Ljava/util/List;)V
+	protected final fun setOrgUnitMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)V
+	protected final fun setOrgUnits (Ljava/util/List;)V
+	protected final fun setProgram (Ljava/lang/String;)V
+	protected final fun setProgramDate (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setProgramStage (Ljava/lang/String;)V
+	protected final fun setQuery (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;)V
+	protected final fun setStates (Ljava/util/List;)V
+	protected final fun setTrackedEntityType (Ljava/lang/String;)V
+	protected final fun setUids (Ljava/util/List;)V
+	public final fun states (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+	public final fun uids (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScopeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName {
@@ -18704,30 +19540,114 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
-	public static field DEFAULT_TRACKER_ORDER Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
-	public fun <init> ()V
-	public abstract fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public abstract fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem : org/hisp/dhis/android/core/trackedentity/search/QueryScopeOrderByItem {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public final fun column ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public final fun copy (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public final fun direction ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColumn ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public final fun getDirection ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun hashCode ()I
 	public fun toAPIString (Lorg/hisp/dhis/android/core/tracker/TrackerExporterVersion;)Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn {
-	public static final field COMPLETION_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field CREATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ENROLLMENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ENROLLMENT_STATUS Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field EVENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field INCIDENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field LAST_UPDATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static final field ORGUNIT_NAME Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder {
 	public fun <init> ()V
-	public abstract fun apiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
-	public static fun attribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
-	public fun hasApiName ()Z
-	public abstract fun type ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
-	public abstract fun value ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder$Companion;
+	protected field column Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected field direction Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;
+	public final fun column (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	public final fun direction (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+	protected final fun getColumn ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected final fun getDirection ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+	protected final fun setColumn (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)V
+	protected final fun setDirection (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderByItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;)V
+	public final fun apiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getApiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	public final fun getType ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun getValue ()Ljava/lang/String;
+	public final fun hasApiName ()Z
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun type ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public final fun value ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder : org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type : java/lang/Enum {
+	public static final field ATTRIBUTE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field COMPLETION_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field CREATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ENROLLMENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ENROLLMENT_STATUS Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field EVENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field INCIDENT_DATE Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field LAST_UPDATED Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static final field ORGUNIT_NAME Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public static fun values ()[Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder$Companion;
+	protected field type Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	public fun <init> ()V
+	public final fun apiName (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;
+	protected final fun getApiName ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;
+	protected final fun getType ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;
+	protected final fun getValue ()Ljava/lang/String;
+	protected final fun setApiName (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderApiName;)V
+	protected final fun setType (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun type (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Type;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchCollectionRepository : org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchOperators, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {

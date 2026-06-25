@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.organisationunit;
 
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.organisationunit
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class OrganisationUnitProgramLink(
+    val program: String,
+    val organisationUnit: String,
+) : CoreObject {
 
-@AutoValue
-public abstract class OrganisationUnitProgramLink implements CoreObject {
+    fun program(): String = program
+    fun organisationUnit(): String = organisationUnit
 
-    @Nullable
-    public abstract String program();
+    fun toBuilder(): Builder = OrganisationUnitProgramLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String organisationUnit();
+    class Builder : OrganisationUnitProgramLinkBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitProgramLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder program(@Nullable String program);
-
-        public abstract Builder organisationUnit(@Nullable String organisationUnit);
-
-        public abstract OrganisationUnitProgramLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.organisationunit
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OrganisationUnitGroup(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val shortName: String?,
+    val displayShortName: String?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun shortName(): String? = shortName
+    fun displayShortName(): String? = displayShortName
 
-import java.util.List;
+    fun toBuilder(): Builder = OrganisationUnitGroupBuilder.from(this)
 
-@AutoValue
-public abstract class LegendSet extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : OrganisationUnitGroupBuilder()
 
-    @Nullable
-    public abstract String symbolizer();
-
-    @Nullable
-    public abstract List<Legend> legends();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_LegendSet.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder symbolizer(String symbolizer);
-
-        public abstract Builder legends(List<Legend> legends);
-
-        public abstract LegendSet build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

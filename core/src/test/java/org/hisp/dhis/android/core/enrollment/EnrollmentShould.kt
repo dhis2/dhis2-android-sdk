@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.enrollment
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.util.toJavaDate
@@ -55,7 +54,6 @@ internal class EnrollmentShould : CoreObjectShould<EnrollmentDTO>(
         assertThat(enrollment.completedDate()).isEqualTo("2014-08-21T12:27:50.730".toJavaDate())
         assertThat(enrollment.followUp()).isFalse()
         assertThat(enrollment.status()).isEqualTo(EnrollmentStatus.COMPLETED)
-        assertThat(enrollment.coordinate()).isEqualTo(Coordinates.create(10.03, 11.11))
         assertThat(enrollment.trackedEntityInstance()).isEqualTo("D2dUWKQErfQ")
         assertThat(enrollment.geometry()!!.type()).isEqualTo(FeatureType.POINT)
         assertThat(enrollment.geometry()!!.coordinates()).isEqualTo("[11.11,10.03]")

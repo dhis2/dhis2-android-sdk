@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -444,8 +443,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                     val enrollment = enrollments[0]
                     val events = d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet()
                     if (events.size == 1) {
-                        val enrollmentWithEvents = EnrollmentInternalAccessor
-                            .insertEvents(enrollment.toBuilder(), events).build()
+                        val enrollmentWithEvents = enrollment.toBuilder()
+                            .events(events).build()
                         return TrackedEntityInstanceInternalAccessor
                             .insertEnrollments(instance.toBuilder(), listOf(enrollmentWithEvents))
                             .build()
@@ -462,7 +461,7 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
             for (event in getEvents(enrollment)) {
                 events.add(event!!.toBuilder().deleted(true).build())
             }
-            enrollments.add(EnrollmentInternalAccessor.insertEvents(enrollment!!.toBuilder(), events).build())
+            enrollments.add(enrollment!!.toBuilder().events(events).build())
         }
         return TrackedEntityInstanceInternalAccessor
             .insertEnrollments(instance.toBuilder(), enrollments)
@@ -474,6 +473,6 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
     }
 
     private fun getEvents(enrollment: Enrollment?): List<Event?> {
-        return EnrollmentInternalAccessor.accessEvents(enrollment)
+        return enrollment?.events() ?: emptyList()
     }
 }

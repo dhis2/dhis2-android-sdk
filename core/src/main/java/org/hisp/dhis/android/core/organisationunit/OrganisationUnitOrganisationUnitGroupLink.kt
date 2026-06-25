@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,43 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.search;
+package org.hisp.dhis.android.core.organisationunit
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class OrganisationUnitOrganisationUnitGroupLink(
+    val organisationUnit: String,
+    val organisationUnitGroup: String,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
+    fun organisationUnit(): String = organisationUnit
+    fun organisationUnitGroup(): String = organisationUnitGroup
 
-@AutoValue
-public abstract class TrackedEntityInstanceQueryScopeOrderByItem implements QueryScopeOrderByItem {
+    fun toBuilder(): Builder = OrganisationUnitOrganisationUnitGroupLinkBuilder.from(this)
 
-    public static TrackedEntityInstanceQueryScopeOrderByItem DEFAULT_TRACKER_ORDER = builder()
-            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
-            .direction(RepositoryScope.OrderByDirection.DESC)
-            .build();
+    class Builder : OrganisationUnitOrganisationUnitGroupLinkBuilder()
 
-    public abstract TrackedEntityInstanceQueryScopeOrderColumn column();
-
-    public abstract RepositoryScope.OrderByDirection direction();
-
-    public String toAPIString(@NonNull TrackerExporterVersion version) {
-        String apiName = column().apiName() == null ? null : column().apiName().getApiName(version);
-        return apiName == null ? null : apiName + ":" + direction().getApi();
-    }
-
-    static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceQueryScopeOrderByItem.Builder();
-    }
-
-    @AutoValue.Builder
-    abstract static class Builder {
-
-        public abstract Builder column(TrackedEntityInstanceQueryScopeOrderColumn column);
-
-        public abstract Builder direction(RepositoryScope.OrderByDirection direction);
-
-        public abstract TrackedEntityInstanceQueryScopeOrderByItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

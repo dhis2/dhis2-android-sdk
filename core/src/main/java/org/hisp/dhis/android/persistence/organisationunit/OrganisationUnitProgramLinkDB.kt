@@ -42,7 +42,7 @@ internal data class OrganisationUnitProgramLinkDB(
 
 internal fun OrganisationUnitProgramLink.toDB(): OrganisationUnitProgramLinkDB {
     return OrganisationUnitProgramLinkDB(
-        organisationUnit = organisationUnit()!!,
-        program = program()!!,
+        organisationUnit = organisationUnit(),
+        program = program(),
     )
 }

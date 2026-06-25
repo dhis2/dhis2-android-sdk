@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset;
+package org.hisp.dhis.android.core.legendset
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramIndicatorLegendSetLink(
+    val programIndicator: String,
+    val legendSet: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun programIndicator(): String = programIndicator
+    fun legendSet(): String = legendSet
+    fun sortOrder(): Int = sortOrder
 
-@AutoValue
-public abstract class DataElementLegendSetLink implements CoreObject {
+    fun toBuilder(): Builder = ProgramIndicatorLegendSetLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String dataElement();
+    class Builder : ProgramIndicatorLegendSetLinkBuilder()
 
-    @Nullable
-    public abstract String legendSet();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_DataElementLegendSetLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder legendSet(String legendSet);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract DataElementLegendSetLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

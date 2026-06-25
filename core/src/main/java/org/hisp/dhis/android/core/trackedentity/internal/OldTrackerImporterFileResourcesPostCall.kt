@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
@@ -115,7 +114,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
         fileResources: List<FileResource>,
     ): Pair<Enrollment, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
-        val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
+        val updatedEvents = enrollment.events().orEmpty()
             .map { event ->
                 uploadEvent(event, fileResources)
                     .also { uploadedFileResources.addAll(it.second) }
@@ -123,7 +122,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
             }
 
         return Pair(
-            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), updatedEvents).build(),
+            enrollment.toBuilder().events(updatedEvents).build(),
             uploadedFileResources,
         )
     }

@@ -30,7 +30,7 @@ internal data class OrganisationUnitLevelDB(
 
 internal fun OrganisationUnitLevel.toDB(): OrganisationUnitLevelDB {
     return OrganisationUnitLevelDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.enrollment;
+package org.hisp.dhis.android.core.legendset
 
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.relationship.Relationship;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import java.util.List;
+@ModelBuilder
+data class IndicatorLegendSetLink(
+    val indicator: String,
+    val legendSet: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-public final class EnrollmentInternalAccessor {
+    fun indicator(): String = indicator
+    fun legendSet(): String = legendSet
+    fun sortOrder(): Int = sortOrder
 
-    private EnrollmentInternalAccessor() {
-    }
+    fun toBuilder(): Builder = IndicatorLegendSetLinkBuilder.from(this)
 
-    public static List<Event> accessEvents(Enrollment enrollment) {
-        return enrollment.events();
-    }
+    class Builder : IndicatorLegendSetLinkBuilder()
 
-    public static Enrollment.Builder insertEvents(
-            Enrollment.Builder builder,
-            List<Event> events) {
-        return builder.events(events);
-    }
-
-    public static List<Relationship> accessRelationships(Enrollment enrollment) {
-        return enrollment.relationships();
-    }
-
-    public static Enrollment.Builder insertRelationships(Enrollment.Builder builder, List<Relationship> relationships) {
-        return builder.relationships(relationships);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -82,7 +82,7 @@ public class SimpleEventConverter extends Converter<Event> {
     }
 
     @Override
-    Single<Event> readItemFromDb() {
+    protected Single<Event> readItemFromDb() {
         return getLocalDbRepository().getSimpleEventToSubmit(eventUid);
     }
 }

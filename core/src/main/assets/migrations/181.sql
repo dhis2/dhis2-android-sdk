@@ -99,8 +99,43 @@ CREATE TABLE SectionDataElementLink(section TEXT NOT NULL, dataElement TEXT NOT 
 INSERT INTO SectionDataElementLink(section, dataElement, sortOrder) SELECT section, dataElement, sortOrder FROM SectionDataElementLink_Old;
 DROP TABLE IF EXISTS SectionDataElementLink_Old;
 
+# ProgramIndicatorLegendSetLink: make sortOrder non-null (ANDROSDK-2321)
+
+# Remove rows with null sortOrder
+DELETE FROM ProgramIndicatorLegendSetLink WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE ProgramIndicatorLegendSetLink RENAME TO ProgramIndicatorLegendSetLink_Old;
+CREATE TABLE ProgramIndicatorLegendSetLink(programIndicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(programIndicator, legendSet), FOREIGN KEY(programIndicator) REFERENCES ProgramIndicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO ProgramIndicatorLegendSetLink(programIndicator, legendSet, sortOrder) SELECT programIndicator, legendSet, sortOrder FROM ProgramIndicatorLegendSetLink_Old;
+DROP TABLE IF EXISTS ProgramIndicatorLegendSetLink_Old;
+
+# DataElementLegendSetLink: make sortOrder non-null (ANDROSDK-2321)
+
+# Remove rows with null sortOrder
+DELETE FROM DataElementLegendSetLink WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE DataElementLegendSetLink RENAME TO DataElementLegendSetLink_Old;
+CREATE TABLE DataElementLegendSetLink(dataElement TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(dataElement, legendSet), FOREIGN KEY(dataElement) REFERENCES DataElement(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO DataElementLegendSetLink(dataElement, legendSet, sortOrder) SELECT dataElement, legendSet, sortOrder FROM DataElementLegendSetLink_Old;
+DROP TABLE IF EXISTS DataElementLegendSetLink_Old;
+
+# IndicatorLegendSetLink: make sortOrder non-null (ANDROSDK-2321)
+
+# Remove rows with null sortOrder
+DELETE FROM IndicatorLegendSetLink WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE IndicatorLegendSetLink RENAME TO IndicatorLegendSetLink_Old;
+CREATE TABLE IndicatorLegendSetLink(indicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(indicator, legendSet), FOREIGN KEY(indicator) REFERENCES Indicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO IndicatorLegendSetLink(indicator, legendSet, sortOrder) SELECT indicator, legendSet, sortOrder FROM IndicatorLegendSetLink_Old;
+DROP TABLE IF EXISTS IndicatorLegendSetLink_Old;
+
 # Add isEmpty to  FilterOperator tables table (ANDROSDK-2309)
+
 ALTER TABLE AttributeValueFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE EventDataFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE ProgramStageWorkingListAttributeValueFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE ProgramStageWorkingListEventDataFilterDB ADD COLUMN isEmpty INTEGER;
+

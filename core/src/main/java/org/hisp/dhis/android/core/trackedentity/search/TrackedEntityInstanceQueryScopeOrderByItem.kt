@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,37 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.organisationunit;
+package org.hisp.dhis.android.core.trackedentity.search
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityInstanceQueryScopeOrderByItem(
+    val column: TrackedEntityInstanceQueryScopeOrderColumn,
+    val direction: RepositoryScope.OrderByDirection,
+) : QueryScopeOrderByItem {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun column(): TrackedEntityInstanceQueryScopeOrderColumn = column
+    fun direction(): RepositoryScope.OrderByDirection = direction
 
-@AutoValue
-public abstract class OrganisationUnitGroup extends BaseIdentifiableObAuVa implements CoreObject {
-
-    @Nullable
-    public abstract String shortName();
-
-    @Nullable
-    public abstract String displayShortName();
-
-    public static Builder builder() {
-        return new AutoValue_OrganisationUnitGroup.Builder();
+    override fun toAPIString(version: TrackerExporterVersion): String? {
+        val apiName = column.apiName()?.getApiName(version)
+        return apiName?.let { "$it:${direction.api}" }
     }
 
-    public abstract Builder toBuilder();
+    fun toBuilder(): Builder = TrackedEntityInstanceQueryScopeOrderByItemBuilder.from(this)
 
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
+    class Builder : TrackedEntityInstanceQueryScopeOrderByItemBuilder()
 
-        public abstract Builder shortName(String shortName);
+    companion object {
+        internal val DEFAULT_TRACKER_ORDER = builder()
+            .column(TrackedEntityInstanceQueryScopeOrderColumn.CREATED)
+            .direction(RepositoryScope.OrderByDirection.DESC)
+            .build()
 
-        public abstract Builder displayShortName(String displayShortName);
-
-        public abstract OrganisationUnitGroup build();
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

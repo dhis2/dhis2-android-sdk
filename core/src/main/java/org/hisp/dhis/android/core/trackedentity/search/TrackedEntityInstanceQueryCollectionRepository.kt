@@ -117,8 +117,8 @@ class TrackedEntityInstanceQueryCollectionRepository internal constructor(
 
     @Deprecated("use {@link #byEnrollmentStatus()} instead.")
     fun byProgramStatus(): EqFilterConnector<TrackedEntityInstanceQueryCollectionRepository, EnrollmentStatus> {
-        return connectorFactory.eqConnector { status: EnrollmentStatus? ->
-            scope.toBuilder().enrollmentStatus(listOf(status)).build()
+        return connectorFactory.eqConnector { status ->
+            status?.let { scope.toBuilder().enrollmentStatus(listOf(status)).build() } ?: scope
         }
     }
 

@@ -70,6 +70,7 @@ class VisualizationHandlerShould {
         whenever(visualization.columns()).doReturn(listOf(visualizationDimension))
         whenever(visualization.rows()).doReturn(listOf(visualizationDimension))
         whenever(visualization.filters()).doReturn(listOf(visualizationDimension))
+        whenever(visualizationDimension.id()).doReturn("dx")
         whenever(visualizationStore.updateOrInsert(any<List<Visualization>>())).doReturn(listOf(HandleAction.Insert))
         whenever(visualization.uid()).doReturn("visualization_uid")
     }

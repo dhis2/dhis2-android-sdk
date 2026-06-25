@@ -42,10 +42,10 @@ internal data class VisualizationDimensionItemDB(
 
 internal fun VisualizationDimensionItem.toDB(): VisualizationDimensionItemDB {
     return VisualizationDimensionItemDB(
-        visualization = visualization()!!,
-        position = position()!!.name,
-        dimension = dimension()!!,
-        dimensionItem = dimensionItem()!!,
+        visualization = visualization(),
+        position = position().name,
+        dimension = dimension(),
+        dimensionItem = dimensionItem(),
         dimensionItemType = dimensionItemType(),
         sortOrder = sortOrder(),
     )

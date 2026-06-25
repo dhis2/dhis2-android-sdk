@@ -90,7 +90,7 @@ internal class VisualizationHandler(
             .position(position)
             .visualization(visualization)
             .dimension(id())
-            .dimensionItem(VisualizationDimensionItemHelper.allItemsPlaceholder(id().orEmpty()))
+            .dimensionItem(VisualizationDimensionItemHelper.allItemsPlaceholder(id()))
             .build()
     }
 }

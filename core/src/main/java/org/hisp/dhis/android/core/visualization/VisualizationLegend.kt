@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,36 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.visualization;
+package org.hisp.dhis.android.core.visualization
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class VisualizationLegend(
+    val set: ObjectWithUid?,
+    val showKey: Boolean?,
+    val strategy: LegendStrategy?,
+    val style: LegendStyle?,
+) {
+    fun set(): ObjectWithUid? = set
+    fun showKey(): Boolean? = showKey
+    fun strategy(): LegendStrategy? = strategy
+    fun style(): LegendStyle? = style
 
-import java.util.List;
+    fun toBuilder(): Builder = VisualizationLegendBuilder.from(this)
 
-@AutoValue
-public abstract class VisualizationDimension {
+    class Builder : VisualizationLegendBuilder()
 
-    @Nullable
-    public abstract String id();
-
-    @Nullable
-    public abstract List<VisualizationDimensionItem> items();
-
-    public static Builder builder() {
-        return new AutoValue_VisualizationDimension.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder id(String id);
-
-        public abstract Builder items(List<VisualizationDimensionItem> items);
-
-        public abstract VisualizationDimension build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

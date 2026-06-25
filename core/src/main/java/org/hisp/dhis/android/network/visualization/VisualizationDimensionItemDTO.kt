@@ -37,13 +37,17 @@ internal data class VisualizationDimensionItemDTO(
     val dimensionItem: String?,
     val dimensionItemType: String?,
 ) {
-    fun toDomain(visualization: String, position: LayoutPosition, dimension: String?): VisualizationDimensionItem {
-        return VisualizationDimensionItem.builder()
-            .visualization(visualization)
-            .position(position)
-            .dimension(dimension)
-            .dimensionItem(dimensionItem)
-            .dimensionItemType(dimensionItemType)
-            .build()
+    fun toDomain(visualization: String, position: LayoutPosition, dimension: String?): VisualizationDimensionItem? {
+        return if (dimension != null && dimensionItem != null) {
+            VisualizationDimensionItem.builder()
+                .visualization(visualization)
+                .position(position)
+                .dimension(dimension)
+                .dimensionItem(dimensionItem)
+                .dimensionItemType(dimensionItemType)
+                .build()
+        } else {
+            null
+        }
     }
 }

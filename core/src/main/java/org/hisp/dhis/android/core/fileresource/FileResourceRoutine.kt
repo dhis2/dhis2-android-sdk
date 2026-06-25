@@ -104,11 +104,9 @@ internal class FileResourceRoutine(
 
     private suspend fun deleteFileResources(fileResources: List<FileResource>) {
         fileResources.forEach { fileResource ->
-            fileResource.uid()?.let { uid ->
-                fileResourceStore.deleteIfExists(uid)
-                fileResource.path()?.let { path ->
-                    deleteFile(path)
-                }
+            fileResourceStore.deleteIfExists(fileResource.uid)
+            fileResource.path()?.let { path ->
+                deleteFile(path)
             }
         }
     }

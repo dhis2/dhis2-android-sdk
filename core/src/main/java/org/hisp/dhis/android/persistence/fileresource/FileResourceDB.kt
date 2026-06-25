@@ -42,7 +42,7 @@ internal data class FileResourceDB(
 
 internal fun FileResource.toDB(): FileResourceDB {
     return FileResourceDB(
-        uid = uid()!!,
+        uid = uid(),
         name = name(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),

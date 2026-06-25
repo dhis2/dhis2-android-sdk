@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,30 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.fileresource.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.FileResourceDomain
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
-import org.koin.core.annotation.Singleton
-import java.io.File
-import java.util.Date
+package org.hisp.dhis.android.core.icon
 
-@Singleton
-internal class FileResourceProjectionTransformer : Transformer<File, FileResource> {
-    override fun transform(o: File): FileResource {
-        val creationDate = Date()
-        return FileResource.builder()
-            .uid(o.nameWithoutExtension)
-            .syncState(State.TO_POST)
-            .created(creationDate)
-            .lastUpdated(creationDate)
-            .contentLength(o.length())
-            .contentType(getContentTypeFromName(o.name))
-            .path(o.absolutePath)
-            .domain(FileResourceDomain.DATA_VALUE)
-            .build()
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+
+@ModelBuilder
+data class CustomIcon(
+    val key: String,
+    val fileResource: ObjectWithUid,
+    val href: String,
+) : CoreObject {
+
+    fun key(): String = key
+    fun fileResource(): ObjectWithUid = fileResource
+    fun href(): String = href
+
+    fun toBuilder(): Builder = CustomIconBuilder.from(this)
+
+    class Builder : CustomIconBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

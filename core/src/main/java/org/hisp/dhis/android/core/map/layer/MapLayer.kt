@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.map.layer
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.CoreObject
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
 @ModelBuilder
+@Suppress("TooManyFunctions")
 data class MapLayer(
     override val uid: String,
     val name: String,

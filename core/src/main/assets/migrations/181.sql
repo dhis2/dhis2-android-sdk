@@ -137,5 +137,5 @@ DROP TABLE IF EXISTS IndicatorLegendSetLink_Old;
 ALTER TABLE AttributeValueFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE EventDataFilter ADD COLUMN isEmpty INTEGER;
 ALTER TABLE ProgramStageWorkingListAttributeValueFilter ADD COLUMN isEmpty INTEGER;
-ALTER TABLE ProgramStageWorkingListEventDataFilterDB ADD COLUMN isEmpty INTEGER;
+ALTER TABLE ProgramStageWorkingListEventDataFilter ADD COLUMN isEmpty INTEGER;
 

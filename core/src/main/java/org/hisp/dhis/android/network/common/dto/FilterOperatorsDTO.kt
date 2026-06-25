@@ -40,6 +40,7 @@ internal interface FilterOperatorsDTO {
     val `in`: Set<String>?
     val like: String?
     val dateFilter: DateFilterPeriodDTO?
+    val isEmpty: Boolean?
 }
 
 internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
@@ -52,5 +53,6 @@ internal fun <T> T.applyFilterOperatorsFields(item: FilterOperatorsDTO): T where
     `in`(item.`in`)
     like(item.like)
     dateFilter(item.dateFilter?.toDomain())
+    isEmpty(item.isEmpty)
     return this
 }

@@ -209,13 +209,22 @@ class ModelBuilderProcessor(
             "FilterOperators",
             "FilterOperators",
             "import org.hisp.dhis.android.core.common.FilterOperators",
-            listOf("le", "ge", "gt", "lt", "eq", "`in`", "like", "dateFilter"),
+            listOf("le", "ge", "gt", "lt", "eq", "`in`", "like", "dateFilter", "isEmpty"),
         )
         val queryCriteria = BaseClass(
             "FilterQueryCriteria",
             "FilterQueryCriteria",
             "import org.hisp.dhis.android.core.common.FilterQueryCriteria",
-            listOf("followUp", "organisationUnit", "ouMode", "assignedUserMode", "order", "displayColumnOrder", "eventDate", "lastUpdatedDate"),
+            listOf(
+                "followUp",
+                "organisationUnit",
+                "ouMode",
+                "assignedUserMode",
+                "order",
+                "displayColumnOrder",
+                "eventDate",
+                "lastUpdatedDate",
+            ),
         )
 
         // The order here matters. The first matching base class is used for the builder

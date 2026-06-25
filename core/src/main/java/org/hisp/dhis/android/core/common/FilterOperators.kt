@@ -55,6 +55,8 @@ interface FilterOperators {
     /** If the dataItem is of type date, then date filtering parameters are specified using this. */
     val dateFilter: DateFilterPeriod?
 
+    val isEmpty: Boolean?
+
     fun le(): String? = le
     fun ge(): String? = ge
     fun gt(): String? = gt
@@ -81,5 +83,7 @@ interface FilterOperators {
         fun like(like: String?): T
 
         fun dateFilter(dateFilter: DateFilterPeriod?): T
+
+        fun isEmpty(isEmpty: Boolean?): T
     }
 }

@@ -131,3 +131,11 @@ ALTER TABLE IndicatorLegendSetLink RENAME TO IndicatorLegendSetLink_Old;
 CREATE TABLE IndicatorLegendSetLink(indicator TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(indicator, legendSet), FOREIGN KEY(indicator) REFERENCES Indicator(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO IndicatorLegendSetLink(indicator, legendSet, sortOrder) SELECT indicator, legendSet, sortOrder FROM IndicatorLegendSetLink_Old;
 DROP TABLE IF EXISTS IndicatorLegendSetLink_Old;
+
+# Add isEmpty to  FilterOperator tables table (ANDROSDK-2309)
+
+ALTER TABLE AttributeValueFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE EventDataFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE ProgramStageWorkingListAttributeValueFilter ADD COLUMN isEmpty INTEGER;
+ALTER TABLE ProgramStageWorkingListEventDataFilter ADD COLUMN isEmpty INTEGER;
+

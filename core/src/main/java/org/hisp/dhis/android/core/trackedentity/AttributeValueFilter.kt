@@ -43,6 +43,8 @@ data class AttributeValueFilter(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriod?,
+    @get:JvmName("getIsEmpty")
+    override val isEmpty: Boolean?,
     val trackedEntityInstanceFilter: String?,
     val attribute: String,
     val ew: String?,

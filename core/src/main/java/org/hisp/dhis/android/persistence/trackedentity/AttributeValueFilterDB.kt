@@ -71,6 +71,7 @@ internal data class AttributeValueFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
+    override val isEmpty: Boolean?,
 ) : EntityDB<AttributeValueFilter>, FilterOperatorsDB {
     override fun toDomain(): AttributeValueFilter {
         return AttributeValueFilter.builder()
@@ -97,5 +98,6 @@ internal fun AttributeValueFilter.toDB(): AttributeValueFilterDB {
         inProperty = `in`()?.toDB(),
         like = like(),
         dateFilter = dateFilter()?.toDB(),
+        isEmpty = isEmpty,
     )
 }

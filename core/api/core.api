@@ -4616,6 +4616,7 @@ public abstract interface class org/hisp/dhis/android/core/common/FilterOperator
 	public abstract fun getLt ()Ljava/lang/String;
 	public fun gt ()Ljava/lang/String;
 	public fun in ()Ljava/util/Set;
+	public abstract fun isEmpty ()Ljava/lang/Boolean;
 	public fun le ()Ljava/lang/String;
 	public fun like ()Ljava/lang/String;
 	public fun lt ()Ljava/lang/String;
@@ -4627,6 +4628,7 @@ public abstract interface class org/hisp/dhis/android/core/common/FilterOperator
 	public abstract fun ge (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public abstract fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public abstract fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
+	public abstract fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public abstract fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public abstract fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public abstract fun lt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
@@ -8504,10 +8506,11 @@ public final class org/hisp/dhis/android/core/event/EventCreateProjectionBuilder
 
 public final class org/hisp/dhis/android/core/event/EventDataFilter : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterOperators {
 	public static final field Companion Lorg/hisp/dhis/android/core/event/EventDataFilter$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
@@ -8515,9 +8518,9 @@ public final class org/hisp/dhis/android/core/event/EventDataFilter : org/hisp/d
 	public final fun component6 ()Ljava/util/Set;
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/event/EventDataFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/event/EventDataFilter;
+	public final fun component9 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/event/EventDataFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/event/EventDataFilter;
 	public final fun dataItem ()Ljava/lang/String;
 	public fun dateFilter ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public fun eq ()Ljava/lang/String;
@@ -8531,12 +8534,14 @@ public final class org/hisp/dhis/android/core/event/EventDataFilter : org/hisp/d
 	public fun getGe ()Ljava/lang/String;
 	public fun getGt ()Ljava/lang/String;
 	public fun getIn ()Ljava/util/Set;
+	public fun getIsEmpty ()Ljava/lang/Boolean;
 	public fun getLe ()Ljava/lang/String;
 	public fun getLike ()Ljava/lang/String;
 	public fun getLt ()Ljava/lang/String;
 	public fun gt ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun in ()Ljava/util/Set;
+	public synthetic fun isEmpty ()Ljava/lang/Boolean;
 	public fun le ()Ljava/lang/String;
 	public fun like ()Ljava/lang/String;
 	public fun lt ()Ljava/lang/String;
@@ -8579,6 +8584,9 @@ public class org/hisp/dhis/android/core/event/EventDataFilterBuilder : org/hisp/
 	public fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public synthetic fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
+	protected final fun isEmpty ()Ljava/lang/Boolean;
+	public synthetic fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
+	public fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public synthetic fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	public synthetic fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
@@ -8587,6 +8595,7 @@ public class org/hisp/dhis/android/core/event/EventDataFilterBuilder : org/hisp/
 	public fun lt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventDataFilter$Builder;
 	protected final fun setDataItem (Ljava/lang/String;)V
 	protected final fun setDateFilter (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEmpty (Ljava/lang/Boolean;)V
 	protected final fun setEq (Ljava/lang/String;)V
 	protected final fun setEventFilter (Ljava/lang/String;)V
 	protected final fun setGe (Ljava/lang/String;)V
@@ -13978,13 +13987,14 @@ public abstract class org/hisp/dhis/android/core/programstageworkinglist/Program
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterOperators {
 	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun attribute ()Ljava/lang/String;
 	public static final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component10 ()Ljava/lang/String;
 	public final fun component11 ()Ljava/lang/String;
 	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
@@ -13992,9 +14002,9 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public final fun component6 ()Ljava/util/Set;
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;
+	public final fun component9 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;
 	public fun dateFilter ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public fun eq ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
@@ -14007,6 +14017,7 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public fun getGe ()Ljava/lang/String;
 	public fun getGt ()Ljava/lang/String;
 	public fun getIn ()Ljava/util/Set;
+	public fun getIsEmpty ()Ljava/lang/Boolean;
 	public fun getLe ()Ljava/lang/String;
 	public fun getLike ()Ljava/lang/String;
 	public fun getLt ()Ljava/lang/String;
@@ -14015,6 +14026,7 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public fun gt ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun in ()Ljava/util/Set;
+	public synthetic fun isEmpty ()Ljava/lang/Boolean;
 	public fun le ()Ljava/lang/String;
 	public fun like ()Ljava/lang/String;
 	public fun lt ()Ljava/lang/String;
@@ -14062,6 +14074,9 @@ public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWork
 	public fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 	public synthetic fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
+	protected final fun isEmpty ()Ljava/lang/Boolean;
+	public synthetic fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
+	public fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 	public synthetic fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 	public synthetic fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
@@ -14071,6 +14086,7 @@ public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWork
 	public final fun programStageWorkingList (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
 	protected final fun setAttribute (Ljava/lang/String;)V
 	protected final fun setDateFilter (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEmpty (Ljava/lang/Boolean;)V
 	protected final fun setEq (Ljava/lang/String;)V
 	protected final fun setEw (Ljava/lang/String;)V
 	protected final fun setGe (Ljava/lang/String;)V
@@ -14105,10 +14121,11 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterOperators {
 	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
@@ -14116,9 +14133,9 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public final fun component6 ()Ljava/util/Set;
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;
+	public final fun component9 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter;
 	public final fun dataItem ()Ljava/lang/String;
 	public fun dateFilter ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public fun eq ()Ljava/lang/String;
@@ -14130,6 +14147,7 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public fun getGe ()Ljava/lang/String;
 	public fun getGt ()Ljava/lang/String;
 	public fun getIn ()Ljava/util/Set;
+	public fun getIsEmpty ()Ljava/lang/Boolean;
 	public fun getLe ()Ljava/lang/String;
 	public fun getLike ()Ljava/lang/String;
 	public fun getLt ()Ljava/lang/String;
@@ -14137,6 +14155,7 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public fun gt ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun in ()Ljava/util/Set;
+	public synthetic fun isEmpty ()Ljava/lang/Boolean;
 	public fun le ()Ljava/lang/String;
 	public fun like ()Ljava/lang/String;
 	public fun lt ()Ljava/lang/String;
@@ -14180,6 +14199,9 @@ public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWork
 	public fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public synthetic fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
+	protected final fun isEmpty ()Ljava/lang/Boolean;
+	public synthetic fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
+	public fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public synthetic fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	public synthetic fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
@@ -14189,6 +14211,7 @@ public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWork
 	public final fun programStageWorkingList (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListEventDataFilter$Builder;
 	protected final fun setDataItem (Ljava/lang/String;)V
 	protected final fun setDateFilter (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEmpty (Ljava/lang/Boolean;)V
 	protected final fun setEq (Ljava/lang/String;)V
 	protected final fun setGe (Ljava/lang/String;)V
 	protected final fun setGt (Ljava/lang/String;)V
@@ -18175,13 +18198,14 @@ public final class org/hisp/dhis/android/core/systeminfo/internal/SystemInfoCall
 
 public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilter : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterOperators {
 	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun attribute ()Ljava/lang/String;
 	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component10 ()Ljava/lang/String;
 	public final fun component11 ()Ljava/lang/String;
 	public final fun component12 ()Ljava/lang/String;
+	public final fun component13 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
@@ -18189,9 +18213,9 @@ public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilter
 	public final fun component6 ()Ljava/util/Set;
 	public final fun component7 ()Ljava/lang/String;
 	public final fun component8 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
+	public final fun component9 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter;
 	public fun dateFilter ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public fun eq ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
@@ -18204,6 +18228,7 @@ public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilter
 	public fun getGe ()Ljava/lang/String;
 	public fun getGt ()Ljava/lang/String;
 	public fun getIn ()Ljava/util/Set;
+	public fun getIsEmpty ()Ljava/lang/Boolean;
 	public fun getLe ()Ljava/lang/String;
 	public fun getLike ()Ljava/lang/String;
 	public fun getLt ()Ljava/lang/String;
@@ -18212,6 +18237,7 @@ public final class org/hisp/dhis/android/core/trackedentity/AttributeValueFilter
 	public fun gt ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun in ()Ljava/util/Set;
+	public synthetic fun isEmpty ()Ljava/lang/Boolean;
 	public fun le ()Ljava/lang/String;
 	public fun like ()Ljava/lang/String;
 	public fun lt ()Ljava/lang/String;
@@ -18258,6 +18284,9 @@ public class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterBuilde
 	public fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public synthetic fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
+	protected final fun isEmpty ()Ljava/lang/Boolean;
+	public synthetic fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
+	public fun isEmpty (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public synthetic fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
 	public fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	public synthetic fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/FilterOperators$Builder;
@@ -18266,6 +18295,7 @@ public class org/hisp/dhis/android/core/trackedentity/AttributeValueFilterBuilde
 	public fun lt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/AttributeValueFilter$Builder;
 	protected final fun setAttribute (Ljava/lang/String;)V
 	protected final fun setDateFilter (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEmpty (Ljava/lang/Boolean;)V
 	protected final fun setEq (Ljava/lang/String;)V
 	protected final fun setEw (Ljava/lang/String;)V
 	protected final fun setGe (Ljava/lang/String;)V
@@ -22843,6 +22873,7 @@ public final class org/hisp/dhis/android/persistence/event/EventDataFilterTableI
 	public static final field GE Ljava/lang/String;
 	public static final field GT Ljava/lang/String;
 	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field IS_EMPTY Ljava/lang/String;
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
@@ -24040,6 +24071,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field GE Ljava/lang/String;
 	public static final field GT Ljava/lang/String;
 	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field IS_EMPTY Ljava/lang/String;
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
@@ -24066,6 +24098,7 @@ public final class org/hisp/dhis/android/persistence/programstageworkinglist/Pro
 	public static final field GE Ljava/lang/String;
 	public static final field GT Ljava/lang/String;
 	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field IS_EMPTY Ljava/lang/String;
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;
@@ -24707,6 +24740,7 @@ public final class org/hisp/dhis/android/persistence/trackedentity/AttributeValu
 	public static final field GE Ljava/lang/String;
 	public static final field GT Ljava/lang/String;
 	public static final field IN_PROPERTY Ljava/lang/String;
+	public static final field IS_EMPTY Ljava/lang/String;
 	public static final field LE Ljava/lang/String;
 	public static final field LIKE Ljava/lang/String;
 	public static final field LT Ljava/lang/String;

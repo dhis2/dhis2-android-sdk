@@ -105,11 +105,11 @@ internal data class DataValueDB(
 
 internal fun DataValue.toDB(): DataValueDB {
     return DataValueDB(
-        dataElement = dataElement()!!,
-        period = period()!!,
-        organisationUnit = organisationUnit()!!,
-        categoryOptionCombo = categoryOptionCombo()!!,
-        attributeOptionCombo = attributeOptionCombo()!!,
+        dataElement = dataElement(),
+        period = period(),
+        organisationUnit = organisationUnit(),
+        categoryOptionCombo = categoryOptionCombo(),
+        attributeOptionCombo = attributeOptionCombo(),
         sourceDataSet = DataValueInternalAccessor.accessSourceDataSet(this),
         value = value(),
         storedBy = storedBy(),

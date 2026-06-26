@@ -74,11 +74,11 @@ internal data class DataValueDTO(
 internal fun DataValue.toDto(): DataValueDTO {
     return DataValueDTO(
         deleted = this.deleted(),
-        dataElement = this.dataElement()!!,
-        period = this.period()!!,
-        orgUnit = this.organisationUnit()!!,
-        categoryOptionCombo = this.categoryOptionCombo()!!,
-        attributeOptionCombo = this.attributeOptionCombo()!!,
+        dataElement = this.dataElement(),
+        period = this.period(),
+        orgUnit = this.organisationUnit(),
+        categoryOptionCombo = this.categoryOptionCombo(),
+        attributeOptionCombo = this.attributeOptionCombo(),
         value = this.value(),
         storedBy = this.storedBy(),
         created = null,

@@ -39,11 +39,11 @@ import java.util.Date
 data class DataValue(
     override val syncState: State?,
     override val deleted: Boolean?,
-    val dataElement: String?,
-    val period: String?,
-    val organisationUnit: String?,
-    val categoryOptionCombo: String?,
-    val attributeOptionCombo: String?,
+    val dataElement: String,
+    val period: String,
+    val organisationUnit: String,
+    val categoryOptionCombo: String,
+    val attributeOptionCombo: String,
     internal val sourceDataSet: String?,
     val value: String?,
     val storedBy: String?,
@@ -53,11 +53,11 @@ data class DataValue(
     val followUp: Boolean?,
 ) : DataObjectKt, DeletableDataObjectKt {
 
-    fun dataElement(): String? = dataElement
-    fun period(): String? = period
-    fun organisationUnit(): String? = organisationUnit
-    fun categoryOptionCombo(): String? = categoryOptionCombo
-    fun attributeOptionCombo(): String? = attributeOptionCombo
+    fun dataElement(): String = dataElement
+    fun period(): String = period
+    fun organisationUnit(): String = organisationUnit
+    fun categoryOptionCombo(): String = categoryOptionCombo
+    fun attributeOptionCombo(): String = attributeOptionCombo
     internal fun sourceDataSet(): String? = sourceDataSet
     fun value(): String? = value
     fun storedBy(): String? = storedBy

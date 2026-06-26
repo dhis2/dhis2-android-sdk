@@ -26,88 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.imports;
+package org.hisp.dhis.android.core.imports
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackerImportConflict(
+    val conflict: String?,
+    val value: String?,
+    val trackedEntityInstance: String?,
+    val enrollment: String?,
+    val event: String?,
+    val trackedEntityAttribute: String?,
+    val dataElement: String?,
+    val tableReference: String?,
+    val errorCode: String?,
+    val displayDescription: String?,
+    val status: ImportStatus?,
+    val created: Date?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun conflict(): String? = conflict
+    fun value(): String? = value
+    fun trackedEntityInstance(): String? = trackedEntityInstance
+    fun enrollment(): String? = enrollment
+    fun event(): String? = event
+    fun trackedEntityAttribute(): String? = trackedEntityAttribute
+    fun dataElement(): String? = dataElement
+    fun tableReference(): String? = tableReference
+    fun errorCode(): String? = errorCode
+    fun displayDescription(): String? = displayDescription
+    fun status(): ImportStatus? = status
+    fun created(): Date? = created
 
-import java.util.Date;
+    fun toBuilder(): Builder = TrackerImportConflictBuilder.from(this)
 
-@AutoValue
-public abstract class TrackerImportConflict implements CoreObject {
+    class Builder : TrackerImportConflictBuilder()
 
-    @Nullable
-    public abstract String conflict();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract String trackedEntityInstance();
-
-    @Nullable
-    public abstract String enrollment();
-
-    @Nullable
-    public abstract String event();
-
-    @Nullable
-    public abstract String trackedEntityAttribute();
-
-    @Nullable
-    public abstract String dataElement();
-
-    @Nullable
-    public abstract String tableReference();
-
-    @Nullable
-    public abstract String errorCode();
-
-    @Nullable
-    public abstract String displayDescription();
-
-    @Nullable
-    public abstract ImportStatus status();
-
-    @Nullable
-    public abstract Date created();
-
-
-    public static Builder builder() {
-        return new AutoValue_TrackerImportConflict.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder conflict(String conflict);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract Builder enrollment(String enrollment);
-
-        public abstract Builder event(String event);
-
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder tableReference(String tableReference);
-
-        public abstract Builder errorCode(String errorCode);
-
-        public abstract Builder displayDescription(String displayDescription);
-
-        public abstract Builder status(ImportStatus status);
-
-        public abstract Builder created(Date created);
-
-        public abstract TrackerImportConflict build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

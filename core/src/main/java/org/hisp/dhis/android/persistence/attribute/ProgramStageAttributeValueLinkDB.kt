@@ -44,8 +44,8 @@ internal data class ProgramStageAttributeValueLinkDB(
 
 internal fun ProgramStageAttributeValueLink.toDB(): ProgramStageAttributeValueLinkDB {
     return ProgramStageAttributeValueLinkDB(
-        programStage = programStage()!!,
-        attribute = attribute()!!,
+        programStage = programStage(),
+        attribute = attribute(),
         value = value(),
     )
 }

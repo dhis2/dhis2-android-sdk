@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,36 +25,27 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.indicator;
 
-import androidx.annotation.Nullable;
+package org.hisp.dhis.android.core.indicator
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class DataSetIndicatorLink(
+    val dataSet: String,
+    val indicator: String,
+) : CoreObject {
 
-@AutoValue
-public abstract class DataSetIndicatorLink implements CoreObject {
+    fun dataSet(): String = dataSet
+    fun indicator(): String = indicator
 
-    @Nullable
-    public abstract String dataSet();
+    fun toBuilder(): Builder = DataSetIndicatorLinkBuilder.from(this)
 
-    @Nullable
-    public abstract String indicator();
+    class Builder : DataSetIndicatorLinkBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_DataSetIndicatorLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder dataSet(String dataSet);
-
-        public abstract Builder indicator(String indicator);
-
-        public abstract DataSetIndicatorLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

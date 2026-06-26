@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,40 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.indicator
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class IndicatorType(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val number: Boolean?,
+    val factor: Int?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun number(): Boolean? = number
+    fun factor(): Int? = factor
 
-@AutoValue
-public abstract class ProgramStageAttributeValueLink implements CoreObject {
+    fun toBuilder(): Builder = IndicatorTypeBuilder.from(this)
 
-    @Nullable
-    public abstract String programStage();
+    class Builder : IndicatorTypeBuilder()
 
-    @Nullable
-    public abstract String attribute();
-
-    @Nullable
-    public abstract String value();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageAttributeValueLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder value(String value);
-
-        public abstract ProgramStageAttributeValueLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

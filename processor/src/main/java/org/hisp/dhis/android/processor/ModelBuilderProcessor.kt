@@ -93,13 +93,21 @@ class ModelBuilderProcessor(
 
             val visibilityModifier = if (isClassInternal || isBuilderInternal) "internal " else ""
 
-            val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>().map { field ->
-                ClassField(
-                    name = getPropertyName(field.simpleName.asString()),
-                    type = field.type.resolve(),
-                    isInternal = field.modifiers.contains(Modifier.INTERNAL),
-                )
-            }
+            // Only primary-constructor properties are model fields
+            val constructorParamNames = symbol.primaryConstructor?.parameters
+                ?.mapNotNull { it.name?.asString() }
+                ?.toSet()
+                .orEmpty()
+
+            val fields = symbol.declarations.filterIsInstance<KSPropertyDeclaration>()
+                .filter { it.simpleName.asString() in constructorParamNames }
+                .map { field ->
+                    ClassField(
+                        name = getPropertyName(field.simpleName.asString()),
+                        type = field.type.resolve(),
+                        isInternal = field.modifiers.contains(Modifier.INTERNAL),
+                    )
+                }
 
             val typeImports = fields.flatMap { field ->
                 val arguments = field.type.arguments.mapNotNull {
@@ -128,7 +136,7 @@ class ModelBuilderProcessor(
                 ${
                 fields.joinToString("\n                ") { field ->
                     val name = field.name
-                    val type = field.type.toString()
+                    val type = renderType(field.type)
                     val isOverride = overridenFields.contains(name)
                     val optOverride = if (isOverride) "override " else ""
                     val optInternal = if (field.isInternal && !isOverride) "internal " else ""
@@ -175,12 +183,23 @@ class ModelBuilderProcessor(
         val isPrimitive = listOf("Int", "Long", "Short", "Byte", "Char", "Float", "Double", "Boolean")
             .contains(field.type.toString())
         val isNotNull = !field.type.isMarkedNullable
+        val type = renderType(field.type)
 
         return when {
-            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<${field.type}>()"
-            isNotNull -> "protected lateinit var ${field.name}: ${field.type}"
-            else -> "protected var ${field.name}: ${field.type} = null"
+            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<$type>()"
+            isNotNull -> "protected lateinit var ${field.name}: $type"
+            else -> "protected var ${field.name}: $type = null"
         }
+    }
+
+    /**
+     * Renders a [KSType] as Kotlin source. [KSType.toString] wraps typealiases (e.g. the
+     * `kotlin.Exception` alias of `java.lang.Exception`) as `[typealias Exception]`, which is not
+     * valid source. This unwraps that form back to the plain type name while leaving every other
+     * type rendering untouched.
+     */
+    private fun renderType(type: KSType): String {
+        return type.toString().replace(TYPEALIAS_REGEX) { it.groupValues[1] }
     }
 
     private fun getPropertyName(name: String): String {
@@ -193,6 +212,8 @@ class ModelBuilderProcessor(
     }
 
     companion object {
+        private val TYPEALIAS_REGEX = Regex("""\[typealias (\w+)]""")
+
         val identifiable = BaseClass(
             "IdentifiableObject",
             "BaseIdentifiableObject",

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,84 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance;
+package org.hisp.dhis.android.core.maintenance
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class D2Error(
+    val url: String?,
+    val errorComponent: D2ErrorComponent?,
+    val errorCode: D2ErrorCode,
+    val errorDescription: String,
+    val httpErrorCode: Int?,
+    val originalException: Exception?,
+    val created: Date?,
+) : Exception(), CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun url(): String? = url
+    fun errorComponent(): D2ErrorComponent? = errorComponent
+    fun errorCode(): D2ErrorCode = errorCode
+    fun errorDescription(): String = errorDescription
+    fun httpErrorCode(): Int? = httpErrorCode
+    fun originalException(): Exception? = originalException
+    fun created(): Date? = created
 
-import java.util.Date;
+    val isOffline: Boolean
+        get() = errorCode == D2ErrorCode.SOCKET_TIMEOUT ||
+            errorCode == D2ErrorCode.UNKNOWN_HOST ||
+            errorCode == D2ErrorCode.SERVER_CONNECTION_ERROR
 
-@AutoValue
-public abstract class D2Error extends Exception implements CoreObject {
+    fun toBuilder(): Builder = D2ErrorBuilder.from(this)
 
-    @Nullable
-    public abstract String url();
+    class Builder : D2ErrorBuilder()
 
-    @Nullable
-    public abstract D2ErrorComponent errorComponent();
-
-    @NonNull
-    public abstract D2ErrorCode errorCode();
-
-    @NonNull
-    public abstract String errorDescription();
-
-    @Nullable
-    public abstract Integer httpErrorCode();
-
-    @Nullable
-    public abstract Exception originalException();
-
-    @Nullable
-    public abstract Date created();
-
-    public static Builder builder() {
-        return new AutoValue_D2Error.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    public boolean isOffline() {
-        return errorCode() == D2ErrorCode.SOCKET_TIMEOUT ||
-                errorCode() == D2ErrorCode.UNKNOWN_HOST ||
-                errorCode() == D2ErrorCode.SERVER_CONNECTION_ERROR;
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder url(String url);
-
-        public abstract Builder errorComponent(D2ErrorComponent errorComponent);
-
-        public abstract Builder errorCode(D2ErrorCode errorCode);
-
-        public abstract Builder errorDescription(String description);
-
-        public abstract Builder httpErrorCode(Integer httpErrorCode);
-
-        public abstract Builder originalException(Exception originalException);
-
-        public abstract Builder created(Date created);
-
-        abstract D2Error autoBuild();
-        abstract D2ErrorCode errorCode();
-        abstract Date created();
-
-        public D2Error build() {
-            if (created() == null) {
-                created(new Date());
-            }
-            try {
-                errorCode();
-            } catch (IllegalStateException e) {
-                errorCode(D2ErrorCode.UNEXPECTED);
-            }
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .errorCode(D2ErrorCode.UNEXPECTED)
+            .created(Date())
     }
 }

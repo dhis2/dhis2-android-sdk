@@ -26,44 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.map.layer;
+package org.hisp.dhis.android.core.map.layer
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class MapLayerImageryProviderArea(
+    val bbox: List<Double>?,
+    val zoomMax: Int,
+    val zoomMin: Int,
+) {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun bbox(): List<Double>? = bbox
+    fun zoomMax(): Int = zoomMax
+    fun zoomMin(): Int = zoomMin
 
-import java.util.List;
+    fun toBuilder(): Builder = MapLayerImageryProviderAreaBuilder.from(this)
 
-@AutoValue
-public abstract class MapLayerImageryProvider implements CoreObject {
+    class Builder : MapLayerImageryProviderAreaBuilder()
 
-    @NonNull
-    public abstract String mapLayer();
-
-    @NonNull
-    public abstract String attribution();
-
-    @Nullable
-    public abstract List<MapLayerImageryProviderArea> coverageAreas();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_MapLayerImageryProvider.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder mapLayer(String mapLayer);
-
-        public abstract Builder attribution(String attribution);
-
-        public abstract Builder coverageAreas(List<MapLayerImageryProviderArea> coverageAreas);
-
-        public abstract MapLayerImageryProvider build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

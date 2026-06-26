@@ -10592,46 +10592,129 @@ public final class org/hisp/dhis/android/core/map/layer/ImageFormat : java/lang/
 	public static fun values ()[Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public static final field IMAGERY_PROVIDERS Ljava/lang/String;
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun code ()Ljava/lang/String;
-	public abstract fun displayName ()Ljava/lang/String;
-	public abstract fun external ()Ljava/lang/Boolean;
-	public abstract fun imageFormat ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
-	public abstract fun imageUrl ()Ljava/lang/String;
-	public abstract fun imageryProviders ()Ljava/util/List;
-	public abstract fun layers ()Ljava/lang/String;
-	public abstract fun linkedLayerUid ()Ljava/lang/String;
-	public abstract fun mapLayerPosition ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
-	public abstract fun mapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun style ()Ljava/lang/String;
-	public abstract fun subdomainPlaceholder ()Ljava/lang/String;
-	public abstract fun subdomains ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun uid ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/map/layer/MapLayer : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayer$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/hisp/dhis/android/core/map/layer/MapLayerPosition;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Lorg/hisp/dhis/android/core/map/layer/ImageFormat;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/util/List;
+	public final fun component11 ()Ljava/lang/String;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/map/layer/MapService;
+	public final fun component13 ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
+	public final fun component14 ()Ljava/lang/String;
+	public final fun component15 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun component5 ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/hisp/dhis/android/core/map/layer/MapLayerPosition;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Lorg/hisp/dhis/android/core/map/layer/ImageFormat;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/map/layer/MapLayer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLorg/hisp/dhis/android/core/map/layer/MapLayerPosition;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Lorg/hisp/dhis/android/core/map/layer/ImageFormat;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/map/layer/MapLayer;
+	public final fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun external ()Z
+	public final fun getCode ()Ljava/lang/String;
+	public final fun getDisplayName ()Ljava/lang/String;
+	public final fun getExternal ()Z
+	public final fun getImageFormat ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
+	public final fun getImageUrl ()Ljava/lang/String;
+	public final fun getImageryProviders ()Ljava/util/List;
+	public final fun getLayers ()Ljava/lang/String;
+	public final fun getLinkedLayerUid ()Ljava/lang/String;
+	public final fun getMapLayerPosition ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
+	public final fun getMapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getStyle ()Ljava/lang/String;
+	public final fun getSubdomainPlaceholder ()Ljava/lang/String;
+	public final fun getSubdomains ()Ljava/util/List;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun imageFormat ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
+	public final fun imageUrl ()Ljava/lang/String;
+	public final fun imageryProviders ()Ljava/util/List;
+	public final fun layers ()Ljava/lang/String;
+	public final fun linkedLayerUid ()Ljava/lang/String;
+	public final fun mapLayerPosition ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
+	public final fun mapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
+	public final fun name ()Ljava/lang/String;
+	public final fun style ()Ljava/lang/String;
+	public final fun subdomainPlaceholder ()Ljava/lang/String;
+	public final fun subdomains ()Ljava/util/List;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayer$Builder {
+public final class org/hisp/dhis/android/core/map/layer/MapLayer$Builder : org/hisp/dhis/android/core/map/layer/MapLayerBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayer;
-	public abstract fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun external (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun imageFormat (Lorg/hisp/dhis/android/core/map/layer/ImageFormat;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun imageUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun imageryProviders (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun layers (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun linkedLayerUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun mapLayerPosition (Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun mapService (Lorg/hisp/dhis/android/core/map/layer/MapService;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun style (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun subdomainPlaceholder (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun subdomains (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayer$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+}
+
+public class org/hisp/dhis/android/core/map/layer/MapLayerBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerBuilder$Companion;
+	protected field displayName Ljava/lang/String;
+	protected field imageUrl Ljava/lang/String;
+	protected field mapLayerPosition Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
+	protected field name Ljava/lang/String;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayer;
+	public final fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun external (Z)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getExternal ()Z
+	protected final fun getImageFormat ()Lorg/hisp/dhis/android/core/map/layer/ImageFormat;
+	protected final fun getImageUrl ()Ljava/lang/String;
+	protected final fun getImageryProviders ()Ljava/util/List;
+	protected final fun getLayers ()Ljava/lang/String;
+	protected final fun getLinkedLayerUid ()Ljava/lang/String;
+	protected final fun getMapLayerPosition ()Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;
+	protected final fun getMapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getStyle ()Ljava/lang/String;
+	protected final fun getSubdomainPlaceholder ()Ljava/lang/String;
+	protected final fun getSubdomains ()Ljava/util/List;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun imageFormat (Lorg/hisp/dhis/android/core/map/layer/ImageFormat;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun imageUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun imageryProviders (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun layers (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun linkedLayerUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun mapLayerPosition (Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun mapService (Lorg/hisp/dhis/android/core/map/layer/MapService;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setExternal (Z)V
+	protected final fun setImageFormat (Lorg/hisp/dhis/android/core/map/layer/ImageFormat;)V
+	protected final fun setImageUrl (Ljava/lang/String;)V
+	protected final fun setImageryProviders (Ljava/util/List;)V
+	protected final fun setLayers (Ljava/lang/String;)V
+	protected final fun setLinkedLayerUid (Ljava/lang/String;)V
+	protected final fun setMapLayerPosition (Lorg/hisp/dhis/android/core/map/layer/MapLayerPosition;)V
+	protected final fun setMapService (Lorg/hisp/dhis/android/core/map/layer/MapService;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setStyle (Ljava/lang/String;)V
+	protected final fun setSubdomainPlaceholder (Ljava/lang/String;)V
+	protected final fun setSubdomains (Ljava/util/List;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun style (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun subdomainPlaceholder (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun subdomains (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayerBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/map/layer/MapLayer;)Lorg/hisp/dhis/android/core/map/layer/MapLayer$Builder;
 }
 
 public final class org/hisp/dhis/android/core/map/layer/MapLayerCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyWithUidCollectionRepositoryImpl {
@@ -10656,38 +10739,102 @@ public final class org/hisp/dhis/android/core/map/layer/MapLayerDownloader : org
 	public final fun suspendDownloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attribution ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
-	public abstract fun coverageAreas ()Ljava/util/List;
-	public abstract fun mapLayer ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public final fun attribution ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
+	public final fun coverageAreas ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttribution ()Ljava/lang/String;
+	public final fun getCoverageAreas ()Ljava/util/List;
+	public final fun getMapLayer ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun mapLayer ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder {
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder : org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderBuilder {
 	public fun <init> ()V
-	public abstract fun attribution (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
-	public abstract fun coverageAreas (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
-	public abstract fun mapLayer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea {
-	public fun <init> ()V
-	public abstract fun bbox ()Ljava/util/List;
-	public static fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
-	public abstract fun zoomMax ()I
-	public abstract fun zoomMin ()I
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder {
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Companion;
+	public fun <init> (Ljava/util/List;II)V
+	public final fun bbox ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun copy (Ljava/util/List;II)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;Ljava/util/List;IIILjava/lang/Object;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBbox ()Ljava/util/List;
+	public final fun getZoomMax ()I
+	public final fun getZoomMin ()I
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun zoomMax ()I
+	public final fun zoomMin ()I
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder : org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderAreaBuilder {
 	public fun <init> ()V
-	public abstract fun bbox (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;
-	public abstract fun zoomMax (I)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
-	public abstract fun zoomMin (I)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+}
+
+public class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderAreaBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderAreaBuilder$Companion;
+	public fun <init> ()V
+	public final fun bbox (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;
+	protected final fun getBbox ()Ljava/util/List;
+	protected final fun getZoomMax ()I
+	protected final fun getZoomMin ()I
+	protected final fun setBbox (Ljava/util/List;)V
+	protected final fun setZoomMax (I)V
+	protected final fun setZoomMin (I)V
+	public final fun zoomMax (I)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+	public final fun zoomMin (I)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderAreaBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderArea$Builder;
+}
+
+public class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProviderBuilder$Companion;
+	protected field attribution Ljava/lang/String;
+	protected field mapLayer Ljava/lang/String;
+	public fun <init> ()V
+	public final fun attribution (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;
+	public final fun coverageAreas (Ljava/util/List;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+	protected final fun getAttribution ()Ljava/lang/String;
+	protected final fun getCoverageAreas ()Ljava/util/List;
+	protected final fun getMapLayer ()Ljava/lang/String;
+	public final fun mapLayer (Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
+	protected final fun setAttribution (Ljava/lang/String;)V
+	protected final fun setCoverageAreas (Ljava/util/List;)V
+	protected final fun setMapLayer (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/android/core/map/layer/MapLayerImageryProviderBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider;)Lorg/hisp/dhis/android/core/map/layer/MapLayerImageryProvider$Builder;
 }
 
 public final class org/hisp/dhis/android/core/map/layer/MapLayerPosition : java/lang/Enum {

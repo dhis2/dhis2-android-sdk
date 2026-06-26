@@ -26,55 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramRule(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val priority: Int?,
+    val condition: String?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val programRuleActions: List<ProgramRuleAction>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun priority(): Int? = priority
+    fun condition(): String? = condition
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun programRuleActions(): List<ProgramRuleAction>? = programRuleActions
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramRuleBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramRule extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : ProgramRuleBuilder()
 
-    @Nullable
-    public abstract Integer priority();
-
-    @Nullable
-    public abstract String condition();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract List<ProgramRuleAction> programRuleActions();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramRule.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<ProgramRule.Builder> {
-
-        public abstract Builder priority(Integer priority);
-
-        public abstract Builder condition(String condition);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder programRuleActions(List<ProgramRuleAction> programRuleActions);
-
-        public abstract ProgramRule build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

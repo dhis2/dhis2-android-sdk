@@ -26,102 +26,63 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class ProgramRuleAction(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val data: String?,
+    val content: String?,
+    val location: String?,
+    val trackedEntityAttribute: ObjectWithUid?,
+    val programIndicator: ObjectWithUid?,
+    val programStageSection: ObjectWithUid?,
+    val programRuleActionType: ProgramRuleActionType?,
+    val programStage: ObjectWithUid?,
+    val dataElement: ObjectWithUid?,
+    val programRule: ObjectWithUid?,
+    val option: ObjectWithUid?,
+    val optionGroup: ObjectWithUid?,
+    val displayContent: String?,
+    val priority: Int?,
+    val legendSet: ObjectWithUid?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun data(): String? = data
+    fun content(): String? = content
+    fun location(): String? = location
+    fun trackedEntityAttribute(): ObjectWithUid? = trackedEntityAttribute
+    fun programIndicator(): ObjectWithUid? = programIndicator
+    fun programStageSection(): ObjectWithUid? = programStageSection
+    fun programRuleActionType(): ProgramRuleActionType? = programRuleActionType
+    fun programStage(): ObjectWithUid? = programStage
+    fun dataElement(): ObjectWithUid? = dataElement
+    fun programRule(): ObjectWithUid? = programRule
+    fun option(): ObjectWithUid? = option
+    fun optionGroup(): ObjectWithUid? = optionGroup
+    fun displayContent(): String? = displayContent
+    fun priority(): Int? = priority
+    fun legendSet(): ObjectWithUid? = legendSet
 
-@AutoValue
-public abstract class ProgramRuleAction extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ProgramRuleActionBuilder.from(this)
 
-    @Nullable
-    public abstract String data();
+    class Builder : ProgramRuleActionBuilder()
 
-    @Nullable
-    public abstract String content();
-
-    @Nullable
-    public abstract String location();
-
-    @Nullable
-    public abstract ObjectWithUid trackedEntityAttribute();
-
-    @Nullable
-    public abstract ObjectWithUid programIndicator();
-
-    @Nullable
-    public abstract ObjectWithUid programStageSection();
-
-    @Nullable
-    public abstract ProgramRuleActionType programRuleActionType();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract ObjectWithUid dataElement();
-
-    @Nullable
-    public abstract ObjectWithUid programRule();
-
-    @Nullable
-    public abstract ObjectWithUid option();
-
-    @Nullable
-    public abstract ObjectWithUid optionGroup();
-
-    @Nullable
-    public abstract String displayContent();
-
-    @Nullable
-    public abstract Integer priority();
-
-    @Nullable
-    public abstract ObjectWithUid legendSet();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramRuleAction.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder data(String data);
-
-        public abstract Builder content(String content);
-
-        public abstract Builder location(String location);
-
-        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
-
-        public abstract Builder programIndicator(ObjectWithUid programIndicator);
-
-        public abstract Builder programStageSection(ObjectWithUid programStageSection);
-
-        public abstract Builder programRuleActionType(ProgramRuleActionType programRuleActionType);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder dataElement(ObjectWithUid dataElement);
-
-        public abstract Builder programRule(ObjectWithUid programRule);
-
-        public abstract Builder option(ObjectWithUid option);
-
-        public abstract Builder optionGroup(ObjectWithUid optionGroup);
-
-        public abstract Builder displayContent(String content);
-
-        public abstract Builder priority(Integer priority);
-
-        public abstract Builder legendSet(ObjectWithUid legendSet);
-
-        public abstract ProgramRuleAction build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

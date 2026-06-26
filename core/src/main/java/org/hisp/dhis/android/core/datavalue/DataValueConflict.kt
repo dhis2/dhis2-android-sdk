@@ -38,11 +38,11 @@ import java.util.Date
 data class DataValueConflict(
     val conflict: String?,
     val value: String?,
-    val attributeOptionCombo: String?,
-    val categoryOptionCombo: String?,
-    val dataElement: String?,
-    val period: String?,
-    val orgUnit: String?,
+    val attributeOptionCombo: String,
+    val categoryOptionCombo: String,
+    val dataElement: String,
+    val period: String,
+    val orgUnit: String,
     val errorCode: String?,
     val displayDescription: String?,
     val status: ImportStatus?,
@@ -51,11 +51,11 @@ data class DataValueConflict(
 
     fun conflict(): String? = conflict
     fun value(): String? = value
-    fun attributeOptionCombo(): String? = attributeOptionCombo
-    fun categoryOptionCombo(): String? = categoryOptionCombo
-    fun dataElement(): String? = dataElement
-    fun period(): String? = period
-    fun orgUnit(): String? = orgUnit
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun categoryOptionCombo(): String = categoryOptionCombo
+    fun dataElement(): String = dataElement
+    fun period(): String = period
+    fun orgUnit(): String = orgUnit
     fun errorCode(): String? = errorCode
     fun displayDescription(): String? = displayDescription
     fun status(): ImportStatus? = status

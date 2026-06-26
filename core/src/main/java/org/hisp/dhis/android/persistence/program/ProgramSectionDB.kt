@@ -64,7 +64,7 @@ internal data class ProgramSectionDB(
 
 internal fun ProgramSection.toDB(): ProgramSectionDB {
     return ProgramSectionDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

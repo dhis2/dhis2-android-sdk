@@ -67,7 +67,7 @@ internal fun ProgramStageSection.toDB(): ProgramStageSectionDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         sortOrder = sortOrder(),
-        programStage = programStage()!!.uid(),
+        programStage = programStage().uid(),
         desktopRenderType = renderType()?.desktop()?.type()?.name,
         mobileRenderType = renderType()?.mobile()?.type()?.name,
         description = description(),

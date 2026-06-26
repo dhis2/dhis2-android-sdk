@@ -60,7 +60,7 @@ internal data class ProgramStageSectionDTO(
             .programIndicators(programIndicators?.map { it.toDomain() })
             .dataElements(dataElements?.map { it.toDomain() })
             .renderType(renderType?.toDomain())
-            .programStage(programStage?.toDomain())
+            .programStage(programStage!!.toDomain())
             .description(description)
             .displayDescription(displayDescription)
             .build()

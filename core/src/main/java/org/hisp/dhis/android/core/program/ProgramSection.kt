@@ -26,79 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramSection(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val description: String?,
+    val program: ObjectWithUid?,
+    val attributes: List<TrackedEntityAttribute>?,
+    val sortOrder: Int?,
+    val formName: String?,
+    val renderType: SectionRendering?,
+    override val style: ObjectStyle,
+) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectStyle;
-import org.hisp.dhis.android.core.common.ObjectWithStyle;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute;
+    fun description(): String? = description
+    fun program(): ObjectWithUid? = program
+    fun attributes(): List<TrackedEntityAttribute>? = attributes
+    fun sortOrder(): Int? = sortOrder
+    fun formName(): String? = formName
+    fun renderType(): SectionRendering? = renderType
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramSectionBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramSection extends BaseIdentifiableObAuVa
-        implements CoreObject, ObjectWithStyle {
+    class Builder : ProgramSectionBuilder()
 
-    @Nullable
-    public abstract String description();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract List<TrackedEntityAttribute> attributes();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    @Nullable
-    public abstract String formName();
-
-    @Nullable
-    public abstract SectionRendering renderType();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSection.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder description(String description);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder attributes(List<TrackedEntityAttribute> attributes);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder formName(String formName);
-
-        public abstract Builder renderType(SectionRendering renderType);
-
-        public abstract Builder style(ObjectStyle style);
-
-        abstract ProgramSection autoBuild();
-
-        // Auxiliary fields
-        abstract ObjectStyle style();
-
-        public ProgramSection build() {
-            try {
-                style();
-            } catch (IllegalStateException e) {
-                style(ObjectStyle.builder().build());
-            }
-
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }

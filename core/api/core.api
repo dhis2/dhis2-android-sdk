@@ -7692,6 +7692,11 @@ public final class org/hisp/dhis/android/core/datavalue/DataValue$Companion {
 
 public class org/hisp/dhis/android/core/datavalue/DataValueBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueBuilder$Companion;
+	protected field attributeOptionCombo Ljava/lang/String;
+	protected field categoryOptionCombo Ljava/lang/String;
+	protected field dataElement Ljava/lang/String;
+	protected field organisationUnit Ljava/lang/String;
+	protected field period Ljava/lang/String;
 	public fun <init> ()V
 	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValue;
@@ -7820,6 +7825,11 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueConflict$Compan
 
 public class org/hisp/dhis/android/core/datavalue/DataValueConflictBuilder {
 	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueConflictBuilder$Companion;
+	protected field attributeOptionCombo Ljava/lang/String;
+	protected field categoryOptionCombo Ljava/lang/String;
+	protected field dataElement Ljava/lang/String;
+	protected field orgUnit Ljava/lang/String;
+	protected field period Ljava/lang/String;
 	public fun <init> ()V
 	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;

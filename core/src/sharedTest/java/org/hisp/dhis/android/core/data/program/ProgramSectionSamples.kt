@@ -45,13 +45,9 @@ object ProgramSectionSamples {
                 sortOrder(3)
                 formName("form_name")
                 renderType(
-                    SectionRendering.create(
-                        SectionDeviceRendering.create(
-                            SectionRenderingType.SEQUENTIAL,
-                        ),
-                        SectionDeviceRendering.create(
-                            SectionRenderingType.LISTING,
-                        ),
+                    SectionRendering(
+                        SectionDeviceRendering(SectionRenderingType.SEQUENTIAL),
+                        SectionDeviceRendering(SectionRenderingType.LISTING),
                     ),
                 )
             }.build()

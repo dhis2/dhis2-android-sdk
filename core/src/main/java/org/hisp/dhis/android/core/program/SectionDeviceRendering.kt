@@ -25,22 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+data class SectionDeviceRendering(
+    val type: SectionRenderingType?,
+) {
+    fun type(): SectionRenderingType? = type
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class SectionDeviceRendering {
-
-    @Nullable
-    public abstract SectionRenderingType type();
-
-    public static SectionDeviceRendering create(
-            SectionRenderingType type) {
-
-        return new AutoValue_SectionDeviceRendering(type);
+    companion object {
+        fun create(
+            type: SectionRenderingType?,
+        ): SectionDeviceRendering {
+            return SectionDeviceRendering(type)
+        }
     }
 }

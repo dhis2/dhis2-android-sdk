@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,105 +26,57 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+@Suppress("TooManyFunctions")
+data class DataValue(
+    override val syncState: State?,
+    override val deleted: Boolean?,
+    val dataElement: String?,
+    val period: String?,
+    val organisationUnit: String?,
+    val categoryOptionCombo: String?,
+    val attributeOptionCombo: String?,
+    internal val sourceDataSet: String?,
+    val value: String?,
+    val storedBy: String?,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val comment: String?,
+    val followUp: Boolean?,
+) : DataObjectKt, DeletableDataObjectKt {
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.State;
+    fun dataElement(): String? = dataElement
+    fun period(): String? = period
+    fun organisationUnit(): String? = organisationUnit
+    fun categoryOptionCombo(): String? = categoryOptionCombo
+    fun attributeOptionCombo(): String? = attributeOptionCombo
+    internal fun sourceDataSet(): String? = sourceDataSet
+    fun value(): String? = value
+    fun storedBy(): String? = storedBy
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    fun comment(): String? = comment
+    fun followUp(): Boolean? = followUp
 
-import java.util.Date;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState()
 
-@AutoValue
-public abstract class DataValue extends BaseDeletableDataObject {
+    fun toBuilder(): Builder = DataValueBuilder.from(this)
 
-    @Nullable
-    public abstract String dataElement();
+    class Builder : DataValueBuilder()
 
-    @Nullable
-    public abstract String period();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    public abstract String categoryOptionCombo();
-
-    @Nullable
-    public abstract String attributeOptionCombo();
-
-    @Nullable
-    abstract String sourceDataSet();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract String storedBy();
-
-    @Nullable
-    public abstract Date created();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract String comment();
-
-    @Nullable
-    public abstract Boolean followUp();
-
-    public abstract DataValue.Builder toBuilder();
-
-    public static DataValue.Builder builder() {
-        return new AutoValue_DataValue.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDeletableDataObject.Builder<DataValue.Builder> {
-
-        public Builder() {
-            syncState(State.SYNCED);
-        }
-
-        public abstract DataValue.Builder dataElement(@NonNull String dataElement);
-
-        public abstract DataValue.Builder period(@NonNull String period);
-
-        public abstract DataValue.Builder organisationUnit(@NonNull String organisationUnit);
-
-        public abstract DataValue.Builder categoryOptionCombo(@NonNull String categoryOptionCombo);
-
-        public abstract DataValue.Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
-
-        abstract DataValue.Builder sourceDataSet(@Nullable String sourceDataSet);
-
-        public abstract DataValue.Builder value(@Nullable String value);
-
-        public abstract DataValue.Builder storedBy(@Nullable String storedBy);
-
-        public abstract DataValue.Builder created(@NonNull Date created);
-
-        public abstract DataValue.Builder lastUpdated(@NonNull Date lastUpdated);
-
-        public abstract DataValue.Builder comment(@Nullable String comment);
-
-        public abstract DataValue.Builder followUp(@Nullable Boolean followUp);
-
-        abstract DataValue autoBuild();
-
-        // Auxiliary fields
-        abstract Boolean deleted();
-
-        public DataValue build() {
-            if (deleted() == null) {
-                deleted(false);
-            }
-            return autoBuild();
-        }
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .syncState(State.SYNCED)
+            .deleted(false)
     }
 }

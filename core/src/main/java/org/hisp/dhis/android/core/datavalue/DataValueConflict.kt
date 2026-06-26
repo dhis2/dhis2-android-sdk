@@ -26,83 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.datavalue;
+package org.hisp.dhis.android.core.datavalue
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.imports.ImportStatus
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@Suppress("TooManyFunctions")
+@ModelBuilder
+data class DataValueConflict(
+    val conflict: String?,
+    val value: String?,
+    val attributeOptionCombo: String?,
+    val categoryOptionCombo: String?,
+    val dataElement: String?,
+    val period: String?,
+    val orgUnit: String?,
+    val errorCode: String?,
+    val displayDescription: String?,
+    val status: ImportStatus?,
+    val created: Date?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.imports.ImportStatus;
+    fun conflict(): String? = conflict
+    fun value(): String? = value
+    fun attributeOptionCombo(): String? = attributeOptionCombo
+    fun categoryOptionCombo(): String? = categoryOptionCombo
+    fun dataElement(): String? = dataElement
+    fun period(): String? = period
+    fun orgUnit(): String? = orgUnit
+    fun errorCode(): String? = errorCode
+    fun displayDescription(): String? = displayDescription
+    fun status(): ImportStatus? = status
+    fun created(): Date? = created
 
-import java.util.Date;
+    fun toBuilder(): Builder = DataValueConflictBuilder.from(this)
 
-@AutoValue
-public abstract class DataValueConflict implements CoreObject {
+    class Builder : DataValueConflictBuilder()
 
-    @Nullable
-    public abstract String conflict();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract String attributeOptionCombo();
-
-    @Nullable
-    public abstract String categoryOptionCombo();
-
-    @Nullable
-    public abstract String dataElement();
-
-    @Nullable
-    public abstract String period();
-
-    @Nullable
-    public abstract String orgUnit();
-
-    @Nullable
-    public abstract String errorCode();
-
-    @Nullable
-    public abstract String displayDescription();
-
-    @Nullable
-    public abstract ImportStatus status();
-
-    @Nullable
-    public abstract Date created();
-
-    public static Builder builder() {
-        return new AutoValue_DataValueConflict.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder conflict(String conflict);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder attributeOptionCombo(String attributeOptionCombo);
-
-        public abstract Builder categoryOptionCombo(String categoryOptionCombo);
-
-        public abstract Builder dataElement(String dataElement);
-
-        public abstract Builder period(String period);
-
-        public abstract Builder orgUnit(String orgUnit);
-
-        public abstract Builder errorCode(String errorCode);
-
-        public abstract Builder displayDescription(String displayDescription);
-
-        public abstract Builder status(ImportStatus status);
-
-        public abstract Builder created(Date created);
-
-        public abstract DataValueConflict build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 @ModelBuilder
 data class TrackerImportConflict(
     val conflict: String?,

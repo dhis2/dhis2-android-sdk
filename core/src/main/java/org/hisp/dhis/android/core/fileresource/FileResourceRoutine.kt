@@ -34,7 +34,6 @@ import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
@@ -85,7 +84,7 @@ internal class FileResourceRoutine(
 
         val customIcons = customIconStore.selectAll()
 
-        val fileResourceUids = dataValues.map(DataValue::value) +
+        val fileResourceUids = dataValues.map { it.value() } +
             trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
             trackedEntityDataValues.map(TrackedEntityDataValue::value) +
             customIcons.map { it.fileResource().uid() }

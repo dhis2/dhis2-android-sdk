@@ -7630,37 +7630,115 @@ public final class org/hisp/dhis/android/core/datastore/internal/DataStoreModule
 	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValue : org/hisp/dhis/android/core/common/BaseDeletableDataObject {
-	public fun <init> ()V
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun categoryOptionCombo ()Ljava/lang/String;
-	public abstract fun comment ()Ljava/lang/String;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun followUp ()Ljava/lang/Boolean;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun storedBy ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun value ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/datavalue/DataValue : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/DeletableDataObjectKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValue$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/Boolean;)V
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun categoryOptionCombo ()Ljava/lang/String;
+	public final fun comment ()Ljava/lang/String;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Ljava/util/Date;
+	public final fun component12 ()Ljava/util/Date;
+	public final fun component13 ()Ljava/lang/String;
+	public final fun component14 ()Ljava/lang/Boolean;
+	public final fun component2 ()Ljava/lang/Boolean;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/datavalue/DataValue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/datavalue/DataValue;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/datavalue/DataValue;
+	public final fun created ()Ljava/util/Date;
+	public final fun dataElement ()Ljava/lang/String;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun followUp ()Ljava/lang/Boolean;
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getCategoryOptionCombo ()Ljava/lang/String;
+	public final fun getComment ()Ljava/lang/String;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Ljava/lang/String;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getFollowUp ()Ljava/lang/Boolean;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getStoredBy ()Ljava/lang/String;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun storedBy ()Ljava/lang/String;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValue$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public final class org/hisp/dhis/android/core/datavalue/DataValue$Builder : org/hisp/dhis/android/core/datavalue/DataValueBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/datavalue/DataValue$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+}
+
+public class org/hisp/dhis/android/core/datavalue/DataValueBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueBuilder$Companion;
+	public fun <init> ()V
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 	public fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValue;
-	public abstract fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun comment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun comment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun followUp (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getCategoryOptionCombo ()Ljava/lang/String;
+	protected final fun getComment ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getFollowUp ()Ljava/lang/Boolean;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getSourceDataSet ()Ljava/lang/String;
+	protected final fun getStoredBy ()Ljava/lang/String;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getValue ()Ljava/lang/String;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setCategoryOptionCombo (Ljava/lang/String;)V
+	protected final fun setComment (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setFollowUp (Ljava/lang/Boolean;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setSourceDataSet (Ljava/lang/String;)V
+	protected final fun setStoredBy (Ljava/lang/String;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/datavalue/DataValueBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/datavalue/DataValue;)Lorg/hisp/dhis/android/core/datavalue/DataValue$Builder;
 }
 
 public final class org/hisp/dhis/android/core/datavalue/DataValueCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository {
@@ -7687,37 +7765,100 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueCollectionRepos
 	public final fun value (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueObjectRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun categoryOptionCombo ()Ljava/lang/String;
-	public abstract fun conflict ()Ljava/lang/String;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun errorCode ()Ljava/lang/String;
-	public abstract fun orgUnit ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun value ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/datavalue/DataValueConflict : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;)V
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun categoryOptionCombo ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun component11 ()Ljava/util/Date;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun conflict ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
+	public final fun created ()Ljava/util/Date;
+	public final fun dataElement ()Ljava/lang/String;
+	public final fun displayDescription ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun errorCode ()Ljava/lang/String;
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getCategoryOptionCombo ()Ljava/lang/String;
+	public final fun getConflict ()Ljava/lang/String;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getDisplayDescription ()Ljava/lang/String;
+	public final fun getErrorCode ()Ljava/lang/String;
+	public final fun getOrgUnit ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getStatus ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun orgUnit ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public final fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/datavalue/DataValueConflict$Builder {
+public final class org/hisp/dhis/android/core/datavalue/DataValueConflict$Builder : org/hisp/dhis/android/core/datavalue/DataValueConflictBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
-	public abstract fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun conflict (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun errorCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun orgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+}
+
+public final class org/hisp/dhis/android/core/datavalue/DataValueConflict$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+}
+
+public class org/hisp/dhis/android/core/datavalue/DataValueConflictBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/datavalue/DataValueConflictBuilder$Companion;
+	public fun <init> ()V
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;
+	public final fun categoryOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun conflict (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun errorCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getCategoryOptionCombo ()Ljava/lang/String;
+	protected final fun getConflict ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getDisplayDescription ()Ljava/lang/String;
+	protected final fun getErrorCode ()Ljava/lang/String;
+	protected final fun getOrgUnit ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getStatus ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	protected final fun getValue ()Ljava/lang/String;
+	public final fun orgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setCategoryOptionCombo (Ljava/lang/String;)V
+	protected final fun setConflict (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setDisplayDescription (Ljava/lang/String;)V
+	protected final fun setErrorCode (Ljava/lang/String;)V
+	protected final fun setOrgUnit (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setStatus (Lorg/hisp/dhis/android/core/imports/ImportStatus;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
+}
+
+public final class org/hisp/dhis/android/core/datavalue/DataValueConflictBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/datavalue/DataValueConflict;)Lorg/hisp/dhis/android/core/datavalue/DataValueConflict$Builder;
 }
 
 public final class org/hisp/dhis/android/core/datavalue/DataValueConflictCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository {
@@ -9715,39 +9856,106 @@ public final class org/hisp/dhis/android/core/imports/ImportStatus : java/lang/E
 	public static fun values ()[Lorg/hisp/dhis/android/core/imports/ImportStatus;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun conflict ()Ljava/lang/String;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun dataElement ()Ljava/lang/String;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun enrollment ()Ljava/lang/String;
-	public abstract fun errorCode ()Ljava/lang/String;
-	public abstract fun event ()Ljava/lang/String;
-	public abstract fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
-	public abstract fun tableReference ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun trackedEntityAttribute ()Ljava/lang/String;
-	public abstract fun trackedEntityInstance ()Ljava/lang/String;
-	public abstract fun value ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/imports/TrackerImportConflict : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun component12 ()Ljava/util/Date;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun conflict ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/imports/ImportStatus;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
+	public final fun created ()Ljava/util/Date;
+	public final fun dataElement ()Ljava/lang/String;
+	public final fun displayDescription ()Ljava/lang/String;
+	public final fun enrollment ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun errorCode ()Ljava/lang/String;
+	public final fun event ()Ljava/lang/String;
+	public final fun getConflict ()Ljava/lang/String;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getDisplayDescription ()Ljava/lang/String;
+	public final fun getEnrollment ()Ljava/lang/String;
+	public final fun getErrorCode ()Ljava/lang/String;
+	public final fun getEvent ()Ljava/lang/String;
+	public final fun getStatus ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun getTableReference ()Ljava/lang/String;
+	public final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	public final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun status ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	public final fun tableReference ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttribute ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/imports/TrackerImportConflict$Builder {
+public final class org/hisp/dhis/android/core/imports/TrackerImportConflict$Builder : org/hisp/dhis/android/core/imports/TrackerImportConflictBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
-	public abstract fun conflict (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun errorCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun tableReference (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+}
+
+public final class org/hisp/dhis/android/core/imports/TrackerImportConflict$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+}
+
+public class org/hisp/dhis/android/core/imports/TrackerImportConflictBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/imports/TrackerImportConflictBuilder$Companion;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;
+	public final fun conflict (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun displayDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun enrollment (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun errorCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	protected final fun getConflict ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getDisplayDescription ()Ljava/lang/String;
+	protected final fun getEnrollment ()Ljava/lang/String;
+	protected final fun getErrorCode ()Ljava/lang/String;
+	protected final fun getEvent ()Ljava/lang/String;
+	protected final fun getStatus ()Lorg/hisp/dhis/android/core/imports/ImportStatus;
+	protected final fun getTableReference ()Ljava/lang/String;
+	protected final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
+	protected final fun getValue ()Ljava/lang/String;
+	protected final fun setConflict (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setDisplayDescription (Ljava/lang/String;)V
+	protected final fun setEnrollment (Ljava/lang/String;)V
+	protected final fun setErrorCode (Ljava/lang/String;)V
+	protected final fun setEvent (Ljava/lang/String;)V
+	protected final fun setStatus (Lorg/hisp/dhis/android/core/imports/ImportStatus;)V
+	protected final fun setTableReference (Ljava/lang/String;)V
+	protected final fun setTrackedEntityAttribute (Ljava/lang/String;)V
+	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun status (Lorg/hisp/dhis/android/core/imports/ImportStatus;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun tableReference (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
+}
+
+public final class org/hisp/dhis/android/core/imports/TrackerImportConflictBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/imports/TrackerImportConflict;)Lorg/hisp/dhis/android/core/imports/TrackerImportConflict$Builder;
 }
 
 public final class org/hisp/dhis/android/core/imports/TrackerImportConflictCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {

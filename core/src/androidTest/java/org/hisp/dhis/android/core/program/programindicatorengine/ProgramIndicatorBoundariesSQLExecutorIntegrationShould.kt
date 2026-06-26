@@ -123,6 +123,7 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period201912),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget("EVENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -137,10 +138,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period201911),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget("ENROLLMENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget("ENROLLMENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -156,10 +159,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period202012),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget("EVENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget("EVENT_DATE")
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -209,10 +214,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period202012),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -228,10 +235,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period202012),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(de(programStage1.uid(), dataElement1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -278,10 +287,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period202012),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -297,10 +308,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
                 periods = listOf(period202012),
                 boundaries = listOf(
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                         .build(),
                     AnalyticsPeriodBoundary.builder()
+                        .programIndicator("programIndicatorUid")
                         .boundaryTarget(att(attribute1.uid()))
                         .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                         .build(),
@@ -365,10 +378,12 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
 
         val boundaries = listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(psEventDate(programStage1.uid()))
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(psEventDate(programStage1.uid()))
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),
@@ -519,12 +534,14 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
         // Test adding periods before the start and after the end
         val wideRangeBoundaries = listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .offsetPeriods(-5)
                 .offsetPeriodType(PeriodType.Monthly)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .offsetPeriods(15)
@@ -543,12 +560,14 @@ internal class ProgramIndicatorBoundariesSQLExecutorIntegrationShould :
     fun onePeriodBackwardsBoundaries(column: String): List<AnalyticsPeriodBoundary> {
         return listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(column)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .offsetPeriods(-1)
                 .offsetPeriodType(PeriodType.Monthly)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(column)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .offsetPeriods(-1)

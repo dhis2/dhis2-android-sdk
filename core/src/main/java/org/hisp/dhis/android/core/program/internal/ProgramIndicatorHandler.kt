@@ -62,8 +62,6 @@ internal class ProgramIndicatorHandler(
                 .sortOrder(sortOrder)
                 .build()
         }
-        analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList()) { b ->
-            b.toBuilder().programIndicator(o.uid()).build()
-        }
+        analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList()) { it }
     }
 }

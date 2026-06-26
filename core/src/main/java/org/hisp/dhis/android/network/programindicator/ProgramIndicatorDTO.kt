@@ -78,7 +78,7 @@ internal data class ProgramIndicatorDTO(
             .aggregationType(aggregationType?.let { AggregationType.valueOf(it) })
             .program(program?.toDomain())
             .analyticsType(analyticsType?.let { AnalyticsType.valueOf(it) })
-            .analyticsPeriodBoundaries(analyticsPeriodBoundaries?.map { it.toDomain() })
+            .analyticsPeriodBoundaries(analyticsPeriodBoundaries?.mapNotNull { it.toDomain(id) })
             .legendSets(legendSets?.map { it.toDomain() })
             .categoryCombo(categoryCombo.toDomain())
             .attributeCombo(attributeCombo.toDomain())

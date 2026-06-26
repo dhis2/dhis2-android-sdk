@@ -34,16 +34,16 @@ import org.hisp.dhis.android.core.period.PeriodType
 
 @ModelBuilder
 data class AnalyticsPeriodBoundary(
-    val programIndicator: String?,
-    val boundaryTarget: String?,
-    val analyticsPeriodBoundaryType: AnalyticsPeriodBoundaryType?,
+    val programIndicator: String,
+    val boundaryTarget: String,
+    val analyticsPeriodBoundaryType: AnalyticsPeriodBoundaryType,
     val offsetPeriods: Int?,
     val offsetPeriodType: PeriodType?,
 ) : CoreObject {
 
-    fun programIndicator(): String? = programIndicator
-    fun boundaryTarget(): String? = boundaryTarget
-    fun analyticsPeriodBoundaryType(): AnalyticsPeriodBoundaryType? = analyticsPeriodBoundaryType
+    fun programIndicator(): String = programIndicator
+    fun boundaryTarget(): String = boundaryTarget
+    fun analyticsPeriodBoundaryType(): AnalyticsPeriodBoundaryType = analyticsPeriodBoundaryType
     fun offsetPeriods(): Int? = offsetPeriods
     fun offsetPeriodType(): PeriodType? = offsetPeriodType
 

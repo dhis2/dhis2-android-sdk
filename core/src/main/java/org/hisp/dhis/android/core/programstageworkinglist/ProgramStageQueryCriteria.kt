@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
+@Suppress("TooManyFunctions")
 @ModelBuilder
 data class ProgramStageQueryCriteria(
     val eventStatus: EventStatus?,

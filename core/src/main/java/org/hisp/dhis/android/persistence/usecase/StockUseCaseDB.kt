@@ -22,11 +22,11 @@ import org.hisp.dhis.android.persistence.program.ProgramDB
 internal data class StockUseCaseDB(
     @PrimaryKey
     val uid: String,
-    val itemCode: String?,
-    val itemDescription: String?,
-    val programType: String?,
-    val description: String?,
-    val stockOnHand: String?,
+    val itemCode: String,
+    val itemDescription: String,
+    val programType: String,
+    val description: String,
+    val stockOnHand: String,
 ) : EntityDB<InternalStockUseCase> {
     override fun toDomain(): InternalStockUseCase {
         return InternalStockUseCase.builder()

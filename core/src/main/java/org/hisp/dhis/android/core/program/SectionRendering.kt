@@ -33,13 +33,4 @@ data class SectionRendering(
 ) {
     fun desktop(): SectionDeviceRendering? = desktop
     fun mobile(): SectionDeviceRendering? = mobile
-
-    companion object {
-        fun create(
-            desktop: SectionDeviceRendering?,
-            mobile: SectionDeviceRendering?,
-        ): SectionRendering {
-            return SectionRendering(desktop, mobile)
-        }
-    }
 }

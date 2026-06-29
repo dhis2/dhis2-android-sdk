@@ -31,12 +31,4 @@ data class SectionDeviceRendering(
     val type: SectionRenderingType?,
 ) {
     fun type(): SectionRenderingType? = type
-
-    companion object {
-        fun create(
-            type: SectionRenderingType?,
-        ): SectionDeviceRendering {
-            return SectionDeviceRendering(type)
-        }
-    }
 }

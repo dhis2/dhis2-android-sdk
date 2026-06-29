@@ -14956,7 +14956,6 @@ public final class org/hisp/dhis/android/core/program/ProgramType : java/lang/En
 }
 
 public final class org/hisp/dhis/android/core/program/SectionDeviceRendering {
-	public static final field Companion Lorg/hisp/dhis/android/core/program/SectionDeviceRendering$Companion;
 	public fun <init> (Lorg/hisp/dhis/android/core/program/SectionRenderingType;)V
 	public final fun component1 ()Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 	public final fun copy (Lorg/hisp/dhis/android/core/program/SectionRenderingType;)Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;
@@ -14968,12 +14967,7 @@ public final class org/hisp/dhis/android/core/program/SectionDeviceRendering {
 	public final fun type ()Lorg/hisp/dhis/android/core/program/SectionRenderingType;
 }
 
-public final class org/hisp/dhis/android/core/program/SectionDeviceRendering$Companion {
-	public final fun create (Lorg/hisp/dhis/android/core/program/SectionRenderingType;)Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;
-}
-
 public final class org/hisp/dhis/android/core/program/SectionRendering {
-	public static final field Companion Lorg/hisp/dhis/android/core/program/SectionRendering$Companion;
 	public fun <init> (Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;)V
 	public final fun component1 ()Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;
 	public final fun component2 ()Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;
@@ -14986,10 +14980,6 @@ public final class org/hisp/dhis/android/core/program/SectionRendering {
 	public fun hashCode ()I
 	public final fun mobile ()Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/program/SectionRendering$Companion {
-	public final fun create (Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;Lorg/hisp/dhis/android/core/program/SectionDeviceRendering;)Lorg/hisp/dhis/android/core/program/SectionRendering;
 }
 
 public final class org/hisp/dhis/android/core/program/SectionRenderingType : java/lang/Enum {

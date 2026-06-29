@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandler
 import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.koin.core.annotation.Singleton
 

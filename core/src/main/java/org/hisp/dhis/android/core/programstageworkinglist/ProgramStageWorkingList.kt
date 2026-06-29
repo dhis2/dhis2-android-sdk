@@ -26,46 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programstageworkinglist;
+package org.hisp.dhis.android.core.programstageworkinglist
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageWorkingList(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val description: String?,
+    val program: ObjectWithUid,
+    val programStage: ObjectWithUid,
+    val programStageQueryCriteria: ProgramStageQueryCriteria?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun description(): String? = description
+    fun program(): ObjectWithUid = program
+    fun programStage(): ObjectWithUid = programStage
+    fun programStageQueryCriteria(): ProgramStageQueryCriteria? = programStageQueryCriteria
 
-@AutoValue
-public abstract class ProgramStageWorkingList extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ProgramStageWorkingListBuilder.from(this)
 
-    @Nullable
-    public abstract String description();
+    class Builder : ProgramStageWorkingListBuilder()
 
-    public abstract ObjectWithUid program();
-
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract ProgramStageQueryCriteria programStageQueryCriteria();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageWorkingList.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder description(String description);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder programStageQueryCriteria(ProgramStageQueryCriteria programStageQueryCriteria);
-
-        public abstract ProgramStageWorkingList build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

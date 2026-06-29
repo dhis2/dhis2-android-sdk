@@ -26,105 +26,55 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programstageworkinglist;
+package org.hisp.dhis.android.core.programstageworkinglist
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.DateFilterPeriod
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageQueryCriteria(
+    val eventStatus: EventStatus?,
+    val eventCreatedAt: DateFilterPeriod?,
+    val eventOccurredAt: DateFilterPeriod?,
+    val eventScheduledAt: DateFilterPeriod?,
+    val enrollmentStatus: EnrollmentStatus?,
+    val enrolledAt: DateFilterPeriod?,
+    val enrollmentOccurredAt: DateFilterPeriod?,
+    val order: String?,
+    val displayColumnOrder: List<String>?,
+    val orgUnit: String?,
+    val ouMode: OrganisationUnitMode?,
+    val assignedUserMode: AssignedUserMode?,
+    val dataFilters: List<ProgramStageWorkingListEventDataFilter>?,
+    val attributeValueFilters: List<ProgramStageWorkingListAttributeValueFilter>?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.DateFilterPeriod;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode;
+    fun eventStatus(): EventStatus? = eventStatus
+    fun eventCreatedAt(): DateFilterPeriod? = eventCreatedAt
+    fun eventOccurredAt(): DateFilterPeriod? = eventOccurredAt
+    fun eventScheduledAt(): DateFilterPeriod? = eventScheduledAt
+    fun enrollmentStatus(): EnrollmentStatus? = enrollmentStatus
+    fun enrolledAt(): DateFilterPeriod? = enrolledAt
+    fun enrollmentOccurredAt(): DateFilterPeriod? = enrollmentOccurredAt
+    fun order(): String? = order
+    fun displayColumnOrder(): List<String>? = displayColumnOrder
+    fun orgUnit(): String? = orgUnit
+    fun ouMode(): OrganisationUnitMode? = ouMode
+    fun assignedUserMode(): AssignedUserMode? = assignedUserMode
+    fun dataFilters(): List<ProgramStageWorkingListEventDataFilter>? = dataFilters
+    fun attributeValueFilters(): List<ProgramStageWorkingListAttributeValueFilter>? = attributeValueFilters
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramStageQueryCriteriaBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramStageQueryCriteria implements CoreObject {
+    class Builder : ProgramStageQueryCriteriaBuilder()
 
-    @Nullable
-    public abstract EventStatus eventStatus();
-
-    @Nullable
-    public abstract DateFilterPeriod eventCreatedAt();
-
-    @Nullable
-    public abstract DateFilterPeriod eventOccurredAt();
-
-    @Nullable
-    public abstract DateFilterPeriod eventScheduledAt();
-
-    @Nullable
-    public abstract EnrollmentStatus enrollmentStatus();
-
-    @Nullable
-    public abstract DateFilterPeriod enrolledAt();
-
-    @Nullable
-    public abstract DateFilterPeriod enrollmentOccurredAt();
-
-    @Nullable
-    public abstract String order();
-
-    @Nullable
-    public abstract List<String> displayColumnOrder();
-
-    @Nullable
-    public abstract String orgUnit();
-
-    @Nullable
-    public abstract OrganisationUnitMode ouMode();
-
-    @Nullable
-    public abstract AssignedUserMode assignedUserMode();
-
-    @Nullable
-    public abstract List<ProgramStageWorkingListEventDataFilter> dataFilters();
-
-    @Nullable
-    public abstract List<ProgramStageWorkingListAttributeValueFilter> attributeValueFilters();
-
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageQueryCriteria.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder eventStatus(EventStatus eventStatus);
-
-        public abstract Builder eventCreatedAt(DateFilterPeriod eventCreatedAt);
-
-        public abstract Builder eventOccurredAt(DateFilterPeriod eventOccurredAt);
-
-        public abstract Builder eventScheduledAt(DateFilterPeriod eventScheduledAt);
-
-        public abstract Builder enrollmentStatus(EnrollmentStatus enrollmentStatus);
-
-        public abstract Builder enrolledAt(DateFilterPeriod enrolledAt);
-
-        public abstract Builder enrollmentOccurredAt(DateFilterPeriod enrollmentOccurredAt);
-
-        public abstract Builder order(String order);
-
-        public abstract Builder displayColumnOrder(List<String> displayColumnOrder);
-
-        public abstract Builder orgUnit(String orgUnit);
-
-        public abstract Builder ouMode(OrganisationUnitMode ouMode);
-
-        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
-
-        public abstract Builder dataFilters(List<ProgramStageWorkingListEventDataFilter> dataFilters);
-
-        public abstract Builder attributeValueFilters(
-                List<ProgramStageWorkingListAttributeValueFilter> attributeValueFilters);
-
-        public abstract ProgramStageQueryCriteria build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

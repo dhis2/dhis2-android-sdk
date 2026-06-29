@@ -55,8 +55,10 @@ internal data class ProgramStageWorkingListDTO(
         return ProgramStageWorkingList.builder()
             .applyBaseIdentifiableFields(this)
             .description(description)
-            .program(program?.toDomain())
-            .programStage(programStage?.toDomain())
+            .apply {
+                program?.let { program(it.toDomain()) }
+                programStage?.let { programStage(it.toDomain()) }
+            }
             .programStageQueryCriteria(programStageQueryCriteria.toDomain(id))
             .build()
     }

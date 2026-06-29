@@ -100,7 +100,7 @@ internal data class ProgramStageWorkingListDB(
 
 internal fun ProgramStageWorkingList.toDB(): ProgramStageWorkingListDB {
     return ProgramStageWorkingListDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

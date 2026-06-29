@@ -3,7 +3,6 @@ package org.hisp.dhis.android.persistence.datavalue
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
@@ -97,8 +96,8 @@ internal data class DataValueDB(
             followUp(followUp)
             syncState?.let { syncState(it.toDomain()) }
             deleted(deleted)
+            sourceDataSet?.let { sourceDataSet(it) }
         }
-        DataValueInternalAccessor.insertSourceDataSet(builder, sourceDataSet)
         return builder.build()
     }
 }
@@ -110,7 +109,7 @@ internal fun DataValue.toDB(): DataValueDB {
         organisationUnit = organisationUnit(),
         categoryOptionCombo = categoryOptionCombo(),
         attributeOptionCombo = attributeOptionCombo(),
-        sourceDataSet = DataValueInternalAccessor.accessSourceDataSet(this),
+        sourceDataSet = sourceDataSet(),
         value = value(),
         storedBy = storedBy(),
         created = created().dateFormat(),

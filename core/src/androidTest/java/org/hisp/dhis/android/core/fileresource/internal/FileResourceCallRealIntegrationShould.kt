@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
@@ -206,7 +205,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
                 dataValue.dataElement(),
                 dataValue.categoryOptionCombo(),
                 dataValue.attributeOptionCombo(),
-                DataValueInternalAccessor.accessSourceDataSet(dataValue)!!,
+                dataValue.sourceDataSet()!!,
             )
             .blockingSet(uid)
 

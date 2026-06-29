@@ -35,6 +35,6 @@ internal open class ChildElementHandlerImpl<O : CoreObject>(
 ) : LinkHandlerImpl<O, O>(store), ChildElementHandler<O> {
 
     override suspend fun handleMany(masterUid: String, slaves: Collection<O>?) {
-        handleMany(masterUid, slaves) { it }
+        persist(masterUid, slaves?.map { beforeObjectHandled(it) })
     }
 }

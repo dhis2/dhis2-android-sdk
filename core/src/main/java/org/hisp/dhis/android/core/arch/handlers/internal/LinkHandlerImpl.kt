@@ -33,15 +33,15 @@ import org.hisp.dhis.android.core.common.CoreObject
 internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkStore<O>) : LinkHandler<S, O> {
 
     override suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
+        persist(masterUid, slaves?.map { transformer.invoke(beforeObjectHandled(it)) })
+    }
+
+    protected suspend fun persist(masterUid: String, transformedSlaves: Collection<O>?) {
         store.deleteLinksForMasterUid(masterUid)
-        if (slaves != null) {
-            val preHandledCollection = slaves
-                .map { beforeObjectHandled(it) }
-                .map { transformer.invoke(it) }
+        if (transformedSlaves != null) {
+            store.updateOrInsert(transformedSlaves)
 
-            store.updateOrInsert(preHandledCollection)
-
-            preHandledCollection.forEach { afterObjectHandled(it) }
+            transformedSlaves.forEach { afterObjectHandled(it) }
         }
     }
 

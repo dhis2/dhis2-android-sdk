@@ -34,15 +34,13 @@ internal open class ChildElementHandlerImpl<O : CoreObject>(private val store: L
 
     override suspend fun handleMany(masterUid: String, slaves: Collection<O>?) {
         store.deleteLinksForMasterUid(masterUid)
-        slaves?.forEach { slave ->
-            handleInternal(slave)
-        }
-    }
+        if (slaves != null) {
+            val preHandledCollection = slaves.map { beforeObjectHandled(it) }
 
-    private suspend fun handleInternal(s: O) {
-        val s2 = beforeObjectHandled(s)
-        store.insertIfNotExists(s2)
-        afterObjectHandled(s2)
+            store.updateOrInsert(preHandledCollection)
+
+            preHandledCollection.forEach { afterObjectHandled(it) }
+        }
     }
 
     protected open suspend fun beforeObjectHandled(o: O): O {

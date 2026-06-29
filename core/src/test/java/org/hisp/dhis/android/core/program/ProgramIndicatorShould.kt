@@ -57,7 +57,7 @@ internal class ProgramIndicatorShould : CoreObjectShould<ProgramIndicatorDTO>(
         assertThat(programIndicator.decimals()).isNull()
         assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE)
         assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT)
-        assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(5)
+        assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(4)
         assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTarget())
             .isEqualTo("Custom boundary")
         assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTarget()).isEqualTo("INCIDENT_DATE")

@@ -34,7 +34,8 @@ internal open class ChildElementHandlerImpl<O : CoreObject>(
     store: LinkStore<O>,
 ) : LinkHandlerImpl<O, O>(store), ChildElementHandler<O> {
 
-    override suspend fun handleMany(masterUid: String, slaves: Collection<O>?) {
-        persist(masterUid, slaves?.map { beforeObjectHandled(it) })
+    override suspend fun handleMany(masterUid: String, items: Collection<O>?) {
+        val transformedLinks = items?.map { beforeObjectHandled(it) }
+        persist(masterUid, transformedLinks)
     }
 }

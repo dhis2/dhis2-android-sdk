@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,41 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
 
-import androidx.annotation.NonNull;
+package org.hisp.dhis.android.core.program
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class CategoryOptionMapping(
+    val categoryMapping: String,
+    val optionId: String,
+    val filter: String,
+) : CoreObject {
 
-@AutoValue
-public abstract class ProgramSectionAttributeLink implements CoreObject {
+    fun categoryMapping(): String = categoryMapping
+    fun optionId(): String = optionId
+    fun filter(): String = filter
 
-    @NonNull
-    public abstract String programSection();
+    fun toBuilder(): Builder = CategoryOptionMappingBuilder.from(this)
 
-    @NonNull
-    public abstract String attribute();
+    class Builder : CategoryOptionMappingBuilder()
 
-    @NonNull
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramSectionAttributeLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programSection(String programSection);
-
-        public abstract Builder attribute(String attribute);
-
-        public abstract Builder sortOrder(Integer integer);
-
-        public abstract ProgramSectionAttributeLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

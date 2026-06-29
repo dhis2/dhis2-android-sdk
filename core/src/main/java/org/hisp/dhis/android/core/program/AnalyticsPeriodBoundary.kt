@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,17 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstage
+package org.hisp.dhis.android.core.program
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.program.SectionDeviceRendering
-import org.hisp.dhis.android.core.program.SectionRenderingType
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.period.PeriodType
 
-@Serializable
-internal data class SectionDeviceRenderingDTO(
-    val type: String?,
-) {
-    fun toDomain(): SectionDeviceRendering {
-        return SectionDeviceRendering(type?.let { SectionRenderingType.valueOf(it) })
+@ModelBuilder
+data class AnalyticsPeriodBoundary(
+    val programIndicator: String,
+    val boundaryTarget: String,
+    val analyticsPeriodBoundaryType: AnalyticsPeriodBoundaryType,
+    val offsetPeriods: Int?,
+    val offsetPeriodType: PeriodType?,
+) : CoreObject {
+
+    fun programIndicator(): String = programIndicator
+    fun boundaryTarget(): String = boundaryTarget
+    fun analyticsPeriodBoundaryType(): AnalyticsPeriodBoundaryType = analyticsPeriodBoundaryType
+    fun offsetPeriods(): Int? = offsetPeriods
+    fun offsetPeriodType(): PeriodType? = offsetPeriodType
+
+    fun boundaryTargetType(): BoundaryTargetType = BoundaryTargetType.getType(boundaryTarget)
+
+    fun toBuilder(): Builder = AnalyticsPeriodBoundaryBuilder.from(this)
+
+    class Builder : AnalyticsPeriodBoundaryBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

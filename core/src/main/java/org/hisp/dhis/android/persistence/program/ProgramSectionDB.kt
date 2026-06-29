@@ -53,9 +53,9 @@ internal data class ProgramSectionDB(
             sortOrder(sortOrder)
             formName(formName)
             renderType(
-                SectionRendering.create(
-                    desktopRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
-                    mobileRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
+                SectionRendering(
+                    desktopRenderType?.let { SectionDeviceRendering(SectionRenderingType.valueOf(it)) },
+                    mobileRenderType?.let { SectionDeviceRendering(SectionRenderingType.valueOf(it)) },
                 ),
             )
         }.build()
@@ -64,7 +64,7 @@ internal data class ProgramSectionDB(
 
 internal fun ProgramSection.toDB(): ProgramSectionDB {
     return ProgramSectionDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

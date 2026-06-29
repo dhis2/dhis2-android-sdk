@@ -304,10 +304,12 @@ internal class ProgramIndicatorDisaggregationSQLExecutorIntegrationShould :
         }
         val boundaries = listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(boundaryTarget)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget(boundaryTarget)
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),

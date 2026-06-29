@@ -25,22 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class ProgramStageSectionProgramIndicatorLink(
+    val programStageSection: String,
+    val programIndicator: String,
+) : CoreObject {
 
-import com.google.auto.value.AutoValue;
+    fun programStageSection(): String = programStageSection
+    fun programIndicator(): String = programIndicator
 
-@AutoValue
-public abstract class SectionDeviceRendering {
+    fun toBuilder(): Builder = ProgramStageSectionProgramIndicatorLinkBuilder.from(this)
 
-    @Nullable
-    public abstract SectionRenderingType type();
+    class Builder : ProgramStageSectionProgramIndicatorLinkBuilder()
 
-    public static SectionDeviceRendering create(
-            SectionRenderingType type) {
-
-        return new AutoValue_SectionDeviceRendering(type);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

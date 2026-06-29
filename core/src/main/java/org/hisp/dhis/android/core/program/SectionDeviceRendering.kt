@@ -25,37 +25,10 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-@AutoValue
-public abstract class ProgramStageSectionProgramIndicatorLink implements CoreObject {
-
-    @Nullable
-    public abstract String programStageSection();
-
-    @Nullable
-    public abstract String programIndicator();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageSectionProgramIndicatorLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programStageSection(@Nullable String programStageSection);
-
-        public abstract Builder programIndicator(@Nullable String programIndicator);
-
-        public abstract ProgramStageSectionProgramIndicatorLink build();
-    }
+data class SectionDeviceRendering(
+    val type: SectionRenderingType?,
+) {
+    fun type(): SectionRenderingType? = type
 }

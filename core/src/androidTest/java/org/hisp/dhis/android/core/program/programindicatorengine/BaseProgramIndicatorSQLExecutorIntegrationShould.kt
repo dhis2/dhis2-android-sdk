@@ -152,10 +152,12 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
     private val defaultEventBoundaries: List<AnalyticsPeriodBoundary> =
         listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),
@@ -164,10 +166,12 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
     private val defaultEnrollmentBoundaries: List<AnalyticsPeriodBoundary> =
         listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("ENROLLMENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("ENROLLMENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),

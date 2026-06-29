@@ -26,55 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElement
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageSection(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val sortOrder: Int?,
+    val programIndicators: List<ProgramIndicator>?,
+    val dataElements: List<DataElement>?,
+    val renderType: SectionRendering?,
+    val programStage: ObjectWithUid,
+    val description: String?,
+    val displayDescription: String?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun sortOrder(): Int? = sortOrder
+    fun programIndicators(): List<ProgramIndicator>? = programIndicators
+    fun dataElements(): List<DataElement>? = dataElements
+    fun renderType(): SectionRendering? = renderType
+    fun programStage(): ObjectWithUid = programStage
+    fun description(): String? = description
+    fun displayDescription(): String? = displayDescription
 
-import java.util.List;
+    fun toBuilder(): Builder = ProgramStageSectionBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramRule extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : ProgramStageSectionBuilder()
 
-    @Nullable
-    public abstract Integer priority();
-
-    @Nullable
-    public abstract String condition();
-
-    @Nullable
-    public abstract ObjectWithUid program();
-
-    @Nullable
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract List<ProgramRuleAction> programRuleActions();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramRule.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<ProgramRule.Builder> {
-
-        public abstract Builder priority(Integer priority);
-
-        public abstract Builder condition(String condition);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder programRuleActions(List<ProgramRuleAction> programRuleActions);
-
-        public abstract ProgramRule build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

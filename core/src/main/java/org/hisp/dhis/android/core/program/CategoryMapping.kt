@@ -26,35 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.common.CoreObject;
+@ModelBuilder
+data class CategoryMapping(
+    val uid: String,
+    val program: String,
+    val categoryId: String,
+    val mappingName: String,
+    val optionMappings: List<CategoryOptionMapping>,
+) : CoreObject {
 
-@AutoValue
-public abstract class CategoryOptionMapping implements CoreObject {
+    fun uid(): String = uid
+    fun program(): String = program
+    fun categoryId(): String = categoryId
+    fun mappingName(): String = mappingName
+    fun optionMappings(): List<CategoryOptionMapping> = optionMappings
 
-    public abstract String categoryMapping();
+    fun toBuilder(): Builder = CategoryMappingBuilder.from(this)
 
-    public abstract String optionId();
+    class Builder : CategoryMappingBuilder()
 
-    public abstract String filter();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryOptionMapping.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder categoryMapping(String categoryMapping);
-
-        public abstract Builder optionId(String optionId);
-
-        public abstract Builder filter(String filter);
-
-        public abstract CategoryOptionMapping build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

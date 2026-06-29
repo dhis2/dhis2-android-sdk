@@ -25,41 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramSectionAttributeLink(
+    val programSection: String,
+    val attribute: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun programSection(): String = programSection
+    fun attribute(): String = attribute
+    fun sortOrder(): Int = sortOrder
 
-@AutoValue
-public abstract class ProgramStageSectionDataElementLink implements CoreObject {
+    fun toBuilder(): Builder = ProgramSectionAttributeLinkBuilder.from(this)
 
-    @NonNull
-    public abstract String programStageSection();
+    class Builder : ProgramSectionAttributeLinkBuilder()
 
-    @NonNull
-    public abstract String dataElement();
-
-    @NonNull
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageSectionDataElementLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programStageSection(@NonNull String programStageSection);
-
-        public abstract Builder dataElement(@NonNull String dataElement);
-
-        public abstract Builder sortOrder(@NonNull Integer sortOrder);
-
-        public abstract ProgramStageSectionDataElementLink build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

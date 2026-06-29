@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,46 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program
 
-package org.hisp.dhis.android.core.program;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.common.CoreObject;
-
-import java.util.List;
-
-@AutoValue
-public abstract class CategoryMapping implements CoreObject {
-
-    public abstract String uid();
-
-    public abstract String program();
-
-    public abstract String categoryId();
-
-    public abstract String mappingName();
-
-    public abstract List<CategoryOptionMapping> optionMappings();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_CategoryMapping.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder program(String program);
-
-        public abstract Builder categoryId(String categoryId);
-
-        public abstract Builder mappingName(String mappingName);
-
-        public abstract Builder optionMappings(List<CategoryOptionMapping> optionMappings);
-
-        public abstract CategoryMapping build();
-    }
+data class SectionRendering(
+    val desktop: SectionDeviceRendering?,
+    val mobile: SectionDeviceRendering?,
+) {
+    fun desktop(): SectionDeviceRendering? = desktop
+    fun mobile(): SectionDeviceRendering? = mobile
 }

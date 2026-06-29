@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,43 +26,49 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.programstage
+package org.hisp.dhis.android.core.program
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.program.ProgramStageSection
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-import org.hisp.dhis.android.network.dataelement.DataElementDTO
-import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.common.ObjectWithStyleKt
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
+import java.util.Date
 
-@Serializable
-internal data class ProgramStageSectionDTO(
-    override val id: String,
+@ModelBuilder
+data class ProgramSection(
+    override val uid: String,
     override val code: String?,
     override val name: String?,
     override val displayName: String?,
-    override val created: String?,
-    override val lastUpdated: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
     override val deleted: Boolean?,
-    val sortOrder: Int?,
-    val programIndicators: List<ProgramIndicatorDTO>?,
-    val dataElements: List<DataElementDTO>?,
-    val renderType: SectionRenderingDTO?,
-    val programStage: ObjectWithUidDTO?,
     val description: String?,
-    val displayDescription: String?,
-) : BaseIdentifiableObjectDTO {
-    fun toDomain(): ProgramStageSection {
-        return ProgramStageSection.builder()
-            .applyBaseIdentifiableFields(this)
-            .sortOrder(sortOrder)
-            .programIndicators(programIndicators?.map { it.toDomain() })
-            .dataElements(dataElements?.map { it.toDomain() })
-            .renderType(renderType?.toDomain())
-            .programStage(programStage!!.toDomain())
-            .description(description)
-            .displayDescription(displayDescription)
-            .build()
+    val program: ObjectWithUid?,
+    val attributes: List<TrackedEntityAttribute>?,
+    val sortOrder: Int?,
+    val formName: String?,
+    val renderType: SectionRendering?,
+    override val style: ObjectStyle,
+) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
+
+    fun description(): String? = description
+    fun program(): ObjectWithUid? = program
+    fun attributes(): List<TrackedEntityAttribute>? = attributes
+    fun sortOrder(): Int? = sortOrder
+    fun formName(): String? = formName
+    fun renderType(): SectionRendering? = renderType
+
+    fun toBuilder(): Builder = ProgramSectionBuilder.from(this)
+
+    class Builder : ProgramSectionBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .style(ObjectStyle())
     }
 }

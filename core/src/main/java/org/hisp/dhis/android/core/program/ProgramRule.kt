@@ -26,56 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program;
+package org.hisp.dhis.android.core.program
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramRule(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val priority: Int?,
+    val condition: String?,
+    val program: ObjectWithUid?,
+    val programStage: ObjectWithUid?,
+    val programRuleActions: List<ProgramRuleAction>?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.period.PeriodType;
+    fun priority(): Int? = priority
+    fun condition(): String? = condition
+    fun program(): ObjectWithUid? = program
+    fun programStage(): ObjectWithUid? = programStage
+    fun programRuleActions(): List<ProgramRuleAction>? = programRuleActions
 
-@AutoValue
-public abstract class AnalyticsPeriodBoundary implements CoreObject {
+    fun toBuilder(): Builder = ProgramRuleBuilder.from(this)
 
-    @Nullable
-    public abstract String programIndicator();
+    class Builder : ProgramRuleBuilder()
 
-    @Nullable
-    public abstract String boundaryTarget();
-
-    @Nullable
-    public abstract AnalyticsPeriodBoundaryType analyticsPeriodBoundaryType();
-
-    @Nullable
-    public abstract Integer offsetPeriods();
-
-    @Nullable
-    public abstract PeriodType offsetPeriodType();
-
-    @Nullable
-    public BoundaryTargetType boundaryTargetType() {
-        return BoundaryTargetType.getType(boundaryTarget());
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_AnalyticsPeriodBoundary.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder programIndicator(String programIndicator);
-
-        public abstract Builder boundaryTarget(String boundaryTarget);
-
-        public abstract Builder analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType analyticsPeriodBoundaryType);
-
-        public abstract Builder offsetPeriods(Integer offsetPeriods);
-
-        public abstract Builder offsetPeriodType(PeriodType offsetPeriodType);
-
-        public abstract AnalyticsPeriodBoundary build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

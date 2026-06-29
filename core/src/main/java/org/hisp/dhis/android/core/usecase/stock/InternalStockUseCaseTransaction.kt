@@ -26,62 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.usecase.stock;
+package org.hisp.dhis.android.core.usecase.stock
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+internal data class InternalStockUseCaseTransaction(
+    val programUid: String?,
+    val sortOrder: Int,
+    val transactionType: String,
+    val distributedTo: String?,
+    val stockDistributed: String?,
+    val stockDiscarded: String?,
+    val stockCount: String?,
+) : CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun programUid(): String? = programUid
+    fun sortOrder(): Int = sortOrder
+    fun transactionType(): String = transactionType
+    fun distributedTo(): String? = distributedTo
+    fun stockDistributed(): String? = stockDistributed
+    fun stockDiscarded(): String? = stockDiscarded
+    fun stockCount(): String? = stockCount
 
-@AutoValue
-public abstract class InternalStockUseCaseTransaction implements CoreObject {
+    fun toBuilder(): Builder = InternalStockUseCaseTransactionBuilder.from(this)
 
-    @Nullable
-    public abstract String programUid();
+    class Builder : InternalStockUseCaseTransactionBuilder()
 
-    @NonNull
-    public abstract Integer sortOrder();
-
-    @NonNull
-    public abstract String transactionType();
-
-    @Nullable
-    public abstract String distributedTo();
-
-    @Nullable
-    public abstract String stockDistributed();
-
-    @Nullable
-    public abstract String stockDiscarded();
-
-    @Nullable
-    public abstract String stockCount();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_InternalStockUseCaseTransaction.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programUid(String programUid);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder transactionType(String transactionType);
-
-        public abstract Builder distributedTo(String distributedTo);
-
-        public abstract Builder stockDistributed(String stockDistributed);
-
-        public abstract Builder stockDiscarded(String stockDiscarded);
-
-        public abstract Builder stockCount(String stockCount);
-
-        public abstract InternalStockUseCaseTransaction build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

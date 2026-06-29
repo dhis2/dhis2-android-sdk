@@ -26,67 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.usecase.stock;
+package org.hisp.dhis.android.core.usecase.stock
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+internal data class InternalStockUseCase(
+    override val uid: String,
+    val itemCode: String,
+    val itemDescription: String,
+    val programType: String,
+    val description: String,
+    val stockOnHand: String,
+    val transactions: List<InternalStockUseCaseTransaction>?,
+) : CoreObject, ObjectWithUidInterfaceKt {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    fun itemCode(): String = itemCode
+    fun itemDescription(): String = itemDescription
+    fun programType(): String = programType
+    fun description(): String = description
+    fun stockOnHand(): String = stockOnHand
+    fun transactions(): List<InternalStockUseCaseTransaction>? = transactions
 
-import java.util.List;
+    fun toBuilder(): Builder = InternalStockUseCaseBuilder.from(this)
 
-@AutoValue
-public abstract class InternalStockUseCase implements CoreObject, ObjectWithUidInterface {
+    class Builder : InternalStockUseCaseBuilder()
 
-    public static final String TRANSACTIONS = "transactions";
-
-    @Override
-    @NonNull
-    public abstract String uid();
-
-    @NonNull
-    public abstract String itemCode();
-
-    @NonNull
-    public abstract String itemDescription();
-
-    @NonNull
-    public abstract String programType();
-
-    @NonNull
-    public abstract String description();
-
-    @NonNull
-    public abstract String stockOnHand();
-
-    @Nullable
-    public abstract List<InternalStockUseCaseTransaction> transactions();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_InternalStockUseCase.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder uid(String uid);
-
-        public abstract Builder itemCode(String itemCode);
-
-        public abstract Builder itemDescription(String itemDescription);
-
-        public abstract Builder programType(String programType);
-
-        public abstract Builder description(String description);
-
-        public abstract Builder stockOnHand(String stockOnHand);
-
-        public abstract Builder transactions(List<InternalStockUseCaseTransaction> transactions);
-
-        public abstract InternalStockUseCase build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

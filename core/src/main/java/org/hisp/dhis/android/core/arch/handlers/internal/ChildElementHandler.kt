@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 
 import org.hisp.dhis.android.core.common.CoreObject
 
-internal interface ChildElementHandler<O : CoreObject> {
+internal fun interface ChildElementHandler<O : CoreObject> {
     suspend fun handleMany(masterUid: String, items: Collection<O>?)
 }

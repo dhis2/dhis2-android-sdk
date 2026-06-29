@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.program.CategoryOptionMapping
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class CategoryOptionMappingHandler(
     store: CategoryOptionMappingStore,
-) : LinkHandlerImpl<CategoryOptionMapping, CategoryOptionMapping>(store)
+) : ChildElementHandlerImpl<CategoryOptionMapping>(store)

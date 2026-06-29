@@ -71,8 +71,8 @@ class CategoryMappingHandlerShould {
             .optionMappings(listOf(optionMapping))
             .build()
 
-        categoryMappingHandler.handleMany("program1", listOf(categoryMapping)) { it }
+        categoryMappingHandler.handleMany("program1", listOf(categoryMapping))
 
-        verify(categoryOptionMappingHandler).handleMany(eq("mapping1"), any(), any())
+        verify(categoryOptionMappingHandler).handleMany(eq("mapping1"), any())
     }
 }

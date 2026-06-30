@@ -86,11 +86,6 @@ internal class ValidationRulePayload(
     override val pager: PagerDTO?,
     @SerialName("validationRules") override val items: List<ValidationRuleDTO> = emptyList(),
 ) : PayloadJson<ValidationRuleDTO>(pager, items) {
-    fun mapNotNullItems(
-        transform: (ValidationRuleDTO) -> ValidationRule?,
-    ): PayloadJson<ValidationRule> {
-        return PayloadJson(pager, items.mapNotNull(transform))
-    }
 }
 
 @Serializable

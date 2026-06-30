@@ -25,37 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.usecase.stock.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
-import org.hisp.dhis.android.core.data.usecase.stock.InternalStockUseCaseSamples.get
-import org.hisp.dhis.android.core.usecase.stock.InternalStockUseCase
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
-import org.hisp.dhis.android.persistence.usecase.StockUseCaseStoreImpl
-import org.hisp.dhis.android.persistence.usecase.StockUseCaseTableInfo
-import org.junit.runner.RunWith
+package org.hisp.dhis.android.core.usecase.stock
 
-@RunWith(D2JunitRunner::class)
-internal class StockUseCaseStoreIntegrationShould :
-    IdentifiableObjectStoreAbstractIntegrationShould<InternalStockUseCase>(
-        StockUseCaseStoreImpl(TestDatabaseAdapterFactory.get()),
-        StockUseCaseTableInfo.TABLE_INFO,
-        TestDatabaseAdapterFactory.get(),
-    ) {
-    override fun buildObject(): InternalStockUseCase {
-        return get()
-    }
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-    override fun buildObjectToUpdate(): InternalStockUseCase {
-        return get().toBuilder()
-            .stockOnHand("new_stock_on_hand")
-            .build()
-    }
+@ModelBuilder
+internal data class InternalStockUseCaseTransaction(
+    val programUid: String?,
+    val sortOrder: Int,
+    val transactionType: String,
+    val distributedTo: String?,
+    val stockDistributed: String?,
+    val stockDiscarded: String?,
+    val stockCount: String?,
+) : CoreObject {
 
-    override fun buildObjectWithNullableFields(): InternalStockUseCase {
-        return buildObject().toBuilder()
-            .transactions(null)
-            .build()
+    fun programUid(): String? = programUid
+    fun sortOrder(): Int = sortOrder
+    fun transactionType(): String = transactionType
+    fun distributedTo(): String? = distributedTo
+    fun stockDistributed(): String? = stockDistributed
+    fun stockDiscarded(): String? = stockDiscarded
+    fun stockCount(): String? = stockCount
+
+    fun toBuilder(): Builder = InternalStockUseCaseTransactionBuilder.from(this)
+
+    class Builder : InternalStockUseCaseTransactionBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

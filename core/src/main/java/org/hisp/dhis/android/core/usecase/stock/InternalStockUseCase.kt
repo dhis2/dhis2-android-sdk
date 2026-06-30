@@ -26,46 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.programstageworkinglist;
+package org.hisp.dhis.android.core.usecase.stock
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterfaceKt
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+internal data class InternalStockUseCase(
+    override val uid: String,
+    val itemCode: String,
+    val itemDescription: String,
+    val programType: String,
+    val description: String,
+    val stockOnHand: String,
+    val transactions: List<InternalStockUseCaseTransaction>?,
+) : CoreObject, ObjectWithUidInterfaceKt {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    fun itemCode(): String = itemCode
+    fun itemDescription(): String = itemDescription
+    fun programType(): String = programType
+    fun description(): String = description
+    fun stockOnHand(): String = stockOnHand
+    fun transactions(): List<InternalStockUseCaseTransaction>? = transactions
 
-@AutoValue
-public abstract class ProgramStageWorkingList extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = InternalStockUseCaseBuilder.from(this)
 
-    @Nullable
-    public abstract String description();
+    class Builder : InternalStockUseCaseBuilder()
 
-    public abstract ObjectWithUid program();
-
-    public abstract ObjectWithUid programStage();
-
-    @Nullable
-    public abstract ProgramStageQueryCriteria programStageQueryCriteria();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramStageWorkingList.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-
-        public abstract Builder description(String description);
-
-        public abstract Builder program(ObjectWithUid program);
-
-        public abstract Builder programStage(ObjectWithUid programStage);
-
-        public abstract Builder programStageQueryCriteria(ProgramStageQueryCriteria programStageQueryCriteria);
-
-        public abstract ProgramStageWorkingList build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

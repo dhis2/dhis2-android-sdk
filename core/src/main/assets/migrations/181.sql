@@ -150,3 +150,25 @@ CREATE TABLE MapLayer(uid TEXT NOT NULL, name TEXT NOT NULL, displayName TEXT NO
 INSERT INTO MapLayer(uid, name, displayName, external, mapLayerPosition, style, imageUrl, subdomains, subdomainPlaceholder, code, mapService, imageFormat, layers, linkedLayerUid) SELECT uid, name, displayName, external, mapLayerPosition, style, imageUrl, subdomains, subdomainPlaceholder, code, mapService, imageFormat, layers, linkedLayerUid FROM MapLayer_Old;
 DROP TABLE IF EXISTS MapLayer_Old;
 
+# StockUseCase: make itemCode, itemDescription, programType, description and stockOnHand non-null (ANDROSDK-2336)
+
+# Remove rows with null itemCode, itemDescription, programType, description or stockOnHand
+DELETE FROM StockUseCase WHERE itemCode IS NULL OR itemDescription IS NULL OR programType IS NULL OR description IS NULL OR stockOnHand IS NULL;
+
+# Recreate table with itemCode, itemDescription, programType, description and stockOnHand as NOT NULL
+ALTER TABLE StockUseCase RENAME TO StockUseCase_Old;
+CREATE TABLE StockUseCase(uid TEXT NOT NULL, itemCode TEXT NOT NULL, itemDescription TEXT NOT NULL, programType TEXT NOT NULL, description TEXT NOT NULL, stockOnHand TEXT NOT NULL, PRIMARY KEY(uid), FOREIGN KEY(uid) REFERENCES Program(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO StockUseCase(uid, itemCode, itemDescription, programType, description, stockOnHand) SELECT uid, itemCode, itemDescription, programType, description, stockOnHand FROM StockUseCase_Old;
+DROP TABLE IF EXISTS StockUseCase_Old;
+
+# StockUseCaseTransaction: make sortOrder non-null (ANDROSDK-2336)
+
+# Remove rows with null sortOrder
+DELETE FROM StockUseCaseTransaction WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE StockUseCaseTransaction RENAME TO StockUseCaseTransaction_Old;
+CREATE TABLE StockUseCaseTransaction(programUid TEXT NOT NULL, sortOrder INTEGER NOT NULL, transactionType TEXT NOT NULL, distributedTo TEXT, stockDistributed TEXT, stockDiscarded TEXT, stockCount TEXT, PRIMARY KEY(programUid, transactionType), FOREIGN KEY(programUid) REFERENCES StockUseCase(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO StockUseCaseTransaction(programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount) SELECT programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount FROM StockUseCaseTransaction_Old;
+DROP TABLE IF EXISTS StockUseCaseTransaction_Old;
+

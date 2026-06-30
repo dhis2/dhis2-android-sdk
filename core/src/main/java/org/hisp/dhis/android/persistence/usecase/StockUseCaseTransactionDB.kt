@@ -21,7 +21,7 @@ import org.hisp.dhis.android.processor.ParentColumn
 )
 internal data class StockUseCaseTransactionDB(
     @ParentColumn val programUid: String,
-    val sortOrder: Int?,
+    val sortOrder: Int,
     val transactionType: String,
     val distributedTo: String?,
     val stockDistributed: String?,

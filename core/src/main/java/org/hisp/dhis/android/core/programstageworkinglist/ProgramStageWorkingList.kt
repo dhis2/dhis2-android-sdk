@@ -26,62 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.usecase.stock;
+package org.hisp.dhis.android.core.programstageworkinglist
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramStageWorkingList(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val description: String?,
+    val program: ObjectWithUid,
+    val programStage: ObjectWithUid,
+    val programStageQueryCriteria: ProgramStageQueryCriteria?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun description(): String? = description
+    fun program(): ObjectWithUid = program
+    fun programStage(): ObjectWithUid = programStage
+    fun programStageQueryCriteria(): ProgramStageQueryCriteria? = programStageQueryCriteria
 
-@AutoValue
-public abstract class InternalStockUseCaseTransaction implements CoreObject {
+    fun toBuilder(): Builder = ProgramStageWorkingListBuilder.from(this)
 
-    @Nullable
-    public abstract String programUid();
+    class Builder : ProgramStageWorkingListBuilder()
 
-    @NonNull
-    public abstract Integer sortOrder();
-
-    @NonNull
-    public abstract String transactionType();
-
-    @Nullable
-    public abstract String distributedTo();
-
-    @Nullable
-    public abstract String stockDistributed();
-
-    @Nullable
-    public abstract String stockDiscarded();
-
-    @Nullable
-    public abstract String stockCount();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_InternalStockUseCaseTransaction.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder programUid(String programUid);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract Builder transactionType(String transactionType);
-
-        public abstract Builder distributedTo(String distributedTo);
-
-        public abstract Builder stockDistributed(String stockDistributed);
-
-        public abstract Builder stockDiscarded(String stockDiscarded);
-
-        public abstract Builder stockCount(String stockCount);
-
-        public abstract InternalStockUseCaseTransaction build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

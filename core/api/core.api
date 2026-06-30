@@ -15261,62 +15261,171 @@ public class org/hisp/dhis/android/core/program/programindicatorengine/internal/
 	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
-	public abstract fun attributeValueFilters ()Ljava/util/List;
-	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun dataFilters ()Ljava/util/List;
-	public abstract fun displayColumnOrder ()Ljava/util/List;
-	public abstract fun enrolledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun enrollmentOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun enrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
-	public abstract fun eventCreatedAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventScheduledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public abstract fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
-	public abstract fun order ()Ljava/lang/String;
-	public abstract fun orgUnit ()Ljava/lang/String;
-	public abstract fun ouMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/event/EventStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/util/List;Ljava/util/List;)V
+	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun attributeValueFilters ()Ljava/util/List;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/event/EventStatus;
+	public final fun component10 ()Ljava/lang/String;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun component12 ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun component13 ()Ljava/util/List;
+	public final fun component14 ()Ljava/util/List;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component7 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Lorg/hisp/dhis/android/core/event/EventStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;Lorg/hisp/dhis/android/core/event/EventStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public final fun dataFilters ()Ljava/util/List;
+	public final fun displayColumnOrder ()Ljava/util/List;
+	public final fun enrolledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun enrollmentOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun enrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun eventCreatedAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventScheduledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun eventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
+	public final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	public final fun getAttributeValueFilters ()Ljava/util/List;
+	public final fun getDataFilters ()Ljava/util/List;
+	public final fun getDisplayColumnOrder ()Ljava/util/List;
+	public final fun getEnrolledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEnrollmentOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEnrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	public final fun getEventCreatedAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventScheduledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	public final fun getEventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
+	public final fun getOrder ()Ljava/lang/String;
+	public final fun getOrgUnit ()Ljava/lang/String;
+	public final fun getOuMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public fun hashCode ()I
+	public final fun order ()Ljava/lang/String;
+	public final fun orgUnit ()Ljava/lang/String;
+	public final fun ouMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder {
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder : org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteriaBuilder {
 	public fun <init> ()V
-	public abstract fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun attributeValueFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
-	public abstract fun dataFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun displayColumnOrder (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun enrolledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun enrollmentOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun enrollmentStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun eventCreatedAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun eventOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun eventScheduledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun eventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun order (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun orgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
-	public abstract fun ouMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun programStageQueryCriteria ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteriaBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteriaBuilder$Companion;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
-	public abstract fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
-	public abstract fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
-	public abstract fun programStageQueryCriteria (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public final fun assignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun attributeValueFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public final fun dataFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun displayColumnOrder (Ljava/util/List;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun enrolledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun enrollmentOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun enrollmentStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun eventCreatedAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun eventOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun eventScheduledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun eventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	protected final fun getAssignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
+	protected final fun getAttributeValueFilters ()Ljava/util/List;
+	protected final fun getDataFilters ()Ljava/util/List;
+	protected final fun getDisplayColumnOrder ()Ljava/util/List;
+	protected final fun getEnrolledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEnrollmentOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEnrollmentStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
+	protected final fun getEventCreatedAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventOccurredAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventScheduledAt ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
+	protected final fun getEventStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
+	protected final fun getOrder ()Ljava/lang/String;
+	protected final fun getOrgUnit ()Ljava/lang/String;
+	protected final fun getOuMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun order (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun orgUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	public final fun ouMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+	protected final fun setAssignedUserMode (Lorg/hisp/dhis/android/core/common/AssignedUserMode;)V
+	protected final fun setAttributeValueFilters (Ljava/util/List;)V
+	protected final fun setDataFilters (Ljava/util/List;)V
+	protected final fun setDisplayColumnOrder (Ljava/util/List;)V
+	protected final fun setEnrolledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEnrollmentOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEnrollmentStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)V
+	protected final fun setEventCreatedAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventOccurredAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventScheduledAt (Lorg/hisp/dhis/android/core/common/DateFilterPeriod;)V
+	protected final fun setEventStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)V
+	protected final fun setOrder (Ljava/lang/String;)V
+	protected final fun setOrgUnit (Ljava/lang/String;)V
+	protected final fun setOuMode (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)V
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteriaBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component11 ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public final fun description ()Ljava/lang/String;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getDescription ()Ljava/lang/String;
+	public fun getDisplayName ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getProgramStageQueryCriteria ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun program ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun programStageQueryCriteria ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder : org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
 }
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterOperators {
@@ -15436,6 +15545,63 @@ public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWork
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilterBuilder$Companion {
 	public final fun from (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListAttributeValueFilter$Builder;
+}
+
+public class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListBuilder$Companion;
+	protected field program Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected field programStage Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public final fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDescription ()Ljava/lang/String;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getProgramStageQueryCriteria ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public final fun program (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public final fun programStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	public final fun programStageQueryCriteria (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDescription (Ljava/lang/String;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setProgramStageQueryCriteria (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
+}
+
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
 }
 
 public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -21468,57 +21634,6 @@ public abstract interface class org/hisp/dhis/android/core/usecase/UseCaseModule
 public final class org/hisp/dhis/android/core/usecase/internal/UseCaseModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
 	public fun wipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun wipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public static final field TRANSACTIONS Ljava/lang/String;
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun itemCode ()Ljava/lang/String;
-	public abstract fun itemDescription ()Ljava/lang/String;
-	public abstract fun programType ()Ljava/lang/String;
-	public abstract fun stockOnHand ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun transactions ()Ljava/util/List;
-	public abstract fun uid ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase;
-	public abstract fun description (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun itemCode (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun itemDescription (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun programType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun stockOnHand (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun transactions (Ljava/util/List;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCase$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun distributedTo ()Ljava/lang/String;
-	public abstract fun programUid ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun stockCount ()Ljava/lang/String;
-	public abstract fun stockDiscarded ()Ljava/lang/String;
-	public abstract fun stockDistributed ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun transactionType ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder {
-	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction;
-	public abstract fun distributedTo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun programUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun stockCount (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun stockDiscarded (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun stockDistributed (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
-	public abstract fun transactionType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/usecase/stock/InternalStockUseCaseTransaction$Builder;
 }
 
 public final class org/hisp/dhis/android/core/usecase/stock/StockUseCase : org/hisp/dhis/android/core/common/ObjectWithUidInterface {

@@ -40,7 +40,7 @@ internal data class TrackedEntityTypeAttributeDB(
             .trackedEntityType(ObjectWithUid.create(trackedEntityType))
             .trackedEntityAttribute(ObjectWithUid.create(trackedEntityAttribute))
             .displayInList(displayInList)
-            .mandatory(mandatory?.let { it })
+            .mandatory(mandatory)
             .searchable(searchable)
             .sortOrder(sortOrder)
             .build()
@@ -50,8 +50,8 @@ internal data class TrackedEntityTypeAttributeDB(
 internal fun TrackedEntityTypeAttribute.toDB(): TrackedEntityTypeAttributeDB {
     return TrackedEntityTypeAttributeDB(
         trackedEntityType = trackedEntityType().uid(),
-        trackedEntityAttribute = trackedEntityAttribute()?.uid()!!,
-        displayInList = displayInList()!!,
+        trackedEntityAttribute = trackedEntityAttribute().uid(),
+        displayInList = displayInList(),
         mandatory = mandatory(),
         searchable = searchable(),
         sortOrder = sortOrder(),

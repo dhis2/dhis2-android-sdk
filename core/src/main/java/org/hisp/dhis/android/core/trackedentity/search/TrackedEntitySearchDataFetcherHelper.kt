@@ -101,11 +101,11 @@ internal class TrackedEntitySearchDataFetcherHelper(
                 .suspendGet()
 
             val attributes = trackedEntityAttributeCollectionRepository
-                .byUid().`in`(typeAttributes.mapNotNull { it.trackedEntityAttribute()?.uid() })
+                .byUid().`in`(typeAttributes.map { it.trackedEntityAttribute().uid() })
                 .suspendGet()
 
             typeAttributes.mapNotNull { typeAttribute ->
-                val attributeUid = typeAttribute.trackedEntityAttribute()!!.uid()
+                val attributeUid = typeAttribute.trackedEntityAttribute().uid()
                 attributes.find { it.uid() == attributeUid }?.let { attribute ->
                     getSimpleTrackedEntityAttribute(
                         attribute = attribute,

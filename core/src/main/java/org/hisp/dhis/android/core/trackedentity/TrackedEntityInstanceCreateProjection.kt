@@ -26,40 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityInstanceCreateProjection(
+    val organisationUnit: String,
+    val trackedEntityType: String,
+) {
+    fun organisationUnit(): String = organisationUnit
+    fun trackedEntityType(): String = trackedEntityType
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.jetbrains.annotations.NotNull;
+    fun toBuilder(): Builder = TrackedEntityInstanceCreateProjectionBuilder.from(this)
 
-@AutoValue
-public abstract class TrackedEntityAttributeLegendSetLink implements CoreObject {
-    @NotNull
-    public abstract String trackedEntityAttribute();
+    class Builder : TrackedEntityInstanceCreateProjectionBuilder()
 
-    @NotNull
-    public abstract String legendSet();
+    companion object {
+        @JvmStatic
+        fun create(organisationUnit: String, trackedEntityType: String): TrackedEntityInstanceCreateProjection =
+            builder()
+                .organisationUnit(organisationUnit)
+                .trackedEntityType(trackedEntityType)
+                .build()
 
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityAttributeLegendSetLink.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
-
-        public abstract Builder legendSet(String legendSet);
-
-        public abstract Builder sortOrder(@Nullable Integer sortOrder);
-
-        public abstract TrackedEntityAttributeLegendSetLink build();
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

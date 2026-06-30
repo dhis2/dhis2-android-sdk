@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
 import org.junit.Before
@@ -190,19 +189,22 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun validTei(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(TrackedEntityInstance.builder(), listOf(validEnrollment()))
-            .uid(uidGenerator.generate())
+        val teiUid = uidGenerator.generate()
+        return TrackedEntityInstance.builder()
+            .enrollments(listOf(validEnrollment()))
+            .uid(teiUid)
             .organisationUnit(captureOrgunit)
             .trackedEntityType(trackedEntityType)
             .trackedEntityAttributeValues(
                 listOf(
                     TrackedEntityAttributeValue.builder()
                         .trackedEntityAttribute(attribute1)
+                        .trackedEntityInstance(teiUid)
                         .value("Test")
                         .build(),
                     TrackedEntityAttributeValue.builder()
                         .trackedEntityAttribute(attribute2)
+                        .trackedEntityInstance(teiUid)
                         .value("TrackedEntity")
                         .build(),
                 ),
@@ -231,31 +233,31 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun teiWithEventInSearchScope(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(),
-            listOf(
-                validEnrollment().toBuilder()
-                    .events(
-                        listOf(
-                            validEvent().toBuilder()
-                                .organisationUnit(searchOrgunit)
-                                .build(),
-                        ),
-                    )
-                    .build(),
-            ),
-        )
+        return validTei().toBuilder()
+            .enrollments(
+                listOf(
+                    validEnrollment().toBuilder()
+                        .events(
+                            listOf(
+                                validEvent().toBuilder()
+                                    .organisationUnit(searchOrgunit)
+                                    .build(),
+                            ),
+                        )
+                        .build(),
+                ),
+            )
             .build()
     }
 
     private fun teiWithEnrollmentInSearchScope(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(),
-            listOf(
-                validEnrollment().toBuilder().events(listOf(validEvent()))
-                    .organisationUnit(searchOrgunit).build(),
-            ),
-        )
+        return validTei().toBuilder()
+            .enrollments(
+                listOf(
+                    validEnrollment().toBuilder().events(listOf(validEvent()))
+                        .organisationUnit(searchOrgunit).build(),
+                ),
+            )
             .build()
     }
 

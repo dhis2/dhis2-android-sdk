@@ -153,8 +153,7 @@ internal class ProgramIndicatorEngineImpl(
         } ?: return mapOf()
 
         return trackedEntityAttributeValues
-            .filter { it.trackedEntityAttribute() != null }
-            .associateBy { it.trackedEntityAttribute()!! }
+            .associateBy { it.trackedEntityAttribute() }
     }
 
     private suspend fun getEnrollmentEvents(enrollment: Enrollment): Map<String, List<Event>> {

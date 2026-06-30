@@ -45,15 +45,15 @@ internal data class NewTrackedEntityDataValueDTO(
     val providedElsewhere: Boolean?,
 ) {
     fun toDomain(eventUid: String?): TrackedEntityDataValue {
-        return TrackedEntityDataValue.builder()
-            .event(eventUid)
-            .created(createdAt?.toDomain())
-            .lastUpdated(updatedAt?.toDomain())
-            .dataElement(dataElement)
-            .storedBy(createdBy?.username)
-            .value(value?.value)
-            .providedElsewhere(providedElsewhere)
-            .build()
+        return TrackedEntityDataValue.builder().apply {
+            eventUid?.let { event(it) }
+            created(createdAt?.toDomain())
+            lastUpdated(updatedAt?.toDomain())
+            dataElement?.let { dataElement(it) }
+            storedBy(createdBy?.username)
+            value(value?.value)
+            providedElsewhere(providedElsewhere)
+        }.build()
     }
 }
 

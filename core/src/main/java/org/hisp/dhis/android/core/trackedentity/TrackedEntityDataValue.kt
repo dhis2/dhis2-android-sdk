@@ -26,40 +26,44 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import androidx.annotation.NonNull;
+@ModelBuilder
+data class TrackedEntityDataValue(
+    val event: String,
+    val dataElement: String,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val storedBy: String?,
+    val value: String?,
+    val providedElsewhere: Boolean?,
+    override val syncState: State?,
+) : DataObjectKt, ObjectWithDeleteInterface {
+    fun event(): String = event
+    fun dataElement(): String = dataElement
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    fun storedBy(): String? = storedBy
+    fun value(): String? = value
+    fun providedElsewhere(): Boolean? = providedElsewhere
 
-@AutoValue
-public abstract class TrackedEntityInstanceCreateProjection {
+    override fun deleted(): Boolean = value.isNullOrEmpty()
 
-    @NonNull
-    public abstract String organisationUnit();
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-    @NonNull
-    public abstract String trackedEntityType();
+    fun toBuilder(): Builder = TrackedEntityDataValueBuilder.from(this)
 
-    public static TrackedEntityInstanceCreateProjection create(String organisationUnit, String trackedEntityType) {
-        return builder()
-                .organisationUnit(organisationUnit)
-                .trackedEntityType(trackedEntityType)
-                .build();
-    }
+    class Builder : TrackedEntityDataValueBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceCreateProjection.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder trackedEntityType(String trackedEntityType);
-
-        public abstract TrackedEntityInstanceCreateProjection build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

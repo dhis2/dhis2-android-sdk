@@ -93,7 +93,7 @@ internal data class EventDTO(
             assignedUser(assignedUser)
             notes(notes?.map { it.toDomain(event = event) })
             relationships(relationships?.map { it.toDomain() })
-            trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
+            trackedEntityDataValues(dataValues?.mapNotNull { it.toDomain(event) })
         }.build()
     }
 }

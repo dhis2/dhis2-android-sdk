@@ -25,36 +25,28 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import org.hisp.dhis.android.core.enrollment.Enrollment;
-import org.hisp.dhis.android.core.relationship.Relationship;
+@ModelBuilder
+data class TrackedEntityAttributeLegendSetLink(
+    val trackedEntityAttribute: String,
+    val legendSet: String,
+    val sortOrder: Int,
+) : CoreObject {
 
-import java.util.List;
+    fun trackedEntityAttribute(): String = trackedEntityAttribute
+    fun legendSet(): String = legendSet
+    fun sortOrder(): Int = sortOrder
 
-public final class TrackedEntityInstanceInternalAccessor {
+    fun toBuilder(): Builder = TrackedEntityAttributeLegendSetLinkBuilder.from(this)
 
-    private TrackedEntityInstanceInternalAccessor() {
-    }
+    class Builder : TrackedEntityAttributeLegendSetLinkBuilder()
 
-    public static List<Enrollment> accessEnrollments(TrackedEntityInstance trackedEntityInstance) {
-        return trackedEntityInstance.enrollments();
-    }
-
-    public static TrackedEntityInstance.Builder insertEnrollments(
-            TrackedEntityInstance.Builder builder,
-            List<Enrollment> enrollments) {
-        return builder.enrollments(enrollments);
-    }
-
-    public static List<Relationship> accessRelationships(TrackedEntityInstance trackedEntityInstance) {
-        return trackedEntityInstance.relationships();
-    }
-
-    public static TrackedEntityInstance.Builder insertRelationships(
-            TrackedEntityInstance.Builder builder,
-            List<Relationship> relationships) {
-        return builder.relationships(relationships);
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

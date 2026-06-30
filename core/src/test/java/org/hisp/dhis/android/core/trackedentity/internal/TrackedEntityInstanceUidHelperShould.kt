@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -119,12 +118,12 @@ class TrackedEntityInstanceUidHelperShould {
 
     private fun addToEnrollment(organisationUnitId: String) {
         whenever(enrollment.organisationUnit()).thenReturn(organisationUnitId)
-        whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(listOf(enrollment))
+        whenever(tei1.enrollments).thenReturn(listOf(enrollment))
     }
 
     private fun addToEvent(organisationUnitId: String) {
         whenever(event.organisationUnit()).thenReturn(organisationUnitId)
         whenever(enrollment.events()).thenReturn(listOf(event))
-        whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(tei1)).thenReturn(listOf(enrollment))
+        whenever(tei1.enrollments).thenReturn(listOf(enrollment))
     }
 }

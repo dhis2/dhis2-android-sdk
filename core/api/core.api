@@ -20260,21 +20260,54 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public final fun withLegendSets ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
-	public abstract fun legendSet ()Ljava/lang/String;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
-	public abstract fun trackedEntityAttribute ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;I)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;I)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;Ljava/lang/String;Ljava/lang/String;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLegendSet ()Ljava/lang/String;
+	public final fun getSortOrder ()I
+	public final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun legendSet ()Ljava/lang/String;
+	public final fun sortOrder ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttribute ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
-	public abstract fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
-	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkBuilder$Companion;
+	protected field legendSet Ljava/lang/String;
+	protected field trackedEntityAttribute Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;
+	protected final fun getLegendSet ()Ljava/lang/String;
+	protected final fun getSortOrder ()I
+	protected final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	public final fun legendSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+	protected final fun setLegendSet (Ljava/lang/String;)V
+	protected final fun setSortOrder (I)V
+	protected final fun setTrackedEntityAttribute (Ljava/lang/String;)V
+	public final fun sortOrder (I)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+	public final fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLinkBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue : org/hisp/dhis/android/core/common/CoreObject {
@@ -20333,26 +20366,74 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueManager$Companion {
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun created ()Ljava/util/Date;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/Date;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
+	public final fun created ()Ljava/util/Date;
 	public fun deleted ()Ljava/lang/Boolean;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun trackedEntityAttribute ()Ljava/lang/String;
-	public abstract fun trackedEntityInstance ()Ljava/lang/String;
-	public abstract fun value ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	public final fun getTrackedEntityInstance ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttribute ()Ljava/lang/String;
+	public final fun trackedEntityInstance ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueBuilder$Companion;
+	protected field trackedEntityAttribute Ljava/lang/String;
+	protected field trackedEntityInstance Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getTrackedEntityAttribute ()Ljava/lang/String;
+	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
+	protected final fun getValue ()Ljava/lang/String;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setTrackedEntityAttribute (Ljava/lang/String;)V
+	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	public final fun trackedEntityAttribute (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	public final fun trackedEntityInstance (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValue$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -20376,30 +20457,86 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun dataElement ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/State;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/Date;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;
+	public final fun created ()Ljava/util/Date;
+	public final fun dataElement ()Ljava/lang/String;
 	public fun deleted ()Ljava/lang/Boolean;
-	public abstract fun event ()Ljava/lang/String;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun providedElsewhere ()Ljava/lang/Boolean;
-	public abstract fun storedBy ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun value ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun event ()Ljava/lang/String;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getDataElement ()Ljava/lang/String;
+	public final fun getEvent ()Ljava/lang/String;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getProvidedElsewhere ()Ljava/lang/Boolean;
+	public final fun getStoredBy ()Ljava/lang/String;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun providedElsewhere ()Ljava/lang/Boolean;
+	public fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun storedBy ()Ljava/lang/String;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun providedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueBuilder$Companion;
+	protected field dataElement Ljava/lang/String;
+	protected field event Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun dataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun event (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDataElement ()Ljava/lang/String;
+	protected final fun getEvent ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getProvidedElsewhere ()Ljava/lang/Boolean;
+	protected final fun getStoredBy ()Ljava/lang/String;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getValue ()Ljava/lang/String;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun providedElsewhere (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDataElement (Ljava/lang/String;)V
+	protected final fun setEvent (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setProvidedElsewhere (Ljava/lang/Boolean;)V
+	protected final fun setStoredBy (Ljava/lang/String;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValue$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -20424,40 +20561,118 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityDataVal
 	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance : org/hisp/dhis/android/core/common/BaseDeletableDataObject, org/hisp/dhis/android/core/common/ObjectWithUidInterface {
-	public fun <init> ()V
-	public abstract fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun createdAtClient ()Ljava/util/Date;
-	public abstract fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun lastUpdatedAtClient ()Ljava/util/Date;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun programOwners ()Ljava/util/List;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/DeletableDataObjectKt, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)V
+	public final fun aggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun component11 ()Ljava/util/List;
+	public final fun component14 ()Ljava/util/List;
+	public final fun component15 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/util/Date;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/State;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
+	public final fun created ()Ljava/util/Date;
+	public final fun createdAtClient ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun geometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun getAggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getCreatedAtClient ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	public final fun getLastUpdated ()Ljava/util/Date;
+	public final fun getLastUpdatedAtClient ()Ljava/util/Date;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getProgramOwners ()Ljava/util/List;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun getTrackedEntityAttributeValues ()Ljava/util/List;
+	public final fun getTrackedEntityType ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun lastUpdated ()Ljava/util/Date;
+	public final fun lastUpdatedAtClient ()Ljava/util/Date;
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun programOwners ()Ljava/util/List;
 	public fun state ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun trackedEntityAttributeValues ()Ljava/util/List;
-	public abstract fun trackedEntityType ()Ljava/lang/String;
-	public abstract fun uid ()Ljava/lang/String;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttributeValues ()Ljava/util/List;
+	public final fun trackedEntityType ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuilder {
 	public fun <init> ()V
-	public abstract fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun lastUpdatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun programOwners (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public synthetic fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
-	public fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun trackedEntityAttributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public final fun aggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun createdAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun geometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	protected final fun getAggregatedSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getCreatedAtClient ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getEnrollments ()Ljava/util/List;
+	protected final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getLastUpdatedAtClient ()Ljava/util/Date;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getProgramOwners ()Ljava/util/List;
+	protected final fun getRelationships ()Ljava/util/List;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	protected final fun getTrackedEntityAttributeValues ()Ljava/util/List;
+	protected final fun getTrackedEntityType ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun lastUpdatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun programOwners (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	protected final fun setAggregatedSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setCreatedAtClient (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setEnrollments (Ljava/util/List;)V
+	protected final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setLastUpdatedAtClient (Ljava/util/Date;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setProgramOwners (Ljava/util/List;)V
+	protected final fun setRelationships (Ljava/util/List;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	protected final fun setTrackedEntityAttributeValues (Ljava/util/List;)V
+	protected final fun setTrackedEntityType (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun trackedEntityAttributeValues (Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+	public final fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository {
@@ -20490,20 +20705,50 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun withTrackedEntityAttributeValues ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
-	public static fun create (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
-	public abstract fun trackedEntityType ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
+	public static final fun create (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getTrackedEntityType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityType ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjectionBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
-	public abstract fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+	public final fun create (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjectionBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjectionBuilder$Companion;
+	protected field organisationUnit Ljava/lang/String;
+	protected field trackedEntityType Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getTrackedEntityType ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setTrackedEntityType (Ljava/lang/String;)V
+	public final fun trackedEntityType (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjectionBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCreateProjection$Builder;
 }
 
 public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter : org/hisp/dhis/android/core/common/CoreObject {
@@ -20574,13 +20819,6 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun byTrackedEntityInstances ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 	public final fun withAttributeValueFilters ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
 	public final fun withTrackedEntityInstanceEventFilters ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;
-}
-
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceInternalAccessor {
-	public static fun accessEnrollments (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/util/List;
-	public static fun accessRelationships (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/util/List;
-	public static fun insertEnrollments (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
-	public static fun insertRelationships (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithUidDataObjectRepositoryImpl {
@@ -20677,27 +20915,72 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityType$Co
 	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun displayInList ()Ljava/lang/Boolean;
-	public abstract fun mandatory ()Ljava/lang/Boolean;
-	public abstract fun searchable ()Ljava/lang/Boolean;
-	public abstract fun sortOrder ()Ljava/lang/Integer;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun trackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public abstract fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Companion;
+	public fun <init> (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	public final fun component1 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component3 ()Ljava/lang/Boolean;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun component5 ()Ljava/lang/Boolean;
+	public final fun component6 ()Ljava/lang/Integer;
+	public final fun copy (Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;
+	public final fun displayInList ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDisplayInList ()Ljava/lang/Boolean;
+	public final fun getMandatory ()Ljava/lang/Boolean;
+	public final fun getSearchable ()Ljava/lang/Boolean;
+	public final fun getSortOrder ()Ljava/lang/Integer;
+	public final fun getTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun hashCode ()I
+	public final fun mandatory ()Ljava/lang/Boolean;
+	public final fun searchable ()Ljava/lang/Boolean;
+	public final fun sortOrder ()Ljava/lang/Integer;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun trackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun trackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;
-	public abstract fun displayInList (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun mandatory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun searchable (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun trackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
-	public abstract fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeBuilder$Companion;
+	protected field trackedEntityAttribute Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected field trackedEntityType Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;
+	public final fun displayInList (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	protected final fun getDisplayInList ()Ljava/lang/Boolean;
+	protected final fun getMandatory ()Ljava/lang/Boolean;
+	protected final fun getSearchable ()Ljava/lang/Boolean;
+	protected final fun getSortOrder ()Ljava/lang/Integer;
+	protected final fun getTrackedEntityAttribute ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	protected final fun getTrackedEntityType ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun mandatory (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	public final fun searchable (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	protected final fun setDisplayInList (Ljava/lang/Boolean;)V
+	protected final fun setMandatory (Ljava/lang/Boolean;)V
+	protected final fun setSearchable (Ljava/lang/Boolean;)V
+	protected final fun setSortOrder (Ljava/lang/Integer;)V
+	protected final fun setTrackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	protected final fun setTrackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
+	public final fun sortOrder (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	public final fun trackedEntityAttribute (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+	public final fun trackedEntityType (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttribute$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {

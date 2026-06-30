@@ -41,14 +41,16 @@ internal data class TrackedEntityAttributeValueDTO(
     val created: ZonedDateDTO?,
     val lastUpdated: ZonedDateDTO?,
 ) {
-    fun toDomain(trackedEntityInstance: String): TrackedEntityAttributeValue {
-        return TrackedEntityAttributeValue.builder()
-            .trackedEntityAttribute(attribute)
-            .trackedEntityInstance(trackedEntityInstance)
-            .value(value?.value)
-            .created(created?.toDomain())
-            .lastUpdated(lastUpdated?.toDomain())
-            .build()
+    fun toDomain(trackedEntityInstance: String): TrackedEntityAttributeValue? {
+        return attribute?.let {
+            TrackedEntityAttributeValue.builder()
+                .trackedEntityAttribute(attribute)
+                .trackedEntityInstance(trackedEntityInstance)
+                .value(value?.value)
+                .created(created?.toDomain())
+                .lastUpdated(lastUpdated?.toDomain())
+                .build()
+        }
     }
 }
 

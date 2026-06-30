@@ -43,7 +43,6 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
@@ -445,8 +444,8 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                     if (events.size == 1) {
                         val enrollmentWithEvents = enrollment.toBuilder()
                             .events(events).build()
-                        return TrackedEntityInstanceInternalAccessor
-                            .insertEnrollments(instance.toBuilder(), listOf(enrollmentWithEvents))
+                        return instance.toBuilder()
+                            .enrollments(listOf(enrollmentWithEvents))
                             .build()
                     }
                 }
@@ -463,13 +462,13 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
             }
             enrollments.add(enrollment!!.toBuilder().events(events).build())
         }
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(instance.toBuilder(), enrollments)
+        return instance.toBuilder()
+            .enrollments(enrollments)
             .build()
     }
 
     private fun getEnrollments(trackedEntityInstance: TrackedEntityInstance): List<Enrollment?> {
-        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
+        return trackedEntityInstance.enrollments.orEmpty()
     }
 
     private fun getEvents(enrollment: Enrollment?): List<Event?> {

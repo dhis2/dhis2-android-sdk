@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -73,7 +72,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
         oldPayload.trackedEntityInstances.forEach { tei ->
             addTrackedEntityToWrapper(wrapper, tei, tetAttributeMap)
 
-            accessEnrollments(tei).forEach { enrollment ->
+            tei.enrollments.orEmpty().forEach { enrollment ->
                 addEnrollmentToWrapper(wrapper, enrollment, tei.trackedEntityAttributeValues(), programAttributeMap)
 
                 enrollment.events()?.forEach { event ->
@@ -168,8 +167,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
 
     private suspend fun getTrackedEntityTypeAttributeMap(): Map<String, List<String>> {
         return trackedEntityTypeAttributeStore.selectAll()
-            .filter { it.trackedEntityType()?.uid() != null }
-            .groupBy { it.trackedEntityType()?.uid()!! }
-            .mapValues { it.value.mapNotNull { a -> a.trackedEntityAttribute()?.uid() } }
+            .groupBy { it.trackedEntityType().uid() }
+            .mapValues { it.value.map { a -> a.trackedEntityAttribute().uid() } }
     }
 }

@@ -172,3 +172,13 @@ CREATE TABLE StockUseCaseTransaction(programUid TEXT NOT NULL, sortOrder INTEGER
 INSERT INTO StockUseCaseTransaction(programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount) SELECT programUid, sortOrder, transactionType, distributedTo, stockDistributed, stockDiscarded, stockCount FROM StockUseCaseTransaction_Old;
 DROP TABLE IF EXISTS StockUseCaseTransaction_Old;
 
+# TrackedEntityAttributeLegendSetLink: make sortOrder non-null (ANDROSDK-2334)
+
+# Remove rows with null sortOrder
+DELETE FROM TrackedEntityAttributeLegendSetLink WHERE sortOrder IS NULL;
+
+# Recreate table with sortOrder as NOT NULL
+ALTER TABLE TrackedEntityAttributeLegendSetLink RENAME TO TrackedEntityAttributeLegendSetLink_Old;
+CREATE TABLE TrackedEntityAttributeLegendSetLink(trackedEntityAttribute TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(trackedEntityAttribute, legendSet), FOREIGN KEY(trackedEntityAttribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO TrackedEntityAttributeLegendSetLink(trackedEntityAttribute, legendSet, sortOrder) SELECT trackedEntityAttribute, legendSet, sortOrder FROM TrackedEntityAttributeLegendSetLink_Old;
+DROP TABLE IF EXISTS TrackedEntityAttributeLegendSetLink_Old;

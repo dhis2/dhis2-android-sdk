@@ -26,55 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityAttributeValue(
+    val trackedEntityAttribute: String,
+    val value: String?,
+    val created: Date?,
+    val lastUpdated: Date?,
+    val trackedEntityInstance: String,
+    override val syncState: State?,
+) : DataObjectKt, ObjectWithDeleteInterface {
+    fun trackedEntityAttribute(): String = trackedEntityAttribute
+    fun value(): String? = value
+    fun created(): Date? = created
+    fun lastUpdated(): Date? = lastUpdated
+    fun trackedEntityInstance(): String = trackedEntityInstance
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+    override fun deleted(): Boolean = value.isNullOrEmpty()
 
-@AutoValue
-public abstract class TrackedEntityTypeAttribute implements CoreObject {
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-    public abstract ObjectWithUid trackedEntityType();
+    fun toBuilder(): Builder = TrackedEntityAttributeValueBuilder.from(this)
 
-    @Nullable
-    public abstract ObjectWithUid trackedEntityAttribute();
+    class Builder : TrackedEntityAttributeValueBuilder()
 
-    public abstract Boolean displayInList();
-
-    @Nullable
-    public abstract Boolean mandatory();
-
-    public abstract Boolean searchable();
-
-    @Nullable
-    public abstract Integer sortOrder();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityTypeAttribute.Builder();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder trackedEntityType(ObjectWithUid trackedEntityType);
-
-        public abstract Builder trackedEntityAttribute(ObjectWithUid trackedEntityAttribute);
-
-        public abstract Builder displayInList(Boolean displayInList);
-
-        public abstract Builder mandatory(Boolean mandatory);
-
-        public abstract Builder searchable(Boolean searchable);
-
-        public abstract Builder sortOrder(Integer sortOrder);
-
-        public abstract TrackedEntityTypeAttribute build();
-    }
-
 }

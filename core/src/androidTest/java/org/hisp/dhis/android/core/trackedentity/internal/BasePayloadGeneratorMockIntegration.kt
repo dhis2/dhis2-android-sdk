@@ -53,7 +53,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
 import org.junit.BeforeClass
@@ -164,10 +163,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .trackedEntityInstance(teiId)
             .build()
 
-        val tei = TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            TrackedEntityInstance.builder(),
-            listOf(enrollment1, enrollment2, enrollment3),
-        )
+        val tei = TrackedEntityInstance.builder()
+            .enrollments(listOf(enrollment1, enrollment2, enrollment3))
             .uid(teiId)
             .trackedEntityType(teiType.uid())
             .organisationUnit(orgUnit.uid())
@@ -262,7 +259,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected fun getEnrollments(trackedEntityInstance: TrackedEntityInstance): List<Enrollment> {
-        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
+        return trackedEntityInstance.enrollments.orEmpty()
     }
 
     protected fun getEvents(enrollment: Enrollment): List<Event> {

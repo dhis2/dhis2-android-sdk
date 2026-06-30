@@ -87,7 +87,7 @@ internal data class NewEventDTO(
             dueDate(scheduledAt?.toDomain())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser?.uid)
-            trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
+            trackedEntityDataValues(dataValues?.mapNotNull { it.toDomain(event) })
             notes(notes?.map { it.toDomain(event = event) })
             relationships(relationships?.map { it.toDomain() })
             trackedEntityInstance(trackedEntity)

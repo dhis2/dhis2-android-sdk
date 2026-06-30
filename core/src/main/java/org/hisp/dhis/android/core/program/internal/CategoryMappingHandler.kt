@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandlerImpl
+import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
 import org.hisp.dhis.android.core.program.CategoryMapping
 import org.koin.core.annotation.Singleton
 
@@ -36,12 +36,12 @@ import org.koin.core.annotation.Singleton
 internal class CategoryMappingHandler(
     store: CategoryMappingStore,
     private val categoryOptionMappingHandler: CategoryOptionMappingHandler,
-) : LinkHandlerImpl<CategoryMapping, CategoryMapping>(store) {
+) : ChildElementHandlerImpl<CategoryMapping>(store) {
 
     override suspend fun afterObjectHandled(o: CategoryMapping) {
         categoryOptionMappingHandler.handleMany(
             o.uid(),
             o.optionMappings(),
-        ) { it }
+        )
     }
 }

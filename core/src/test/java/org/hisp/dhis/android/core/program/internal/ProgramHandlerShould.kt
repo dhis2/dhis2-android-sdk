@@ -199,6 +199,6 @@ class ProgramHandlerShould {
     @Test
     fun call_category_mapping_handler() = runTest {
         programHandler.handle(program)
-        verify(categoryMappingHandler).handleMany(eq(program.uid()), any(), any())
+        verify(categoryMappingHandler).handleMany(eq(program.uid()), any())
     }
 }

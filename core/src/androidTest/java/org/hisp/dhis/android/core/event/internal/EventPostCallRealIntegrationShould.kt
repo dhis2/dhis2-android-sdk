@@ -52,7 +52,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var orgUnitUid: String
     private lateinit var programUid: String
     private lateinit var programStageUid: String
-    private var dataElementUid: String? = null
+    private lateinit var dataElementUid: String
     private var attributeOptionCombo: String? = null
 
     @Before
@@ -205,8 +205,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
             .uid()
         dataElementUid = d2.programModule().programStageDataElements()
             .byProgramStage().eq(programStageUid)
-            .one().blockingGet()!!.dataElement()
-            ?.uid()
+            .one().blockingGet()!!.dataElement()!!
+            .uid()
         attributeOptionCombo = d2.categoryModule().categoryOptionCombos()
             .one().blockingGet()!!
             .uid()

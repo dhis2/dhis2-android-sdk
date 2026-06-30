@@ -267,9 +267,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     private suspend fun getDownloadedTei(teiUid: String): TrackedEntityInstance? {
         val teiAttributeValuesStore: TrackedEntityAttributeValueStore = koin.get()
         val attValues = teiAttributeValuesStore.queryByTrackedEntityInstance(teiUid)
-        val attValuesWithoutIdAndTEI = attValues.map {
-            it.toBuilder().trackedEntityInstance(null).build()
-        }
 
         val teiStore: TrackedEntityInstanceStore = koin.get()
         val downloadedTei = teiStore.selectByUid(teiUid)
@@ -294,7 +291,7 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
 
         return createTei(
             downloadedTei,
-            attValuesWithoutIdAndTEI,
+            attValues,
             downloadedEnrollmentsWithoutIdAndDeleteFalse,
             downloadedEventsWithoutValuesAndDeleteFalse,
             downloadedValues,
@@ -306,12 +303,10 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         attValuesWithoutIdAndTEI: List<TrackedEntityAttributeValue>,
         downloadedEnrollmentsWithoutEvents: List<Enrollment>,
         downloadedEventsWithoutValues: List<Event>,
-        downloadedValues: Map<String?, List<TrackedEntityDataValue>?>,
-    ): TrackedEntityInstance? {
+        downloadedValues: Map<String, List<TrackedEntityDataValue>?>,
+    ): TrackedEntityInstance {
         val downloadedEvents = downloadedEventsWithoutValues.map { event ->
-            val trackedEntityDataValuesWithNullIdsAndEvents = downloadedValues[event.uid()]!!.map {
-                it.toBuilder().event(null).build()
-            }
+            val trackedEntityDataValuesWithNullIdsAndEvents = downloadedValues[event.uid()]!!
 
             event.toBuilder().trackedEntityDataValues(trackedEntityDataValuesWithNullIdsAndEvents).build()
         }.groupBy { it.enrollment() }

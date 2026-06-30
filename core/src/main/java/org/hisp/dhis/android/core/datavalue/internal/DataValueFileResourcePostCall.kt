@@ -49,7 +49,7 @@ internal class DataValueFileResourcePostCall(
 
             val validDataValues = dataValues.map { dataValue ->
                 fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                    val fValue = FileResourceValue.DataValue(dataValue.dataElement()!!)
+                    val fValue = FileResourceValue.DataValue(dataValue.dataElement())
                     val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                         uploadedFileResources.add(it)
                     }

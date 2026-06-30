@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.datavalue
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 
 @Serializable
@@ -65,8 +64,8 @@ internal data class DataValueDTO(
             lastUpdated?.let { lastUpdated(DateUtils.DATE_FORMAT.parse(it)) }
             comment?.let { comment(it) }
             followup?.let { followUp(it) }
+            sourceDataSet?.let { sourceDataSet(it) }
         }
-        sourceDataSet?.let { DataValueInternalAccessor.insertSourceDataSet(builder, it) }
         return builder.build()
     }
 }
@@ -74,11 +73,11 @@ internal data class DataValueDTO(
 internal fun DataValue.toDto(): DataValueDTO {
     return DataValueDTO(
         deleted = this.deleted(),
-        dataElement = this.dataElement()!!,
-        period = this.period()!!,
-        orgUnit = this.organisationUnit()!!,
-        categoryOptionCombo = this.categoryOptionCombo()!!,
-        attributeOptionCombo = this.attributeOptionCombo()!!,
+        dataElement = this.dataElement(),
+        period = this.period(),
+        orgUnit = this.organisationUnit(),
+        categoryOptionCombo = this.categoryOptionCombo(),
+        attributeOptionCombo = this.attributeOptionCombo(),
         value = this.value(),
         storedBy = this.storedBy(),
         created = null,

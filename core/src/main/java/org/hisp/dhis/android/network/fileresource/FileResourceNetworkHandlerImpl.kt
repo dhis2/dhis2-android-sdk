@@ -146,10 +146,10 @@ internal class FileResourceNetworkHandlerImpl(
 
     override suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray {
         return service.getFileFromDataValue(
-            v.dataElement()!!,
-            v.period()!!,
-            v.organisationUnit()!!,
-            v.attributeOptionCombo()!!,
+            v.dataElement(),
+            v.period(),
+            v.organisationUnit(),
+            v.attributeOptionCombo(),
             dimension,
         )
     }

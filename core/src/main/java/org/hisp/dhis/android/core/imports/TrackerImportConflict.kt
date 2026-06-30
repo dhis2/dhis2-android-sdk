@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,32 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.persistence.datavalue
+package org.hisp.dhis.android.core.imports
 
-import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueConflict
-import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
-import org.hisp.dhis.android.persistence.common.stores.ObjectStoreImpl
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-@Singleton
-internal class DataValueConflictStoreImpl(
-    private val databaseAdapter: DatabaseAdapter,
-) : DataValueConflictStore, ObjectStoreImpl<DataValueConflict, DataValueConflictDB>(
-    { databaseAdapter.getCurrentDatabase().dataValueConflictDao() },
-    DataValueConflict::toDB,
-    SQLStatementBuilderImpl(DataValueConflictTableInfo.TABLE_INFO),
-) {
-    override suspend fun deleteDataValueWhereIfExists(dataValue: DataValue) {
-        val dao = databaseAdapter.getCurrentDatabase().dataValueConflictDao()
-        dao.deleteDataValueConflict(
-            dataValue.attributeOptionCombo(),
-            dataValue.categoryOptionCombo(),
-            dataValue.dataElement(),
-            dataValue.period(),
-            dataValue.organisationUnit(),
-        )
+@Suppress("TooManyFunctions")
+@ModelBuilder
+data class TrackerImportConflict(
+    val conflict: String?,
+    val value: String?,
+    val trackedEntityInstance: String?,
+    val enrollment: String?,
+    val event: String?,
+    val trackedEntityAttribute: String?,
+    val dataElement: String?,
+    val tableReference: String?,
+    val errorCode: String?,
+    val displayDescription: String?,
+    val status: ImportStatus?,
+    val created: Date?,
+) : CoreObject {
+
+    fun conflict(): String? = conflict
+    fun value(): String? = value
+    fun trackedEntityInstance(): String? = trackedEntityInstance
+    fun enrollment(): String? = enrollment
+    fun event(): String? = event
+    fun trackedEntityAttribute(): String? = trackedEntityAttribute
+    fun dataElement(): String? = dataElement
+    fun tableReference(): String? = tableReference
+    fun errorCode(): String? = errorCode
+    fun displayDescription(): String? = displayDescription
+    fun status(): ImportStatus? = status
+    fun created(): Date? = created
+
+    fun toBuilder(): Builder = TrackerImportConflictBuilder.from(this)
+
+    class Builder : TrackerImportConflictBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

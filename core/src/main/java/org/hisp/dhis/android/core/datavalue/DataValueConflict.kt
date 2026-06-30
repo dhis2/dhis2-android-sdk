@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2026, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,15 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.datavalue
 
-internal object DataValueInternalAccessor {
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.imports.ImportStatus
+import java.util.Date
 
-    fun accessSourceDataSet(dataValue: DataValue): String? {
-        return dataValue.sourceDataSet()
-    }
+@Suppress("TooManyFunctions")
+@ModelBuilder
+data class DataValueConflict(
+    val conflict: String?,
+    val value: String?,
+    val attributeOptionCombo: String,
+    val categoryOptionCombo: String,
+    val dataElement: String,
+    val period: String,
+    val orgUnit: String,
+    val errorCode: String?,
+    val displayDescription: String?,
+    val status: ImportStatus?,
+    val created: Date?,
+) : CoreObject {
 
-    fun insertSourceDataSet(builder: DataValue.Builder, sourceDataSet: String?): DataValue.Builder {
-        return builder.sourceDataSet(sourceDataSet)
+    fun conflict(): String? = conflict
+    fun value(): String? = value
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun categoryOptionCombo(): String = categoryOptionCombo
+    fun dataElement(): String = dataElement
+    fun period(): String = period
+    fun orgUnit(): String = orgUnit
+    fun errorCode(): String? = errorCode
+    fun displayDescription(): String? = displayDescription
+    fun status(): ImportStatus? = status
+    fun created(): Date? = created
+
+    fun toBuilder(): Builder = DataValueConflictBuilder.from(this)
+
+    class Builder : DataValueConflictBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

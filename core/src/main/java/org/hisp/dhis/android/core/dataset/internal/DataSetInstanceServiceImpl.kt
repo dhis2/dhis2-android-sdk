@@ -355,9 +355,8 @@ internal class DataSetInstanceServiceImpl(
                                 listOfNotNull(dataValue.dataElement(), dataValue.categoryOptionCombo())
                                     .joinToString("."),
                             )
-                            dataValue.dataElement()?.let { dataElement(ObjectWithUid.create(it)) }
-                            dataValue.categoryOptionCombo()
-                                ?.let { categoryOptionCombo(ObjectWithUid.create(it)) }
+                            dataElement(ObjectWithUid.create(dataValue.dataElement()))
+                            categoryOptionCombo(ObjectWithUid.create(dataValue.categoryOptionCombo()))
                         }.build()
                     } ?: emptyList()
             } ?: emptyList()

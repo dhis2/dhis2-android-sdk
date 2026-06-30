@@ -85,8 +85,7 @@ internal data class ValidationRuleDTO(
 internal class ValidationRulePayload(
     override val pager: PagerDTO?,
     @SerialName("validationRules") override val items: List<ValidationRuleDTO> = emptyList(),
-) : PayloadJson<ValidationRuleDTO>(pager, items) {
-}
+) : PayloadJson<ValidationRuleDTO>(pager, items)
 
 @Serializable
 internal class ValidationRuleDatasetPayload(

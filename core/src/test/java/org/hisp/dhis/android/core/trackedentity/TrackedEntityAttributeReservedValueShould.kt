@@ -41,7 +41,7 @@ internal class TrackedEntityAttributeReservedValueShould : CoreObjectShould<Trac
     @Test
     override fun map_from_json_string() {
         val reservedValueDTO = deserialize()
-        val reservedValue = reservedValueDTO.toDomain()
+        val reservedValue = reservedValueDTO.toDomain()!!
 
         assertThat(reservedValue.ownerObject()).isEqualTo("TRACKEDENTITYATTRIBUTE")
         assertThat(reservedValue.ownerUid()).isEqualTo("xeG4wH2I676")

@@ -25,73 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class TrackedEntityAttributeReservedValue(
+    val ownerObject: String,
+    val ownerUid: String,
+    val key: String?,
+    val value: String?,
+    val created: Date?,
+    val expiryDate: Date?,
+    val organisationUnit: String?,
+    val temporalValidityDate: Date?,
+    val pattern: String?,
+) : CoreObject {
+    fun ownerObject(): String = ownerObject
+    fun ownerUid(): String = ownerUid
+    fun key(): String? = key
+    fun value(): String? = value
+    fun created(): Date? = created
+    fun expiryDate(): Date? = expiryDate
+    fun organisationUnit(): String? = organisationUnit
+    fun temporalValidityDate(): Date? = temporalValidityDate
+    fun pattern(): String? = pattern
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = TrackedEntityAttributeReservedValueBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    class Builder : TrackedEntityAttributeReservedValueBuilder()
 
-import java.util.Date;
-
-@AutoValue
-public abstract class TrackedEntityAttributeReservedValue implements CoreObject {
-
-    @Nullable
-    public abstract String ownerObject();
-
-    @Nullable
-    public abstract String ownerUid();
-
-    @Nullable
-    public abstract String key();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract Date created();
-
-    @Nullable
-    public abstract Date expiryDate();
-
-    @Nullable
-    public abstract String organisationUnit();
-
-    @Nullable
-    public abstract Date temporalValidityDate();
-
-    @Nullable
-    public abstract String pattern();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityAttributeReservedValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder ownerObject(String ownerObject);
-
-        public abstract Builder ownerUid(String ownerUid);
-
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder created(Date created);
-
-        public abstract Builder expiryDate(Date expiryDate);
-
-        public abstract Builder organisationUnit(String organisationUnit);
-
-        public abstract Builder temporalValidityDate(Date temporalValidityDate);
-
-        public abstract Builder pattern(String value);
-
-        public abstract TrackedEntityAttributeReservedValue build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

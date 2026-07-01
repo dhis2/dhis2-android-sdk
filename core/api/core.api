@@ -20435,33 +20435,90 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribu
 	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeLegendSetLink$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun created ()Ljava/util/Date;
-	public abstract fun expiryDate ()Ljava/util/Date;
-	public abstract fun key ()Ljava/lang/String;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun ownerObject ()Ljava/lang/String;
-	public abstract fun ownerUid ()Ljava/lang/String;
-	public abstract fun pattern ()Ljava/lang/String;
-	public abstract fun temporalValidityDate ()Ljava/util/Date;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun value ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()Ljava/util/Date;
+	public final fun component9 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
+	public final fun created ()Ljava/util/Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun expiryDate ()Ljava/util/Date;
+	public final fun getCreated ()Ljava/util/Date;
+	public final fun getExpiryDate ()Ljava/util/Date;
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getOwnerObject ()Ljava/lang/String;
+	public final fun getOwnerUid ()Ljava/lang/String;
+	public final fun getPattern ()Ljava/lang/String;
+	public final fun getTemporalValidityDate ()Ljava/util/Date;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun key ()Ljava/lang/String;
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun ownerObject ()Ljava/lang/String;
+	public final fun ownerUid ()Ljava/lang/String;
+	public final fun pattern ()Ljava/lang/String;
+	public final fun temporalValidityDate ()Ljava/util/Date;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun value ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder : org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun expiryDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun ownerObject (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun ownerUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun pattern (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun temporalValidityDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
-	public abstract fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+}
+
+public class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueBuilder$Companion;
+	protected field ownerObject Ljava/lang/String;
+	protected field ownerUid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;
+	public final fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun expiryDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getExpiryDate ()Ljava/util/Date;
+	protected final fun getKey ()Ljava/lang/String;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getOwnerObject ()Ljava/lang/String;
+	protected final fun getOwnerUid ()Ljava/lang/String;
+	protected final fun getPattern ()Ljava/lang/String;
+	protected final fun getTemporalValidityDate ()Ljava/util/Date;
+	protected final fun getValue ()Ljava/lang/String;
+	public final fun key (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun ownerObject (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun ownerUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun pattern (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setExpiryDate (Ljava/util/Date;)V
+	protected final fun setKey (Ljava/lang/String;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setOwnerObject (Ljava/lang/String;)V
+	protected final fun setOwnerUid (Ljava/lang/String;)V
+	protected final fun setPattern (Ljava/lang/String;)V
+	protected final fun setTemporalValidityDate (Ljava/util/Date;)V
+	protected final fun setValue (Ljava/lang/String;)V
+	public final fun temporalValidityDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+	public final fun value (Ljava/lang/String;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValue$Builder;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeReservedValueManager {

@@ -26,37 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ReservedValueSetting(
+    val uid: String,
+    val numberOfValuesToReserve: Int?,
+) : CoreObject, ObjectWithUidInterface {
 
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface;
+    override fun uid(): String = uid
+    fun numberOfValuesToReserve(): Int? = numberOfValuesToReserve
 
-@AutoValue
-public abstract class ReservedValueSetting implements CoreObject, ObjectWithUidInterface {
+    fun toBuilder(): Builder = ReservedValueSettingBuilder.from(this)
 
-    @Nullable
-    public abstract String uid();
+    class Builder : ReservedValueSettingBuilder()
 
-    @Nullable
-    public abstract Integer numberOfValuesToReserve();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ReservedValueSetting.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder numberOfValuesToReserve(Integer numberOfValuesToReserve);
-
-        public abstract ReservedValueSetting build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

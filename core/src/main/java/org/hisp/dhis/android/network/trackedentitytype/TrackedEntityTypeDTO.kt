@@ -60,7 +60,7 @@ internal data class TrackedEntityTypeDTO(
     fun toDomain(): TrackedEntityType {
         return TrackedEntityType.builder().apply {
             applyBaseNameableFields(this@TrackedEntityTypeDTO)
-            trackedEntityTypeAttributes?.let { trackedEntityTypeAttributes(it.map { it.toDomain() }) }
+            trackedEntityTypeAttributes?.let { trackedEntityTypeAttributes(it.mapNotNull { it.toDomain(id) }) }
             featureType?.let { featureType(FeatureType.valueOf(it)) }
             access?.let { access(it.toDomain()) }
             style?.let { style(it.toDomain()) }

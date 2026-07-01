@@ -95,16 +95,17 @@ internal class DataStatePropagatorImpl(
     }
 
     override suspend fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?) {
-        setEventSyncState(dataValue!!.event()!!, getStateForUpdate)
+        setEventSyncState(dataValue!!.event(), getStateForUpdate)
     }
 
     override suspend fun propagateTrackedEntityAttributeUpdate(
         trackedEntityAttributeValue: TrackedEntityAttributeValue?,
     ) {
-        trackedEntityAttributeValue!!.trackedEntityInstance()?.let { trackedEntityInstanceUid ->
+        if (trackedEntityAttributeValue != null) {
+            val trackedEntityInstanceUid = trackedEntityAttributeValue.trackedEntityInstance()
             val enrollments = enrollmentStore.selectByTrackedEntityInstanceAndAttribute(
                 trackedEntityInstanceUid,
-                trackedEntityAttributeValue.trackedEntityAttribute()!!,
+                trackedEntityAttributeValue.trackedEntityAttribute(),
             )
             enrollments.forEach {
                 enrollmentStore.setSyncState(it.uid(), getStateForUpdate(it.syncState()))

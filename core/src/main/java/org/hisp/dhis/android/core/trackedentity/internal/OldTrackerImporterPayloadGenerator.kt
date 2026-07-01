@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
@@ -209,7 +208,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
     private suspend fun isMissingEnrollment(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }
         val isIncludedInPayload = enrollments.map { it.uid() }.contains(uid)
         if (isIncludedInPayload) { return false }
@@ -222,7 +221,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
     private suspend fun isMissingEvent(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val events = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }.flatMap {
             it.events() ?: emptyList()
         } + payload.events
@@ -265,7 +264,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
 
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }
 
         val enrollmentItems = enrollments.map {
@@ -300,8 +299,8 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
     ): TrackedEntityInstance {
         val enrollmentsRecreated = getEnrollments(extraData, trackedEntityInstance.uid())
         val attributeValues = extraData.attributeValueMap[trackedEntityInstance.uid()]
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(trackedEntityInstance.toBuilder(), enrollmentsRecreated)
+        return trackedEntityInstance.toBuilder()
+            .enrollments(enrollmentsRecreated)
             .trackedEntityAttributeValues(attributeValues ?: emptyList())
             .build()
     }
@@ -362,7 +361,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
     private suspend fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
         val typeIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
         val programIds = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it).mapNotNull { e -> e.program() }
+            it.enrollments.orEmpty().mapNotNull { e -> e.program() }
         }
 
         val typeAccessMap = typeIds.associateWith { trackedEntityTypeStore.selectByUid(it)?.access() }
@@ -370,7 +369,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         val pendingEvents = mutableListOf<Event>()
         val prunedTrackedEntityInstances = payload.trackedEntityInstances.mapNotNull { tei ->
-            val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)
+            val enrollments = tei.enrollments.orEmpty()
             val hasDataWrite = typeAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
                 enrollments.all { programAccessMap[it.program()]?.data()?.write() == true }
 

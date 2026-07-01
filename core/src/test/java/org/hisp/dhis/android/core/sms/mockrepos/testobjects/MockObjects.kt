@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import java.util.Date
 
 @Suppress("TooManyFunctions")
@@ -99,8 +98,8 @@ object MockObjects {
     }
 
     private fun getTestTEIEnrollment(enrollment: Enrollment): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(TrackedEntityInstance.builder(), listOf(enrollment))
+        return TrackedEntityInstance.builder()
+            .enrollments(listOf(enrollment))
             .uid(teiUid)
             .trackedEntityType(trackedEntityType)
             .trackedEntityAttributeValues(getTestAttributeValues())

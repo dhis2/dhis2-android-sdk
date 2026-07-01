@@ -67,7 +67,7 @@ object TrackedEntitySearchItemHelper {
             .organisationUnit(i.organisationUnit)
             .trackedEntityType(i.type.uid())
             .geometry(i.geometry)
-            .trackedEntityAttributeValues(i.attributeValues?.map(::toTrackedEntityAttributeValue))
+            .trackedEntityAttributeValues(i.attributeValues?.map { toTrackedEntityAttributeValue(it, i.uid) })
             .programOwners(i.programOwners?.map { toProgramOwner(it, i.uid) })
             .syncState(i.syncState)
             .aggregatedSyncState(i.aggregatedSyncState)
@@ -123,9 +123,13 @@ object TrackedEntitySearchItemHelper {
         )
     }
 
-    private fun toTrackedEntityAttributeValue(a: TrackedEntitySearchItemAttribute): TrackedEntityAttributeValue {
+    private fun toTrackedEntityAttributeValue(
+        a: TrackedEntitySearchItemAttribute,
+        trackedEntityInstance: String,
+    ): TrackedEntityAttributeValue {
         return TrackedEntityAttributeValue.builder()
             .trackedEntityAttribute(a.attribute)
+            .trackedEntityInstance(trackedEntityInstance)
             .value(a.value)
             .created(a.created)
             .lastUpdated(a.lastUpdated)

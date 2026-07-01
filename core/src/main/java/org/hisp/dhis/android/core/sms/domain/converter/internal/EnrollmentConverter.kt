@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.smscompression.models.EnrollmentSMSSubmission
 import org.hisp.dhis.smscompression.models.SMSAttributeValue
 import org.hisp.dhis.smscompression.models.SMSEvent
@@ -57,7 +56,7 @@ internal class EnrollmentConverter(
         submissionId: Int,
     ): Single<out SMSSubmission> {
         trackedEntityInstance = tei
-        val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)
+        val enrollments = tei.enrollments
         if (enrollments == null || enrollments.size != 1) {
             return Single.error<SMSSubmission>(
                 IllegalArgumentException("Given instance should have single enrollment"),

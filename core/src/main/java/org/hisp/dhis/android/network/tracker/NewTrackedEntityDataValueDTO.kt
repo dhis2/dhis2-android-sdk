@@ -44,16 +44,18 @@ internal data class NewTrackedEntityDataValueDTO(
     val value: ValueDTO?,
     val providedElsewhere: Boolean?,
 ) {
-    fun toDomain(eventUid: String?): TrackedEntityDataValue {
-        return TrackedEntityDataValue.builder()
-            .event(eventUid)
-            .created(createdAt?.toDomain())
-            .lastUpdated(updatedAt?.toDomain())
-            .dataElement(dataElement)
-            .storedBy(createdBy?.username)
-            .value(value?.value)
-            .providedElsewhere(providedElsewhere)
-            .build()
+    fun toDomain(eventUid: String): TrackedEntityDataValue? {
+        return dataElement?.let {
+            TrackedEntityDataValue.builder()
+                .event(eventUid)
+                .created(createdAt?.toDomain())
+                .lastUpdated(updatedAt?.toDomain())
+                .dataElement(dataElement)
+                .storedBy(createdBy?.username)
+                .value(value?.value)
+                .providedElsewhere(providedElsewhere)
+                .build()
+        }
     }
 }
 
@@ -62,7 +64,7 @@ internal fun NewTrackerImporterTrackedEntityDataValue.toDto(): NewTrackedEntityD
         createdAt = createdAt?.toZonedDateDto(),
         updatedAt = updatedAt?.toZonedDateDto(),
         dataElement = dataElement,
-        createdBy = createdBy?.let { it.toDto() },
+        createdBy = createdBy?.toDto(),
         value = ValueDTO(value),
         providedElsewhere = providedElsewhere,
     )

@@ -26,58 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityTypeAttribute(
+    val trackedEntityType: ObjectWithUid,
+    val trackedEntityAttribute: ObjectWithUid,
+    val displayInList: Boolean?,
+    val mandatory: Boolean?,
+    val searchable: Boolean?,
+    val sortOrder: Int?,
+) : CoreObject {
+    fun trackedEntityType(): ObjectWithUid = trackedEntityType
+    fun trackedEntityAttribute(): ObjectWithUid = trackedEntityAttribute
+    fun displayInList(): Boolean? = displayInList
+    fun mandatory(): Boolean? = mandatory
+    fun searchable(): Boolean? = searchable
+    fun sortOrder(): Int? = sortOrder
 
-import org.hisp.dhis.android.core.common.BaseDataObject;
-import org.hisp.dhis.android.core.common.ObjectWithDeleteInterface;
+    fun toBuilder(): Builder = TrackedEntityTypeAttributeBuilder.from(this)
 
-import java.util.Date;
+    class Builder : TrackedEntityTypeAttributeBuilder()
 
-@AutoValue
-public abstract class TrackedEntityAttributeValue extends BaseDataObject implements ObjectWithDeleteInterface {
-
-    @Nullable
-    public abstract String trackedEntityAttribute();
-
-    @Nullable
-    public abstract String value();
-
-    @Nullable
-    public abstract Date created();
-
-    @Nullable
-    public abstract Date lastUpdated();
-
-    @Nullable
-    public abstract String trackedEntityInstance();
-
-    @Override
-    public Boolean deleted() {
-        return value() == null || value().equals("");
-    }
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityAttributeValue.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
-        public abstract Builder trackedEntityAttribute(String trackedEntityAttribute);
-
-        public abstract Builder value(String value);
-
-        public abstract Builder created(Date created);
-
-        public abstract Builder lastUpdated(Date lastUpdated);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract TrackedEntityAttributeValue build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

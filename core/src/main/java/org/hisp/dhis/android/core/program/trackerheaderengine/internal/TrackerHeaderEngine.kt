@@ -60,8 +60,7 @@ internal class TrackerHeaderEngine(
             .build()
 
         val attributeValueMap = attributeValues
-            .filter { it.trackedEntityAttribute() != null }
-            .associateBy { it.trackedEntityAttribute()!! }
+            .associateBy { it.trackedEntityAttribute() }
 
         val context = ProgramIndicatorContext(
             programIndicator = programIndicator,

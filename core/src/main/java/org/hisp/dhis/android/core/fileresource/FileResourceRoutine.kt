@@ -39,9 +39,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.koin.core.annotation.Singleton
 import java.io.File
@@ -84,9 +82,9 @@ internal class FileResourceRoutine(
 
         val customIcons = customIconStore.selectAll()
 
-        val fileResourceUids = dataValues.map { it.value() } +
-            trackedEntityAttributeValues.map(TrackedEntityAttributeValue::value) +
-            trackedEntityDataValues.map(TrackedEntityDataValue::value) +
+        val fileResourceUids = dataValues.map { it.value } +
+            trackedEntityAttributeValues.map { it.value } +
+            trackedEntityDataValues.map { it.value } +
             customIcons.map { it.fileResource().uid() }
 
         val lastUpdatedBefore = after ?: clockProvider.clock.now()

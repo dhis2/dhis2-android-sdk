@@ -43,7 +43,7 @@ internal class TrackedEntityDataValueShould : CoreObjectShould<TrackedEntityData
     @Test
     override fun map_from_json_string() {
         val trackedEntityDataValueDTO = deserialize()
-        val trackedEntityDataValue = trackedEntityDataValueDTO.toDomain("event")
+        val trackedEntityDataValue = trackedEntityDataValueDTO.toDomain("event")!!
 
         assertThat(trackedEntityDataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2014-11-15T14:55:23.779"))
         assertThat(
@@ -59,6 +59,7 @@ internal class TrackedEntityDataValueShould : CoreObjectShould<TrackedEntityData
     @Test
     fun serialize_empty_values() {
         val dataValue = TrackedEntityDataValue.builder()
+            .event("eventUid")
             .dataElement("cejWyOfXge6")
             .value(null)
             .created("2019-12-12T07:35:11.366".toJavaDate())

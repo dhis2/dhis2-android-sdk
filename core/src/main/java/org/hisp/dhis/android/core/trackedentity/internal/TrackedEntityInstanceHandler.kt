@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerHandler
 import org.koin.core.annotation.Singleton
 
@@ -94,7 +93,7 @@ internal class TrackedEntityInstanceHandler(
                 p.toBuilder().syncState(State.SYNCED).build()
             }
 
-            val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(o)
+            val enrollments = o.enrollments
             if (enrollments != null) {
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
@@ -105,7 +104,7 @@ internal class TrackedEntityInstanceHandler(
                 enrollmentOrphanCleaner.deleteOrphan(o, enrollments, params.program)
             }
 
-            val relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(o)
+            val relationships = o.relationships
             if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
                 relationshipOrphanCleaner.deleteOrphan(o, relationships)
@@ -138,7 +137,7 @@ internal class TrackedEntityInstanceHandler(
                 }
                 else -> {
                     val programs =
-                        TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).mapNotNull { it.program() }
+                        tei.enrollments.orEmpty().mapNotNull { it.program() }
 
                     trackedEntityAttributeValueStore.deleteByInstanceAndNotInAccessibleAttributes(
                         trackedEntityInstanceUid = tei.uid(),

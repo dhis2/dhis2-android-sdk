@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import java.util.Date
 
 @Suppress("TooManyFunctions")
@@ -72,12 +71,9 @@ internal object TrackedEntityInstanceUtils {
     ): TrackedEntityInstance {
         val refDate = getValidDate()
 
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(
-                TrackedEntityInstanceInternalAccessor
-                    .insertRelationships(TrackedEntityInstance.builder(), relationships),
-                enrollments,
-            )
+        return TrackedEntityInstance.builder()
+            .relationships(relationships)
+            .enrollments(enrollments)
             .uid(trackedEntityInstanceUid)
             .created(refDate)
             .lastUpdated(refDate)
@@ -89,35 +85,46 @@ internal object TrackedEntityInstanceUtils {
             .build()
     }
 
-    private fun createTrackedEntityAttributeValue(attributeUid: String, value: String): TrackedEntityAttributeValue {
-        return TrackedEntityAttributeValue.builder().value(value).trackedEntityAttribute(attributeUid).build()
+    private fun createTrackedEntityAttributeValue(
+        attributeUid: String,
+        value: String,
+        teiUid: String,
+    ): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValue.builder()
+            .value(value)
+            .trackedEntityAttribute(attributeUid)
+            .trackedEntityInstance(teiUid)
+            .build()
     }
 
     fun createValidTrackedEntityInstance(): TrackedEntityInstance {
+        val teiUid = uidGenerator.generate()
         return createTrackedEntityInstance(
-            uidGenerator.generate(),
+            teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             emptyList(),
         )
     }
 
     fun createTrackedEntityInstanceWithInvalidAttribute(): TrackedEntityInstance {
+        val teiUid = uidGenerator.generate()
         return createTrackedEntityInstance(
-            uidGenerator.generate(),
+            teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue("invalid_uid", "9")),
+            listOf(createTrackedEntityAttributeValue("invalid_uid", "9", teiUid)),
             emptyList(),
             emptyList(),
         )
     }
 
     fun createTrackedEntityInstanceWithInvalidOrgunit(): TrackedEntityInstance {
+        val teiUid = uidGenerator.generate()
         return createTrackedEntityInstance(
-            uidGenerator.generate(),
+            teiUid,
             "invalid_ou_uid",
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             emptyList(),
         )
@@ -128,7 +135,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createValidEnrollment(teiUid)),
         )
@@ -139,7 +146,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createValidEnrollment(teiUid), createValidEnrollment(teiUid)),
         )
@@ -150,7 +157,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createFutureEnrollment(teiUid)),
         )
@@ -161,7 +168,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createValidEnrollmentAndEvent(teiUid)),
         )
@@ -172,7 +179,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createEnrollmentAndFutureEvent(teiUid)),
         )
@@ -183,7 +190,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createEnrollmentAndEventWithInvalidDataElement(teiUid)),
         )
@@ -194,7 +201,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createEnrollmentAndEventWithValidAndInvalidDataValue(teiUid)),
         )
@@ -205,7 +212,7 @@ internal object TrackedEntityInstanceUtils {
         return createTrackedEntityInstance(
             teiUid,
             validOrgUnitUid,
-            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9")),
+            listOf(createTrackedEntityAttributeValue(validTrackedEntityAttributeUid, "9", teiUid)),
             emptyList(),
             listOf(createCompletedEnrollmentWithEvent(teiUid)),
         )

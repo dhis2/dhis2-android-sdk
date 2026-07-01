@@ -31,7 +31,6 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -49,7 +48,7 @@ internal class TrackedEntityInstanceUidHelperImpl(
         trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Set<String> {
         val uids = trackedEntityInstances.flatMap {
-            val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            val enrollments = it.enrollments
             getEnrollmentsUids(enrollments) + it.organisationUnit()
         }.filterNotNull().toSet()
 

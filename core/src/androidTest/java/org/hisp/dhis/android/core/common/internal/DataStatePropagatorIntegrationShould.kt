@@ -403,7 +403,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)
 
-        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build())
+        propagator.propagateTrackedEntityDataValueUpdate(
+            TrackedEntityDataValue.builder().event(eventUid).dataElement("dataElementUid").build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(state)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
@@ -420,7 +422,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)
 
-        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build())
+        propagator.propagateTrackedEntityDataValueUpdate(
+            TrackedEntityDataValue.builder().event(eventUid).dataElement("dataElementUid").build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(state)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(state)

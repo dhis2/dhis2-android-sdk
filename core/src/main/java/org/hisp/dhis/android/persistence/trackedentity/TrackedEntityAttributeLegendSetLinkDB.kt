@@ -31,7 +31,7 @@ internal data class TrackedEntityAttributeLegendSetLinkDB(
 
     @ParentColumn val trackedEntityAttribute: String,
     val legendSet: String,
-    val sortOrder: Int?,
+    val sortOrder: Int,
 ) : EntityDB<TrackedEntityAttributeLegendSetLink> {
 
     override fun toDomain(): TrackedEntityAttributeLegendSetLink {

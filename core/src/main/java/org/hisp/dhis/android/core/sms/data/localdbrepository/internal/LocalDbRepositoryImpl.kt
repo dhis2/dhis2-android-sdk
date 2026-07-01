@@ -51,7 +51,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMeta
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
@@ -167,8 +166,8 @@ internal class LocalDbRepositoryImpl(
                 .events(events)
                 .build()
             val trackedEntityInstance = getTrackedEntityInstance(enrollment.trackedEntityInstance()).blockingGet()
-            TrackedEntityInstanceInternalAccessor
-                .insertEnrollments(trackedEntityInstance.toBuilder(), listOf(enrollmentWithEvents))
+            trackedEntityInstance.toBuilder()
+                .enrollments(listOf(enrollmentWithEvents))
                 .build()
         }
     }
@@ -202,7 +201,7 @@ internal class LocalDbRepositoryImpl(
 
     override fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable {
         return rxCompletable {
-            val enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)[0]
+            val enrollment = tei.enrollments!![0]
             val events = enrollment.events()
             events?.forEach { event ->
                 eventStore.setSyncState(event.uid(), state)

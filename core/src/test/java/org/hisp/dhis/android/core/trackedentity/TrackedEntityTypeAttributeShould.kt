@@ -40,12 +40,12 @@ internal class TrackedEntityTypeAttributeShould : CoreObjectShould<TrackedEntity
     @Test
     override fun map_from_json_string() {
         val typeAttributeDTO = deserialize()
-        val typeAttribute = typeAttributeDTO.toDomain()
+        val typeAttribute = typeAttributeDTO.toDomain("nEenWmSyUEp")!!
 
         assertThat(typeAttribute.displayInList()).isTrue()
         assertThat(typeAttribute.searchable()).isTrue()
         assertThat(typeAttribute.mandatory()).isFalse()
         assertThat(typeAttribute.trackedEntityType().uid()).isEqualTo("nEenWmSyUEp")
-        assertThat(typeAttribute.trackedEntityAttribute()!!.uid()).isEqualTo("w75KJ2mc4zz")
+        assertThat(typeAttribute.trackedEntityAttribute().uid()).isEqualTo("w75KJ2mc4zz")
     }
 }

@@ -26,53 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ReservedValueSummary(
+    val trackedEntityAttribute: TrackedEntityAttribute,
+    val organisationUnit: OrganisationUnit?,
+    val count: Int,
+    val numberOfValuesToFillUp: Int,
+) {
 
-import org.hisp.dhis.android.core.common.AssignedUserMode;
-import org.hisp.dhis.android.core.common.CoreObject;
-import org.hisp.dhis.android.core.common.FilterPeriod;
-import org.hisp.dhis.android.core.event.EventStatus;
+    fun trackedEntityAttribute(): TrackedEntityAttribute = trackedEntityAttribute
+    fun organisationUnit(): OrganisationUnit? = organisationUnit
+    fun count(): Int = count
+    fun numberOfValuesToFillUp(): Int = numberOfValuesToFillUp
 
-@AutoValue
-public abstract class TrackedEntityInstanceEventFilter implements CoreObject {
+    fun toBuilder(): Builder = ReservedValueSummaryBuilder.from(this)
 
-    @Nullable
-    public abstract String trackedEntityInstanceFilter();
+    class Builder : ReservedValueSummaryBuilder()
 
-    @Nullable
-    public abstract String programStage();
-
-    @Nullable
-    public abstract EventStatus eventStatus();
-
-    @Nullable
-    public abstract FilterPeriod eventCreatedPeriod();
-
-    @Nullable
-    public abstract AssignedUserMode assignedUserMode();
-
-    public static Builder builder() {
-        return new AutoValue_TrackedEntityInstanceEventFilter.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder trackedEntityInstanceFilter(String trackedEntityInstanceFilter);
-
-        public abstract Builder programStage(String programStage);
-
-        public abstract Builder eventStatus(EventStatus eventStatus);
-
-        public abstract Builder eventCreatedPeriod(FilterPeriod eventCreatedPeriod);
-
-        public abstract Builder assignedUserMode(AssignedUserMode assignedUserMode);
-
-        public abstract TrackedEntityInstanceEventFilter build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

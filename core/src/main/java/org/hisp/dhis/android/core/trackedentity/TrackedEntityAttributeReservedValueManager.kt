@@ -365,10 +365,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
             )
 
             // If number of values is explicitly specified, we use that value as threshold.
-            val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
+            val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo * FACTOR_TO_REFILL).toInt()
 
             if (remainingValues < minNumberToTryFill) {
-                val numberToReserve = fillUpTo!! - remainingValues
+                val numberToReserve = fillUpTo - remainingValues
                 downloadValues(
                     attribute,
                     organisationUnit,
@@ -446,25 +446,18 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         return pattern != null && pattern.contains("ORG_UNIT_CODE")
     }
 
-    private suspend fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int? {
-        return if (minNumberOfValuesToHave == null) {
-            val reservedValueSetting = reservedValueSettingStore.selectByUid(attribute)
-            if (reservedValueSetting?.numberOfValuesToReserve() == null) {
-                val generalSettings = generalSettingObjectRepository.getInternal()
-                if (generalSettings?.reservedValues() == null) {
-                    FILL_UP_TO
-                } else {
-                    generalSettings.reservedValues()
-                }
-            } else {
-                reservedValueSetting.numberOfValuesToReserve()
-            }
-        } else {
-            reservedValueSettingStore.updateOrInsert(
-                ReservedValueSetting.builder().uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build(),
-            )
-            minNumberOfValuesToHave
-        }
+    private suspend fun getFillUpToValue(minNumberOfValuesToHave: Int?, attribute: String): Int {
+        return minNumberOfValuesToHave?.let { saveAndReturn(minNumberOfValuesToHave, attribute) }
+            ?: reservedValueSettingStore.selectByUid(attribute)?.numberOfValuesToReserve
+            ?: generalSettingObjectRepository.getInternal()?.reservedValues
+            ?: FILL_UP_TO
+    }
+
+    private suspend fun saveAndReturn(minNumberOfValuesToHave: Int, attribute: String): Int {
+        reservedValueSettingStore.updateOrInsert(
+            ReservedValueSetting.builder().uid(attribute).numberOfValuesToReserve(minNumberOfValuesToHave).build(),
+        )
+        return minNumberOfValuesToHave
     }
 
     companion object {

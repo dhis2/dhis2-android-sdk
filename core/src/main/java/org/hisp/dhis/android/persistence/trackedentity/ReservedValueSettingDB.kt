@@ -34,7 +34,7 @@ internal data class ReservedValueSettingDB(
 
 internal fun ReservedValueSetting.toDB(): ReservedValueSettingDB {
     return ReservedValueSettingDB(
-        uid = uid()!!,
+        uid = uid(),
         numberOfValuesToReserve = numberOfValuesToReserve(),
     )
 }

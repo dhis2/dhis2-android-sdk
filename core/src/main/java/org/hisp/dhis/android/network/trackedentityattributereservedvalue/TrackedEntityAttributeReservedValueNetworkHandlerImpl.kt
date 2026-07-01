@@ -49,6 +49,6 @@ internal class TrackedEntityAttributeReservedValueNetworkHandlerImpl(
             numberToReserve,
             orgUnitCode,
         )
-        return apiPayload.map(TrackedEntityAttributeReservedValueDTO::toDomain)
+        return apiPayload.mapNotNull(TrackedEntityAttributeReservedValueDTO::toDomain)
     }
 }

@@ -25,46 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity.ownership;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class TrackedEntityAttributeReservedValue(
+    val ownerObject: String,
+    val ownerUid: String,
+    val key: String?,
+    val value: String?,
+    val created: Date?,
+    val expiryDate: Date?,
+    val organisationUnit: String?,
+    val temporalValidityDate: Date?,
+    val pattern: String?,
+) : CoreObject {
+    fun ownerObject(): String = ownerObject
+    fun ownerUid(): String = ownerUid
+    fun key(): String? = key
+    fun value(): String? = value
+    fun created(): Date? = created
+    fun expiryDate(): Date? = expiryDate
+    fun organisationUnit(): String? = organisationUnit
+    fun temporalValidityDate(): Date? = temporalValidityDate
+    fun pattern(): String? = pattern
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = TrackedEntityAttributeReservedValueBuilder.from(this)
 
-import java.util.Date;
+    class Builder : TrackedEntityAttributeReservedValueBuilder()
 
-@AutoValue
-public abstract class ProgramTempOwner implements CoreObject {
-
-    public abstract String program();
-
-    public abstract String trackedEntityInstance();
-
-    public abstract Date created();
-
-    public abstract Date validUntil();
-
-    public abstract String reason();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramTempOwner.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder program(String event);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract Builder created(Date created);
-
-        public abstract Builder validUntil(Date validUntil);
-
-        public abstract Builder reason(String reason);
-
-        public abstract ProgramTempOwner build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,36 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.trackedentity.ownership;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ValueTypeDeviceRendering(
+    val uid: String?,
+    val objectTable: String?,
+    val deviceType: String?,
+    val type: ValueTypeRenderingType?,
+    val min: Int?,
+    val max: Int?,
+    val step: Int?,
+    val decimalPoints: Int?,
+) : CoreObject {
+    fun uid(): String? = uid
+    fun objectTable(): String? = objectTable
+    fun deviceType(): String? = deviceType
+    fun type(): ValueTypeRenderingType? = type
+    fun min(): Int? = min
+    fun max(): Int? = max
+    fun step(): Int? = step
+    fun decimalPoints(): Int? = decimalPoints
 
-import org.hisp.dhis.android.core.common.BaseDataObject;
+    fun toBuilder(): Builder = ValueTypeDeviceRenderingBuilder.from(this)
 
-@AutoValue
-public abstract class ProgramOwner extends BaseDataObject {
+    class Builder : ValueTypeDeviceRenderingBuilder()
 
-    public abstract String program();
-
-    public abstract String trackedEntityInstance();
-
-    public abstract String ownerOrgUnit();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramOwner.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
-        public abstract Builder program(String event);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract Builder ownerOrgUnit(String ownerOrgUnit);
-
-        public abstract ProgramOwner build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,42 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.datastore;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class ProgramTempOwner(
+    val program: String,
+    val trackedEntityInstance: String,
+    val created: Date,
+    val validUntil: Date,
+    val reason: String,
+) : CoreObject {
+    fun program(): String = program
+    fun trackedEntityInstance(): String = trackedEntityInstance
+    fun created(): Date = created
+    fun validUntil(): Date = validUntil
+    fun reason(): String = reason
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = ProgramTempOwnerBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+    class Builder : ProgramTempOwnerBuilder()
 
-@AutoValue
-public abstract class DataStoreEntry extends BaseDeletableDataObject {
-
-    @NonNull
-    public abstract String namespace();
-
-    @NonNull
-    public abstract String key();
-
-    @Nullable
-    public abstract String value();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataStoreEntry.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
-        public abstract Builder namespace(String namespace);
-
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract DataStoreEntry build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

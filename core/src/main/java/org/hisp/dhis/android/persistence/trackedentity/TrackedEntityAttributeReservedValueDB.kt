@@ -39,8 +39,8 @@ internal data class TrackedEntityAttributeReservedValueDB(
 
 internal fun TrackedEntityAttributeReservedValue.toDB(): TrackedEntityAttributeReservedValueDB {
     return TrackedEntityAttributeReservedValueDB(
-        ownerObject = ownerObject()!!,
-        ownerUid = ownerUid()!!,
+        ownerObject = ownerObject(),
+        ownerUid = ownerUid(),
         key = key(),
         value = value()!!,
         created = created().dateFormat(),

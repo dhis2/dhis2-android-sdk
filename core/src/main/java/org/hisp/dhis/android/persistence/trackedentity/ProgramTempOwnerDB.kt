@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.hisp.dhis.android.core.util.dateFormatNonNull
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
@@ -33,8 +33,8 @@ internal data class ProgramTempOwnerDB(
         return ProgramTempOwner.builder()
             .program(program)
             .trackedEntityInstance(trackedEntityInstance)
-            .created(created.toJavaDate())
-            .validUntil(validUntil.toJavaDate())
+            .created(created.toJavaDateNonNull())
+            .validUntil(validUntil.toJavaDateNonNull())
             .reason(reason)
             .build()
     }

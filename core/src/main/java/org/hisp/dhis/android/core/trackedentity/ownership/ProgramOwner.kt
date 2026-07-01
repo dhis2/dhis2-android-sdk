@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,34 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.network.trackedentityattributereservedvalue
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.State
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
+@ModelBuilder
+data class ProgramOwner(
+    val program: String,
+    val trackedEntityInstance: String,
+    val ownerOrgUnit: String,
+    override val syncState: State?,
+) : DataObjectKt {
+    fun program(): String = program
+    fun trackedEntityInstance(): String = trackedEntityInstance
+    fun ownerOrgUnit(): String = ownerOrgUnit
 
-@Serializable
-internal data class TrackedEntityAttributeReservedValueDTO(
-    val ownerObject: String?,
-    val ownerUid: String?,
-    val key: String?,
-    val value: String?,
-    val created: String?,
-    val expiryDate: String?,
-) {
-    fun toDomain(): TrackedEntityAttributeReservedValue? {
-        return if (ownerObject != null && ownerUid != null) {
-            TrackedEntityAttributeReservedValue.builder()
-                .ownerObject(ownerObject)
-                .ownerUid(ownerUid)
-                .key(key)
-                .value(value)
-                .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
-                .expiryDate(expiryDate?.let { DateUtils.DATE_FORMAT.parse(it) })
-                .build()
-        } else {
-            null
-        }
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
+
+    fun toBuilder(): Builder = ProgramOwnerBuilder.from(this)
+
+    class Builder : ProgramOwnerBuilder()
+
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

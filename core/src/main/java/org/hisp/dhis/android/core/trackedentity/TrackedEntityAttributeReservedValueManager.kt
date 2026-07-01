@@ -365,10 +365,10 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
             )
 
             // If number of values is explicitly specified, we use that value as threshold.
-            val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo!! * FACTOR_TO_REFILL).toInt()
+            val minNumberToTryFill = minNumberOfValuesToHave ?: (fillUpTo * FACTOR_TO_REFILL).toInt()
 
             if (remainingValues < minNumberToTryFill) {
-                val numberToReserve = fillUpTo!! - remainingValues
+                val numberToReserve = fillUpTo - remainingValues
                 downloadValues(
                     attribute,
                     organisationUnit,

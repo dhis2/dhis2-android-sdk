@@ -25,36 +25,25 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore
 
-package org.hisp.dhis.android.core.datastore;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class KeyValuePair(
+    val key: String,
+    val value: String?,
+) : CoreObject {
+    fun key(): String = key
+    fun value(): String? = value
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = KeyValuePairBuilder.from(this)
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    class Builder : KeyValuePairBuilder()
 
-@AutoValue
-public abstract class KeyValuePair implements CoreObject {
-
-    @Nullable
-    public abstract String key();
-
-    @Nullable
-    public abstract String value();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_KeyValuePair.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract KeyValuePair build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

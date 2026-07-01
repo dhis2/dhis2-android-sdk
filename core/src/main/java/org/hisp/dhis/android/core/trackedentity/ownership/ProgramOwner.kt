@@ -25,36 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity.ownership;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.State
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramOwner(
+    val program: String,
+    val trackedEntityInstance: String,
+    val ownerOrgUnit: String,
+    override val syncState: State?,
+) : DataObjectKt {
+    fun program(): String = program
+    fun trackedEntityInstance(): String = trackedEntityInstance
+    fun ownerOrgUnit(): String = ownerOrgUnit
 
-import org.hisp.dhis.android.core.common.BaseDataObject;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-@AutoValue
-public abstract class ProgramOwner extends BaseDataObject {
+    fun toBuilder(): Builder = ProgramOwnerBuilder.from(this)
 
-    public abstract String program();
+    class Builder : ProgramOwnerBuilder()
 
-    public abstract String trackedEntityInstance();
-
-    public abstract String ownerOrgUnit();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramOwner.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDataObject.Builder<Builder> {
-        public abstract Builder program(String event);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract Builder ownerOrgUnit(String ownerOrgUnit);
-
-        public abstract ProgramOwner build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

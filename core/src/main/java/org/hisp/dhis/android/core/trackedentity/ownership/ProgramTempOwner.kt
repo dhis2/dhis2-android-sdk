@@ -25,46 +25,32 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.ownership
 
-package org.hisp.dhis.android.core.trackedentity.ownership;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ProgramTempOwner(
+    val program: String,
+    val trackedEntityInstance: String,
+    val created: Date,
+    val validUntil: Date,
+    val reason: String,
+) : CoreObject {
+    fun program(): String = program
+    fun trackedEntityInstance(): String = trackedEntityInstance
+    fun created(): Date = created
+    fun validUntil(): Date = validUntil
+    fun reason(): String = reason
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = ProgramTempOwnerBuilder.from(this)
 
-import java.util.Date;
+    class Builder : ProgramTempOwnerBuilder()
 
-@AutoValue
-public abstract class ProgramTempOwner implements CoreObject {
-
-    public abstract String program();
-
-    public abstract String trackedEntityInstance();
-
-    public abstract Date created();
-
-    public abstract Date validUntil();
-
-    public abstract String reason();
-
-    public static Builder builder() {
-        return new AutoValue_ProgramTempOwner.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder program(String event);
-
-        public abstract Builder trackedEntityInstance(String trackedEntityInstance);
-
-        public abstract Builder created(Date created);
-
-        public abstract Builder validUntil(Date validUntil);
-
-        public abstract Builder reason(String reason);
-
-        public abstract ProgramTempOwner build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

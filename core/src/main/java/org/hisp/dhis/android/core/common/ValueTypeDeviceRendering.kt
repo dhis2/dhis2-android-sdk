@@ -25,65 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.annotations.ModelBuilder
 
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class ValueTypeDeviceRendering(
+    val uid: String?,
+    val objectTable: String?,
+    val deviceType: String?,
+    val type: ValueTypeRenderingType?,
+    val min: Int?,
+    val max: Int?,
+    val step: Int?,
+    val decimalPoints: Int?,
+) : CoreObject {
+    fun uid(): String? = uid
+    fun objectTable(): String? = objectTable
+    fun deviceType(): String? = deviceType
+    fun type(): ValueTypeRenderingType? = type
+    fun min(): Int? = min
+    fun max(): Int? = max
+    fun step(): Int? = step
+    fun decimalPoints(): Int? = decimalPoints
 
-import com.google.auto.value.AutoValue;
+    fun toBuilder(): Builder = ValueTypeDeviceRenderingBuilder.from(this)
 
-@AutoValue
-public abstract class ValueTypeDeviceRendering implements CoreObject {
+    class Builder : ValueTypeDeviceRenderingBuilder()
 
-    @Nullable
-    public abstract String uid();
-
-    @Nullable
-    public abstract String objectTable();
-
-    @Nullable
-    public abstract String deviceType();
-
-    @Nullable
-    public abstract ValueTypeRenderingType type();
-
-    @Nullable
-    public abstract Integer min();
-
-    @Nullable
-    public abstract Integer max();
-
-    @Nullable
-    public abstract Integer step();
-
-    @Nullable
-    public abstract Integer decimalPoints();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_ValueTypeDeviceRendering.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder uid(String uid);
-
-        public abstract Builder objectTable(String objectTable);
-
-        public abstract Builder deviceType(String deviceType);
-
-        public abstract Builder type(ValueTypeRenderingType type);
-
-        public abstract Builder min(Integer min);
-
-        public abstract Builder max(Integer max);
-
-        public abstract Builder step(Integer step);
-
-        public abstract Builder decimalPoints(Integer decimalPoints);
-
-        public abstract ValueTypeDeviceRendering build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -25,42 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.datastore
 
-package org.hisp.dhis.android.core.datastore;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.State
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+@ModelBuilder
+data class DataStoreEntry(
+    val namespace: String,
+    val key: String,
+    val value: String?,
+    override val syncState: State?,
+    override val deleted: Boolean?,
+) : DataObjectKt, DeletableDataObjectKt {
+    fun namespace(): String = namespace
+    fun key(): String = key
+    fun value(): String? = value
 
-import com.google.auto.value.AutoValue;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
+    fun toBuilder(): Builder = DataStoreEntryBuilder.from(this)
 
-@AutoValue
-public abstract class DataStoreEntry extends BaseDeletableDataObject {
+    class Builder : DataStoreEntryBuilder()
 
-    @NonNull
-    public abstract String namespace();
-
-    @NonNull
-    public abstract String key();
-
-    @Nullable
-    public abstract String value();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataStoreEntry.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder implements BaseDeletableDataObject.Builder<DataStoreEntry.Builder> {
-        public abstract Builder namespace(String namespace);
-
-        public abstract Builder key(String key);
-
-        public abstract Builder value(String value);
-
-        public abstract DataStoreEntry build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

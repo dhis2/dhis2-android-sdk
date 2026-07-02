@@ -25,7 +25,6 @@ paging = "3.3.6"
 androidx-room = "2.8.4"
 
 # java
-autoValue = "1.11.0"
 okHttp = "5.3.2"
 ktor = "3.4.0"
 rxJava = "2.2.21"
@@ -85,8 +84,6 @@ androidx-room-paging = { group = "androidx.room", name = "room-paging", version.
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqLite" }
 sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 
-google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
-google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }

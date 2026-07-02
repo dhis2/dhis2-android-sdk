@@ -33,7 +33,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
     alias(libs.plugins.room)
@@ -168,10 +167,6 @@ dependencies {
     api(libs.androidx.annotation)
     api(libs.androidx.paging.runtime)
 
-    // Auto Value
-    api(libs.google.auto.value.annotation)
-    kapt(libs.google.auto.value)
-
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.annotations)
@@ -297,7 +292,7 @@ tasks.withType<DokkaTask>().configureEach {
 }
 
 tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
+    dependsOn("kspReleaseKotlin")
 }
 
 // Custom task to run code quality checks, unit tests, and instrumentation tests sequentially

@@ -6096,25 +6096,69 @@ public abstract interface class org/hisp/dhis/android/core/constant/ConstantModu
 	public abstract fun constants ()Lorg/hisp/dhis/android/core/constant/ConstantCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun state ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun workflow ()Ljava/lang/String;
+public final class org/hisp/dhis/android/core/dataapproval/DataApproval : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;)V
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataapproval/DataApproval;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getState ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	public final fun getWorkflow ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public final fun state ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	public fun toString ()Ljava/lang/String;
+	public final fun workflow ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataapproval/DataApproval$Builder {
+public final class org/hisp/dhis/android/core/dataapproval/DataApproval$Builder : org/hisp/dhis/android/core/dataapproval/DataApprovalBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun state (Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
-	public abstract fun workflow (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataapproval/DataApproval$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataapproval/DataApprovalBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataapproval/DataApprovalBuilder$Companion;
+	protected field attributeOptionCombo Ljava/lang/String;
+	protected field organisationUnit Ljava/lang/String;
+	protected field period Ljava/lang/String;
+	protected field state Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	protected field workflow Ljava/lang/String;
+	public fun <init> ()V
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/dataapproval/DataApproval;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getState ()Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;
+	protected final fun getWorkflow ()Ljava/lang/String;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setState (Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;)V
+	protected final fun setWorkflow (Ljava/lang/String;)V
+	public final fun state (Lorg/hisp/dhis/android/core/dataapproval/DataApprovalState;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+	public final fun workflow (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataapproval/DataApprovalBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataapproval/DataApproval;)Lorg/hisp/dhis/android/core/dataapproval/DataApproval$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataapproval/DataApprovalCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {
@@ -6791,27 +6835,87 @@ public final class org/hisp/dhis/android/core/dataset/DataSetCollectionRepositor
 	public final fun withIndicators ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration : org/hisp/dhis/android/core/common/BaseDeletableDataObject {
-	public fun <init> ()V
-	public abstract fun attributeOptionCombo ()Ljava/lang/String;
-	public static fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun dataSet ()Ljava/lang/String;
-	public abstract fun date ()Ljava/util/Date;
-	public abstract fun organisationUnit ()Ljava/lang/String;
-	public abstract fun period ()Ljava/lang/String;
-	public abstract fun storedBy ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration : org/hisp/dhis/android/core/common/DataObjectKt, org/hisp/dhis/android/core/common/DeletableDataObjectKt {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;)V
+	public final fun attributeOptionCombo ()Ljava/lang/String;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun component8 ()Ljava/lang/Boolean;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/State;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
+	public final fun dataSet ()Ljava/lang/String;
+	public final fun date ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttributeOptionCombo ()Ljava/lang/String;
+	public final fun getDataSet ()Ljava/lang/String;
+	public final fun getDate ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public final fun getOrganisationUnit ()Ljava/lang/String;
+	public final fun getPeriod ()Ljava/lang/String;
+	public final fun getStoredBy ()Ljava/lang/String;
+	public fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public fun hashCode ()I
+	public final fun organisationUnit ()Ljava/lang/String;
+	public final fun period ()Ljava/lang/String;
+	public fun state ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun storedBy ()Ljava/lang/String;
+	public fun syncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder : org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder {
+public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder : org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationBuilder {
 	public fun <init> ()V
-	public abstract fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
-	public abstract fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun date (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
-	public abstract fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+}
+
+public class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationBuilder$Companion;
+	protected field attributeOptionCombo Ljava/lang/String;
+	protected field dataSet Ljava/lang/String;
+	protected field organisationUnit Ljava/lang/String;
+	protected field period Ljava/lang/String;
+	public fun <init> ()V
+	public final fun attributeOptionCombo (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;
+	public final fun dataSet (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public final fun date (Ljava/util/Date;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public final fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	protected final fun getAttributeOptionCombo ()Ljava/lang/String;
+	protected final fun getDataSet ()Ljava/lang/String;
+	protected final fun getDate ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getOrganisationUnit ()Ljava/lang/String;
+	protected final fun getPeriod ()Ljava/lang/String;
+	protected final fun getStoredBy ()Ljava/lang/String;
+	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
+	public final fun organisationUnit (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public final fun period (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	protected final fun setAttributeOptionCombo (Ljava/lang/String;)V
+	protected final fun setDataSet (Ljava/lang/String;)V
+	protected final fun setDate (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setOrganisationUnit (Ljava/lang/String;)V
+	protected final fun setPeriod (Ljava/lang/String;)V
+	protected final fun setStoredBy (Ljava/lang/String;)V
+	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
+	public final fun storedBy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
+}
+
+public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration;)Lorg/hisp/dhis/android/core/dataset/DataSetCompleteRegistration$Builder;
 }
 
 public final class org/hisp/dhis/android/core/dataset/DataSetCompleteRegistrationCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository {
@@ -9782,17 +9886,94 @@ public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderC
 	public final fun from (Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa, org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
-	public abstract fun expression ()Ljava/lang/String;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public fun code ()Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/util/Date;
+	public final fun component6 ()Ljava/util/Date;
+	public final fun component7 ()Ljava/lang/Boolean;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;
+	public fun created ()Ljava/util/Date;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun expression ()Ljava/lang/String;
+	public fun getCode ()Ljava/lang/String;
+	public fun getCreated ()Ljava/util/Date;
+	public fun getDeleted ()Ljava/lang/Boolean;
+	public fun getDisplayName ()Ljava/lang/String;
+	public final fun getExpression ()Ljava/lang/String;
+	public fun getLastUpdated ()Ljava/util/Date;
+	public fun getName ()Ljava/lang/String;
+	public fun getUid ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public fun toString ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder {
+public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder : org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;
-	public abstract fun expression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+}
+
+public class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemBuilder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
+	public static final field Companion Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemBuilder$Companion;
+	protected field uid Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;
+	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public final fun expression (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	protected final fun getCode ()Ljava/lang/String;
+	protected final fun getCreated ()Ljava/util/Date;
+	protected final fun getDeleted ()Ljava/lang/Boolean;
+	protected final fun getDisplayName ()Ljava/lang/String;
+	protected final fun getExpression ()Ljava/lang/String;
+	protected final fun getLastUpdated ()Ljava/util/Date;
+	protected final fun getName ()Ljava/lang/String;
+	protected final fun getUid ()Ljava/lang/String;
+	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+	protected final fun setCode (Ljava/lang/String;)V
+	protected final fun setCreated (Ljava/util/Date;)V
+	protected final fun setDeleted (Ljava/lang/Boolean;)V
+	protected final fun setDisplayName (Ljava/lang/String;)V
+	protected final fun setExpression (Ljava/lang/String;)V
+	protected final fun setLastUpdated (Ljava/util/Date;)V
+	protected final fun setName (Ljava/lang/String;)V
+	protected final fun setUid (Ljava/lang/String;)V
+	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
+	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
+}
+
+public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem;)Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
 }
 
 public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItemCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyIdentifiableCollectionRepositoryImpl {
@@ -12808,39 +12989,103 @@ public class org/hisp/dhis/android/core/parser/internal/expression/operator/Oper
 	public fun <init> ()V
 }
 
-public abstract class org/hisp/dhis/android/core/period/DatePeriod {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
-	public static fun create (Ljava/util/Date;Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod;
-	public abstract fun endDate ()Ljava/util/Date;
-	public abstract fun startDate ()Ljava/util/Date;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+public final class org/hisp/dhis/android/core/period/DatePeriod {
+	public static final field Companion Lorg/hisp/dhis/android/core/period/DatePeriod$Companion;
+	public fun <init> (Ljava/util/Date;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+	public final fun component1 ()Ljava/util/Date;
+	public final fun component2 ()Ljava/util/Date;
+	public final fun copy (Ljava/util/Date;Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/period/DatePeriod;Ljava/util/Date;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/period/DatePeriod;
+	public final fun endDate ()Ljava/util/Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndDate ()Ljava/util/Date;
+	public final fun getStartDate ()Ljava/util/Date;
+	public fun hashCode ()I
+	public final fun startDate ()Ljava/util/Date;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/period/DatePeriod$Builder {
+public final class org/hisp/dhis/android/core/period/DatePeriod$Builder : org/hisp/dhis/android/core/period/DatePeriodBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/period/DatePeriod;
-	public abstract fun endDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
-	public abstract fun startDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/period/Period : org/hisp/dhis/android/core/common/CoreObject {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
-	public abstract fun endDate ()Ljava/util/Date;
-	public abstract fun periodId ()Ljava/lang/String;
-	public abstract fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
-	public abstract fun startDate ()Ljava/util/Date;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
+public final class org/hisp/dhis/android/core/period/DatePeriod$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
 }
 
-public abstract class org/hisp/dhis/android/core/period/Period$Builder {
+public class org/hisp/dhis/android/core/period/DatePeriodBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/period/DatePeriodBuilder$Companion;
+	protected field endDate Ljava/util/Date;
+	protected field startDate Ljava/util/Date;
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/period/Period;
-	public abstract fun endDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period$Builder;
-	public abstract fun periodId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/period/Period$Builder;
-	public abstract fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/period/Period$Builder;
-	public abstract fun startDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period$Builder;
+	public fun build ()Lorg/hisp/dhis/android/core/period/DatePeriod;
+	public final fun endDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+	protected final fun getEndDate ()Ljava/util/Date;
+	protected final fun getStartDate ()Ljava/util/Date;
+	protected final fun setEndDate (Ljava/util/Date;)V
+	protected final fun setStartDate (Ljava/util/Date;)V
+	public final fun startDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+}
+
+public final class org/hisp/dhis/android/core/period/DatePeriodBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/period/DatePeriod;)Lorg/hisp/dhis/android/core/period/DatePeriod$Builder;
+}
+
+public final class org/hisp/dhis/android/core/period/Period : org/hisp/dhis/android/core/common/CoreObject {
+	public static final field Companion Lorg/hisp/dhis/android/core/period/Period$Companion;
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;Ljava/util/Date;)V
+	public static final fun builder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun component3 ()Ljava/util/Date;
+	public final fun component4 ()Ljava/util/Date;
+	public final fun copy (Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/period/Period;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;Ljava/util/Date;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/period/Period;
+	public final fun endDate ()Ljava/util/Date;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEndDate ()Ljava/util/Date;
+	public final fun getPeriodId ()Ljava/lang/String;
+	public final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun getStartDate ()Ljava/util/Date;
+	public fun hashCode ()I
+	public final fun periodId ()Ljava/lang/String;
+	public final fun periodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	public final fun startDate ()Ljava/util/Date;
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/period/Period$Builder : org/hisp/dhis/android/core/period/PeriodBuilder {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/android/core/period/Period$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/period/Period$Builder;
+}
+
+public class org/hisp/dhis/android/core/period/PeriodBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/period/PeriodBuilder$Companion;
+	protected field periodId Ljava/lang/String;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/period/Period;
+	public final fun endDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period$Builder;
+	protected final fun getEndDate ()Ljava/util/Date;
+	protected final fun getPeriodId ()Ljava/lang/String;
+	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
+	protected final fun getStartDate ()Ljava/util/Date;
+	public final fun periodId (Ljava/lang/String;)Lorg/hisp/dhis/android/core/period/Period$Builder;
+	public final fun periodType (Lorg/hisp/dhis/android/core/period/PeriodType;)Lorg/hisp/dhis/android/core/period/Period$Builder;
+	protected final fun setEndDate (Ljava/util/Date;)V
+	protected final fun setPeriodId (Ljava/lang/String;)V
+	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
+	protected final fun setStartDate (Ljava/util/Date;)V
+	public final fun startDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/period/Period$Builder;
+}
+
+public final class org/hisp/dhis/android/core/period/PeriodBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/period/Period;)Lorg/hisp/dhis/android/core/period/Period$Builder;
 }
 
 public final class org/hisp/dhis/android/core/period/PeriodCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl {

@@ -26,63 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetCompleteRegistration(
+    val period: String,
+    val dataSet: String,
+    val organisationUnit: String,
+    val attributeOptionCombo: String,
+    val date: Date?,
+    val storedBy: String?,
+    override val syncState: State?,
+    override val deleted: Boolean?,
+) : DataObjectKt, DeletableDataObjectKt {
+    fun period(): String = period
+    fun dataSet(): String = dataSet
+    fun organisationUnit(): String = organisationUnit
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun date(): Date? = date
+    fun storedBy(): String? = storedBy
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.State;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-import java.util.Date;
+    fun toBuilder(): Builder = DataSetCompleteRegistrationBuilder.from(this)
 
-@AutoValue
-public abstract class DataSetCompleteRegistration extends BaseDeletableDataObject {
+    class Builder : DataSetCompleteRegistrationBuilder()
 
-    public abstract String period();
-
-    public abstract String dataSet();
-
-    public abstract String organisationUnit();
-
-    public abstract String attributeOptionCombo();
-
-    @Nullable
-    public abstract Date date();
-
-    @Nullable
-    public abstract String storedBy();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetCompleteRegistration.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            implements BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
-
-        public Builder() {
-            syncState(State.SYNCED);
-        }
-
-        public abstract Builder period(@NonNull String period);
-
-        public abstract Builder dataSet(@NonNull String dataSet);
-
-        public abstract Builder organisationUnit(@NonNull String organisationUnit);
-
-        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
-
-        public abstract Builder date(@Nullable Date date);
-
-        public abstract Builder storedBy(@Nullable String storedBy);
-
-        public abstract DataSetCompleteRegistration build();
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .syncState(State.SYNCED)
     }
 }

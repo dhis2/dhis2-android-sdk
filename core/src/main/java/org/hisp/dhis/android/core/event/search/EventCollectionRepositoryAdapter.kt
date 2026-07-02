@@ -130,6 +130,13 @@ internal class EventCollectionRepositoryAdapter(
                     filterRepo = filterRepo.byDataValue(deId).lt(DateUtils.DATE_FORMAT.format(date))
                 }
             }
+            filter.isEmpty?.let { empty ->
+                filterRepo = if (empty) {
+                    filterRepo.byDataValue(deId).isNullOrBlank()
+                } else {
+                    filterRepo.byDataValue(deId).isNotNullAndIsNotBlank()
+                }
+            }
         }
 
         return filterRepo

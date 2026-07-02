@@ -137,12 +137,12 @@ internal class WhereClauseBuilder {
         column: String,
         value: Any,
         logicGate: String,
-        eq: String,
+        operator: String,
         end: String,
     ): WhereClauseBuilder {
         val andOpt = if (addOperator) logicGate else ""
         addOperator = true
-        whereClause.append(andOpt).append(column).append(eq).append(value).append(end)
+        whereClause.append(andOpt).append(column).append(operator).append(value).append(end)
         return this
     }
 

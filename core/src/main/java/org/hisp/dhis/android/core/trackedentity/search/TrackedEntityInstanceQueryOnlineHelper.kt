@@ -158,11 +158,17 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
         }
 
         private fun getAPIValue(item: RepositoryScopeFilterItem): String {
-            return if (item.operator() == FilterItemOperator.IN) {
-                val list = FilterOperatorsHelper.strToList(item.value()).map { escapeChars(it) }
-                list.joinToString(";")
-            } else {
-                escapeChars(item.value())
+            return when (item.operator) {
+                FilterItemOperator.IN -> {
+                    val list = FilterOperatorsHelper.strToList(item.value()!!).map { escapeChars(it) }
+                    list.joinToString(";")
+                }
+
+                FilterItemOperator.NOT_NULL_AND_NOT_BLANK,
+                FilterItemOperator.NULL_OR_BLANK,
+                -> ""
+
+                else -> escapeChars(item.value()!!)
             }
         }
 

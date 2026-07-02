@@ -58,7 +58,7 @@ class WhereClauseFromScopeBuilderShould {
         whenever(builder.build()).doReturn("1")
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value())
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value()!!)
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }
@@ -71,7 +71,7 @@ class WhereClauseFromScopeBuilderShould {
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
         verify(builder)
-            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value())
+            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value()!!)
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }
@@ -83,9 +83,9 @@ class WhereClauseFromScopeBuilderShould {
         whenever(builder.build()).doReturn("1")
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value())
+        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value()!!)
         verify(builder)
-            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value())
+            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value()!!)
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }

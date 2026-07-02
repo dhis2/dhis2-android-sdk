@@ -54,6 +54,7 @@ class ProgramStageWorkingListEventDataFilterStoreIntegrationShould :
             .lt(null)
             .like(null)
             .dateFilter(null)
+            .isEmpty(null)
             .build()
     }
 }

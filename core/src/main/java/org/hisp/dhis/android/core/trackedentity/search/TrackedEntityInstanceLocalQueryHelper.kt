@@ -343,24 +343,21 @@ internal class TrackedEntityInstanceLocalQueryHelper(
             for (token in tokens) {
                 val valueStr =
                     if (query.operator() == FilterItemOperator.LIKE) {
-                        "%${escapeQuotes(token)}%"
-                    } else if (query.operator() == FilterItemOperator.NULL_OR_BLANK ||
-                        query.operator() == FilterItemOperator.NOT_NULL_AND_NOT_BLANK
-                    ) {
-                        token
+                        "'%${escapeQuotes(token)}%'"
                     } else {
-                        escapeQuotes(token)
+                        "'${escapeQuotes(token)}'"
                     }
 
                 val sub = String.format(
-                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
+                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                     teavAlias,
                     dot(teavAlias, trackedEntityInstance),
                     dot(teiAlias, IdentifiableColumns.UID),
-                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                    query.operator().sqlOperator,
-                    valueStr,
+                    query.operator().getSqlCondition(
+                        dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                        valueStr,
+                    ),
                 )
 
                 where.appendExistsSubQuery(sub)
@@ -371,13 +368,14 @@ internal class TrackedEntityInstanceLocalQueryHelper(
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
                 dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
-                dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator,
-                getFilterItemValueStr(item),
+                item.operator().getSqlCondition(
+                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    getFilterItemValueStr(item),
+                ),
             )
 
             where.appendExistsSubQuery(sub)
@@ -574,9 +572,12 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                     "'${escapeQuotes(key)}' " +
 
                     items.joinToString("") { item ->
-                        "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE)} " +
-                            "${item.operator().sqlOperator} " +
-                            "${getFilterItemValueStr(item)} "
+                        "AND ${
+                            item.operator().getSqlCondition(
+                                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
+                                getFilterItemValueStr(item)
+                            )
+                        } "
                     }
 
                 where.appendExistsSubQuery(sub)

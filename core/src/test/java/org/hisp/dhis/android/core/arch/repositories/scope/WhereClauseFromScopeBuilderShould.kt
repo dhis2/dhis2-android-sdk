@@ -50,6 +50,10 @@ class WhereClauseFromScopeBuilderShould {
         RepositoryScopeFilterItem.builder().key("k1").operator(FilterItemOperator.EQ).value("v1").build()
     private val likeItem =
         RepositoryScopeFilterItem.builder().key("k2").operator(FilterItemOperator.LIKE).value("v2").build()
+    private val nullOrBlankItem =
+        RepositoryScopeFilterItem.builder().key("k3").operator(FilterItemOperator.NULL_OR_BLANK).build()
+    private val notNullAndNotBlankItem =
+        RepositoryScopeFilterItem.builder().key("k4").operator(FilterItemOperator.NOT_NULL_AND_NOT_BLANK).build()
 
     @Test
     fun build_where_statement_for_equals_key_value() {
@@ -86,6 +90,28 @@ class WhereClauseFromScopeBuilderShould {
         verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value()!!)
         verify(builder)
             .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value()!!)
+        verify(builder).build()
+        verifyNoMoreInteractions(builder)
+    }
+
+    @Test
+    fun build_where_statement_for_null_or_blank_key() {
+        val scopeBuilder = WhereClauseFromScopeBuilder(builder)
+        whenever(builder.build()).doReturn("1")
+
+        scopeBuilder.getWhereClause(scopeForItems(listOf(nullOrBlankItem)))
+        verify(builder).appendComplexQuery("(k3 IS NULL OR k3 = '')")
+        verify(builder).build()
+        verifyNoMoreInteractions(builder)
+    }
+
+    @Test
+    fun build_where_statement_for_not_null_and_not_blank_key() {
+        val scopeBuilder = WhereClauseFromScopeBuilder(builder)
+        whenever(builder.build()).doReturn("1")
+
+        scopeBuilder.getWhereClause(scopeForItems(listOf(notNullAndNotBlankItem)))
+        verify(builder).appendComplexQuery("(k4 IS NOT NULL AND k4 != '')")
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }

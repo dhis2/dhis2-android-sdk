@@ -2795,33 +2795,57 @@ public final class org/hisp/dhis/android/core/arch/repositories/paging/internal/
 public abstract interface class org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
 }
 
-public abstract class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope {
-	public fun <init> ()V
-	public static fun builder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun children ()Lorg/hisp/dhis/android/core/arch/repositories/children/internal/ChildrenSelection;
-	public abstract fun complexFilters ()Ljava/util/List;
-	public static fun empty ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
-	public abstract fun filters ()Ljava/util/List;
-	public fun hasFilters ()Z
-	public abstract fun orderBy ()Ljava/util/List;
-	public abstract fun toBuilder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Companion;
+	public static final fun builder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+	public final fun complexFilters ()Ljava/util/List;
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public static final fun empty ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun filters ()Ljava/util/List;
+	public final fun getComplexFilters ()Ljava/util/List;
+	public final fun getFilters ()Ljava/util/List;
+	public final fun hasFilters ()Z
+	public fun hashCode ()I
+	public final fun toBuilder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder {
+public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder : org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScopeBuilder {
 	public fun <init> ()V
-	public abstract fun build ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
-	public abstract fun children (Lorg/hisp/dhis/android/core/arch/repositories/children/internal/ChildrenSelection;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun complexFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
-	public abstract fun orderBy (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Companion {
+	public final fun builder ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+	public final fun empty ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection : java/lang/Enum {
 	public static final field ASC Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
 	public static final field DESC Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
-	public fun getApi ()Ljava/lang/String;
+	public final fun getApi ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
 	public static fun values ()[Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;
+}
+
+public class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScopeBuilder {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScopeBuilder$Companion;
+	protected field complexFilters Ljava/util/List;
+	protected field filters Ljava/util/List;
+	public fun <init> ()V
+	public fun build ()Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;
+	public final fun complexFilters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+	public final fun filters (Ljava/util/List;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
+	protected final fun getComplexFilters ()Ljava/util/List;
+	protected final fun getFilters ()Ljava/util/List;
+	protected final fun setComplexFilters (Ljava/util/List;)V
+	protected final fun setFilters (Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/android/core/arch/repositories/scope/RepositoryScopeBuilder$Companion {
+	public final fun from (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;)Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$Builder;
 }
 
 public final class org/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator : java/lang/Enum {
@@ -3766,7 +3790,6 @@ public class org/hisp/dhis/android/core/category/CategoryComboBuilder : org/hisp
 	public fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
 	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	protected final fun getCategories ()Ljava/util/List;
-	protected final fun getCategoryOptionCombos ()Ljava/util/List;
 	protected final fun getCode ()Ljava/lang/String;
 	protected final fun getCreated ()Ljava/util/Date;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
@@ -3783,7 +3806,6 @@ public class org/hisp/dhis/android/core/category/CategoryComboBuilder : org/hisp
 	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
 	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
 	protected final fun setCategories (Ljava/util/List;)V
-	protected final fun setCategoryOptionCombos (Ljava/util/List;)V
 	protected final fun setCode (Ljava/lang/String;)V
 	protected final fun setCreated (Ljava/util/Date;)V
 	protected final fun setDefault (Ljava/lang/Boolean;)V
@@ -6665,7 +6687,6 @@ public class org/hisp/dhis/android/core/dataset/DataSetBuilder : org/hisp/dhis/a
 	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	protected final fun getRenderAsTabs ()Ljava/lang/Boolean;
 	protected final fun getRenderHorizontally ()Ljava/lang/Boolean;
-	protected final fun getSections ()Ljava/util/List;
 	protected final fun getShortName ()Ljava/lang/String;
 	protected final fun getSkipOffline ()Ljava/lang/Boolean;
 	protected final fun getStyle ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
@@ -6714,7 +6735,6 @@ public class org/hisp/dhis/android/core/dataset/DataSetBuilder : org/hisp/dhis/a
 	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
 	protected final fun setRenderAsTabs (Ljava/lang/Boolean;)V
 	protected final fun setRenderHorizontally (Ljava/lang/Boolean;)V
-	protected final fun setSections (Ljava/util/List;)V
 	protected final fun setShortName (Ljava/lang/String;)V
 	protected final fun setSkipOffline (Ljava/lang/Boolean;)V
 	protected final fun setStyle (Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
@@ -7382,7 +7402,6 @@ public class org/hisp/dhis/android/core/dataset/SectionBuilder : org/hisp/dhis/a
 	public final fun displayOptions (Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	protected final fun getCode ()Ljava/lang/String;
 	protected final fun getCreated ()Ljava/util/Date;
-	protected final fun getDataElementUids ()Ljava/util/List;
 	protected final fun getDataElements ()Ljava/util/List;
 	protected final fun getDataSet ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
@@ -7408,7 +7427,6 @@ public class org/hisp/dhis/android/core/dataset/SectionBuilder : org/hisp/dhis/a
 	public fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/Section$Builder;
 	protected final fun setCode (Ljava/lang/String;)V
 	protected final fun setCreated (Ljava/util/Date;)V
-	protected final fun setDataElementUids (Ljava/util/List;)V
 	protected final fun setDataElements (Ljava/util/List;)V
 	protected final fun setDataSet (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
 	protected final fun setDeleted (Ljava/lang/Boolean;)V
@@ -7940,7 +7958,6 @@ public class org/hisp/dhis/android/core/datavalue/DataValueBuilder {
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getOrganisationUnit ()Ljava/lang/String;
 	protected final fun getPeriod ()Ljava/lang/String;
-	protected final fun getSourceDataSet ()Ljava/lang/String;
 	protected final fun getStoredBy ()Ljava/lang/String;
 	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getValue ()Ljava/lang/String;
@@ -7957,7 +7974,6 @@ public class org/hisp/dhis/android/core/datavalue/DataValueBuilder {
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setOrganisationUnit (Ljava/lang/String;)V
 	protected final fun setPeriod (Ljava/lang/String;)V
-	protected final fun setSourceDataSet (Ljava/lang/String;)V
 	protected final fun setStoredBy (Ljava/lang/String;)V
 	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setValue (Ljava/lang/String;)V
@@ -8412,7 +8428,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun getCreatedAtClient ()Ljava/util/Date;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
 	protected final fun getEnrollmentDate ()Ljava/util/Date;
-	protected final fun getEvents ()Ljava/util/List;
 	protected final fun getFollowUp ()Ljava/lang/Boolean;
 	protected final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
 	protected final fun getIncidentDate ()Ljava/util/Date;
@@ -8421,7 +8436,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun getNotes ()Ljava/util/List;
 	protected final fun getOrganisationUnit ()Ljava/lang/String;
 	protected final fun getProgram ()Ljava/lang/String;
-	protected final fun getRelationships ()Ljava/util/List;
 	protected final fun getStatus ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;
 	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
@@ -8439,7 +8453,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun setCreatedAtClient (Ljava/util/Date;)V
 	protected final fun setDeleted (Ljava/lang/Boolean;)V
 	protected final fun setEnrollmentDate (Ljava/util/Date;)V
-	protected final fun setEvents (Ljava/util/List;)V
 	protected final fun setFollowUp (Ljava/lang/Boolean;)V
 	protected final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)V
 	protected final fun setIncidentDate (Ljava/util/Date;)V
@@ -8448,7 +8461,6 @@ public class org/hisp/dhis/android/core/enrollment/EnrollmentBuilder {
 	protected final fun setNotes (Ljava/util/List;)V
 	protected final fun setOrganisationUnit (Ljava/lang/String;)V
 	protected final fun setProgram (Ljava/lang/String;)V
-	protected final fun setRelationships (Ljava/util/List;)V
 	protected final fun setStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)V
 	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
@@ -8720,11 +8732,9 @@ public class org/hisp/dhis/android/core/event/EventBuilder {
 	protected final fun getOrganisationUnit ()Ljava/lang/String;
 	protected final fun getProgram ()Ljava/lang/String;
 	protected final fun getProgramStage ()Ljava/lang/String;
-	protected final fun getRelationships ()Ljava/util/List;
 	protected final fun getStatus ()Lorg/hisp/dhis/android/core/event/EventStatus;
 	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getTrackedEntityDataValues ()Ljava/util/List;
-	protected final fun getTrackedEntityInstance ()Ljava/lang/String;
 	protected final fun getUid ()Ljava/lang/String;
 	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public final fun lastUpdatedAtClient (Ljava/util/Date;)Lorg/hisp/dhis/android/core/event/Event$Builder;
@@ -8750,11 +8760,9 @@ public class org/hisp/dhis/android/core/event/EventBuilder {
 	protected final fun setOrganisationUnit (Ljava/lang/String;)V
 	protected final fun setProgram (Ljava/lang/String;)V
 	protected final fun setProgramStage (Ljava/lang/String;)V
-	protected final fun setRelationships (Ljava/util/List;)V
 	protected final fun setStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)V
 	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setTrackedEntityDataValues (Ljava/util/List;)V
-	protected final fun setTrackedEntityInstance (Ljava/lang/String;)V
 	protected final fun setUid (Ljava/lang/String;)V
 	public final fun status (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/event/Event$Builder;
 	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/event/Event$Builder;
@@ -9859,7 +9867,6 @@ public class org/hisp/dhis/android/core/fileresource/FileResourceBuilder {
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getName ()Ljava/lang/String;
 	protected final fun getPath ()Ljava/lang/String;
-	protected final fun getStorageStatus ()Lorg/hisp/dhis/android/core/fileresource/FileResourceStorageStatus;
 	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getUid ()Ljava/lang/String;
 	public final fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
@@ -9872,7 +9879,6 @@ public class org/hisp/dhis/android/core/fileresource/FileResourceBuilder {
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setName (Ljava/lang/String;)V
 	protected final fun setPath (Ljava/lang/String;)V
-	protected final fun setStorageStatus (Lorg/hisp/dhis/android/core/fileresource/FileResourceStorageStatus;)V
 	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setUid (Ljava/lang/String;)V
 	public final fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/fileresource/FileResource$Builder;
@@ -13375,7 +13381,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun getAccessLevel ()Lorg/hisp/dhis/android/core/program/AccessLevel;
 	protected final fun getAttributeValues ()Ljava/util/List;
 	protected final fun getCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	protected final fun getCategoryMappings ()Ljava/util/List;
 	protected final fun getCode ()Ljava/lang/String;
 	protected final fun getCompleteEventsExpiryDays ()Ljava/lang/Integer;
 	protected final fun getCreated ()Ljava/util/Date;
@@ -13407,9 +13412,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun getMinAttributesRequiredToSearch ()Ljava/lang/Integer;
 	protected final fun getName ()Ljava/lang/String;
 	protected final fun getOnlyEnrollOnce ()Ljava/lang/Boolean;
-	protected final fun getProgramRuleVariables ()Ljava/util/List;
-	protected final fun getProgramSections ()Ljava/util/List;
-	protected final fun getProgramTrackedEntityAttributes ()Ljava/util/List;
 	protected final fun getProgramType ()Lorg/hisp/dhis/android/core/program/ProgramType;
 	protected final fun getRegistration ()Ljava/lang/Boolean;
 	protected final fun getRelatedProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -13440,7 +13442,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun setAccessLevel (Lorg/hisp/dhis/android/core/program/AccessLevel;)V
 	protected final fun setAttributeValues (Ljava/util/List;)V
 	protected final fun setCategoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
-	protected final fun setCategoryMappings (Ljava/util/List;)V
 	protected final fun setCode (Ljava/lang/String;)V
 	protected final fun setCompleteEventsExpiryDays (Ljava/lang/Integer;)V
 	protected final fun setCreated (Ljava/util/Date;)V
@@ -13472,9 +13473,6 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun setMinAttributesRequiredToSearch (Ljava/lang/Integer;)V
 	protected final fun setName (Ljava/lang/String;)V
 	protected final fun setOnlyEnrollOnce (Ljava/lang/Boolean;)V
-	protected final fun setProgramRuleVariables (Ljava/util/List;)V
-	protected final fun setProgramSections (Ljava/util/List;)V
-	protected final fun setProgramTrackedEntityAttributes (Ljava/util/List;)V
 	protected final fun setProgramType (Lorg/hisp/dhis/android/core/program/ProgramType;)V
 	protected final fun setRegistration (Ljava/lang/Boolean;)V
 	protected final fun setRelatedProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
@@ -14629,8 +14627,6 @@ public class org/hisp/dhis/android/core/program/ProgramStageBuilder : org/hisp/d
 	protected final fun getOpenAfterEnrollment ()Ljava/lang/Boolean;
 	protected final fun getPeriodType ()Lorg/hisp/dhis/android/core/period/PeriodType;
 	protected final fun getProgram ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	protected final fun getProgramStageDataElements ()Ljava/util/List;
-	protected final fun getProgramStageSections ()Ljava/util/List;
 	protected final fun getRemindCompleted ()Ljava/lang/Boolean;
 	protected final fun getRepeatable ()Ljava/lang/Boolean;
 	protected final fun getReportDateToUse ()Ljava/lang/String;
@@ -14681,8 +14677,6 @@ public class org/hisp/dhis/android/core/program/ProgramStageBuilder : org/hisp/d
 	protected final fun setOpenAfterEnrollment (Ljava/lang/Boolean;)V
 	protected final fun setPeriodType (Lorg/hisp/dhis/android/core/period/PeriodType;)V
 	protected final fun setProgram (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
-	protected final fun setProgramStageDataElements (Ljava/util/List;)V
-	protected final fun setProgramStageSections (Ljava/util/List;)V
 	protected final fun setRemindCompleted (Ljava/lang/Boolean;)V
 	protected final fun setRepeatable (Ljava/lang/Boolean;)V
 	protected final fun setReportDateToUse (Ljava/lang/String;)V
@@ -14833,7 +14827,6 @@ public class org/hisp/dhis/android/core/program/ProgramStageDataElementBuilder :
 	protected final fun getDeleted ()Ljava/lang/Boolean;
 	protected final fun getDisplayInReports ()Ljava/lang/Boolean;
 	protected final fun getDisplayName ()Ljava/lang/String;
-	protected final fun getFullDataElement ()Lorg/hisp/dhis/android/core/dataelement/DataElement;
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getName ()Ljava/lang/String;
 	protected final fun getProgramStage ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -14857,7 +14850,6 @@ public class org/hisp/dhis/android/core/program/ProgramStageDataElementBuilder :
 	protected final fun setDeleted (Ljava/lang/Boolean;)V
 	protected final fun setDisplayInReports (Ljava/lang/Boolean;)V
 	protected final fun setDisplayName (Ljava/lang/String;)V
-	protected final fun setFullDataElement (Lorg/hisp/dhis/android/core/dataelement/DataElement;)V
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setName (Ljava/lang/String;)V
 	protected final fun setProgramStage (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
@@ -18475,14 +18467,12 @@ public class org/hisp/dhis/android/core/settings/GeneralSettingsBuilder {
 	public final fun experimentalFeatures (Ljava/util/List;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	protected final fun getAllowScreenCapture ()Ljava/lang/Boolean;
 	protected final fun getBypassDHIS2VersionCheck ()Ljava/lang/Boolean;
-	protected final fun getDataSync ()Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;
 	protected final fun getEncryptDB ()Z
 	protected final fun getExperimentalFeatures ()Ljava/util/List;
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getMatomoID ()Ljava/lang/Integer;
 	protected final fun getMatomoURL ()Ljava/lang/String;
 	protected final fun getMessageOfTheDay ()Ljava/lang/String;
-	protected final fun getMetadataSync ()Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;
 	protected final fun getReservedValues ()Ljava/lang/Integer;
 	protected final fun getSmsGateway ()Ljava/lang/String;
 	protected final fun getSmsResultSender ()Ljava/lang/String;
@@ -18493,14 +18483,12 @@ public class org/hisp/dhis/android/core/settings/GeneralSettingsBuilder {
 	public final fun reservedValues (Ljava/lang/Integer;)Lorg/hisp/dhis/android/core/settings/GeneralSettings$Builder;
 	protected final fun setAllowScreenCapture (Ljava/lang/Boolean;)V
 	protected final fun setBypassDHIS2VersionCheck (Ljava/lang/Boolean;)V
-	protected final fun setDataSync (Lorg/hisp/dhis/android/core/settings/DataSyncPeriod;)V
 	protected final fun setEncryptDB (Z)V
 	protected final fun setExperimentalFeatures (Ljava/util/List;)V
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setMatomoID (Ljava/lang/Integer;)V
 	protected final fun setMatomoURL (Ljava/lang/String;)V
 	protected final fun setMessageOfTheDay (Ljava/lang/String;)V
-	protected final fun setMetadataSync (Lorg/hisp/dhis/android/core/settings/MetadataSyncPeriod;)V
 	protected final fun setReservedValues (Ljava/lang/Integer;)V
 	protected final fun setSmsGateway (Ljava/lang/String;)V
 	protected final fun setSmsResultSender (Ljava/lang/String;)V
@@ -20880,13 +20868,11 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuild
 	protected final fun getCreated ()Ljava/util/Date;
 	protected final fun getCreatedAtClient ()Ljava/util/Date;
 	protected final fun getDeleted ()Ljava/lang/Boolean;
-	protected final fun getEnrollments ()Ljava/util/List;
 	protected final fun getGeometry ()Lorg/hisp/dhis/android/core/common/Geometry;
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getLastUpdatedAtClient ()Ljava/util/Date;
 	protected final fun getOrganisationUnit ()Ljava/lang/String;
 	protected final fun getProgramOwners ()Ljava/util/List;
-	protected final fun getRelationships ()Ljava/util/List;
 	protected final fun getSyncState ()Lorg/hisp/dhis/android/core/common/State;
 	protected final fun getTrackedEntityAttributeValues ()Ljava/util/List;
 	protected final fun getTrackedEntityType ()Ljava/lang/String;
@@ -20899,13 +20885,11 @@ public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceBuild
 	protected final fun setCreated (Ljava/util/Date;)V
 	protected final fun setCreatedAtClient (Ljava/util/Date;)V
 	protected final fun setDeleted (Ljava/lang/Boolean;)V
-	protected final fun setEnrollments (Ljava/util/List;)V
 	protected final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)V
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setLastUpdatedAtClient (Ljava/util/Date;)V
 	protected final fun setOrganisationUnit (Ljava/lang/String;)V
 	protected final fun setProgramOwners (Ljava/util/List;)V
-	protected final fun setRelationships (Ljava/util/List;)V
 	protected final fun setSyncState (Lorg/hisp/dhis/android/core/common/State;)V
 	protected final fun setTrackedEntityAttributeValues (Ljava/util/List;)V
 	protected final fun setTrackedEntityType (Ljava/lang/String;)V
@@ -22743,10 +22727,8 @@ public class org/hisp/dhis/android/core/user/UserBuilder : org/hisp/dhis/android
 	protected final fun getLastUpdated ()Ljava/util/Date;
 	protected final fun getName ()Ljava/lang/String;
 	protected final fun getNationality ()Ljava/lang/String;
-	protected final fun getOrganisationUnits ()Ljava/util/List;
 	protected final fun getPhoneNumber ()Ljava/lang/String;
 	protected final fun getSurname ()Ljava/lang/String;
-	protected final fun getTeiSearchOrganisationUnits ()Ljava/util/List;
 	protected final fun getTwoFactorAuthEnabled ()Ljava/lang/Boolean;
 	protected final fun getUid ()Ljava/lang/String;
 	protected final fun getUserGroups ()Ljava/util/List;
@@ -22781,10 +22763,8 @@ public class org/hisp/dhis/android/core/user/UserBuilder : org/hisp/dhis/android
 	protected final fun setLastUpdated (Ljava/util/Date;)V
 	protected final fun setName (Ljava/lang/String;)V
 	protected final fun setNationality (Ljava/lang/String;)V
-	protected final fun setOrganisationUnits (Ljava/util/List;)V
 	protected final fun setPhoneNumber (Ljava/lang/String;)V
 	protected final fun setSurname (Ljava/lang/String;)V
-	protected final fun setTeiSearchOrganisationUnits (Ljava/util/List;)V
 	protected final fun setTwoFactorAuthEnabled (Ljava/lang/Boolean;)V
 	protected final fun setUid (Ljava/lang/String;)V
 	protected final fun setUserGroups (Ljava/util/List;)V

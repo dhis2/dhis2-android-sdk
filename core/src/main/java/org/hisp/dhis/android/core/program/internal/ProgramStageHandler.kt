@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -52,11 +51,7 @@ internal class ProgramStageHandler(
         programStageDataElementHandler.handleMany(o.programStageDataElements())
         programStageSectionHandler.handleMany(
             o.programStageSections(),
-        ) { programStageSection: ProgramStageSection ->
-            programStageSection.toBuilder()
-                .programStage(ObjectWithUid.create(o.uid()))
-                .build()
-        }
+        )
 
         if (action === HandleAction.Update) {
             programStageDataElementCleaner.deleteOrphan(o, o.programStageDataElements())

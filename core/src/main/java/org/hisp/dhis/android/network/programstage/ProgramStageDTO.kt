@@ -113,7 +113,7 @@ internal data class ProgramStageDTO(
             minDaysFromStart(minDaysFromStart)
             standardInterval(standardInterval)
             enableUserAssignment?.let { enableUserAssignment(it) }
-            programStageSections(programStageSections?.map { it.toDomain() })
+            programStageSections(programStageSections?.map { it.toDomain(id) })
             programStageDataElements(programStageDataElements?.map { it.toDomain() })
             periodType(periodType?.let { PeriodType.valueOf(it) })
             program(program?.toDomain())

@@ -109,7 +109,7 @@ class ProgramStageHandlerShould {
     @Throws(Exception::class)
     fun call_program_stage_section_handler() = runTest {
         programStageHandler.handle(programStage)
-        verify(programStageSectionHandler).handleMany(eq(programStageSections), any())
+        verify(programStageSectionHandler).handleMany(eq(programStageSections))
     }
 
     @Test

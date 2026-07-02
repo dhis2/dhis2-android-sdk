@@ -26,52 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataapproval
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataApproval(
+    val workflow: String,
+    val organisationUnit: String,
+    val period: String,
+    val attributeOptionCombo: String,
+    val state: DataApprovalState,
+) : CoreObject {
+    fun workflow(): String = workflow
+    fun organisationUnit(): String = organisationUnit
+    fun period(): String = period
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun state(): DataApprovalState = state
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = DataApprovalBuilder.from(this)
 
-@AutoValue
-public abstract class DataApproval implements CoreObject {
+    class Builder : DataApprovalBuilder()
 
-    @NonNull
-    public abstract String workflow();
-
-    @NonNull
-    public abstract String organisationUnit();
-
-    @NonNull
-    public abstract String period();
-
-    @NonNull
-    public abstract String attributeOptionCombo();
-
-    @NonNull
-    public abstract DataApprovalState state();
-
-    public static DataApproval.Builder builder() {
-        return new AutoValue_DataApproval.Builder();
-    }
-
-    public abstract DataApproval.Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder workflow(@NonNull String workflow);
-
-        public abstract Builder organisationUnit(@NonNull String organisationUnit);
-
-        public abstract Builder period(@NonNull String period);
-
-        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
-
-        public abstract Builder state(@NonNull DataApprovalState state);
-
-        public abstract DataApproval build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -26,31 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.expressiondimensionitem;
+package org.hisp.dhis.android.core.expressiondimensionitem
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class ExpressionDimensionItem(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val expression: String?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun expression(): String? = expression
 
-@AutoValue
-public abstract class ExpressionDimensionItem extends BaseIdentifiableObAuVa implements CoreObject {
+    fun toBuilder(): Builder = ExpressionDimensionItemBuilder.from(this)
 
-    @Nullable
-    public abstract String expression();
+    class Builder : ExpressionDimensionItemBuilder()
 
-    public static Builder builder() {
-        return new AutoValue_ExpressionDimensionItem.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder expression(String expression);
-
-        public abstract ExpressionDimensionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

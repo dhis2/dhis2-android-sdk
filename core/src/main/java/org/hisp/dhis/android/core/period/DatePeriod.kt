@@ -26,43 +26,25 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import java.util.Date
 
-import java.util.Date;
+@ModelBuilder
+data class DatePeriod(
+    val startDate: Date,
+    val endDate: Date,
+) {
+    fun startDate(): Date = startDate
+    fun endDate(): Date = endDate
 
-import androidx.annotation.NonNull;
+    fun toBuilder(): Builder = DatePeriodBuilder.from(this)
 
-@AutoValue
-public abstract class DatePeriod {
+    class Builder : DatePeriodBuilder()
 
-    @NonNull
-    public abstract Date startDate();
-
-    @NonNull
-    public abstract Date endDate();
-
-    public abstract Builder toBuilder();
-
-    public static DatePeriod create(Date startDate, Date endDate) {
-        return builder()
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_DatePeriod.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder startDate(Date startDate);
-
-        public abstract Builder endDate(Date endDate);
-
-        public abstract DatePeriod build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

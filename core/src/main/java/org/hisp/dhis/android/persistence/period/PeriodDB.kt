@@ -29,7 +29,7 @@ internal data class PeriodDB(
 
 internal fun Period.toDB(): PeriodDB {
     return PeriodDB(
-        periodId = periodId()!!,
+        periodId = periodId(),
         periodType = periodType()?.name,
         startDate = startDate().dateFormat(),
         endDate = endDate().dateFormat(),

@@ -26,47 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.period
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Period(
+    val periodId: String,
+    val periodType: PeriodType?,
+    val startDate: Date?,
+    val endDate: Date?,
+) : CoreObject {
+    fun periodId(): String = periodId
+    fun periodType(): PeriodType? = periodType
+    fun startDate(): Date? = startDate
+    fun endDate(): Date? = endDate
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = PeriodBuilder.from(this)
 
-import java.util.Date;
+    class Builder : PeriodBuilder()
 
-@AutoValue
-public abstract class Period implements CoreObject {
-
-    @Nullable
-    public abstract String periodId();
-
-    @Nullable
-    public abstract PeriodType periodType();
-
-    @Nullable
-    public abstract Date startDate();
-
-    @Nullable
-    public abstract Date endDate();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_Period.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-        public abstract Builder periodId(String periodId);
-
-        public abstract Builder periodType(PeriodType periodType);
-
-        public abstract Builder startDate(Date startDate);
-
-        public abstract Builder endDate(Date endDate);
-
-        public abstract Period build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

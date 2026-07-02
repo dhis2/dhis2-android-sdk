@@ -369,9 +369,12 @@ internal class TrackedEntityInstanceLocalQueryHelper(
         for (item in scope.filter()) {
             val sub = String.format(
                 "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
-                dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
-                dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                teavAlias,
+                dot(teavAlias, trackedEntityInstance),
+                dot(teiAlias, IdentifiableColumns.UID),
+                dot(teavAlias, trackedEntityAttribute),
+                escapeQuotes(item.key()),
                 item.operator().getSqlCondition(
                     dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                     getFilterItemValueStr(item),
@@ -575,7 +578,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                         "AND ${
                             item.operator().getSqlCondition(
                                 dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
-                                getFilterItemValueStr(item)
+                                getFilterItemValueStr(item),
                             )
                         } "
                     }

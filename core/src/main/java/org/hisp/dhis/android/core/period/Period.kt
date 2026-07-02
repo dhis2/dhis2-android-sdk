@@ -34,12 +34,12 @@ import java.util.Date
 
 @ModelBuilder
 data class Period(
-    val periodId: String,
+    val periodId: String?,
     val periodType: PeriodType?,
     val startDate: Date?,
     val endDate: Date?,
 ) : CoreObject {
-    fun periodId(): String = periodId
+    fun periodId(): String? = periodId
     fun periodType(): PeriodType? = periodType
     fun startDate(): Date? = startDate
     fun endDate(): Date? = endDate

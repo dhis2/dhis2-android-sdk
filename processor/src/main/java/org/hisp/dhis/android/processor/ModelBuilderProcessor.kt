@@ -184,11 +184,17 @@ class ModelBuilderProcessor(
             .contains(field.type.toString())
         val isNotNull = !field.type.isMarkedNullable
         val type = renderType(field.type)
+        // An internal field may reference an internal type. A `protected` backing property in a
+        // public builder would leak that internal type, so use `private` visibility instead. It
+        // must stay `private` (not `internal`): the backing property is only used by the generated
+        // setters and build() within this class, and a module-visible `internal` property would
+        // shadow identically-named properties inside callers' `builder().apply { }` blocks.
+        val visibility = if (field.isInternal) "private" else "protected"
 
         return when {
-            isNotNull && isPrimitive -> "protected var ${field.name} by Delegates.notNull<$type>()"
-            isNotNull -> "protected lateinit var ${field.name}: $type"
-            else -> "protected var ${field.name}: $type = null"
+            isNotNull && isPrimitive -> "$visibility var ${field.name} by Delegates.notNull<$type>()"
+            isNotNull -> "$visibility lateinit var ${field.name}: $type"
+            else -> "$visibility var ${field.name}: $type = null"
         }
     }
 

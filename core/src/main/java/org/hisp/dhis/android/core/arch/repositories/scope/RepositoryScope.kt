@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,81 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.arch.repositories.scope
 
-package org.hisp.dhis.android.core.arch.repositories.scope;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 
-import androidx.annotation.NonNull;
-
-import com.google.auto.value.AutoValue;
-
-import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem;
-import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem;
-
-import java.util.Collections;
-import java.util.List;
-
-@AutoValue
-public abstract class RepositoryScope {
-
-    public enum OrderByDirection {
+@ConsistentCopyVisibility
+@ModelBuilder
+data class RepositoryScope internal constructor(
+    val filters: List<RepositoryScopeFilterItem>,
+    val complexFilters: List<RepositoryScopeComplexFilterItem>,
+    internal val orderBy: List<RepositoryScopeOrderByItem>,
+    internal val children: ChildrenSelection,
+) {
+    enum class OrderByDirection(val api: String) {
         ASC("asc"),
-        DESC("desc");
-
-        private String api;
-
-        OrderByDirection(String api) {
-            this.api = api;
-        }
-
-        public String getApi() {
-            return api;
-        }
+        DESC("desc"),
     }
 
-    @NonNull
-    public abstract List<RepositoryScopeFilterItem> filters();
+    fun filters(): List<RepositoryScopeFilterItem> = filters
+    fun complexFilters(): List<RepositoryScopeComplexFilterItem> = complexFilters
+    internal fun orderBy(): List<RepositoryScopeOrderByItem> = orderBy
+    internal fun children(): ChildrenSelection = children
 
-    @NonNull
-    public abstract List<RepositoryScopeComplexFilterItem> complexFilters();
+    fun hasFilters(): Boolean = filters.isNotEmpty() || complexFilters.isNotEmpty()
 
-    @NonNull
-    public abstract List<RepositoryScopeOrderByItem> orderBy();
+    fun toBuilder(): Builder = RepositoryScopeBuilder.from(this)
 
-    @NonNull
-    public abstract ChildrenSelection children();
+    class Builder : RepositoryScopeBuilder()
 
-    public boolean hasFilters() {
-        return !filters().isEmpty() || !complexFilters().isEmpty();
-    }
+    companion object {
+        @JvmStatic
+        fun empty(): RepositoryScope = builder()
+            .children(ChildrenSelection.empty())
+            .filters(emptyList())
+            .complexFilters(emptyList())
+            .orderBy(emptyList())
+            .build()
 
-    public static RepositoryScope empty() {
-        return RepositoryScope.builder()
-                .children(ChildrenSelection.empty())
-                .filters(Collections.emptyList())
-                .complexFilters(Collections.emptyList())
-                .orderBy(Collections.emptyList())
-                .build();
-    }
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_RepositoryScope.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder filters(List<RepositoryScopeFilterItem> filters);
-
-        public abstract Builder complexFilters(List<RepositoryScopeComplexFilterItem> complexFilters);
-
-        public abstract Builder children(ChildrenSelection children);
-
-        public abstract Builder orderBy(List<RepositoryScopeOrderByItem> orderBy);
-
-        public abstract RepositoryScope build();
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

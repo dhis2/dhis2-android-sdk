@@ -5973,9 +5973,13 @@ public final class org/hisp/dhis/android/core/configuration/internal/DatabaseAcc
 	public static fun values ()[Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccountImportStatus;
 }
 
-public class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator {
+public final class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator {
+	public static final field Companion Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator$Companion;
 	public fun <init> ()V
-	public fun generate ()Ljava/lang/String;
+	public final fun generate ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator$Companion {
 }
 
 public final class org/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager {
@@ -19677,7 +19681,7 @@ public class org/hisp/dhis/android/core/sms/data/internal/DeviceStateRepositoryI
 	public fun isNetworkConnected ()Lio/reactivex/Single;
 }
 
-public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/FileResourceCleaner {
+public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/FileResourceCleaner {
 	public fun <init> (Lorg/hisp/dhis/android/core/dataelement/DataElementModule;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityModule;Lorg/hisp/dhis/android/core/fileresource/FileResourceModule;)V
 }
 
@@ -21609,10 +21613,10 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun setOrganisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 }
 
-public class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceService {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceService {
 	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueCollectionRepository;Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;)V
-	public fun blockingInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
-	public fun inheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun blockingInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
+	public final fun inheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/TrackedEntityModule {
@@ -28631,6 +28635,10 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns$Companion {
 }
 
+public final class org/koin/plugin/hints/Core_core_release__orgHispDhisAndroidCoreArchDbStoresInternalObjectStore_callsiteKt {
+	public static final synthetic fun callsite (Lorg/hisp/dhis/android/core/arch/db/stores/internal/ObjectStore;)V
+}
+
 public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_analytics_AnalyticsDIModuleKt {
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_analytics_AnalyticsDIModule_single (Lorg/hisp/dhis/android/core/analytics/AnalyticsModuleImpl;Lorg/hisp/dhis/android/core/analytics/AnalyticsModule;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_analytics_AnalyticsDIModule_single (Lorg/hisp/dhis/android/core/analytics/LegendEvaluator;)V
@@ -28744,6 +28752,8 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_c
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseConfigurationHelper;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseConfigurationInsecureStoreImpl;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseConfigurationInsecureStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseConfigurationMigration;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordGenerator;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseEncryptionPasswordManager;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseNameGenerator;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseRenamer;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule_single (Lorg/hisp/dhis/android/core/configuration/internal/MultiUserDatabaseManagerForD2Manager;)V
@@ -29190,6 +29200,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_s
 
 public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_sms_SmsDIModuleKt {
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_sms_SmsDIModule_single (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/DataSetsStore;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_sms_SmsDIModule_single (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/FileResourceCleaner;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_sms_SmsDIModule_single (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/LocalDbRepositoryImpl;Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_sms_SmsDIModule_single (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/MetadataIdsStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_sms_SmsDIModule_single (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/OngoingSubmissionsStore;)V
@@ -29217,6 +29228,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_t
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;Lorg/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl;Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUploadWithUidCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilterCollectionRepository;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceService;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeAttributeCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule_single (Lorg/hisp/dhis/android/core/trackedentity/internal/AttributeValueFilterHandler;)V

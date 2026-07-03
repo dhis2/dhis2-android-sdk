@@ -26,105 +26,81 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.sms.data.localdbrepository.internal;
+package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElementModule;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.fileresource.FileResourceModule;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.dataelement.DataElementModule
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.fileresource.FileResourceModule
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
+import org.koin.core.annotation.Singleton
 
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Single;
-
-public class FileResourceCleaner {
-    private final DataElementModule dataElementModule;
-    private final TrackedEntityModule trackedEntityModule;
-    private final FileResourceModule fileResourceModule;
-
-    public FileResourceCleaner(DataElementModule dataElementModule,
-                               TrackedEntityModule trackedEntityModule,
-                               FileResourceModule fileResourceModule) {
-        this.dataElementModule = dataElementModule;
-        this.trackedEntityModule = trackedEntityModule;
-        this.fileResourceModule = fileResourceModule;
-    }
-
-    Single<Event> removeFileDataValues(Event event) {
-        if (event.trackedEntityDataValues() == null || event.trackedEntityDataValues().isEmpty()) {
-            return Single.just(event);
+@Singleton
+class FileResourceCleaner(
+    private val dataElementModule: DataElementModule,
+    private val trackedEntityModule: TrackedEntityModule,
+    private val fileResourceModule: FileResourceModule,
+) {
+    internal fun removeFileDataValues(event: Event): Single<Event> {
+        val dataValues = event.trackedEntityDataValues()
+        if (dataValues.isNullOrEmpty()) {
+            return Single.just(event)
         }
 
-        List<String> dataElementUids = new ArrayList<>();
-        for (TrackedEntityDataValue value : event.trackedEntityDataValues()) {
-            dataElementUids.add(value.dataElement());
-        }
+        val dataElementUids = dataValues.map { it.dataElement() }
 
         return dataElementModule.dataElements()
-                .byUid().in(dataElementUids)
-                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-                .get()
-                .map(fileDataElements -> {
-                    if (fileDataElements.isEmpty()) {
-                        return event;
+            .byUid().`in`(dataElementUids)
+            .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
+            .get()
+            .map { fileDataElements ->
+                if (fileDataElements.isEmpty()) {
+                    event
+                } else {
+                    val fileDataElementUids = UidsHelper.getUidsList(fileDataElements)
+                    val newDataValues = dataValues.filterNot { value ->
+                        fileDataElementUids.contains(value.dataElement()) &&
+                            isExistingAndNotSyncedFileResource(value.value())
                     }
-
-                    List<String> fileDataElementUids = UidsHelper.getUidsList(fileDataElements);
-                    List<TrackedEntityDataValue> newDataValues = new ArrayList<>();
-                    for (TrackedEntityDataValue value : event.trackedEntityDataValues()) {
-                        if (fileDataElementUids.contains(value.dataElement()) &&
-                                isExistingAndNotSyncedFileResource(value.value())) {
-                            continue;
-                        }
-                        newDataValues.add(value);
-                    }
-                    return event.toBuilder().trackedEntityDataValues(newDataValues).build();
-                });
+                    event.toBuilder().trackedEntityDataValues(newDataValues).build()
+                }
+            }
     }
 
-    Single<TrackedEntityInstance> removeFileAttributeValues(TrackedEntityInstance instance) {
-        if (instance.trackedEntityAttributeValues() == null || instance.trackedEntityAttributeValues().isEmpty()) {
-            return Single.just(instance);
+    internal fun removeFileAttributeValues(instance: TrackedEntityInstance): Single<TrackedEntityInstance> {
+        val attributeValues = instance.trackedEntityAttributeValues()
+        if (attributeValues.isNullOrEmpty()) {
+            return Single.just(instance)
         }
 
-        List<String> attributeUids = new ArrayList<>();
-        for (TrackedEntityAttributeValue value : instance.trackedEntityAttributeValues()) {
-            attributeUids.add(value.trackedEntityAttribute());
-        }
+        val attributeUids = attributeValues.map { it.trackedEntityAttribute() }
 
         return trackedEntityModule.trackedEntityAttributes()
-                .byUid().in(attributeUids)
-                .byValueType().in(ValueType.FILE_RESOURCE, ValueType.IMAGE)
-                .get()
-                .map(fileAttributes -> {
-                    if (fileAttributes.isEmpty()) {
-                        return instance;
+            .byUid().`in`(attributeUids)
+            .byValueType().`in`(ValueType.FILE_RESOURCE, ValueType.IMAGE)
+            .get()
+            .map { fileAttributes ->
+                if (fileAttributes.isEmpty()) {
+                    instance
+                } else {
+                    val fileAttributeUids = UidsHelper.getUidsList(fileAttributes)
+                    val newAttributeValues = attributeValues.filterNot { value ->
+                        fileAttributeUids.contains(value.trackedEntityAttribute()) &&
+                            isExistingAndNotSyncedFileResource(value.value())
                     }
-
-                    List<String> fileAttributeUids = UidsHelper.getUidsList(fileAttributes);
-                    List<TrackedEntityAttributeValue> newAttributeValues = new ArrayList<>();
-                    for (TrackedEntityAttributeValue value : instance.trackedEntityAttributeValues()) {
-                        if (fileAttributeUids.contains(value.trackedEntityAttribute()) &&
-                                isExistingAndNotSyncedFileResource(value.value())) {
-                            continue;
-                        }
-                        newAttributeValues.add(value);
-                    }
-                    return instance.toBuilder().trackedEntityAttributeValues(newAttributeValues).build();
-                });
+                    instance.toBuilder().trackedEntityAttributeValues(newAttributeValues).build()
+                }
+            }
     }
 
-    private boolean isExistingAndNotSyncedFileResource(String resourceUid) {
+    private fun isExistingAndNotSyncedFileResource(resourceUid: String?): Boolean {
         return fileResourceModule.fileResources()
-                .bySyncState().notIn(State.SYNCED)
-                .uid(resourceUid)
-                .blockingExists();
+            .bySyncState().notIn(State.SYNCED)
+            .uid(resourceUid)
+            .blockingExists()
     }
 }

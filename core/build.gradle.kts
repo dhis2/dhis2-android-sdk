@@ -75,10 +75,36 @@ room {
 }
 
 koinCompiler {
-    // Some definitions live in classic runtime DSL modules (e.g. javaDIClasses), which the
-    // compile-time dependency checker cannot see, so verification reports false positives.
-    compileSafety = false
+    // compileSafety stays on (default). strictSafety is auto-enabled because the plugin detects
+    // koinApplication in this module, but its per-module isolation checks report false positives
+    // on this 45-module graph, so it is explicitly disabled.
     strictSafety = false
+}
+
+// The Koin checker runs once per Kotlin compilation. Test compilations analyze test sources
+// against a partial definition index and report false "missing definition" errors, so the
+// safety checks are disabled for them; the main compilation keeps them on.
+afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+        .matching { it.name.contains("UnitTest") || it.name.contains("AndroidTest") }
+        .configureEach {
+            val rewritten = pluginOptions.get().map { config ->
+                val newConfig = org.jetbrains.kotlin.gradle.plugin.CompilerPluginConfig()
+                config.allOptions().forEach { (pluginId, options) ->
+                    options.forEach { option ->
+                        val newOption =
+                            if (pluginId == "io.insert-koin.compiler.plugin" && option.key == "compileSafety") {
+                                org.jetbrains.kotlin.gradle.plugin.SubpluginOption("compileSafety", "false")
+                            } else {
+                                option
+                            }
+                        newConfig.addPluginArgument(pluginId, newOption)
+                    }
+                }
+                newConfig
+            }
+            pluginOptions.set(rewritten)
+        }
 }
 
 android {

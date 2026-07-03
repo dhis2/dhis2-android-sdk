@@ -26,24 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.configuration.internal;
+package org.hisp.dhis.android.core.configuration.internal
 
-import java.security.SecureRandom;
-import java.util.Random;
+import org.koin.core.annotation.Singleton
+import java.security.SecureRandom
+import java.util.Random
 
-public class DatabaseEncryptionPasswordGenerator {
-    private final Random random = new SecureRandom();
+@Singleton
+class DatabaseEncryptionPasswordGenerator {
+    private val random: Random = SecureRandom()
 
-    private static final String ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz"
-            + "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    private static final int CODESIZE = 32;
-
-    public String generate() {
-        char[] randomChars = new char[CODESIZE];
-        for (int i = 0; i < CODESIZE; ++i) {
-            randomChars[i] = ALLOWED_CHARS.charAt(random.nextInt(ALLOWED_CHARS.length()));
+    fun generate(): String {
+        val randomChars = CharArray(CODESIZE) {
+            ALLOWED_CHARS[random.nextInt(ALLOWED_CHARS.length)]
         }
+        return String(randomChars)
+    }
 
-        return new String(randomChars);
+    companion object {
+        private const val ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz" +
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        private const val CODESIZE = 32
     }
 }

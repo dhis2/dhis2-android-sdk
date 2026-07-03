@@ -155,7 +155,7 @@ internal class LocalDbRepositoryImpl(
         return eventModule.events().withTrackedEntityDataValues()
             .byUid().eq(eventUid).one()
             .get()
-            .flatMap { event: Event? -> fileResourceCleaner.removeFileDataValues(event) }
+            .flatMap { event: Event -> fileResourceCleaner.removeFileDataValues(event) }
     }
 
     override fun getTeiEnrollmentToSubmit(enrollmentUid: String): Single<TrackedEntityInstance> {
@@ -177,7 +177,7 @@ internal class LocalDbRepositoryImpl(
             .withTrackedEntityAttributeValues()
             .uid(instanceUid)
             .get()
-            .flatMap { instance: TrackedEntityInstance? -> fileResourceCleaner.removeFileAttributeValues(instance) }
+            .flatMap { instance: TrackedEntityInstance -> fileResourceCleaner.removeFileAttributeValues(instance) }
     }
 
     private fun getEventsForEnrollment(enrollmentUid: String): Single<List<Event>> {

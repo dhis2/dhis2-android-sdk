@@ -25,102 +25,81 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.trackedentity;
+package org.hisp.dhis.android.core.trackedentity
 
-import org.hisp.dhis.android.core.arch.helpers.UidsHelper;
-import org.hisp.dhis.android.core.common.Unit;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttribute;
-import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.common.Unit
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository
+import org.koin.core.annotation.Singleton
+import java.io.File
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.Single;
-
-public class TrackedEntityInstanceService {
-
-    private final TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository;
-    private final TrackedEntityAttributeValueCollectionRepository trackedEntityAttributeValueRepository;
-    private final ProgramTrackedEntityAttributeCollectionRepository programTrackedEntityAttributeRepository;
-    private final FileResourceCollectionRepository fileResourceCollectionRepository;
-
-    public TrackedEntityInstanceService(TrackedEntityAttributeCollectionRepository trackedEntityAttributeRepository,
-                                        TrackedEntityAttributeValueCollectionRepository
-                                                trackedEntityAttributeValueRepository,
-                                        ProgramTrackedEntityAttributeCollectionRepository
-                                                programTrackedEntityAttributeRepository,
-                                        FileResourceCollectionRepository fileResourceCollectionRepository) {
-        this.trackedEntityAttributeRepository = trackedEntityAttributeRepository;
-        this.trackedEntityAttributeValueRepository = trackedEntityAttributeValueRepository;
-        this.programTrackedEntityAttributeRepository = programTrackedEntityAttributeRepository;
-        this.fileResourceCollectionRepository = fileResourceCollectionRepository;
-    }
-
+@Singleton
+class TrackedEntityInstanceService(
+    private val trackedEntityAttributeRepository: TrackedEntityAttributeCollectionRepository,
+    private val trackedEntityAttributeValueRepository: TrackedEntityAttributeValueCollectionRepository,
+    private val programTrackedEntityAttributeRepository: ProgramTrackedEntityAttributeCollectionRepository,
+    private val fileResourceCollectionRepository: FileResourceCollectionRepository,
+) {
     /**
      * Inherit the tracked entity attribute values from one TEI to another. It only inherits attributes that are marked
      * as "inherited=true" and that belong to program passed as parameter. This method is useful when creating new
      * relationships. Inherited values are persisted in database. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version
-     * {@link #inheritAttributes(String, String, String)}.
+     * not be executed in the main thread. Consider the asynchronous version [inheritAttributes].
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
      * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
-    public Unit blockingInheritAttributes(String fromTeiUid, String toTeiUid, String programUid) throws D2Error {
-        List<ProgramTrackedEntityAttribute> programAttributes = programTrackedEntityAttributeRepository
-                .byProgram().eq(programUid)
-                .blockingGet();
+    @Throws(D2Error::class)
+    fun blockingInheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Unit {
+        val programAttributes = programTrackedEntityAttributeRepository
+            .byProgram().eq(programUid)
+            .blockingGet()
 
-        List<String> attributeUids = new ArrayList<>();
-        for (ProgramTrackedEntityAttribute ptea : programAttributes) {
-            attributeUids.add(UidsHelper.getUidOrNull(ptea.trackedEntityAttribute()));
-        }
+        val attributeUids = programAttributes.mapNotNull { UidsHelper.getUidOrNull(it.trackedEntityAttribute()) }
 
-        List<String> inheritableAttributeUids = trackedEntityAttributeRepository
-                .byUid().in(attributeUids)
-                .byInherit().isTrue()
-                .blockingGetUids();
+        val inheritableAttributeUids = trackedEntityAttributeRepository
+            .byUid().`in`(attributeUids)
+            .byInherit().isTrue
+            .blockingGetUids()
 
-        if (!inheritableAttributeUids.isEmpty()) {
-            List<TrackedEntityAttributeValue> fromTeiAttributes = trackedEntityAttributeValueRepository
-                    .byTrackedEntityInstance().eq(fromTeiUid)
-                    .byTrackedEntityAttribute().in(inheritableAttributeUids)
-                    .blockingGet();
+        if (inheritableAttributeUids.isNotEmpty()) {
+            val fromTeiAttributes = trackedEntityAttributeValueRepository
+                .byTrackedEntityInstance().eq(fromTeiUid)
+                .byTrackedEntityAttribute().`in`(inheritableAttributeUids)
+                .blockingGet()
 
-            if (!fromTeiAttributes.isEmpty()) {
-                for (TrackedEntityAttributeValue attributeValue : fromTeiAttributes) {
-                    inheritAttribute(attributeValue, toTeiUid);
-                }
+            for (attributeValue in fromTeiAttributes) {
+                inheritAttribute(attributeValue, toTeiUid)
             }
         }
 
-        return new Unit();
+        return Unit()
     }
 
-    private void inheritAttribute(TrackedEntityAttributeValue attributeValue, String toTeiUid) throws D2Error {
-        TrackedEntityAttribute attribute = trackedEntityAttributeRepository.uid(
-                attributeValue.trackedEntityAttribute()).blockingGet();
+    @Throws(D2Error::class)
+    private fun inheritAttribute(attributeValue: TrackedEntityAttributeValue, toTeiUid: String) {
+        val attribute = trackedEntityAttributeRepository.uid(attributeValue.trackedEntityAttribute()).blockingGet()
 
-        if (attribute.valueType() == ValueType.IMAGE || attribute.valueType() == ValueType.FILE_RESOURCE) {
+        if (attribute?.valueType() == ValueType.IMAGE || attribute?.valueType() == ValueType.FILE_RESOURCE) {
+            val file = File(
+                fileResourceCollectionRepository.uid(attributeValue.value()).blockingGet()!!.path()!!,
+            )
 
-            File file = new File(fileResourceCollectionRepository.uid(attributeValue.value())
-                    .blockingGet().path());
-
-            String newFileResourceId = fileResourceCollectionRepository.blockingAdd(file);
+            val newFileResourceId = fileResourceCollectionRepository.blockingAdd(file)
 
             trackedEntityAttributeValueRepository
-                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                    .blockingSet(newFileResourceId);
+                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                .blockingSet(newFileResourceId)
         } else {
             trackedEntityAttributeValueRepository
-                    .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                    .blockingSet(attributeValue.value());
+                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                .blockingSet(attributeValue.value())
         }
     }
 
@@ -134,7 +113,7 @@ public class TrackedEntityInstanceService {
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
-    public Single<Unit> inheritAttributes(String fromTeiUid, String toTeiUid, String programUid) {
-        return Single.fromCallable(() -> blockingInheritAttributes(fromTeiUid, toTeiUid, programUid));
+    fun inheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Single<Unit> {
+        return Single.fromCallable { blockingInheritAttributes(fromTeiUid, toTeiUid, programUid) }
     }
 }

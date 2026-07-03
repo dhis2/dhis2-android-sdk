@@ -92,7 +92,6 @@ internal object DhisAndroidSdkKoinContext {
             listOf(
                 appContextDIModule(d2Config),
                 keyValueStorageDIModule(secureStore, insecureStore),
-                javaDIClasses,
             ),
         )
         modules(

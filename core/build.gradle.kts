@@ -1,4 +1,3 @@
-import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -40,6 +39,7 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.koin.compiler)
 }
 
 apply(from = project.file("plugins/android-checkstyle.gradle"))
@@ -72,6 +72,13 @@ tasks.configureEach {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+koinCompiler {
+    // Some definitions live in classic runtime DSL modules (e.g. javaDIClasses), which the
+    // compile-time dependency checker cannot see, so verification reports false positives.
+    compileSafety = false
+    strictSafety = false
 }
 
 android {
@@ -170,7 +177,6 @@ dependencies {
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.annotations)
-    ksp(libs.koin.compiler)
 
     // Square libraries
     api(libs.okhttp)
@@ -244,17 +250,8 @@ class MigrationDirProvider(private val path: String) : CommandLineArgumentProvid
 
 val migrationDirPath: String = layout.projectDirectory.dir("src/main/assets/migrations")
     .asFile.absolutePath
-afterEvaluate {
-    tasks.named("kspDebugKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
-    tasks.named("kspReleaseKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
+ksp {
+    arg(MigrationDirProvider(migrationDirPath))
 }
 
 detekt {

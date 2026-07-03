@@ -96,4 +96,16 @@ internal class UserOrganisationUnitLinkStoreImpl(
 
         return countWhere(whereClause) == 1
     }
+
+    override suspend fun isSearchScope(organisationUnit: String): Boolean {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT, organisationUnit)
+            .appendKeyStringValue(
+                UserOrganisationUnitTableInfo.Columns.ORGANISATION_UNIT_SCOPE,
+                OrganisationUnit.Scope.SCOPE_TEI_SEARCH,
+            )
+            .build()
+
+        return countWhere(whereClause) == 1
+    }
 }

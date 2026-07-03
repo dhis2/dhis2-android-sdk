@@ -541,7 +541,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val DATA_SET_COMPLETE_REGISTRATIONS_JSON =
             "dataset/data_set_complete_registrations.json"
         private const val DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json"
-        private const val ORGANISATION_UNITS_JSON = "organisationunit/organisation_units.json"
+        private const val ORGANISATION_UNITS_JSON = "organisationunit/search_organisation_units.json"
         private const val RESERVE_VALUES_JSON =
             "trackedentity/tracked_entity_attribute_reserved_values.json"
         private const val SMS_METADATA = "sms/metadata_ids.json"

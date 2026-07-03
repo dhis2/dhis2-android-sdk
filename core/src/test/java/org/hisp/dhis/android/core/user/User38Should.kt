@@ -50,6 +50,7 @@ internal class User38Should : CoreObjectShould<UserDTO>("user/user38.json", User
         assertThat(user.email()).isEqualTo("john@hmail.com")
         assertThat(user.displayName()).isEqualTo("John Barnes")
         assertThat(user.userRoles()!![0].uid()).isEqualTo("Ufph3mGRmMo")
-        assertThat(user.organisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
+        assertThat(user.organisationUnits()!![0].uid()).isEqualTo("DiszpKrYNg8")
+        assertThat(user.teiSearchOrganisationUnits()!![0].uid()).isEqualTo("YuQRtpLP10I")
     }
 }

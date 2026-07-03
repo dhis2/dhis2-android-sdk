@@ -27,16 +27,19 @@
  */
 package org.hisp.dhis.android.core.visualization.internal
 
+import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
+import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -81,5 +84,33 @@ class VisualizationHandlerShould {
     fun call_collection_cleaner() = runTest {
         visualizationHandler.handleMany(listOf(visualization))
         verify(visualizationCollectionCleaner).deleteNotPresent(any())
+    }
+
+    @Test
+    fun `generate unique placeholder items for dimensions with automatic selection`() = runTest {
+        val categoryUid1 = "GMpWZUg2QUf"
+        val categoryUid2 = "AC6H8zCDb3B"
+
+        whenever(visualization.columns()).doReturn(
+            listOf(
+                VisualizationDimension.builder().id(categoryUid1).items(emptyList()).build(),
+                VisualizationDimension.builder().id(categoryUid2).items(emptyList()).build(),
+            ),
+        )
+        whenever(visualization.rows()).doReturn(emptyList())
+        whenever(visualization.filters()).doReturn(emptyList())
+
+        val itemsCaptor = argumentCaptor<List<VisualizationDimensionItem>>()
+
+        visualizationHandler.handleMany(listOf(visualization))
+
+        verify(visualizationDimensionItemHandler).handleMany(any(), itemsCaptor.capture())
+
+        val placeholderItems = itemsCaptor.firstValue.mapNotNull { it.dimensionItem() }
+
+        // One placeholder per dimension, each unique so they do not collide on the
+        // (visualization, dimensionItem) primary key.
+        assertThat(placeholderItems).containsExactly("$categoryUid1.allItems", "$categoryUid2.allItems")
+        assertThat(placeholderItems.toSet()).hasSize(2)
     }
 }

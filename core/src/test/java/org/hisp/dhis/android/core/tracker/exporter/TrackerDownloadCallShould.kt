@@ -37,16 +37,21 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceLastUpdatedManager
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstancePersistenceCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryBundle
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryBundleFactory
+import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -56,9 +61,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
@@ -168,5 +175,47 @@ class TrackerDownloadCallShould {
 
         assertThat(progressList).isNotEmpty()
         assertThat(progressList.last().isComplete).isTrue()
+    }
+
+    @Test
+    fun not_download_the_same_program_more_than_once_when_it_is_exhausted() = runTest {
+        val programUids = listOf("program1", "program2", "program3")
+        val orgUnitUid = "orgUnit1"
+
+        val commonParams = TrackerQueryCommonParams(
+            uids = emptyList(),
+            programs = programUids,
+            program = null,
+            startDate = null,
+            hasLimitByOrgUnit = false,
+            ouMode = OrganisationUnitMode.DESCENDANTS,
+            orgUnitsBeforeDivision = listOf(orgUnitUid),
+            limit = ProgramDataDownloadParams.DEFAULT_LIMIT,
+        )
+        val bundle = TrackerQueryBundle.builder()
+            .commonParams(commonParams)
+            .orgUnits(listOf(orgUnitUid))
+            .build()
+
+        whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+
+        val endpointCallFactory: TrackedEntityEndpointCallFactory = mock()
+        whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)
+
+        // Each program has fewer TEIs than the page size, so it is exhausted in its first page
+        // and should not be queried again in subsequent bundle iterations.
+        val payload: Payload<TrackedEntityInstance> = mock()
+        val teis = (1..6).map { mock<TrackedEntityInstance>() }
+        whenever(payload.items).doReturn(teis)
+        whenever(endpointCallFactory.getCollectionCall(any())).doReturn(payload)
+
+        call.download(ProgramDataDownloadParams.builder().build()).toList()
+
+        val captor = argumentCaptor<TrackerAPIQuery>()
+        verify(endpointCallFactory, times(programUids.size)).getCollectionCall(captor.capture())
+
+        val downloadedPrograms = captor.allValues.map { it.commonParams.program }
+        assertThat(downloadedPrograms).containsExactlyElementsIn(programUids)
     }
 }

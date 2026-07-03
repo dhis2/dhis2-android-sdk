@@ -110,12 +110,12 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val captureOrganisationUnits = d2.organisationUnitModule().organisationUnits()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .blockingGet()
-        assertThat(captureOrganisationUnits.size).isEqualTo(3)
+        assertThat(captureOrganisationUnits.size).isEqualTo(1)
 
         val searchOrganisationUnits = d2.organisationUnitModule().organisationUnits()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .blockingGet()
-        assertThat(searchOrganisationUnits.size).isEqualTo(0)
+        assertThat(searchOrganisationUnits.size).isEqualTo(3)
     }
 
     @Test
@@ -123,7 +123,7 @@ class OrganisationUnitCollectionRepositoryMockIntegrationShould : BaseMockIntegr
         val rootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
             .byRootOrganisationUnit(true)
             .blockingGet()
-        assertThat(rootOrganisationUnits.size).isEqualTo(1)
+        assertThat(rootOrganisationUnits.size).isEqualTo(2)
 
         val notRootOrganisationUnits = d2.organisationUnitModule().organisationUnits()
             .byRootOrganisationUnit(false)

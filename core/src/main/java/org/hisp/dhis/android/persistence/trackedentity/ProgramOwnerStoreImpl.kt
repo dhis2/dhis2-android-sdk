@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwner
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.ObjectWithoutUidStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -42,4 +43,14 @@ internal class ProgramOwnerStoreImpl(
     { databaseAdapter.getCurrentDatabase().programOwnerDao() },
     ProgramOwner::toDB,
     SQLStatementBuilderImpl(ProgramOwnerTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun selectForTeiProgram(tei: String, program: String): ProgramOwner? {
+        val whereClause = WhereClauseBuilder().run {
+            appendKeyStringValue(ProgramOwnerTableInfo.Columns.TRACKED_ENTITY_INSTANCE, tei)
+            appendKeyStringValue(ProgramOwnerTableInfo.Columns.PROGRAM, program)
+            build()
+        }
+
+        return selectOneWhere(whereClause)
+    }
+}

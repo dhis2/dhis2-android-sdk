@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Before
 import org.junit.Test
@@ -51,6 +52,7 @@ class TrackerImporterBreakTheGlassHelperShould {
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val enrollmentStore: EnrollmentStore = mock()
     private val programStore: ProgramStore = mock()
+    private val programOwnerStore: ProgramOwnerStore = mock()
     private val ownershipManagerImpl: OwnershipManagerImpl = mock()
 
     private lateinit var helper: TrackerImporterBreakTheGlassHelper
@@ -65,6 +67,7 @@ class TrackerImporterBreakTheGlassHelperShould {
             userOrganisationUnitLinkStore,
             enrollmentStore,
             programStore,
+            programOwnerStore,
             ownershipManagerImpl,
         )
     }
@@ -72,7 +75,7 @@ class TrackerImporterBreakTheGlassHelperShould {
     @Test
     fun return_true_when_program_is_protected_and_orgunit_is_not_capture_scope() = runTest {
         mockProtectedProgram()
-        mockNotCaptureScope()
+        mockSearchScope()
 
         val result = helper.isProtectedInSearchScope(programUid, orgUnitUid)
 
@@ -92,7 +95,7 @@ class TrackerImporterBreakTheGlassHelperShould {
     @Test
     fun return_false_when_program_is_open_and_orgunit_is_not_capture_scope() = runTest {
         mockOpenProgram()
-        mockNotCaptureScope()
+        mockSearchScope()
 
         val result = helper.isProtectedInSearchScope(programUid, orgUnitUid)
 
@@ -135,7 +138,7 @@ class TrackerImporterBreakTheGlassHelperShould {
     @Test
     fun return_false_when_program_not_found() = runTest {
         whenever(programStore.selectByUid(programUid)).doReturn(null)
-        mockNotCaptureScope()
+        mockSearchScope()
 
         val result = helper.isProtectedInSearchScope(programUid, orgUnitUid)
 
@@ -164,9 +167,11 @@ class TrackerImporterBreakTheGlassHelperShould {
 
     private suspend fun mockCaptureScope() {
         whenever(userOrganisationUnitLinkStore.isCaptureScope(orgUnitUid)).doReturn(true)
+        whenever(userOrganisationUnitLinkStore.isSearchScope(orgUnitUid)).doReturn(true)
     }
 
-    private suspend fun mockNotCaptureScope() {
+    private suspend fun mockSearchScope() {
         whenever(userOrganisationUnitLinkStore.isCaptureScope(orgUnitUid)).doReturn(false)
+        whenever(userOrganisationUnitLinkStore.isSearchScope(orgUnitUid)).doReturn(true)
     }
 }

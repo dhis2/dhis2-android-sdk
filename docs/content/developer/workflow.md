@@ -83,10 +83,12 @@ Logout method removes user credentials, so a new login is required before any in
 The SDK includes support for OpenID. To perform a login using OpenID an OpenIDConnectConfig is required:
 
 ```java
-OpenIDConnectConfig openIdConfig = new OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl);
+OpenIDConnectConfig openIdConfig = new OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl, prompt);
 ```
 
 It is mandatory to either provide a discoveryUri or both authorizationUrl and tokenUrl.
+
+The `prompt` parameter is optional and, when provided, is forwarded to the OpenID provider as the `prompt` URL parameter (see the [OpenID Connect specification](https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest)). It accepts a space-separated list of values, e.g. `"login"`, `"select_account"` or `"login select_account"`. When set to `null` no prompt parameter is sent.
 
 This configuration can be used to perform a login.
 

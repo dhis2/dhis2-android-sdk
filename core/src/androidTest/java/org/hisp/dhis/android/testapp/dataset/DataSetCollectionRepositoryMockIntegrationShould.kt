@@ -261,12 +261,12 @@ class DataSetCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTest
         val dataSetCapture = d2.dataSetModule().dataSets()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .blockingGet()
-        assertThat(dataSetCapture.size).isEqualTo(3)
+        assertThat(dataSetCapture.size).isEqualTo(2)
 
         val dataSetSearch = d2.dataSetModule().dataSets()
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_TEI_SEARCH)
             .blockingGet()
-        assertThat(dataSetSearch.size).isEqualTo(0)
+        assertThat(dataSetSearch.size).isEqualTo(3)
     }
 
     @Test

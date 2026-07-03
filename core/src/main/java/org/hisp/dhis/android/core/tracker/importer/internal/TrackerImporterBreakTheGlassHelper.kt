@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.tracker.importer.internal
 
+import org.hisp.dhis.android.core.enrollment.Enrollment
+import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
@@ -36,6 +38,7 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
+import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.imports.TrackerImportConflictTableInfo
@@ -47,6 +50,7 @@ internal class TrackerImporterBreakTheGlassHelper(
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val enrollmentStore: EnrollmentStore,
     private val programStore: ProgramStore,
+    private val programOwnerStore: ProgramOwnerStore,
     private val ownershipManagerImpl: OwnershipManagerImpl,
 ) {
 
@@ -58,7 +62,7 @@ internal class TrackerImporterBreakTheGlassHelper(
         instances: List<TrackedEntityInstance>,
     ): List<TrackedEntityInstance> {
         return summary.enrollments.ignored.filter { enrollment ->
-            isProtectedInSearchScope(enrollment.program(), enrollment.organisationUnit())
+            isProtectedInSearchScope(enrollment)
         }.mapNotNull { enrollment ->
             instances.mapNotNull { tei ->
                 val teiEnrollment =
@@ -98,9 +102,9 @@ internal class TrackerImporterBreakTheGlassHelper(
         candidateEnrollments
             .mapNotNull { error -> error.enrollment()?.let { id -> payload.enrollments.find { it.uid() == id } } }
             .filter { enrollment ->
-                isProtectedInSearchScope(enrollment.program, enrollment.organisationUnit)
+                isProtectedInSearchScope(enrollment)
             }
-            .map { enrollment ->
+            .forEach { enrollment ->
                 glassErrors.enrollments.add(enrollment)
                 glassErrors.trackedEntities.addAll(
                     payload.trackedEntities.filter {
@@ -119,10 +123,10 @@ internal class TrackerImporterBreakTheGlassHelper(
             .mapNotNull { error -> error.event()?.let { id -> payload.events.find { it.uid() == id } } }
             .filter { event ->
                 event.enrollment?.let { enrollmentStore.selectByUid(it) }?.let {
-                    isProtectedInSearchScope(it.program(), it.organisationUnit())
+                    isProtectedInSearchScope(it)
                 } ?: false
             }
-            .map { event ->
+            .forEach { event ->
                 glassErrors.events.add(event)
             }
 
@@ -171,9 +175,25 @@ internal class TrackerImporterBreakTheGlassHelper(
         }
     }
 
-    suspend fun isProtectedInSearchScope(program: String?, organisationUnit: String?): Boolean {
-        return if (program != null && organisationUnit != null) {
-            isProtectedProgram(program) && isNotCaptureScope(organisationUnit)
+    @Suppress("ReturnCount")
+    private suspend fun isProtectedInSearchScope(enrollment: NewTrackerImporterEnrollment): Boolean {
+        val tei = enrollment.trackedEntity ?: return false
+        val program = enrollment.program ?: return false
+        val programOwner = programOwnerStore.selectForTeiProgram(tei, program) ?: return false
+        return isProtectedInSearchScope(program, programOwner.ownerOrgUnit())
+    }
+
+    @Suppress("ReturnCount")
+    private suspend fun isProtectedInSearchScope(enrollment: Enrollment): Boolean {
+        val tei = enrollment.trackedEntityInstance() ?: return false
+        val program = enrollment.program() ?: return false
+        val programOwner = programOwnerStore.selectForTeiProgram(tei, program) ?: return false
+        return isProtectedInSearchScope(program, programOwner.ownerOrgUnit())
+    }
+
+    suspend fun isProtectedInSearchScope(program: String?, ownerOrgUnit: String?): Boolean {
+        return if (program != null && ownerOrgUnit != null) {
+            isProtectedProgram(program) && isSearchScopeAndNoCapture(ownerOrgUnit)
         } else {
             false
         }
@@ -183,7 +203,10 @@ internal class TrackerImporterBreakTheGlassHelper(
         return program?.let { programStore.selectByUid(it)?.accessLevel() == AccessLevel.PROTECTED } ?: false
     }
 
-    private suspend fun isNotCaptureScope(organisationUnit: String?): Boolean {
-        return organisationUnit?.let { !userOrganisationUnitLinkStore.isCaptureScope(it) } ?: false
+    private suspend fun isSearchScopeAndNoCapture(organisationUnit: String?): Boolean {
+        return organisationUnit?.let {
+            userOrganisationUnitLinkStore.isSearchScope(it) &&
+                !userOrganisationUnitLinkStore.isCaptureScope(it)
+        } ?: false
     }
 }

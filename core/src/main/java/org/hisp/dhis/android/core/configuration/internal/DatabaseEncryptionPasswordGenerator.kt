@@ -26,17 +26,26 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.d2.internal
+package org.hisp.dhis.android.core.configuration.internal
 
-import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordGenerator
-import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
-import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.FileResourceCleaner
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceService
-import org.koin.dsl.module
+import org.koin.core.annotation.Singleton
+import java.security.SecureRandom
+import java.util.Random
 
-internal val javaDIClasses = module {
-    single { FileResourceCleaner(get(), get(), get()) }
-    single { DatabaseEncryptionPasswordManager(get(), get()) }
-    single { DatabaseEncryptionPasswordGenerator() }
-    single { TrackedEntityInstanceService(get(), get(), get(), get()) }
+@Singleton
+class DatabaseEncryptionPasswordGenerator {
+    private val random: Random = SecureRandom()
+
+    fun generate(): String {
+        val randomChars = CharArray(CODESIZE) {
+            ALLOWED_CHARS[random.nextInt(ALLOWED_CHARS.length)]
+        }
+        return String(randomChars)
+    }
+
+    companion object {
+        private const val ALLOWED_CHARS = "0123456789" + "abcdefghijklmnopqrstuvwxyz" +
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        private const val CODESIZE = 32
+    }
 }

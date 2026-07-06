@@ -26,63 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataset;
+package org.hisp.dhis.android.core.period
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class Period(
+    val periodId: String?,
+    val periodType: PeriodType?,
+    val startDate: Date?,
+    val endDate: Date?,
+) : CoreObject {
+    fun periodId(): String? = periodId
+    fun periodType(): PeriodType? = periodType
+    fun startDate(): Date? = startDate
+    fun endDate(): Date? = endDate
 
-import org.hisp.dhis.android.core.common.BaseDeletableDataObject;
-import org.hisp.dhis.android.core.common.State;
+    fun toBuilder(): Builder = PeriodBuilder.from(this)
 
-import java.util.Date;
+    class Builder : PeriodBuilder()
 
-@AutoValue
-public abstract class DataSetCompleteRegistration extends BaseDeletableDataObject {
-
-    public abstract String period();
-
-    public abstract String dataSet();
-
-    public abstract String organisationUnit();
-
-    public abstract String attributeOptionCombo();
-
-    @Nullable
-    public abstract Date date();
-
-    @Nullable
-    public abstract String storedBy();
-
-    public abstract Builder toBuilder();
-
-    public static Builder builder() {
-        return new AutoValue_DataSetCompleteRegistration.Builder();
-    }
-
-
-    @AutoValue.Builder
-    public abstract static class Builder
-            implements BaseDeletableDataObject.Builder<DataSetCompleteRegistration.Builder> {
-
-        public Builder() {
-            syncState(State.SYNCED);
-        }
-
-        public abstract Builder period(@NonNull String period);
-
-        public abstract Builder dataSet(@NonNull String dataSet);
-
-        public abstract Builder organisationUnit(@NonNull String organisationUnit);
-
-        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
-
-        public abstract Builder date(@Nullable Date date);
-
-        public abstract Builder storedBy(@Nullable String storedBy);
-
-        public abstract DataSetCompleteRegistration build();
-
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -26,31 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.expressiondimensionitem;
+package org.hisp.dhis.android.core.dataapproval
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.CoreObject
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataApproval(
+    val workflow: String,
+    val organisationUnit: String,
+    val period: String,
+    val attributeOptionCombo: String,
+    val state: DataApprovalState,
+) : CoreObject {
+    fun workflow(): String = workflow
+    fun organisationUnit(): String = organisationUnit
+    fun period(): String = period
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun state(): DataApprovalState = state
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObAuVa;
-import org.hisp.dhis.android.core.common.CoreObject;
+    fun toBuilder(): Builder = DataApprovalBuilder.from(this)
 
-@AutoValue
-public abstract class ExpressionDimensionItem extends BaseIdentifiableObAuVa implements CoreObject {
+    class Builder : DataApprovalBuilder()
 
-    @Nullable
-    public abstract String expression();
-
-    public static Builder builder() {
-        return new AutoValue_ExpressionDimensionItem.Builder();
-    }
-
-    public abstract Builder toBuilder();
-
-    @AutoValue.Builder
-    public abstract static class Builder extends BaseIdentifiableObAuVa.Builder<Builder> {
-        public abstract Builder expression(String expression);
-
-        public abstract ExpressionDimensionItem build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

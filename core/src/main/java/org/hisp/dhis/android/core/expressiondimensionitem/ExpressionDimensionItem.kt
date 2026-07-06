@@ -26,43 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.period;
+package org.hisp.dhis.android.core.expressiondimensionitem
 
-import com.google.auto.value.AutoValue;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.CoreObject
+import java.util.Date
 
-import java.util.Date;
+@ModelBuilder
+data class ExpressionDimensionItem(
+    override val uid: String,
+    override val code: String?,
+    override val name: String?,
+    override val displayName: String?,
+    override val created: Date?,
+    override val lastUpdated: Date?,
+    override val deleted: Boolean?,
+    val expression: String?,
+) : BaseIdentifiableObjectKt, CoreObject {
 
-import androidx.annotation.NonNull;
+    fun expression(): String? = expression
 
-@AutoValue
-public abstract class DatePeriod {
+    fun toBuilder(): Builder = ExpressionDimensionItemBuilder.from(this)
 
-    @NonNull
-    public abstract Date startDate();
+    class Builder : ExpressionDimensionItemBuilder()
 
-    @NonNull
-    public abstract Date endDate();
-
-    public abstract Builder toBuilder();
-
-    public static DatePeriod create(Date startDate, Date endDate) {
-        return builder()
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
-    }
-
-    public static Builder builder() {
-        return new AutoValue_DatePeriod.Builder();
-    }
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder startDate(Date startDate);
-
-        public abstract Builder endDate(Date endDate);
-
-        public abstract DatePeriod build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
     }
 }

@@ -26,52 +26,42 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.dataapproval;
+package org.hisp.dhis.android.core.dataset
 
-import androidx.annotation.NonNull;
+import org.hisp.dhis.android.annotations.ModelBuilder
+import org.hisp.dhis.android.core.common.DataObjectKt
+import org.hisp.dhis.android.core.common.DeletableDataObjectKt
+import org.hisp.dhis.android.core.common.State
+import java.util.Date
 
-import com.google.auto.value.AutoValue;
+@ModelBuilder
+data class DataSetCompleteRegistration(
+    val period: String,
+    val dataSet: String,
+    val organisationUnit: String,
+    val attributeOptionCombo: String,
+    val date: Date?,
+    val storedBy: String?,
+    override val syncState: State?,
+    override val deleted: Boolean?,
+) : DataObjectKt, DeletableDataObjectKt {
+    fun period(): String = period
+    fun dataSet(): String = dataSet
+    fun organisationUnit(): String = organisationUnit
+    fun attributeOptionCombo(): String = attributeOptionCombo
+    fun date(): Date? = date
+    fun storedBy(): String? = storedBy
 
-import org.hisp.dhis.android.core.common.CoreObject;
+    @Deprecated("Use syncState() instead")
+    override fun state(): State? = syncState
 
-@AutoValue
-public abstract class DataApproval implements CoreObject {
+    fun toBuilder(): Builder = DataSetCompleteRegistrationBuilder.from(this)
 
-    @NonNull
-    public abstract String workflow();
+    class Builder : DataSetCompleteRegistrationBuilder()
 
-    @NonNull
-    public abstract String organisationUnit();
-
-    @NonNull
-    public abstract String period();
-
-    @NonNull
-    public abstract String attributeOptionCombo();
-
-    @NonNull
-    public abstract DataApprovalState state();
-
-    public static DataApproval.Builder builder() {
-        return new AutoValue_DataApproval.Builder();
-    }
-
-    public abstract DataApproval.Builder toBuilder();
-
-
-    @AutoValue.Builder
-    public abstract static class Builder {
-
-        public abstract Builder workflow(@NonNull String workflow);
-
-        public abstract Builder organisationUnit(@NonNull String organisationUnit);
-
-        public abstract Builder period(@NonNull String period);
-
-        public abstract Builder attributeOptionCombo(@NonNull String attributeOptionCombo);
-
-        public abstract Builder state(@NonNull DataApprovalState state);
-
-        public abstract DataApproval build();
+    companion object {
+        @JvmStatic
+        fun builder(): Builder = Builder()
+            .syncState(State.SYNCED)
     }
 }

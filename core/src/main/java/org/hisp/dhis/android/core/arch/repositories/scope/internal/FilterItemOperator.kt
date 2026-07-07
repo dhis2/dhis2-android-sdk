@@ -40,8 +40,8 @@ enum class FilterItemOperator(val sqlOperator: String, val apiOperator: String, 
     SW("LIKE", "sw", "SW"),
     EW("LIKE", "ew", "EW"),
     VOID("", "", ""),
-    NULL_OR_BLANK("", "null_or_blank", "NULL_OR_BLANK"),
-    NOT_NULL_AND_NOT_BLANK("", "not_null_and_not_blank", "NOT_NULL_AND_NOT_BLANK"),
+    NULL_OR_BLANK("", "null", "NULL"),
+    NOT_NULL_AND_NOT_BLANK("", "!null", "!NULL"),
     ;
 
     /**

@@ -82,6 +82,7 @@ data class ProgramStage(
     val validationStrategy: ValidationStrategy?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValue>?,
     override val style: ObjectStyle,
 ) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
@@ -129,6 +130,7 @@ data class ProgramStage(
     fun eventLabel(): String? = displayEventLabel
     fun displayEventLabel(): String? = displayEventLabel
 
+    fun displayEventsLabel(): String? = displayEventsLabel
     fun attributeValues(): List<AttributeValue>? = attributeValues
 
     fun toBuilder(): Builder = ProgramStageBuilder.from(this)

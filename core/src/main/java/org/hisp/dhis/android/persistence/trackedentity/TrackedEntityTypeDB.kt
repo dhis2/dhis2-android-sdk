@@ -29,6 +29,7 @@ internal data class TrackedEntityTypeDB(
     override val color: String?,
     override val icon: String?,
     val accessDataWrite: AccessDB?,
+    val displayTrackedEntityTypesLabel: String?,
 ) : EntityDB<TrackedEntityType>, BaseNameableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): TrackedEntityType {
@@ -37,6 +38,7 @@ internal data class TrackedEntityTypeDB(
             style(this@TrackedEntityTypeDB.toDomainStyle())
             featureType(featureType?.let { FeatureType.valueOf(it) })
             accessDataWrite?.let { access(it.toDomain()) }
+            displayTrackedEntityTypesLabel(displayTrackedEntityTypesLabel)
         }.build()
     }
 }
@@ -57,5 +59,6 @@ internal fun TrackedEntityType.toDB(): TrackedEntityTypeDB {
         color = style().color(),
         icon = style().icon(),
         accessDataWrite = access().toDB(),
+        displayTrackedEntityTypesLabel = displayTrackedEntityTypesLabel(),
     )
 }

@@ -66,6 +66,7 @@ internal data class ProgramStageDB(
     val validationStrategy: String?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
 ) : EntityDB<ProgramStage>, BaseIdentifiableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): ProgramStage {
@@ -99,6 +100,7 @@ internal data class ProgramStageDB(
             validationStrategy?.let { validationStrategy(ValidationStrategy.valueOf(it)) }
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
+            displayEventsLabel(displayEventsLabel)
         }.build()
     }
 }
@@ -140,5 +142,6 @@ internal fun ProgramStage.toDB(): ProgramStageDB {
         validationStrategy = validationStrategy()?.name,
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        displayEventsLabel = displayEventsLabel(),
     )
 }

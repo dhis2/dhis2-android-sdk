@@ -77,6 +77,7 @@ internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
         assertThat(programStage.enableUserAssignment()).isTrue()
         assertThat(programStage.displayProgramStageLabel()).isEqualTo("ProgramStage Label")
         assertThat(programStage.displayEventLabel()).isEqualTo("Event Label")
+        assertThat(programStage.displayEventsLabel()).isEqualTo("Events Label")
 
         val dataElements = programStage.programStageDataElements()
         assertThat(dataElements?.get(0)?.uid()).isEqualTo("EQCf1l2Mdr8")

@@ -53,5 +53,6 @@ internal object TrackedEntityTypeFields : BaseFields<TrackedEntityType>() {
             .with(TrackedEntityTypeAttributeFields.allFields),
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.allFields)),
+        fh.field(Columns.DISPLAY_TRACKED_ENTITY_TYPES_LABEL),
     )
 }

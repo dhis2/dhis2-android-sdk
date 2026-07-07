@@ -182,3 +182,11 @@ ALTER TABLE TrackedEntityAttributeLegendSetLink RENAME TO TrackedEntityAttribute
 CREATE TABLE TrackedEntityAttributeLegendSetLink(trackedEntityAttribute TEXT NOT NULL, legendSet TEXT NOT NULL, sortOrder INTEGER NOT NULL, PRIMARY KEY(trackedEntityAttribute, legendSet), FOREIGN KEY(trackedEntityAttribute) REFERENCES TrackedEntityAttribute(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED, FOREIGN KEY(legendSet) REFERENCES LegendSet(uid) ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED);
 INSERT INTO TrackedEntityAttributeLegendSetLink(trackedEntityAttribute, legendSet, sortOrder) SELECT trackedEntityAttribute, legendSet, sortOrder FROM TrackedEntityAttributeLegendSetLink_Old;
 DROP TABLE IF EXISTS TrackedEntityAttributeLegendSetLink_Old;
+
+
+# Add tracker custom terminology plurals labels (ANDROSDK-2275)
+ALTER TABLE Program ADD COLUMN displayEnrollmentsLabel TEXT;
+ALTER TABLE Program ADD COLUMN displayEventsLabel TEXT;
+ALTER TABLE Program ADD COLUMN displayProgramStagesLabel TEXT;
+ALTER TABLE ProgramStage ADD COLUMN displayEventsLabel TEXT;
+ALTER TABLE TrackedEntityType ADD COLUMN displayTrackedEntityTypesLabel TEXT;

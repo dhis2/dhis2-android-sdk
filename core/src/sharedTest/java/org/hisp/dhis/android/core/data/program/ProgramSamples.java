@@ -75,13 +75,16 @@ public class ProgramSamples {
                 .featureType(FeatureType.POINT)
                 .accessLevel(AccessLevel.PROTECTED)
                 .displayEnrollmentLabel("enrollmentLabel")
+                .displayEnrollmentsLabel("enrollmentsLabel")
                 .displayFollowUpLabel("followUpLabel")
                 .displayOrgUnitLabel("orgUnitLabel")
                 .displayRelationshipLabel("relationshipLabel")
                 .displayNoteLabel("noteLabel")
                 .displayTrackedEntityAttributeLabel("trackedEntityAttributeLabel")
                 .displayProgramStageLabel("programStageLabel")
+                .displayProgramStagesLabel("programStagesLabel")
                 .displayEventLabel("eventLabel")
+                .displayEventsLabel("eventsLabel")
                 .enrollmentCategoryCombo(ObjectWithUid.create("category_combo_uid"))
                 .build();
         return builder.build();
@@ -122,13 +125,16 @@ public class ProgramSamples {
                 .featureType(FeatureType.NONE)
                 .maxTeiCountToReturn(20)
                 .displayEnrollmentLabel("Enrollment Label")
+                .displayEnrollmentsLabel("Enrollments Label")
                 .displayFollowUpLabel("Follow up Label")
                 .displayOrgUnitLabel("OrgUnit Label")
                 .displayRelationshipLabel("Relationship Label")
                 .displayNoteLabel("Note Label")
                 .displayTrackedEntityAttributeLabel("TrackedEntityAttribute Label")
                 .displayProgramStageLabel("ProgramStage Label")
+                .displayProgramStagesLabel("Program Stages Label")
                 .displayEventLabel("Event Label")
+                .displayEventsLabel("Events Label")
                 .enrollmentCategoryCombo(ObjectWithUid.create("m2jTvAj5kkm"))
                 .build();
     }

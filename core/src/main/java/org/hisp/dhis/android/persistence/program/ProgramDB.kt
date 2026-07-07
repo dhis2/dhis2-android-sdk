@@ -93,6 +93,9 @@ internal data class ProgramDB(
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
     val enrollmentCategoryCombo: String,
+    val displayEnrollmentsLabel: String?,
+    val displayProgramStagesLabel: String?,
+    val displayEventsLabel: String?,
 ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
@@ -132,6 +135,9 @@ internal data class ProgramDB(
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
             enrollmentCategoryCombo(ObjectWithUid.create(enrollmentCategoryCombo))
+            displayEnrollmentsLabel(displayEnrollmentsLabel)
+            displayProgramStagesLabel(displayProgramStagesLabel)
+            displayEventsLabel(displayEventsLabel)
         }.build()
     }
 }
@@ -175,13 +181,16 @@ internal fun Program.toDB(): ProgramDB {
         color = style().color(),
         icon = style().icon(),
         displayEnrollmentLabel = displayEnrollmentLabel(),
+        displayEnrollmentsLabel = displayEnrollmentsLabel(),
         displayFollowUpLabel = displayFollowUpLabel(),
         displayOrgUnitLabel = displayOrgUnitLabel(),
         displayRelationshipLabel = displayRelationshipLabel(),
         displayNoteLabel = displayNoteLabel(),
         displayTrackedEntityAttributeLabel = displayTrackedEntityAttributeLabel(),
         displayProgramStageLabel = displayProgramStageLabel(),
+        displayProgramStagesLabel = displayProgramStagesLabel(),
         displayEventLabel = displayEventLabel(),
+        displayEventsLabel = displayEventsLabel(),
         enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
     )
 }

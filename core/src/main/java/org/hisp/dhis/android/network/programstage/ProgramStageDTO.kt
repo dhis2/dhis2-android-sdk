@@ -87,6 +87,7 @@ internal data class ProgramStageDTO(
     val displayProgramStageLabel: String?,
     val eventLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValueDTO>? = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): ProgramStage {
@@ -122,6 +123,7 @@ internal data class ProgramStageDTO(
             validationStrategy(validationStrategy?.let { ValidationStrategy.valueOf(it) })
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel ?: eventLabel)
             attributeValues(attributeValues?.map { it.toDomain() })
         }
             .build()

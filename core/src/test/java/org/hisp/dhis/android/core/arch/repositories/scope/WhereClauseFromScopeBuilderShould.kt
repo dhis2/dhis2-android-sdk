@@ -62,7 +62,7 @@ class WhereClauseFromScopeBuilderShould {
         whenever(builder.build()).doReturn("1")
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value()!!)
+        verify(builder).appendComplexQuery("k1 = v1")
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }
@@ -74,8 +74,7 @@ class WhereClauseFromScopeBuilderShould {
         whenever(builder.build()).doReturn("1")
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
-        verify(builder)
-            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value()!!)
+        verify(builder).appendComplexQuery("k2 LIKE v2")
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }
@@ -87,9 +86,8 @@ class WhereClauseFromScopeBuilderShould {
         whenever(builder.build()).doReturn("1")
 
         scopeBuilder.getWhereClause(scopeForItems(filterItems))
-        verify(builder).appendKeyOperatorValue(eqItem.key(), eqItem.operator().sqlOperator, eqItem.value()!!)
-        verify(builder)
-            .appendKeyOperatorValue(likeItem.key(), likeItem.operator().sqlOperator, likeItem.value()!!)
+        verify(builder).appendComplexQuery("k1 = v1")
+        verify(builder).appendComplexQuery("k2 LIKE v2")
         verify(builder).build()
         verifyNoMoreInteractions(builder)
     }

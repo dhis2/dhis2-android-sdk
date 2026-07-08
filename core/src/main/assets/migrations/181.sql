@@ -186,7 +186,7 @@ DROP TABLE IF EXISTS TrackedEntityAttributeLegendSetLink_Old;
 
 # Add tracker custom terminology plurals labels (ANDROSDK-2275)
 ALTER TABLE Program ADD COLUMN displayEnrollmentsLabel TEXT;
-ALTER TABLE Program ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE Program ADD COLUMN displayProgramStagesLabel TEXT;
+ALTER TABLE Program ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE ProgramStage ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE TrackedEntityType ADD COLUMN displayTrackedEntityTypesLabel TEXT;

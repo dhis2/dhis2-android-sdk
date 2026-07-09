@@ -166,6 +166,31 @@ class OAuth2HandlerImplShould {
 
     // endregion
 
+    // region blockingBuildLogoutUrl
+
+    @Test
+    fun blockingBuildLogoutUrl_persists_temp_state_and_returns_url() {
+        whenever(oauth2NetworkHandler.buildLogoutUrl(any(), any())).thenReturn(LOGOUT_URL)
+
+        val result = handler.blockingBuildLogoutUrl(NORMALIZED_URL)
+
+        assertThat(result).isEqualTo(LOGOUT_URL)
+        assertThat(oauth2SecureStore.tempState).isNotNull()
+        verify(oauth2NetworkHandler).buildLogoutUrl(eq(NORMALIZED_URL), eq(oauth2SecureStore.tempState!!))
+    }
+
+    @Test
+    fun blockingBuildLogoutUrl_delegates_raw_server_url_without_normalizing() {
+        whenever(oauth2NetworkHandler.buildLogoutUrl(any(), any())).thenReturn(LOGOUT_URL)
+
+        handler.blockingBuildLogoutUrl("HTTPS://Server.com/")
+
+        // Unlike enrollment, the logout url is built from the raw server url (no normalization).
+        verify(oauth2NetworkHandler).buildLogoutUrl(eq("HTTPS://Server.com/"), any())
+    }
+
+    // endregion
+
     // region blockingHandleLogInResponse
 
     @Test(expected = IllegalStateException::class)
@@ -527,6 +552,7 @@ class OAuth2HandlerImplShould {
 
     companion object {
         private const val ENROLL_URL = "https://server.com/oauth2/dcr/enroll"
+        private const val LOGOUT_URL = "https://server.com/dhis-web-commons-security/logout.action"
         private const val NORMALIZED_URL = "https://server.com"
         private const val CLIENT_ID = "client-1"
         private const val KEY_ID = "key-1"

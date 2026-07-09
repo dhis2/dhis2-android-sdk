@@ -132,4 +132,10 @@ internal class OAuth2NetworkHandlerImpl(
             )
         }
     }
+
+    override fun buildLogoutUrl(serverUrl: String, state: String): String {
+        return "$serverUrl/dhis-web-commons-security/logout.action" +
+            "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
+            "&state=$state"
+    }
 }

@@ -1,0 +1,96 @@
+/*
+ *  Copyright (c) 2004-2026, University of Oslo
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions are met:
+ *  Redistributions of source code must retain the above copyright notice, this
+ *  list of conditions and the following disclaimer.
+ *
+ *  Redistributions in binary form must reproduce the above copyright notice,
+ *  this list of conditions and the following disclaimer in the documentation
+ *  and/or other materials provided with the distribution.
+ *  Neither the name of the HISP project nor the names of its contributors may
+ *  be used to endorse or promote products derived from this software without
+ *  specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ *  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ *  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ *  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ *  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ *  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ *  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package org.hisp.dhis.android.network.oauth2
+
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import org.mockito.kotlin.mock
+
+@RunWith(JUnit4::class)
+class OAuth2NetworkHandlerImplShould {
+
+    private val httpClient: HttpServiceClient = mock()
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor = mock()
+    private val oAuth2SecureStore = OAuth2SecureStore(InMemorySecureStore())
+
+    private lateinit var networkHandler: OAuth2NetworkHandlerImpl
+
+    @Before
+    fun setUp() {
+        networkHandler = OAuth2NetworkHandlerImpl(httpClient, coroutineAPICallExecutor, oAuth2SecureStore)
+    }
+
+    // region buildLogoutUrl
+
+    @Test
+    fun buildLogoutUrl_builds_logout_action_url_with_default_redirect_uri_and_state() {
+        val url = networkHandler.buildLogoutUrl(SERVER_URL, STATE)
+
+        assertThat(url).isEqualTo(
+            "$SERVER_URL/dhis-web-commons-security/logout.action" +
+                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
+                "&state=$STATE",
+        )
+    }
+
+    @Test
+    fun buildLogoutUrl_appends_path_to_the_provided_server_url_verbatim() {
+        val url = networkHandler.buildLogoutUrl("https://play.dhis2.org/40", STATE)
+
+        assertThat(url).isEqualTo(
+            "https://play.dhis2.org/40/dhis-web-commons-security/logout.action" +
+                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
+                "&state=$STATE",
+        )
+    }
+
+    @Test
+    fun buildLogoutUrl_includes_the_provided_state_as_a_query_parameter() {
+        val withState = networkHandler.buildLogoutUrl(SERVER_URL, "state-a")
+        val withOtherState = networkHandler.buildLogoutUrl(SERVER_URL, "state-b")
+
+        assertThat(withState).endsWith("&state=state-a")
+        assertThat(withOtherState).endsWith("&state=state-b")
+        assertThat(withState).isNotEqualTo(withOtherState)
+    }
+
+    // endregion
+
+    companion object {
+        private const val SERVER_URL = "https://server.com"
+        private const val STATE = "state-1"
+    }
+}

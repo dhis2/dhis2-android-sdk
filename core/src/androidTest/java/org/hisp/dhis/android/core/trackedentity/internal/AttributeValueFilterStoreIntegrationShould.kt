@@ -57,6 +57,7 @@ class AttributeValueFilterStoreIntegrationShould : ObjectStoreAbstractIntegratio
             .eq(null)
             .like(null)
             .dateFilter(null)
+            .isEmpty(null)
             .build()
     }
 }

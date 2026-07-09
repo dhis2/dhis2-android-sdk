@@ -2494,6 +2494,7 @@ public final class org/hisp/dhis/android/core/arch/repositories/filters/internal
 	public final fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun in (Ljava/util/Set;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun inRelativePeriod (Lorg/hisp/dhis/android/core/common/RelativePeriod;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
+	public final fun isEmpty (Z)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun lt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
@@ -2627,6 +2628,8 @@ public final class org/hisp/dhis/android/core/arch/repositories/filters/internal
 	public final fun ge (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun gt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun in (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
+	public final fun isNotNullAndIsNotBlank ()Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
+	public final fun isNullOrBlank ()Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun le (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun like (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
 	public final fun lt (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;
@@ -2887,6 +2890,8 @@ public final class org/hisp/dhis/android/core/arch/repositories/scope/internal/F
 	public static final field LT Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
 	public static final field NOT_EQ Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
 	public static final field NOT_IN Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
+	public static final field NOT_NULL_AND_NOT_BLANK Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
+	public static final field NULL_OR_BLANK Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
 	public static final field SW Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
 	public static final field VOID Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
 	public final fun getApiOperator ()Ljava/lang/String;
@@ -2977,7 +2982,6 @@ public class org/hisp/dhis/android/core/arch/repositories/scope/internal/Reposit
 	public static final field Companion Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItemBuilder$Companion;
 	protected field key Ljava/lang/String;
 	protected field operator Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/FilterItemOperator;
-	protected field value Ljava/lang/String;
 	public fun <init> ()V
 	public fun build ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;
 	protected final fun getKey ()Ljava/lang/String;

@@ -40,4 +40,19 @@ enum class FilterItemOperator(val sqlOperator: String, val apiOperator: String, 
     SW("LIKE", "sw", "SW"),
     EW("LIKE", "ew", "EW"),
     VOID("", "", ""),
+    NULL_OR_BLANK("", "null", "NULL"),
+    NOT_NULL_AND_NOT_BLANK("", "!null", "!NULL"),
+    ;
+
+    /**
+     * Builds the full SQL condition for this operator. NULL_OR_BLANK and NOT_NULL_AND_NOT_BLANK cannot be expressed
+     * as "column sqlOperator value" because they need the column name in both sides of the OR/AND condition.
+     */
+    internal fun getSqlCondition(column: String, valueStr: String? = null): String {
+        return when (this) {
+            NULL_OR_BLANK -> "($column IS NULL OR $column = '')"
+            NOT_NULL_AND_NOT_BLANK -> "($column IS NOT NULL AND $column != '')"
+            else -> "$column $sqlOperator $valueStr"
+        }
+    }
 }

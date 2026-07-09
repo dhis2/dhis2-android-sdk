@@ -161,7 +161,7 @@ class RepositoryPagingShould {
             RepositoryDataSource(store, updatedScope2, childrenAppenders)
         dataSource.loadAfter(PageKeyedDataSource.LoadParams(6, 3), loadCallback)
         verify(store).selectWhere(
-            "program = 'uid'",
+            "(program = 'uid')",
             "code DESC, name ASC",
             3,
             6,

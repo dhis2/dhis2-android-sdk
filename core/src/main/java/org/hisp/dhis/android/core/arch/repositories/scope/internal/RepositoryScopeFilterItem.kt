@@ -33,11 +33,11 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 data class RepositoryScopeFilterItem(
     val key: String,
     val operator: FilterItemOperator,
-    val value: String,
+    val value: String?,
 ) {
     fun key(): String = key
     fun operator(): FilterItemOperator = operator
-    fun value(): String = value
+    fun value(): String? = value
 
     fun toBuilder(): Builder = RepositoryScopeFilterItemBuilder.from(this)
 

@@ -230,4 +230,42 @@ class TrackedEntityInstanceLocalQueryHelperShould {
 
         assertThat(sqlQuery).contains("value IN ('element1','element2')")
     }
+
+    @Test
+    fun build_sql_query_with_null_or_blank_attribute_filter() {
+        val scope = queryBuilder
+            .program(programUid)
+            .filter(
+                listOf(
+                    RepositoryScopeFilterItem.builder()
+                        .key("key")
+                        .operator(FilterItemOperator.NULL_OR_BLANK)
+                        .build(),
+                ),
+            )
+            .build()
+
+        val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)
+
+        assertThat(sqlQuery).contains("(teav.value IS NULL OR teav.value = '')")
+    }
+
+    @Test
+    fun build_sql_query_with_not_null_and_not_blank_data_value() {
+        val scope = queryBuilder
+            .program(programUid)
+            .dataValue(
+                listOf(
+                    RepositoryScopeFilterItem.builder()
+                        .key("dataElement")
+                        .operator(FilterItemOperator.NOT_NULL_AND_NOT_BLANK)
+                        .build(),
+                ),
+            )
+            .build()
+
+        val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)
+
+        assertThat(sqlQuery).contains("(tedv.value IS NOT NULL AND tedv.value != '')")
+    }
 }

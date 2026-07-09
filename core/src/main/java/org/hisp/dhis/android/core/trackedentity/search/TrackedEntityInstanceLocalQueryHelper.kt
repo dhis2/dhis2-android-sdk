@@ -302,6 +302,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                     "%" + escapeQuotes(orgUnit) + "%",
                 )
             }
+
             OrganisationUnitMode.CHILDREN -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(
                     dot(orgunitAlias, OrganisationUnitTableInfo.Columns.PARENT),
@@ -311,6 +312,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                 // TODO Include orgunit?
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
             }
+
             OrganisationUnitMode.CAPTURE ->
                 inner.appendComplexQuery(
                     String.format(
@@ -322,9 +324,11 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                         OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name,
                     ),
                 )
+
             OrganisationUnitMode.SELECTED -> scope.orgUnits().forEach { orgUnit ->
                 inner.appendOrKeyStringValue(dot(orgunitAlias, IdentifiableColumns.UID), escapeQuotes(orgUnit))
             }
+
             OrganisationUnitMode.ACCESSIBLE, OrganisationUnitMode.ALL -> {
             }
         }
@@ -335,24 +339,25 @@ internal class TrackedEntityInstanceLocalQueryHelper(
 
     private fun appendQueryWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         scope.query()?.let { query ->
-            val tokens = query.value().split(" ".toRegex()).toTypedArray()
+            val tokens = query.value()?.split(" ".toRegex())?.toTypedArray() ?: listOf("").toTypedArray()
             for (token in tokens) {
                 val valueStr =
                     if (query.operator() == FilterItemOperator.LIKE) {
-                        "%${escapeQuotes(token)}%"
+                        "'%${escapeQuotes(token)}%'"
                     } else {
-                        escapeQuotes(token)
+                        "'${escapeQuotes(token)}'"
                     }
 
                 val sub = String.format(
-                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s %s '%s'",
+                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                     teavAlias,
                     dot(teavAlias, trackedEntityInstance),
                     dot(teiAlias, IdentifiableColumns.UID),
-                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                    query.operator().sqlOperator,
-                    valueStr,
+                    query.operator().getSqlCondition(
+                        dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                        valueStr,
+                    ),
                 )
 
                 where.appendExistsSubQuery(sub)
@@ -363,13 +368,17 @@ internal class TrackedEntityInstanceLocalQueryHelper(
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s %s %s",
-                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(), teavAlias,
-                dot(teavAlias, trackedEntityInstance), dot(teiAlias, IdentifiableColumns.UID),
-                dot(teavAlias, trackedEntityAttribute), escapeQuotes(item.key()),
-                dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                item.operator().sqlOperator,
-                getFilterItemValueStr(item),
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
+                TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
+                teavAlias,
+                dot(teavAlias, trackedEntityInstance),
+                dot(teiAlias, IdentifiableColumns.UID),
+                dot(teavAlias, trackedEntityAttribute),
+                escapeQuotes(item.key()),
+                item.operator().getSqlCondition(
+                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    getFilterItemValueStr(item),
+                ),
             )
 
             where.appendExistsSubQuery(sub)
@@ -452,9 +461,11 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                             listOf(EventStatus.ACTIVE, EventStatus.SCHEDULE, EventStatus.OVERDUE),
                         )
                     }
+
                     EventStatus.COMPLETED, EventStatus.VISITED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
+
                     EventStatus.SCHEDULE -> {
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
@@ -466,6 +477,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                             nowStr,
                         )
                     }
+
                     EventStatus.OVERDUE -> {
                         statusWhere.appendIsNullValue(EventTableInfo.Columns.EVENT_DATE)
                         statusWhere.appendInKeyEnumValues(
@@ -477,6 +489,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                             nowStr,
                         )
                     }
+
                     EventStatus.SKIPPED -> {
                         statusWhere.appendKeyStringValue(dot(eventAlias, EventTableInfo.Columns.STATUS), eventStatus)
                     }
@@ -540,6 +553,7 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                 )
                 where.appendKeyOperatorValue(assignedUserColumn, "IN", subquery)
             }
+
             AssignedUserMode.ANY -> where.appendIsNotNullValue(assignedUserColumn)
             AssignedUserMode.NONE -> where.appendIsNullValue(assignedUserColumn)
             else -> {
@@ -561,9 +575,12 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                     "'${escapeQuotes(key)}' " +
 
                     items.joinToString("") { item ->
-                        "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE)} " +
-                            "${item.operator().sqlOperator} " +
-                            "${getFilterItemValueStr(item)} "
+                        "AND ${
+                            item.operator().getSqlCondition(
+                                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
+                                getFilterItemValueStr(item),
+                            )
+                        } "
                     }
 
                 where.appendExistsSubQuery(sub)
@@ -575,10 +592,12 @@ internal class TrackedEntityInstanceLocalQueryHelper(
             FilterItemOperator.LIKE -> "'%${escapeQuotes(item.value())}%'"
             FilterItemOperator.SW -> "'${escapeQuotes(item.value())}%'"
             FilterItemOperator.EW -> "'%${escapeQuotes(item.value())}'"
+            FilterItemOperator.NULL_OR_BLANK, FilterItemOperator.NOT_NULL_AND_NOT_BLANK -> ""
             FilterItemOperator.IN, FilterItemOperator.NOT_IN -> {
-                val value = strToList(item.value()).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
+                val value = strToList(item.value()!!).joinToString(separator = ",") { "'${escapeQuotes(it)}'" }
                 "($value)"
             }
+
             else -> "'${escapeQuotes(item.value())}'"
         }
     }

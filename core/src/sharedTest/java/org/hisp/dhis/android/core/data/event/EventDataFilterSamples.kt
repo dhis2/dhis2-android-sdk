@@ -54,6 +54,7 @@ internal object EventDataFilterSamples {
                     .type(DatePeriodType.ABSOLUTE)
                     .build(),
             )
+            .isEmpty(false)
             .build()
     }
 

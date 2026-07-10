@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.network.program
 
-import android.system.Os.access
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.FeatureType
@@ -146,16 +145,16 @@ internal data class ProgramDTO(
             featureType(featureType?.let { FeatureType.valueOf(it) })
             accessLevel(accessLevel?.let { AccessLevel.valueOf(accessLevel) })
             displayEnrollmentLabel(displayEnrollmentLabel ?: enrollmentLabel)
-            displayEnrollmentsLabel(displayEnrollmentsLabel ?: enrollmentLabel)
+            displayEnrollmentsLabel(displayEnrollmentsLabel)
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel ?: orgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel ?: relationshipLabel)
             displayNoteLabel(displayNoteLabel ?: noteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel ?: trackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
-            displayProgramStagesLabel(displayProgramStagesLabel ?: programStageLabel)
+            displayProgramStagesLabel(displayProgramStagesLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
-            displayEventsLabel(displayEventsLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel)
             attributeValues?.let { attributeValues(it.map { it.toDomain() }) }
             enrollmentCategoryCombo(enrollmentCategoryCombo.toDomain())
             categoryMappings(categoryMappings?.map { it.toDomain(id) })

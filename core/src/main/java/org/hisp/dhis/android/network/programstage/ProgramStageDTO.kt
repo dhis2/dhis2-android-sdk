@@ -123,7 +123,7 @@ internal data class ProgramStageDTO(
             validationStrategy(validationStrategy?.let { ValidationStrategy.valueOf(it) })
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
-            displayEventsLabel(displayEventsLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel)
             attributeValues(attributeValues?.map { it.toDomain() })
         }
             .build()

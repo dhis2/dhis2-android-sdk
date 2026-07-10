@@ -101,6 +101,7 @@
   "userGroupAccesses": [],
   "attributeValues": [],
   "programStageSections": [],
-  "periodType": "Monthly"
+  "periodType": "Monthly",
+  "displayEventsLabel": "Events Label"
 }
 

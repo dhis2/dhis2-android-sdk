@@ -91,6 +91,7 @@ internal data class ProgramDTO(
     val accessLevel: String?,
     val enrollmentLabel: String?,
     val displayEnrollmentLabel: String?,
+    val displayEnrollmentsLabel: String?,
     val followUpLabel: String?,
     val displayFollowUpLabel: String?,
     val orgUnitLabel: String?,
@@ -103,8 +104,10 @@ internal data class ProgramDTO(
     val displayTrackedEntityAttributeLabel: String?,
     val programStageLabel: String?,
     val displayProgramStageLabel: String?,
+    val displayProgramStagesLabel: String?,
     val eventLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValueDTO>?,
     val enrollmentCategoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val categoryMappings: List<CategoryMappingDTO>?,
@@ -142,13 +145,16 @@ internal data class ProgramDTO(
             featureType(featureType?.let { FeatureType.valueOf(it) })
             accessLevel(accessLevel?.let { AccessLevel.valueOf(accessLevel) })
             displayEnrollmentLabel(displayEnrollmentLabel ?: enrollmentLabel)
+            displayEnrollmentsLabel(displayEnrollmentsLabel)
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel ?: orgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel ?: relationshipLabel)
             displayNoteLabel(displayNoteLabel ?: noteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel ?: trackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
+            displayProgramStagesLabel(displayProgramStagesLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel)
             attributeValues?.let { attributeValues(it.map { it.toDomain() }) }
             enrollmentCategoryCombo(enrollmentCategoryCombo.toDomain())
             categoryMappings(categoryMappings?.map { it.toDomain(id) })

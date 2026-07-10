@@ -56,6 +56,7 @@ internal data class TrackedEntityTypeDTO(
     val featureType: String?,
     val access: AccessDTO?,
     val style: ObjectWithStyleDTO?,
+    val displayTrackedEntityTypesLabel: String?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): TrackedEntityType {
         return TrackedEntityType.builder().apply {
@@ -64,6 +65,7 @@ internal data class TrackedEntityTypeDTO(
             featureType?.let { featureType(FeatureType.valueOf(it)) }
             access?.let { access(it.toDomain()) }
             style?.let { style(it.toDomain()) }
+            displayTrackedEntityTypesLabel?.let { displayTrackedEntityTypesLabel(it) }
         }.build()
     }
 }

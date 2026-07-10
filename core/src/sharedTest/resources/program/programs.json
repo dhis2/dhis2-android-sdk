@@ -37,6 +37,9 @@
       "expiryPeriodType": "BiMonthly",
       "minAttributesRequiredToSearch": 7,
       "maxTeiCountToReturn": 20,
+      "displayEnrollmentsLabel": "Enrollments Label",
+      "displayProgramStagesLabel": "Program Stages Label",
+      "displayEventsLabel": "Events Label",
       "style": {
         "color": "#333",
         "icon": "antenatal_icon"

@@ -84,5 +84,6 @@ internal object ProgramStageFields : BaseFields<ProgramStage>() {
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
         fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+        fh.field(Columns.DISPLAY_EVENTS_LABEL),
     )
 }

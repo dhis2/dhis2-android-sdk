@@ -74,6 +74,7 @@ public class ProgramStageSamples {
                 .validationStrategy(ValidationStrategy.ON_UPDATE_AND_INSERT)
                 .displayProgramStageLabel("programStageLabel")
                 .displayEventLabel("eventLabel")
+                .displayEventsLabel("eventsLabel")
                 .build();
     }
 

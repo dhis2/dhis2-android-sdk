@@ -49,6 +49,7 @@ public class TrackedEntityTypeSamples {
                 .displayDescription("Person")
                 .featureType(FeatureType.NONE)
                 .access(AccessHelper.createForDataWrite(true))
+                .displayTrackedEntityTypesLabel("TrackedEntityTypesLabel")
                 .build();
     }
 

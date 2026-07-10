@@ -55,11 +55,13 @@ data class TrackedEntityType(
     val featureType: FeatureType?,
     val access: Access,
     override val style: ObjectStyle,
+    val displayTrackedEntityTypesLabel: String?,
 ) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
 
     fun trackedEntityTypeAttributes(): List<TrackedEntityTypeAttribute>? = trackedEntityTypeAttributes
     fun featureType(): FeatureType? = featureType
     fun access(): Access = access
+    fun displayTrackedEntityTypesLabel(): String? = displayTrackedEntityTypesLabel
 
     fun toBuilder(): Builder = TrackedEntityTypeBuilder.from(this)
 

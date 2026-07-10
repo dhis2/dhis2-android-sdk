@@ -84,13 +84,16 @@ data class Program(
     val featureType: FeatureType?,
     val accessLevel: AccessLevel?,
     val displayEnrollmentLabel: String?,
+    val displayEnrollmentsLabel: String?,
     val displayFollowUpLabel: String?,
     val displayOrgUnitLabel: String?,
     val displayRelationshipLabel: String?,
     val displayNoteLabel: String?,
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
+    val displayProgramStagesLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValue>?,
     val enrollmentCategoryCombo: ObjectWithUid,
     internal val categoryMappings: List<CategoryMapping>?,
@@ -135,6 +138,8 @@ data class Program(
     fun enrollmentLabel(): String? = displayEnrollmentLabel
     fun displayEnrollmentLabel(): String? = displayEnrollmentLabel
 
+    fun displayEnrollmentsLabel(): String? = displayEnrollmentsLabel
+
     @Deprecated("since v41, replaced by displayFollowUpLabel()")
     fun followUpLabel(): String? = displayFollowUpLabel
     fun displayFollowUpLabel(): String? = displayFollowUpLabel
@@ -159,9 +164,13 @@ data class Program(
     fun programStageLabel(): String? = displayProgramStageLabel
     fun displayProgramStageLabel(): String? = displayProgramStageLabel
 
+    fun displayProgramStagesLabel(): String? = displayProgramStagesLabel
+
     @Deprecated("since v41, replaced by displayEventLabel()")
     fun eventLabel(): String? = displayEventLabel
     fun displayEventLabel(): String? = displayEventLabel
+
+    fun displayEventsLabel(): String? = displayEventsLabel
 
     fun attributeValues(): List<AttributeValue>? = attributeValues
     fun enrollmentCategoryCombo(): ObjectWithUid = enrollmentCategoryCombo

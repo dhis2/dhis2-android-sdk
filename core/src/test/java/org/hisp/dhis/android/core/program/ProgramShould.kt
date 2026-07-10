@@ -81,6 +81,9 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.programTrackedEntityAttributes()!![0].uid()).isEqualTo("YGMlKXYa5xF")
         assertThat(program.programTrackedEntityAttributes()!![1].uid()).isEqualTo("WZWEBrkJSAm")
         assertThat(program.programSections()!![0].uid()).isEqualTo("FdpWnXhl7c1")
+        assertThat(program.displayEnrollmentsLabel()).isEqualTo("Enrollments Label")
+        assertThat(program.displayEventsLabel()).isEqualTo("Events Label")
+        assertThat(program.displayProgramStagesLabel()).isEqualTo("Program Stages Label")
 
         val categoryMappings = program.categoryMappings()!!
         assertThat(categoryMappings.size).isEqualTo(1)

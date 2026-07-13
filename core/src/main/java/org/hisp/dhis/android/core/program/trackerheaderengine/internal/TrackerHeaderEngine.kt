@@ -55,8 +55,8 @@ internal class TrackerHeaderEngine(
         val programIndicator: ProgramIndicator = ProgramIndicator.builder()
             .uid("mock_program_indicator")
             .expression(expression)
-            .categoryCombo(ObjectWithUid.create("bjDvmb4bfuf"))
-            .attributeCombo(ObjectWithUid.create("bjDvmb4bfuf"))
+            .categoryCombo(ObjectWithUid.create("mock_category_combo"))
+            .attributeCombo(ObjectWithUid.create("mock_category_combo"))
             .build()
 
         val attributeValueMap = attributeValues

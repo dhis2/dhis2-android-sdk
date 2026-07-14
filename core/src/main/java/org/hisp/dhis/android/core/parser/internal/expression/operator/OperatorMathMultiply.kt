@@ -26,25 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorMathMultiply;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathMultiply
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Math operator: Multiply
  *
  * @author Jim Grace
  */
-public class OperatorMathMultiply
-        extends AntlrOperatorMathMultiply
-        implements ExpressionItem {
+internal class OperatorMathMultiply : AntlrExpressionItem(AntlrOperatorMathMultiply()) {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.castStringVisit(ctx.expr(0))
-                + " * " + visitor.castStringVisit(ctx.expr(1));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "${visitor.castStringVisit(ctx.expr(0))} * ${visitor.castStringVisit(ctx.expr(1))}"
     }
 }

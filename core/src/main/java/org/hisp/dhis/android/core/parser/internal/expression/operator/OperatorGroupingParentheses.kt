@@ -26,24 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorGroupingParentheses;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorGroupingParentheses
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Operator to group using parentheses
  *
  * @author Jim Grace
  */
-public class OperatorGroupingParentheses
-        extends AntlrOperatorGroupingParentheses
-        implements ExpressionItem {
+internal class OperatorGroupingParentheses : AntlrExpressionItem(AntlrOperatorGroupingParentheses()) {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return "(" + visitor.castStringVisit(ctx.expr(0)) + ")";
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "(${visitor.castStringVisit(ctx.expr(0))})"
     }
 }

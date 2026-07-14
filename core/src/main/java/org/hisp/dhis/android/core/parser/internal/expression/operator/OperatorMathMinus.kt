@@ -26,29 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorMathMinus;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathMinus
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Math operator: Minus
  *
  * @author Jim Grace
  */
-public class OperatorMathMinus
-        extends AntlrOperatorMathMinus
-        implements ExpressionItem {
+internal class OperatorMathMinus : AntlrExpressionItem(AntlrOperatorMathMinus()) {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        if (ctx.expr().size() == 1) { // Unary minus operator
-            return "- " + visitor.castStringVisit(ctx.expr(0));
-        } else { // Subtraction operator
-            return visitor.castStringVisit(ctx.expr(0)) +
-                    " - " + visitor.castStringVisit(ctx.expr(1));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return if (ctx.expr().size == 1) {
+            // Unary minus operator
+            "- ${visitor.castStringVisit(ctx.expr(0))}"
+        } else {
+            // Subtraction operator
+            "${visitor.castStringVisit(ctx.expr(0))} - ${visitor.castStringVisit(ctx.expr(1))}"
         }
     }
 }

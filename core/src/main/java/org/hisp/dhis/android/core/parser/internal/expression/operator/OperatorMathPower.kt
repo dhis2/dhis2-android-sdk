@@ -26,17 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorMathPower;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathPower
 
 /**
  * Expression math operator: Power
  *
  * @author Jim Grace
  */
-public class OperatorMathPower
-        extends AntlrOperatorMathPower
-        implements ExpressionItem {
-}
+internal class OperatorMathPower : AntlrExpressionItem(AntlrOperatorMathPower())

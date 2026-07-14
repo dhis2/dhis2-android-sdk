@@ -26,16 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Logical operator: Not
- * <pre>
  *
  * Truth table (same as for SQL):
  *
@@ -44,16 +43,12 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
  *     null   null
  *     false  true
  *     true   false
- * </pre>
  *
  * @author Jim Grace
  */
-public class OperatorLogicalNot
-        extends AntlrOperatorLogicalNot
-        implements ExpressionItem {
+internal class OperatorLogicalNot : AntlrExpressionItem(AntlrOperatorLogicalNot()) {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return "not " + visitor.castStringVisit(ctx.expr(0));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "not ${visitor.castStringVisit(ctx.expr(0))}"
     }
 }

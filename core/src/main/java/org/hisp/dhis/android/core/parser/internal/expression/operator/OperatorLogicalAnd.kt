@@ -26,16 +26,15 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalAnd;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalAnd
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * Logical operator: And
- * <pre>
  *
  * Truth table (same as for SQL):
  *
@@ -52,24 +51,19 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
  *     true   null    null
  *     true   false   false
  *     true   true    true
- * </pre>
  *
  * @author Jim Grace
  */
-public class OperatorLogicalAnd
-        extends AntlrOperatorLogicalAnd
-        implements ExpressionItem {
-    @Override
-    public Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Boolean value0 = visitor.castBooleanVisit(ctx.expr(0));
-        Boolean value1 = visitor.castBooleanVisit(ctx.expr(1));
+internal class OperatorLogicalAnd : AntlrExpressionItem(AntlrOperatorLogicalAnd()) {
 
-        return value0 != null && value0 && value1 != null && value1;
+    override fun evaluateAllPaths(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        val value0: Boolean? = visitor.castBooleanVisit(ctx.expr(0))
+        val value1: Boolean? = visitor.castBooleanVisit(ctx.expr(1))
+
+        return value0 == true && value1 == true
     }
 
-    @Override
-    public Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.castStringVisit(ctx.expr(0))
-                + " and " + visitor.castStringVisit(ctx.expr(1));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "${visitor.castStringVisit(ctx.expr(0))} and ${visitor.castStringVisit(ctx.expr(1))}"
     }
 }

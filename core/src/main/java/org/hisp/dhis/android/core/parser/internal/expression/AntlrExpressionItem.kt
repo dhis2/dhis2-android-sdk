@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,11 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.file
+package org.hisp.dhis.android.core.parser.internal.expression
 
-import java.io.IOException
+import org.hisp.dhis.antlr.AntlrExprItem
+import org.hisp.dhis.antlr.AntlrExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-fun interface IFileReader {
-    @Throws(IOException::class)
-    fun getStringFromFile(filename: String): String
+/**
+ * An [ExpressionItem] backed by a dhis-antlr item.
+ *
+ * The low-level evaluation is delegated to the wrapped [antlrItem] by composition because
+ * AntlrComputeFunction.evaluate is final in the dhis-antlr library, so it cannot be inherited
+ * alongside the [ExpressionItem] default implementation in Kotlin.
+ */
+internal abstract class AntlrExpressionItem(private val antlrItem: AntlrExprItem) : ExpressionItem {
+
+    override fun evaluate(ctx: ExprContext, visitor: AntlrExpressionVisitor): Any? {
+        return antlrItem.evaluate(ctx, visitor)
+    }
 }

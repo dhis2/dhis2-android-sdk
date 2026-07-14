@@ -61,7 +61,7 @@ internal class OperatorLogicalOr : AntlrExpressionItem(AntlrOperatorLogicalOr())
         val value1: Boolean? = visitor.castBooleanVisit(ctx.expr(1))
 
         return when {
-            value0 == null -> if (value1 == true) true else null
+            value0 == null -> value1?.takeIf { it }
             !value0 -> value1
             else -> true
         }

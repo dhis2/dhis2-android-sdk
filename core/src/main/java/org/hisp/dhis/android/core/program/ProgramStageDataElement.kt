@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueTypeRendering
@@ -54,7 +54,7 @@ data class ProgramStageDataElement(
     val dataElement: ObjectWithUid?,
     val programStage: ObjectWithUid?,
     val renderType: ValueTypeRendering?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun displayInReports(): Boolean? = displayInReports
     fun compulsory(): Boolean? = compulsory

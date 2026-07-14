@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.category
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -44,7 +44,7 @@ data class Category(
     override val deleted: Boolean?,
     val dataDimensionType: String?,
     val categoryOptions: List<CategoryOption>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun dataDimensionType(): String? = dataDimensionType
     fun categoryOptions(): List<CategoryOption>? = categoryOptions

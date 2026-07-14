@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.expressiondimensionitem
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -43,7 +43,7 @@ data class ExpressionDimensionItem(
     override val lastUpdated: Date?,
     override val deleted: Boolean?,
     val expression: String?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun expression(): String? = expression
 

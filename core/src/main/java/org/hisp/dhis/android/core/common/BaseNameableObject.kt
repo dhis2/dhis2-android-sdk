@@ -28,13 +28,18 @@
 package org.hisp.dhis.android.core.common
 
 interface BaseNameableObject : BaseIdentifiableObject, NameableObject {
-    override fun shortName(): String?
+    val shortName: String?
+    val displayShortName: String?
+    val description: String?
+    val displayDescription: String?
 
-    override fun displayShortName(): String?
+    override fun shortName(): String? = shortName
 
-    override fun description(): String?
+    override fun displayShortName(): String? = displayShortName
 
-    override fun displayDescription(): String?
+    override fun description(): String? = description
+
+    override fun displayDescription(): String? = displayDescription
 
     interface Builder<T : Builder<T>> : BaseIdentifiableObject.Builder<T> {
         fun shortName(shortName: String?): T

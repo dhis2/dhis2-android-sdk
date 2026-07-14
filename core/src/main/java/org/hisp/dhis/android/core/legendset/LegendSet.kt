@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.legendset
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -44,7 +44,7 @@ data class LegendSet(
     override val deleted: Boolean?,
     val symbolizer: String?,
     val legends: List<Legend>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun symbolizer(): String? = symbolizer
     fun legends(): List<Legend>? = legends

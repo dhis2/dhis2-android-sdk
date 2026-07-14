@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -49,7 +49,7 @@ data class ProgramRuleVariable(
     val dataElement: ObjectWithUid?,
     val trackedEntityAttribute: ObjectWithUid?,
     val programRuleVariableSourceType: ProgramRuleVariableSourceType?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun useCodeForOptionSet(): Boolean? = useCodeForOptionSet
     fun program(): ObjectWithUid? = program

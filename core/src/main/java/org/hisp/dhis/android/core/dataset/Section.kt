@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.dataset
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
@@ -58,7 +58,7 @@ data class Section(
     val indicators: List<Indicator>?,
     val disableDataElementAutoGroup: Boolean?,
     val displayOptions: SectionDisplayOptions?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun description(): String? = description
     fun sortOrder(): Int? = sortOrder

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.FormType
@@ -85,7 +85,7 @@ data class ProgramStage(
     val displayEventsLabel: String?,
     val attributeValues: List<AttributeValue>?,
     override val style: ObjectStyle,
-) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseIdentifiableObject, CoreObject, ObjectWithStyleKt {
 
     fun description(): String? = description
     fun displayDescription(): String? = displayDescription

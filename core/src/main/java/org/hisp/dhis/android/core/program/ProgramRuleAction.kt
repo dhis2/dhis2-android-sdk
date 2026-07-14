@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -59,7 +59,7 @@ data class ProgramRuleAction(
     val displayContent: String?,
     val priority: Int?,
     val legendSet: ObjectWithUid?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun data(): String? = data
     fun content(): String? = content

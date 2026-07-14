@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -53,7 +53,7 @@ data class ProgramSection(
     val formName: String?,
     val renderType: SectionRendering?,
     override val style: ObjectStyle,
-) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseIdentifiableObject, CoreObject, ObjectWithStyleKt {
 
     fun description(): String? = description
     fun program(): ObjectWithUid? = program

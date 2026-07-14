@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.indicator
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -44,7 +44,7 @@ data class IndicatorType(
     override val deleted: Boolean?,
     val number: Boolean?,
     val factor: Int?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun number(): Boolean? = number
     fun factor(): Int? = factor

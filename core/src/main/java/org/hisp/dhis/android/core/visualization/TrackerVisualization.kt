@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.visualization
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -54,7 +54,7 @@ data class TrackerVisualization(
     val columns: List<TrackerVisualizationDimension>?,
     val filters: List<TrackerVisualizationDimension>?,
     val sorting: List<TrackerVisualizationSorting>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
     fun description(): String? = description
     fun displayDescription(): String? = displayDescription
     fun type(): TrackerVisualizationType? = type

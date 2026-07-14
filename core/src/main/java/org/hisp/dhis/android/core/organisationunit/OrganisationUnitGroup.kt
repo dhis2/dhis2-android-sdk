@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -44,7 +44,7 @@ data class OrganisationUnitGroup(
     override val deleted: Boolean?,
     val shortName: String?,
     val displayShortName: String?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun shortName(): String? = shortName
     fun displayShortName(): String? = displayShortName

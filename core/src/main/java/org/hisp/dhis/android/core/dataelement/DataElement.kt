@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.dataelement
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.attribute.AttributeValue
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -64,7 +64,7 @@ data class DataElement(
     val fieldMask: String?,
     val attributeValues: List<AttributeValue>?,
     override val style: ObjectStyle,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun valueType(): ValueType? = valueType
     fun zeroIsSignificant(): Boolean? = zeroIsSignificant

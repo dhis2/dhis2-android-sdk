@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -42,7 +42,7 @@ data class UserGroup(
     override val created: Date?,
     override val lastUpdated: Date?,
     override val deleted: Boolean?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun toBuilder(): Builder = UserGroupBuilder.from(this)
 

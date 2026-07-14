@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.organisationunit
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -61,7 +61,7 @@ data class OrganisationUnit(
     val dataSets: List<ObjectWithUid>?,
     val organisationUnitGroups: List<OrganisationUnitGroup>?,
     val displayNamePath: List<String>,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
 
     enum class Scope {
         SCOPE_DATA_CAPTURE,

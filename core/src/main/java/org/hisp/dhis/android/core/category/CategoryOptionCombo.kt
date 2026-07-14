@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.category
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -45,7 +45,7 @@ data class CategoryOptionCombo(
     override val deleted: Boolean?,
     val categoryCombo: ObjectWithUid?,
     val categoryOptions: List<CategoryOption>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun categoryCombo(): ObjectWithUid? = categoryCombo
     fun categoryOptions(): List<CategoryOption>? = categoryOptions

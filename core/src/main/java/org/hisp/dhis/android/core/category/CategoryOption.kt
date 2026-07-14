@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.category
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -52,7 +52,7 @@ data class CategoryOption(
     val endDate: Date?,
     val access: Access = defaultAccess(),
     val organisationUnits: List<ObjectWithUid>?,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
     fun startDate(): Date? = startDate
 
     fun endDate(): Date? = endDate

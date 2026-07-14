@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.program
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -63,7 +63,7 @@ data class ProgramIndicator(
     val categoryCombo: ObjectWithUid,
     val attributeCombo: ObjectWithUid,
     val categoryMappingIds: List<String>?,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
 
     fun displayInForm(): Boolean? = displayInForm
     fun expression(): String? = expression

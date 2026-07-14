@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -45,7 +45,7 @@ data class OptionGroup(
     override val deleted: Boolean?,
     val optionSet: ObjectWithUid,
     val options: List<ObjectWithUid>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun optionSet(): ObjectWithUid = optionSet
     fun options(): List<ObjectWithUid>? = options

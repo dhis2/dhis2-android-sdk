@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.indicator
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -59,7 +59,7 @@ data class Indicator(
     val decimals: Int?,
     val legendSets: List<ObjectWithUid>?,
     override val style: ObjectStyle,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun annualized(): Boolean? = annualized
     fun indicatorType(): ObjectWithUid? = indicatorType

@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.dataset
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -79,7 +79,7 @@ data class DataSet(
     val displayOptions: DataSetDisplayOptions?,
     val access: Access,
     override val style: ObjectStyle,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun periodType(): PeriodType? = periodType
     fun categoryCombo(): ObjectWithUid = categoryCombo

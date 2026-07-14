@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.program
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueTypeRendering
@@ -56,7 +56,7 @@ data class ProgramTrackedEntityAttribute(
     val sortOrder: Int?,
     val searchable: Boolean?,
     val renderType: ValueTypeRendering?,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
 
     fun mandatory(): Boolean? = mandatory
     fun trackedEntityAttribute(): ObjectWithUid? = trackedEntityAttribute

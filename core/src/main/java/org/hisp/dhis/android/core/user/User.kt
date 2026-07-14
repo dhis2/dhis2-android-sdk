@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.user
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import java.util.Date
@@ -63,7 +63,7 @@ data class User(
     internal val teiSearchOrganisationUnits: List<OrganisationUnit>?,
     val userRoles: List<UserRole>?,
     val userGroups: List<UserGroup>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun username(): String? = username
     fun birthday(): String? = birthday

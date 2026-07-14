@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.FilterPeriod
 import org.hisp.dhis.android.core.common.ObjectStyle
@@ -54,7 +54,7 @@ data class TrackedEntityInstanceFilter(
     val sortOrder: Int?,
     val entityQueryCriteria: EntityQueryCriteria,
     val eventFilters: List<TrackedEntityInstanceEventFilter>?,
-) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseIdentifiableObject, CoreObject, ObjectWithStyleKt {
 
     fun program(): ObjectWithUid? = program
     fun description(): String? = description

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.legendset
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import java.util.Date
@@ -47,7 +47,7 @@ data class Legend(
     val endValue: Double?,
     val color: String?,
     val legendSet: ObjectWithUid?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun startValue(): Double? = startValue
     fun endValue(): Double? = endValue

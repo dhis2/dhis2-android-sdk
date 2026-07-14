@@ -65,7 +65,7 @@ class RelationshipDeletedOnServerRealIntegrationShould : BaseRealIntegrationTest
 
     private var programUid: String? = null
     private lateinit var orgUnitUid: String
-    private var relationshipTypeUid: String? = null
+    private lateinit var relationshipTypeUid: String
 
     @Before
     override fun setUp() {

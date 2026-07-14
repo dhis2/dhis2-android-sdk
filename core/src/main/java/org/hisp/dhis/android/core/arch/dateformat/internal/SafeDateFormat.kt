@@ -26,38 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.attribute;
+package org.hisp.dhis.android.core.arch.dateformat.internal
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-import java.util.ArrayList;
-import java.util.List;
+class SafeDateFormat(private val pattern: String) {
 
-public final class AttributeValueUtils {
-
-    private AttributeValueUtils() {
+    private val dateFormat: ThreadLocal<DateFormat> = object : ThreadLocal<DateFormat>() {
+        override fun initialValue(): DateFormat = SimpleDateFormat(pattern, Locale.US)
     }
 
-    public static List<ObjectWithUid> extractAttributes(List<AttributeValue> attributeValues) {
-        List<ObjectWithUid> attributes = new ArrayList<>();
+    private val threadFormat: DateFormat
+        get() = requireNotNull(dateFormat.get())
 
-        for (AttributeValue attValue : attributeValues) {
-            attributes.add(attValue.attribute());
-        }
+    @Throws(ParseException::class)
+    fun parse(pattern: String): Date = checkNotNull(threadFormat.parse(pattern))
 
-        return attributes;
-    }
+    fun format(date: Date): String = threadFormat.format(date)
 
-    public static String extractValue(List<AttributeValue> attributeValues, String attributeUId) {
-        String value = "";
-
-        for (AttributeValue attValue : attributeValues) {
-            if (attValue.attribute().uid().equals(attributeUId)) {
-                value = attValue.value();
-                break;
-            }
-        }
-
-        return value;
-    }
+    fun raw(): DateFormat = threadFormat
 }

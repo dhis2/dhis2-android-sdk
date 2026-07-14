@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,26 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.db.access;
+package org.hisp.dhis.android.core.attribute
 
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount;
+import org.hisp.dhis.android.core.common.ObjectWithUid
 
-public interface BaseDatabaseAdapterFactory {
-    DatabaseAdapter newParentDatabaseAdapter();
+object AttributeValueUtils {
 
-    DatabaseAdapter getDatabaseAdapter(DatabaseAccount databaseAccount, boolean force);
+    @JvmStatic
+    fun extractAttributes(attributeValues: List<AttributeValue>?): List<ObjectWithUid> =
+        attributeValues.orEmpty().map { it.attribute() }
 
-    void removeDatabaseAdapter(DatabaseAdapter adapter);
-    // disableDatabase
-    void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt, Integer version);
-    // check
-    void createOrOpenDatabase(DatabaseAdapter adapter, String databaseName, boolean encrypt);
-    // check
-    void createOrOpenDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration);
-    // check
-    void createOrRecreateDatabase(DatabaseAdapter adapter, DatabaseAccount userConfiguration);
-
-    void deleteDatabase(DatabaseAccount userConfiguration);
-        // check
-
+    @JvmStatic
+    fun extractValue(attributeValues: List<AttributeValue>?, attributeUId: String): String =
+        attributeValues.orEmpty()
+            .firstOrNull { it.attribute().uid() == attributeUId }
+            ?.value()
+            .orEmpty()
 }

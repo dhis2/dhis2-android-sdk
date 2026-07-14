@@ -25,47 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.dataset.internal;
+package org.hisp.dhis.android.core.arch.db.stores.projections.internal
 
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.dataset.DataSet;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-final class DataSetParentUidsHelper {
-
-    private DataSetParentUidsHelper() {
-    }
-
-    static Set<String> getDataElementUids(List<DataSet> dataSets) {
-        Set<String> uids = new HashSet<>();
-        for (DataSet dataSet : dataSets) {
-            List<DataSetElement> dataSetElements = dataSet.dataSetElements();
-            assert dataSetElements != null;
-            for (DataSetElement dataSetElement : dataSetElements) {
-                uids.add(dataSetElement.dataElement().uid());
-            }
-        }
-        return uids;
-    }
-
-    static Set<String> getAssignedOptionSetUids(List<DataElement> dataElements) {
-
-        Set<String> dataElementUids = new HashSet<>();
-
-        if (dataElements != null) {
-
-            for (DataElement dataElement : dataElements) {
-                String optionSetUid = dataElement.optionSetUid();
-
-                dataElementUids.add(optionSetUid);
-            }
-
-            dataElementUids.remove(null);
-        }
-        return dataElementUids;
-    }
-}
+class LinkTableChildProjection(
+    val childTableInfo: TableInfo,
+    val parentColumn: String,
+    val childColumn: String,
+)

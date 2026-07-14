@@ -25,21 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.projections.internal;
+package org.hisp.dhis.android.core.arch.db.tableinfos
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.common.CoreColumns
 
-public class LinkTableChildProjection {
+abstract class TableInfo {
+    abstract fun name(): String
 
-    public final TableInfo childTableInfo;
-    public final String parentColumn;
-    public final String childColumn;
+    abstract fun columns(): CoreColumns
 
-    public LinkTableChildProjection(TableInfo childTableInfo,
-                                    String parentColumn,
-                                    String childColumn) {
-        this.childTableInfo = childTableInfo;
-        this.parentColumn = parentColumn;
-        this.childColumn = childColumn;
+    fun hasSortOrder(): Boolean {
+        return columns().all().contains(SORT_ORDER)
+    }
+
+    companion object {
+        const val SORT_ORDER: String = "sortOrder"
     }
 }

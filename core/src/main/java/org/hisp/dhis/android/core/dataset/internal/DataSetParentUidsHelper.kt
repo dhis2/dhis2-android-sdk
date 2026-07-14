@@ -25,51 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.arch.dateformat.internal;
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.dataset.DataSet
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+internal object DataSetParentUidsHelper {
 
-import androidx.annotation.NonNull;
+    fun getDataElementUids(dataSets: List<DataSet>): Set<String> =
+        dataSets
+            .flatMap { it.dataSetElements.orEmpty() }
+            .map { it.dataElement.uid() }
+            .toSet()
 
-public class SafeDateFormat {
-
-    @NonNull
-    private final ThreadSafeDateFormat dateFormat;
-
-    public SafeDateFormat(@NonNull String pattern) {
-        this.dateFormat = new ThreadSafeDateFormat(pattern);
-    }
-
-    @NonNull
-    public Date parse(@NonNull String pattern) throws ParseException {
-        return dateFormat.get().parse(pattern);
-    }
-
-    @NonNull
-    public String format(@NonNull Date date) {
-        return dateFormat.get().format(date);
-    }
-
-    @NonNull
-    public DateFormat raw() {
-        return dateFormat.get();
-    }
-
-    private static class ThreadSafeDateFormat extends ThreadLocal<DateFormat> {
-        private final String pattern;
-
-        ThreadSafeDateFormat(String pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        protected DateFormat initialValue() {
-            return new SimpleDateFormat(pattern, Locale.US);
-        }
-    }
+    fun getAssignedOptionSetUids(dataElements: List<DataElement>): Set<String> =
+        dataElements
+            .mapNotNull { it.optionSetUid() }
+            .toSet()
 }

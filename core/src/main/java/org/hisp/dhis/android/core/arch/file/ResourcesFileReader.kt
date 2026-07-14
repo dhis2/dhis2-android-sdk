@@ -25,18 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.projections.internal;
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+package org.hisp.dhis.android.core.arch.file
 
-public class SingleParentChildProjection {
+import java.io.IOException
 
-    public final TableInfo childTableInfo;
-    public final String parentColumn;
-
-    public SingleParentChildProjection(TableInfo childTableInfo,
-                                       String parentColumn) {
-        this.childTableInfo = childTableInfo;
-        this.parentColumn = parentColumn;
+class ResourcesFileReader : IFileReader {
+    @Throws(IOException::class)
+    override fun getStringFromFile(filename: String): String {
+        val fileStream = checkNotNull(javaClass.classLoader?.getResourceAsStream(filename)) {
+            "Resource not found: $filename"
+        }
+        return fileStream.bufferedReader().use { it.readText() }
     }
 }

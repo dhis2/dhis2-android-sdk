@@ -25,21 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.tableinfos;
 
-import org.hisp.dhis.android.core.common.CoreColumns;
+package org.hisp.dhis.android.core.arch.file
 
-import java.util.Arrays;
+import java.io.IOException
 
-public abstract class TableInfo {
-
-    public static final String SORT_ORDER = "sortOrder";
-
-    public abstract String name();
-
-    public abstract CoreColumns columns();
-
-    public boolean hasSortOrder() {
-        return Arrays.asList(columns().all()).contains(SORT_ORDER);
-    }
+interface IFileReader {
+    @Throws(IOException::class)
+    fun getStringFromFile(filename: String): String
 }

@@ -26,10 +26,11 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.file;
+package org.hisp.dhis.android.core.arch.file
 
-import java.io.IOException;
+import java.io.IOException
 
-public interface IFileReader {
-    String getStringFromFile(String filename) throws IOException;
+interface IFileReader {
+    @Throws(IOException::class)
+    fun getStringFromFile(filename: String): String
 }

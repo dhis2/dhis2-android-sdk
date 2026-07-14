@@ -25,20 +25,19 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.appendInNewArray
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+open class NameableColumns : IdentifiableColumns() {
+    override fun all(): Array<String> {
+        return appendInNewArray(super.all(), SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION)
+    }
 
-public class NameableColumns extends IdentifiableColumns {
-    public static final String SHORT_NAME = "shortName";
-    public static final String DISPLAY_SHORT_NAME = "displayShortName";
-    public static final String DESCRIPTION = "description";
-    public static final String DISPLAY_DESCRIPTION = "displayDescription";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(),
-                SHORT_NAME, DISPLAY_SHORT_NAME, DESCRIPTION, DISPLAY_DESCRIPTION);
+    companion object {
+        const val SHORT_NAME: String = "shortName"
+        const val DISPLAY_SHORT_NAME: String = "displayShortName"
+        const val DESCRIPTION: String = "description"
+        const val DISPLAY_DESCRIPTION: String = "displayDescription"
     }
 }

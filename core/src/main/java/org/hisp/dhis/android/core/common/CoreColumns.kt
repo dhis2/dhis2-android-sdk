@@ -25,15 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
-
-public class CoreColumns {
-    public String[] all() {
-        return new String[] {};
+open class CoreColumns {
+    open fun all(): Array<String> {
+        return arrayOf()
     }
 
-    public String[] whereUpdate() {
-        return new String[] {};
+    open fun whereUpdate(): Array<String> {
+        return arrayOf()
     }
 }

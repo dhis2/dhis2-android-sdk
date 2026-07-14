@@ -25,17 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.appendInNewArray
 
-import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper;
+open class NameableWithStyleColumns : NameableColumns() {
+    override fun all(): Array<String> {
+        return appendInNewArray(super.all(), COLOR, ICON)
+    }
 
-public class NameableWithStyleColumns extends NameableColumns {
-    public static final String COLOR = "color";
-    public static final String ICON = "icon";
-
-    @Override
-    public String[] all() {
-        return CollectionsHelper.appendInNewArray(super.all(), COLOR, ICON);
+    companion object {
+        const val COLOR: String = "color"
+        const val ICON: String = "icon"
     }
 }

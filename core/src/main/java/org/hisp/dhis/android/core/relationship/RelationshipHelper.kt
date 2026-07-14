@@ -26,136 +26,91 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship;
+package org.hisp.dhis.android.core.relationship
 
-import androidx.annotation.Nullable;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
+object RelationshipHelper {
 
-public final class RelationshipHelper {
+    @JvmStatic
+    fun getTeiUid(item: RelationshipItem?): String? =
+        item?.trackedEntityInstance()?.trackedEntityInstance()
 
-    public static String getTeiUid(RelationshipItem item) {
-        if (item != null && item.trackedEntityInstance() != null) {
-            return item.trackedEntityInstance().trackedEntityInstance();
-        }
-        return null;
-    }
+    @JvmStatic
+    fun teiItem(uid: String): RelationshipItem = RelationshipItem.builder()
+        .trackedEntityInstance(
+            RelationshipItemTrackedEntityInstance.builder()
+                .trackedEntityInstance(uid)
+                .build(),
+        )
+        .build()
 
-    public static RelationshipItem teiItem(String uid) {
-        return RelationshipItem.builder().trackedEntityInstance(
-                RelationshipItemTrackedEntityInstance
-                        .builder()
-                        .trackedEntityInstance(uid)
-                        .build()
-        ).build();
-    }
+    @JvmStatic
+    fun enrollmentItem(uid: String): RelationshipItem = RelationshipItem.builder()
+        .enrollment(
+            RelationshipItemEnrollment.builder()
+                .enrollment(uid)
+                .build(),
+        )
+        .build()
 
-    public static RelationshipItem enrollmentItem(String uid) {
-        return RelationshipItem.builder().enrollment(
-                RelationshipItemEnrollment
-                        .builder()
-                        .enrollment(uid)
-                        .build()
-        ).build();
-    }
+    @JvmStatic
+    fun eventItem(uid: String): RelationshipItem = RelationshipItem.builder()
+        .event(
+            RelationshipItemEvent.builder()
+                .event(uid)
+                .build(),
+        )
+        .build()
 
-    public static RelationshipItem eventItem(String uid) {
-        return RelationshipItem.builder().event(
-                RelationshipItemEvent
-                        .builder()
-                        .event(uid)
-                        .build()
-        ).build();
-    }
+    @JvmStatic
+    fun teiToTeiRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(teiItem(fromUid), teiItem(toUid), relationshipTypeUid)
 
-    public static Relationship teiToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.teiItem(fromUid),
-                RelationshipHelper.teiItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun teiToEnrollmentRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(teiItem(fromUid), enrollmentItem(toUid), relationshipTypeUid)
 
-    public static Relationship teiToEnrollmentRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.teiItem(fromUid),
-                RelationshipHelper.enrollmentItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun teiToEventRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(teiItem(fromUid), eventItem(toUid), relationshipTypeUid)
 
-    public static Relationship teiToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.teiItem(fromUid),
-                RelationshipHelper.eventItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun enrollmentToTeiRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(enrollmentItem(fromUid), teiItem(toUid), relationshipTypeUid)
 
-    public static Relationship enrollmentToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.enrollmentItem(fromUid),
-                RelationshipHelper.teiItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun enrollmentToEnrollmentRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(enrollmentItem(fromUid), enrollmentItem(toUid), relationshipTypeUid)
 
-    public static Relationship enrollmentToEnrollmentRelationship(String fromUid,
-                                                                  String toUid,
-                                                                  String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.enrollmentItem(fromUid),
-                RelationshipHelper.enrollmentItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun enrollmentToEventRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(enrollmentItem(fromUid), eventItem(toUid), relationshipTypeUid)
 
-    public static Relationship enrollmentToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.enrollmentItem(fromUid),
-                RelationshipHelper.eventItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun eventToTeiRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(eventItem(fromUid), teiItem(toUid), relationshipTypeUid)
 
-    public static Relationship eventToTeiRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.eventItem(fromUid),
-                RelationshipHelper.teiItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun eventToEnrollmentRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(eventItem(fromUid), enrollmentItem(toUid), relationshipTypeUid)
 
-    public static Relationship eventToEnrollmentRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.eventItem(fromUid),
-                RelationshipHelper.enrollmentItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun eventToEventRelationship(fromUid: String, toUid: String, relationshipTypeUid: String): Relationship =
+        relationship(eventItem(fromUid), eventItem(toUid), relationshipTypeUid)
 
-    public static Relationship eventToEventRelationship(String fromUid, String toUid, String relationshipTypeUid) {
-        return relationship(
-                RelationshipHelper.eventItem(fromUid),
-                RelationshipHelper.eventItem(toUid),
-                relationshipTypeUid);
-    }
+    @JvmStatic
+    fun relationship(from: RelationshipItem, to: RelationshipItem, type: String): Relationship =
+        Relationship.builder()
+            .uid(UidGeneratorImpl().generate())
+            .from(from)
+            .to(to)
+            .relationshipType(type)
+            .build()
 
-    public static Relationship relationship(RelationshipItem from, RelationshipItem to, String type) {
-        return Relationship.builder()
-                .uid(new UidGeneratorImpl().generate())
-                .from(from)
-                .to(to)
-                .relationshipType(type)
-                .build();
-    }
-
-    public static boolean areItemsEqual(RelationshipItem a, RelationshipItem b) {
-        return equalsConsideringNull(a.event(), b.event())
-                && equalsConsideringNull(a.enrollment(), b.enrollment())
-                && equalsConsideringNull(a.trackedEntityInstance(), b.trackedEntityInstance());
-    }
-
-    private static <O> boolean equalsConsideringNull(@Nullable O a, @Nullable O b) {
-        if (a == null) {
-            return b == null;
-        } else {
-            return a.equals(b);
-        }
-    }
-
-    private RelationshipHelper() {
-    }
+    @JvmStatic
+    fun areItemsEqual(a: RelationshipItem?, b: RelationshipItem?): Boolean =
+        a?.event() == b?.event() &&
+            a?.enrollment() == b?.enrollment() &&
+            a?.trackedEntityInstance() == b?.trackedEntityInstance()
 }

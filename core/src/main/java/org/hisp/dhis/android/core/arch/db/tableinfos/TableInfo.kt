@@ -28,15 +28,14 @@
 package org.hisp.dhis.android.core.arch.db.tableinfos
 
 import org.hisp.dhis.android.core.common.CoreColumns
-import java.util.Arrays
 
 abstract class TableInfo {
-    abstract fun name(): String?
+    abstract fun name(): String
 
-    abstract fun columns(): CoreColumns?
+    abstract fun columns(): CoreColumns
 
     fun hasSortOrder(): Boolean {
-        return Arrays.asList<String?>(*columns()!!.all()).contains(SORT_ORDER)
+        return columns().all().contains(SORT_ORDER)
     }
 
     companion object {

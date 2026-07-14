@@ -32,5 +32,5 @@ import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 class LinkTableChildProjection(
     val childTableInfo: TableInfo,
     val parentColumn: String,
-    val childColumn: String
+    val childColumn: String,
 )

@@ -1737,22 +1737,11 @@ public abstract interface class org/hisp/dhis/android/core/arch/cleaners/interna
 	public abstract fun deleteNotPresent (Ljava/util/Collection;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class org/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat {
+public final class org/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat {
 	public fun <init> (Ljava/lang/String;)V
-	public fun format (Ljava/util/Date;)Ljava/lang/String;
-	public fun parse (Ljava/lang/String;)Ljava/util/Date;
-	public fun raw ()Ljava/text/DateFormat;
-}
-
-public abstract interface class org/hisp/dhis/android/core/arch/db/access/BaseDatabaseAdapterFactory {
-	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;Z)V
-	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;ZLjava/lang/Integer;)V
-	public abstract fun createOrOpenDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public abstract fun createOrRecreateDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public abstract fun deleteDatabase (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;)V
-	public abstract fun getDatabaseAdapter (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Z)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
-	public abstract fun newParentDatabaseAdapter ()Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;
-	public abstract fun removeDatabaseAdapter (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V
+	public final fun format (Ljava/util/Date;)Ljava/lang/String;
+	public final fun parse (Ljava/lang/String;)Ljava/util/Date;
+	public final fun raw ()Ljava/text/DateFormat;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter {
@@ -1888,25 +1877,23 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/stores/intern
 	public abstract fun selectWhere (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class org/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection {
-	public final field childColumn Ljava/lang/String;
-	public final field childTableInfo Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-	public final field parentColumn Ljava/lang/String;
+public final class org/hisp/dhis/android/core/arch/db/stores/projections/internal/LinkTableChildProjection {
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;Ljava/lang/String;Ljava/lang/String;)V
-}
-
-public class org/hisp/dhis/android/core/arch/db/stores/projections/internal/SingleParentChildProjection {
-	public final field childTableInfo Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
-	public final field parentColumn Ljava/lang/String;
-	public fun <init> (Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;Ljava/lang/String;)V
+	public final fun getChildColumn ()Ljava/lang/String;
+	public final fun getChildTableInfo ()Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public final fun getParentColumn ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/db/tableinfos/TableInfo {
+	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo$Companion;
 	public static final field SORT_ORDER Ljava/lang/String;
 	public fun <init> ()V
 	public abstract fun columns ()Lorg/hisp/dhis/android/core/common/CoreColumns;
-	public fun hasSortOrder ()Z
+	public final fun hasSortOrder ()Z
 	public abstract fun name ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/arch/db/tableinfos/TableInfo$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/file/IFileReader {
@@ -3404,8 +3391,9 @@ public final class org/hisp/dhis/android/core/attribute/AttributeValueBuilder$Co
 }
 
 public final class org/hisp/dhis/android/core/attribute/AttributeValueUtils {
-	public static fun extractAttributes (Ljava/util/List;)Ljava/util/List;
-	public static fun extractValue (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/attribute/AttributeValueUtils;
+	public static final fun extractAttributes (Ljava/util/List;)Ljava/util/List;
+	public static final fun extractValue (Ljava/util/List;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/attribute/DataElementAttributeValueLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -16469,21 +16457,22 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipEntityTyp
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipHelper {
-	public static fun areItemsEqual (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Z
-	public static fun enrollmentItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public static fun enrollmentToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun enrollmentToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun enrollmentToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun eventItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public static fun eventToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun eventToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun eventToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun getTeiUid (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Ljava/lang/String;
-	public static fun relationship (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun teiItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
-	public static fun teiToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun teiToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
-	public static fun teiToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/relationship/RelationshipHelper;
+	public static final fun areItemsEqual (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Z
+	public static final fun enrollmentItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public static final fun enrollmentToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun enrollmentToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun enrollmentToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun eventItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public static final fun eventToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun eventToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun eventToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun getTeiUid (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;)Ljava/lang/String;
+	public static final fun relationship (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun teiItem (Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/RelationshipItem;
+	public static final fun teiToEnrollmentRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun teiToEventRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
+	public static final fun teiToTeiRelationship (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/relationship/Relationship;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipItem : org/hisp/dhis/android/core/common/CoreObject {

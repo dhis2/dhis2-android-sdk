@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.relationship
 
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 
+@Suppress("TooManyFunctions")
 object RelationshipHelper {
 
     @JvmStatic

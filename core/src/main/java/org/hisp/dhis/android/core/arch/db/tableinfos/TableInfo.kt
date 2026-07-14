@@ -25,21 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.tableinfos;
+package org.hisp.dhis.android.core.arch.db.tableinfos
 
-import org.hisp.dhis.android.core.common.CoreColumns;
+import org.hisp.dhis.android.core.common.CoreColumns
+import java.util.Arrays
 
-import java.util.Arrays;
+abstract class TableInfo {
+    abstract fun name(): String?
 
-public abstract class TableInfo {
+    abstract fun columns(): CoreColumns?
 
-    public static final String SORT_ORDER = "sortOrder";
+    fun hasSortOrder(): Boolean {
+        return Arrays.asList<String?>(*columns()!!.all()).contains(SORT_ORDER)
+    }
 
-    public abstract String name();
-
-    public abstract CoreColumns columns();
-
-    public boolean hasSortOrder() {
-        return Arrays.asList(columns().all()).contains(SORT_ORDER);
+    companion object {
+        const val SORT_ORDER: String = "sortOrder"
     }
 }

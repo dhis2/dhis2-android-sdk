@@ -25,21 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.stores.projections.internal;
+package org.hisp.dhis.android.core.arch.db.stores.projections.internal
 
-import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo;
+import org.hisp.dhis.android.core.arch.db.tableinfos.TableInfo
 
-public class LinkTableChildProjection {
-
-    public final TableInfo childTableInfo;
-    public final String parentColumn;
-    public final String childColumn;
-
-    public LinkTableChildProjection(TableInfo childTableInfo,
-                                    String parentColumn,
-                                    String childColumn) {
-        this.childTableInfo = childTableInfo;
-        this.parentColumn = parentColumn;
-        this.childColumn = childColumn;
-    }
-}
+class LinkTableChildProjection(
+    val childTableInfo: TableInfo?,
+    val parentColumn: String?,
+    val childColumn: String?
+)

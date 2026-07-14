@@ -26,50 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.dateformat.internal;
+package org.hisp.dhis.android.core.arch.dateformat.internal
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-import androidx.annotation.NonNull;
+class SafeDateFormat(private val pattern: String) {
 
-public class SafeDateFormat {
-
-    @NonNull
-    private final ThreadSafeDateFormat dateFormat;
-
-    public SafeDateFormat(@NonNull String pattern) {
-        this.dateFormat = new ThreadSafeDateFormat(pattern);
+    private val dateFormat: ThreadLocal<DateFormat> = object : ThreadLocal<DateFormat>() {
+        override fun initialValue(): DateFormat = SimpleDateFormat(pattern, Locale.US)
     }
 
-    @NonNull
-    public Date parse(@NonNull String pattern) throws ParseException {
-        return dateFormat.get().parse(pattern);
-    }
+    private val threadFormat: DateFormat
+        get() = requireNotNull(dateFormat.get())
 
-    @NonNull
-    public String format(@NonNull Date date) {
-        return dateFormat.get().format(date);
-    }
+    @Throws(ParseException::class)
+    fun parse(pattern: String): Date = checkNotNull(threadFormat.parse(pattern))
 
-    @NonNull
-    public DateFormat raw() {
-        return dateFormat.get();
-    }
+    fun format(date: Date): String = threadFormat.format(date)
 
-    private static class ThreadSafeDateFormat extends ThreadLocal<DateFormat> {
-        private final String pattern;
-
-        ThreadSafeDateFormat(String pattern) {
-            this.pattern = pattern;
-        }
-
-        @Override
-        protected DateFormat initialValue() {
-            return new SimpleDateFormat(pattern, Locale.US);
-        }
-    }
+    fun raw(): DateFormat = threadFormat
 }

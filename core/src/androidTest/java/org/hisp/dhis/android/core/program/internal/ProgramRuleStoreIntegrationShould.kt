@@ -26,51 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.program.internal;
+package org.hisp.dhis.android.core.program.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramRuleSamples;
-import org.hisp.dhis.android.core.program.ProgramRule;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.program.ProgramRuleStoreImpl;
-import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo;
-import java.util.Date;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramRuleSamples
+import org.hisp.dhis.android.core.program.ProgramRule
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.ProgramRuleStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramRuleTableInfo
+import org.junit.runner.RunWith
 
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramRuleStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramRule> {
-
-    public ProgramRuleStoreIntegrationShould() {
-        super(new ProgramRuleStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramRuleTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramRuleStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramRule>(
+    ProgramRuleStoreImpl(TestDatabaseAdapterFactory.get()),
+    ProgramRuleTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): ProgramRule {
+        return ProgramRuleSamples.getProgramRule()
     }
 
-    @Override
-    protected ProgramRule buildObject() {
-        return ProgramRuleSamples.getProgramRule();
-    }
-
-    @Override
-    protected ProgramRule buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): ProgramRule {
         return ProgramRuleSamples.getProgramRule().toBuilder()
-                .condition("new_condition")
-                .build();
+            .condition("new_condition")
+            .build()
     }
 
-    @Override
-    protected ProgramRule buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): ProgramRule {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .priority(null)
-                .condition(null)
-                .programStage(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .priority(null)
+            .condition(null)
+            .programStage(null)
+            .build()
     }
 }

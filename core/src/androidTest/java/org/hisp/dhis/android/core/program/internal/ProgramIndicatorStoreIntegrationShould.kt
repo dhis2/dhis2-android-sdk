@@ -25,41 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramIndicatorSamples
+import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitProgramLinkSamples;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkStoreImpl;
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class OrganisationUnitProgramLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<OrganisationUnitProgramLink> {
-
-    public OrganisationUnitProgramLinkStoreIntegrationShould() {
-        super(new OrganisationUnitProgramLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                OrganisationUnitProgramLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramIndicatorStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramIndicator>(
+    ProgramIndicatorStoreImpl(TestDatabaseAdapterFactory.get()),
+    ProgramIndicatorTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): ProgramIndicator {
+        return ProgramIndicatorSamples.getProgramIndicator()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink().organisationUnit();
+    override fun buildObjectToUpdate(): ProgramIndicator {
+        return ProgramIndicatorSamples.getProgramIndicator().toBuilder()
+            .decimals(413)
+            .build()
     }
 
-    @Override
-    protected OrganisationUnitProgramLink buildObject() {
-        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink();
-    }
-
-    @Override
-    protected OrganisationUnitProgramLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithNullableFields(): ProgramIndicator {
         return buildObject().toBuilder()
-                .organisationUnit("new_organisation_unit")
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .shortName(null)
+            .displayShortName(null)
+            .description(null)
+            .displayDescription(null)
+            .expression(null)
+            .filter(null)
+            .decimals(null)
+            .build()
     }
 }

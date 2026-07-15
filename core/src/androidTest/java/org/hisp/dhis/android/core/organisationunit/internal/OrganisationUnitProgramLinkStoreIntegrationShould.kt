@@ -25,41 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitProgramLinkSamples
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkStoreImpl
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramSectionAttributeLinkSamples;
-import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.program.ProgramSectionAttributeLinkStoreImpl;
-import org.hisp.dhis.android.persistence.program.ProgramSectionAttributeLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramSectionAttributeLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<ProgramSectionAttributeLink> {
-
-    public ProgramSectionAttributeLinkStoreIntegrationShould() {
-        super(new ProgramSectionAttributeLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramSectionAttributeLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class OrganisationUnitProgramLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<OrganisationUnitProgramLink>(
+        OrganisationUnitProgramLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        OrganisationUnitProgramLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink().organisationUnit()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return ProgramSectionAttributeLinkSamples.getProgramSectionAttributeLink().programSection();
+    override fun buildObject(): OrganisationUnitProgramLink {
+        return OrganisationUnitProgramLinkSamples.getOrganisationUnitProgramLink()
     }
 
-    @Override
-    protected ProgramSectionAttributeLink buildObject() {
-        return ProgramSectionAttributeLinkSamples.getProgramSectionAttributeLink();
-    }
-
-    @Override
-    protected ProgramSectionAttributeLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): OrganisationUnitProgramLink {
         return buildObject().toBuilder()
-                .programSection("new_program_section")
-                .build();
+            .organisationUnit("new_organisation_unit")
+            .build()
     }
 }

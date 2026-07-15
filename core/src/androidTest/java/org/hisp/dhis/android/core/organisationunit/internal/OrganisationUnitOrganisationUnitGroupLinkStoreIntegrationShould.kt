@@ -25,42 +25,36 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.organisationunit.internal
 
-package org.hisp.dhis.android.core.organisationunit.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkStoreImpl
+import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.organisationunit.OrganisationUnitOrganisationUnitGroupLinkSamples;
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkStoreImpl;
-import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitOrganisationUnitGroupLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink> {
-
-    public OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould() {
-        super(new OrganisationUnitOrganisationUnitGroupLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected String addMasterUid() {
+@RunWith(D2JunitRunner::class)
+class OrganisationUnitOrganisationUnitGroupLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<OrganisationUnitOrganisationUnitGroupLink>(
+        OrganisationUnitOrganisationUnitGroupLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        OrganisationUnitOrganisationUnitGroupLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
         return OrganisationUnitOrganisationUnitGroupLinkSamples.getOrganisationUnitOrganisationUnitGroupLink()
-                .organisationUnit();
+            .organisationUnit()
     }
 
-    @Override
-    protected OrganisationUnitOrganisationUnitGroupLink buildObject() {
-        return OrganisationUnitOrganisationUnitGroupLinkSamples.getOrganisationUnitOrganisationUnitGroupLink();
+    override fun buildObject(): OrganisationUnitOrganisationUnitGroupLink {
+        return OrganisationUnitOrganisationUnitGroupLinkSamples.getOrganisationUnitOrganisationUnitGroupLink()
     }
 
-    @Override
-    protected OrganisationUnitOrganisationUnitGroupLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): OrganisationUnitOrganisationUnitGroupLink {
         return buildObject().toBuilder()
-                .organisationUnit("new_organisation_unit")
-                .build();
+            .organisationUnit("new_organisation_unit")
+            .build()
     }
 }

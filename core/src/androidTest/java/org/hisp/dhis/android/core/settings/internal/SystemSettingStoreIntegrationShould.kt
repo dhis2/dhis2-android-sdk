@@ -26,41 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.SystemSettingSamples;
-import org.hisp.dhis.android.core.settings.SystemSetting;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.settings.SystemSettingStoreImpl;
-import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.SystemSettingSamples
+import org.hisp.dhis.android.core.settings.SystemSetting
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.SystemSettingStoreImpl
+import org.hisp.dhis.android.persistence.settings.SystemSettingTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class SystemSettingStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting> {
-
-    public SystemSettingStoreIntegrationShould() {
-        super(new SystemSettingStoreImpl(TestDatabaseAdapterFactory.get()), SystemSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class SystemSettingStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SystemSetting>(
+    SystemSettingStoreImpl(TestDatabaseAdapterFactory.get()),
+    SystemSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): SystemSetting {
+        return SystemSettingSamples.getSystemSetting()
     }
 
-    @Override
-    protected SystemSetting buildObject() {
-        return SystemSettingSamples.getSystemSetting();
-    }
-
-    @Override
-    protected SystemSetting buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): SystemSetting {
         return SystemSettingSamples.getSystemSetting().toBuilder()
-                .value("new_value")
-                .build();
+            .value("new_value")
+            .build()
     }
 
-    @Override
-    protected SystemSetting buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): SystemSetting {
         return buildObject().toBuilder()
-                .value(null)
-                .build();
+            .value(null)
+            .build()
     }
 }

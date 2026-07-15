@@ -25,36 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.settings.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramSamples
+import org.hisp.dhis.android.core.program.Program
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.ProgramStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.UserSettingsSamples;
-import org.hisp.dhis.android.core.settings.UserSettings;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.settings.UserSettingsStoreImpl;
-import org.hisp.dhis.android.persistence.settings.UserSettingsTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class UserSettingsStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<UserSettings> {
-
-    public UserSettingsStoreIntegrationShould() {
-        super(new UserSettingsStoreImpl(TestDatabaseAdapterFactory.get()), UserSettingsTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Program>(
+    ProgramStoreImpl(TestDatabaseAdapterFactory.get()),
+    ProgramTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Program {
+        return ProgramSamples.getProgram()
     }
 
-    @Override
-    protected UserSettings buildObject() {
-        return UserSettingsSamples.getUserSettings();
+    override fun buildObjectToUpdate(): Program {
+        return ProgramSamples.getProgram().toBuilder()
+            .expiryDays(5)
+            .build()
     }
 
-    @Override
-    protected UserSettings buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): Program {
         return buildObject().toBuilder()
-                .keyDbLocale(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .shortName(null)
+            .displayShortName(null)
+            .description(null)
+            .displayDescription(null)
+            .version(null)
+            .programType(null)
+            .relatedProgram(null)
+            .trackedEntityType(null)
+            .build()
     }
 }

@@ -25,25 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.relationship
 
-package org.hisp.dhis.android.core.relationship;
+import android.content.ContentValues
+import org.hisp.dhis.android.core.common.IdentifiableColumns
+import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
 
-import android.content.ContentValues;
-
-import org.hisp.dhis.android.core.common.IdentifiableColumns;
-import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo;
-
-public class CreateRelationshipTypeUtils {
-    private static final String CODE = "test_code";
-    private static final String NAME = "test_name";
-    private static final String DISPLAY_NAME = "test_display_name";
+object CreateRelationshipTypeUtils {
+    private const val CODE = "test_code"
+    private const val NAME = "test_name"
+    private const val DISPLAY_NAME = "test_display_name"
 
     // timestamp
-    private static final String DATE = "2014-03-20T13:37:00.007";
+    private const val DATE = "2014-03-20T13:37:00.007"
 
-    //RelationshipTypeModel attributes:
-    private static final String TO_FROM_NAME = "cat of";
-    private static final String FROM_TO_NAME = "owner of";
+    // RelationshipTypeModel attributes:
+    private const val TO_FROM_NAME = "cat of"
+    private const val FROM_TO_NAME = "owner of"
 
     /**
      * A method to createTrackedEntityAttribute ContentValues from a RelationshipType.
@@ -52,21 +50,20 @@ public class CreateRelationshipTypeUtils {
      * @param uid
      * @return
      */
-    public static ContentValues create(String uid) {
+    fun create(uid: String): ContentValues {
+        val relationshipType = ContentValues()
 
-        ContentValues relationshipType = new ContentValues();
+        relationshipType.put(IdentifiableColumns.UID, uid)
+        relationshipType.put(IdentifiableColumns.CODE, CODE)
+        relationshipType.put(IdentifiableColumns.NAME, NAME)
+        relationshipType.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME)
+        relationshipType.put(IdentifiableColumns.CREATED, DATE)
+        relationshipType.put(IdentifiableColumns.LAST_UPDATED, DATE)
+        relationshipType.put(RelationshipTypeTableInfo.Columns.TO_FROM_NAME, TO_FROM_NAME)
+        relationshipType.put(RelationshipTypeTableInfo.Columns.FROM_TO_NAME, FROM_TO_NAME)
+        relationshipType.put(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL, 0)
+        relationshipType.put(RelationshipTypeTableInfo.Columns.ACCESS_DATA_WRITE, 1)
 
-        relationshipType.put(IdentifiableColumns.UID, uid);
-        relationshipType.put(IdentifiableColumns.CODE, CODE);
-        relationshipType.put(IdentifiableColumns.NAME, NAME);
-        relationshipType.put(IdentifiableColumns.DISPLAY_NAME, DISPLAY_NAME);
-        relationshipType.put(IdentifiableColumns.CREATED, DATE);
-        relationshipType.put(IdentifiableColumns.LAST_UPDATED, DATE);
-        relationshipType.put(RelationshipTypeTableInfo.Columns.TO_FROM_NAME, TO_FROM_NAME);
-        relationshipType.put(RelationshipTypeTableInfo.Columns.FROM_TO_NAME, FROM_TO_NAME);
-        relationshipType.put(RelationshipTypeTableInfo.Columns.BIDIRECTIONAL, 0);
-        relationshipType.put(RelationshipTypeTableInfo.Columns.ACCESS_DATA_WRITE, 1);
-
-        return relationshipType;
+        return relationshipType
     }
 }

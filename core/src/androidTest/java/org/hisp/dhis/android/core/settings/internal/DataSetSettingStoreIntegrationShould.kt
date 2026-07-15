@@ -26,42 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.systeminfo.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.systeminfo.SystemInfoStoreImpl;
-import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.DataSetSettingSamples
+import org.hisp.dhis.android.core.settings.DataSetSetting
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.DataSetSettingStoreImpl
+import org.hisp.dhis.android.persistence.settings.DataSetSettingTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class SystemInfoStoreIntegrationShould extends ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo> {
-
-    public SystemInfoStoreIntegrationShould() {
-        super(new SystemInfoStoreImpl(TestDatabaseAdapterFactory.get()), SystemInfoTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataSetSettingStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<DataSetSetting>(
+    DataSetSettingStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataSetSettingTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): DataSetSetting {
+        return DataSetSettingSamples.getDataSetSetting()
     }
 
-    @Override
-    protected SystemInfo buildObject() {
-        return SystemInfoSamples.get1();
-    }
-
-    @Override
-    protected SystemInfo buildObjectToUpdate() {
-        return SystemInfoSamples.get2();
-    }
-
-    @Override
-    protected SystemInfo buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): DataSetSetting {
         return buildObject().toBuilder()
-                .serverDate(null)
-                .dateFormat(null)
-                .version(null)
-                .systemName(null)
-                .build();
+            .uid(null)
+            .name(null)
+            .lastUpdated(null)
+            .periodDSDownload(null)
+            .periodDSDBTrimming(null)
+            .build()
     }
 }

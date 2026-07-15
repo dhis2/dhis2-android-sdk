@@ -25,52 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.internal
 
-package org.hisp.dhis.android.core.program.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.program.ProgramStageSamples
+import org.hisp.dhis.android.core.program.ProgramStage
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.program.ProgramStageStoreImpl
+import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.program.ProgramStageSamples;
-import org.hisp.dhis.android.core.program.ProgramStage;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.program.ProgramStageStoreImpl;
-import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo;
-import java.util.Date;
-
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramStageStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage> {
-
-    public ProgramStageStoreIntegrationShould() {
-        super(new ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramStageTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramStageStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<ProgramStage>(
+    ProgramStageStoreImpl(TestDatabaseAdapterFactory.get()),
+    ProgramStageTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): ProgramStage {
+        return ProgramStageSamples.getProgramStage()
     }
 
-    @Override
-    protected ProgramStage buildObject() {
-        return ProgramStageSamples.getProgramStage();
-    }
-
-    @Override
-    protected ProgramStage buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): ProgramStage {
         return ProgramStageSamples.getProgramStage().toBuilder()
-                .minDaysFromStart(12)
-                .build();
+            .minDaysFromStart(12)
+            .build()
     }
 
-    @Override
-    protected ProgramStage buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): ProgramStage {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .description(null)
-                .displayDescription(null)
-                .periodType(null)
-                .sortOrder(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .description(null)
+            .displayDescription(null)
+            .periodType(null)
+            .sortOrder(null)
+            .build()
     }
 }

@@ -26,39 +26,30 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.settings.internal;
+package org.hisp.dhis.android.core.settings.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.settings.DataSetSettingSamples;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.settings.DataSetSettingStoreImpl;
-import org.hisp.dhis.android.persistence.settings.DataSetSettingTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.settings.UserSettingsSamples
+import org.hisp.dhis.android.core.settings.UserSettings
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.settings.UserSettingsStoreImpl
+import org.hisp.dhis.android.persistence.settings.UserSettingsTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class DataSetSettingStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<DataSetSetting> {
-
-    public DataSetSettingStoreIntegrationShould() {
-        super(new DataSetSettingStoreImpl(TestDatabaseAdapterFactory.get()), DataSetSettingTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class UserSettingsStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<UserSettings>(
+    UserSettingsStoreImpl(TestDatabaseAdapterFactory.get()),
+    UserSettingsTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): UserSettings {
+        return UserSettingsSamples.getUserSettings()
     }
 
-    @Override
-    protected DataSetSetting buildObject() {
-        return DataSetSettingSamples.getDataSetSetting();
-    }
-
-    @Override
-    protected DataSetSetting buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): UserSettings {
         return buildObject().toBuilder()
-                .uid(null)
-                .name(null)
-                .lastUpdated(null)
-                .periodDSDownload(null)
-                .periodDSDBTrimming(null)
-                .build();
+            .keyDbLocale(null)
+            .build()
     }
 }

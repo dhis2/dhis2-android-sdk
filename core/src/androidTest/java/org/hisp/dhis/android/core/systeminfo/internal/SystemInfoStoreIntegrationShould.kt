@@ -26,44 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.relationship.internal;
+package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.relationship.RelationshipSamples;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.relationship.RelationshipStoreImpl;
-import org.hisp.dhis.android.persistence.relationship.RelationshipTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.systeminfo.SystemInfoSamples
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoStoreImpl
+import org.hisp.dhis.android.persistence.systeminfo.SystemInfoTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class RelationshipStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Relationship> {
-
-    public RelationshipStoreIntegrationShould() {
-        super(new RelationshipStoreImpl(TestDatabaseAdapterFactory.get()),
-                RelationshipTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class SystemInfoStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<SystemInfo>(
+    SystemInfoStoreImpl(TestDatabaseAdapterFactory.get()),
+    SystemInfoTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): SystemInfo {
+        return SystemInfoSamples.get1()
     }
 
-    @Override
-    protected Relationship buildObject() {
-        return RelationshipSamples.getRelationshipToInsertOnDB();
+    override fun buildObjectToUpdate(): SystemInfo {
+        return SystemInfoSamples.get2()
     }
 
-    @Override
-    protected Relationship buildObjectToUpdate() {
-        return RelationshipSamples.getRelationshipToInsertOnDB().toBuilder()
-                .name("new_name")
-                .build();
-    }
-
-    @Override
-    protected Relationship buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): SystemInfo {
         return buildObject().toBuilder()
-                .name(null)
-                .created(null)
-                .lastUpdated(null)
-                .deleted(null)
-                .build();
+            .serverDate(null)
+            .dateFormat(null)
+            .version(null)
+            .systemName(null)
+            .build()
     }
 }

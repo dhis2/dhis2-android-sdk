@@ -25,18 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+class EventDownloadRealIntegrationShould : BaseRealIntegrationTest() {
 
-public class EventAPI29RealShould extends EventAPIRealShould {
+    // @Test
+    fun download_events() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-    public EventAPI29RealShould() {
-        super(RealServerMother.url2_29, "CREATE_AND_UPDATE");
-    }
+        d2.metadataModule().blockingDownload()
 
-    //@Test
-    public void stub() {
+        d2.eventModule().eventDownloader().limit(20).blockingDownload()
+
+        val count = d2.eventModule().events().blockingCount()
+
+        assertThat(count).isEqualTo(20)
     }
 }

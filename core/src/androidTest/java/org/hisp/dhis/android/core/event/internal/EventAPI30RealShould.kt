@@ -25,18 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.event.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+class EventAPI30RealShould : EventAPIRealShould(RealServerMother.url2_30, "CREATE_AND_UPDATE") {
 
-public class EventAPI30RealShould extends EventAPIRealShould {
-
-    public EventAPI30RealShould() {
-        super(RealServerMother.url2_30, "CREATE_AND_UPDATE");
-    }
-
-    //@Test
-    public void stub() {
+    // @Test
+    fun stub() {
     }
 }

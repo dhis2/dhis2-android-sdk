@@ -25,34 +25,40 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.imports.internal
 
-package org.hisp.dhis.android.core.event.internal;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.imports.TrackerImportConflictSamples
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictStoreImpl
+import org.hisp.dhis.android.persistence.imports.TrackerImportConflictTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.event.EventSyncStoreImpl;
-import org.hisp.dhis.android.persistence.event.EventSyncTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class EventSyncStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<EventSync> {
-
-    public EventSyncStoreIntegrationShould() {
-        super(new EventSyncStoreImpl(TestDatabaseAdapterFactory.get()), EventSyncTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class TrackerImportConflictStoreIntegrationShould :
+    ObjectStoreAbstractIntegrationShould<TrackerImportConflict>(
+        TrackerImportConflictStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackerImportConflictTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): TrackerImportConflict {
+        return TrackerImportConflictSamples.get()
     }
 
-    @Override
-    protected EventSync buildObject() {
-        return EventSyncSamples.get1();
-    }
-
-    @Override
-    protected EventSync buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): TrackerImportConflict {
         return buildObject().toBuilder()
-                .program(null)
-                .workingListsHash(null)
-                .build();
+            .conflict(null)
+            .value(null)
+            .trackedEntityInstance(null)
+            .enrollment(null)
+            .event(null)
+            .tableReference(null)
+            .errorCode(null)
+            .status(null)
+            .created(null)
+            .displayDescription(null)
+            .build()
     }
 }

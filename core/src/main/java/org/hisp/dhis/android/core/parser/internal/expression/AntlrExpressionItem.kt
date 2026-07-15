@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorCompareGreaterThanOrEqual;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.antlr.AntlrExprItem
+import org.hisp.dhis.antlr.AntlrExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
- * Compare operator: greater than or equal
+ * An [ExpressionItem] backed by a dhis-antlr item.
  *
- * @author Jim Grace
+ * The low-level evaluation is delegated to the wrapped [antlrItem] by composition because
+ * AntlrComputeFunction.evaluate is final in the dhis-antlr library, so it cannot be inherited
+ * alongside the [ExpressionItem] default implementation in Kotlin.
  */
-public class OperatorCompareGreaterThanOrEqual
-        extends AntlrOperatorCompareGreaterThanOrEqual
-        implements ExpressionItem {
+internal abstract class AntlrExpressionItem(private val antlrItem: AntlrExprItem) : ExpressionItem {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.castStringVisit(ctx.expr(0))
-                + " >= " + visitor.castStringVisit(ctx.expr(1));
+    override fun evaluate(ctx: ExprContext, visitor: AntlrExpressionVisitor): Any? {
+        return antlrItem.evaluate(ctx, visitor)
     }
 }

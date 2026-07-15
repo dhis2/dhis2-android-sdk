@@ -26,34 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorCompareGreaterThan
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
- * Logical operator: Not
- * <pre>
- *
- * Truth table (same as for SQL):
- *
- *       A    not A
- *     -----  -----
- *     null   null
- *     false  true
- *     true   false
- * </pre>
+ * Compare operator: greater than
  *
  * @author Jim Grace
  */
-public class OperatorLogicalNot
-        extends AntlrOperatorLogicalNot
-        implements ExpressionItem {
+internal class OperatorCompareGreaterThan : AntlrExpressionItem(AntlrOperatorCompareGreaterThan()) {
 
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return "not " + visitor.castStringVisit(ctx.expr(0));
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "${visitor.castStringVisit(ctx.expr(0))} > ${visitor.castStringVisit(ctx.expr(1))}"
     }
 }

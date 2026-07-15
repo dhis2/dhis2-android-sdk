@@ -26,11 +26,48 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.file
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import java.io.IOException
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalOr
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-fun interface IFileReader {
-    @Throws(IOException::class)
-    fun getStringFromFile(filename: String): String
+/**
+ * Logical operator: Or
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A      B    A or B
+ *     -----  -----  ------
+ *     null   null    null
+ *     null   false   null
+ *     null   true    true
+ *
+ *     false  null    null
+ *     false  false   false
+ *     false  true    true
+ *
+ *     true   null    true
+ *     true   false   true
+ *     true   true    true
+ *
+ * @author Jim Grace
+ */
+internal class OperatorLogicalOr : AntlrExpressionItem(AntlrOperatorLogicalOr()) {
+
+    override fun evaluateAllPaths(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        val value0: Boolean? = visitor.castBooleanVisit(ctx.expr(0))
+        val value1: Boolean? = visitor.castBooleanVisit(ctx.expr(1))
+
+        return when {
+            value0 == null -> value1?.takeIf { it }
+            !value0 -> value1
+            else -> true
+        }
+    }
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "${visitor.castStringVisit(ctx.expr(0))} or ${visitor.castStringVisit(ctx.expr(1))}"
+    }
 }

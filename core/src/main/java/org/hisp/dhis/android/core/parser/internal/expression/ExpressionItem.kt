@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression;
+package org.hisp.dhis.android.core.parser.internal.expression
 
-import static org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor.DEFAULT_DOUBLE_VALUE;
-import static org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext;
-
-import org.hisp.dhis.antlr.AntlrExprItem;
-import org.hisp.dhis.antlr.AntlrExpressionVisitor;
-import org.hisp.dhis.antlr.ParserException;
-import org.hisp.dhis.antlr.ParserExceptionWithoutContext;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor.Companion.DEFAULT_DOUBLE_VALUE
+import org.hisp.dhis.antlr.AntlrExprItem
+import org.hisp.dhis.antlr.AntlrExpressionVisitor
+import org.hisp.dhis.antlr.ParserException
+import org.hisp.dhis.antlr.ParserExceptionWithoutContext
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 /**
  * A parsed item from an ANTLR expression, as processed in the backend.
  *
  * @author Jim Grace
  */
-public interface ExpressionItem
-        extends AntlrExprItem {
+internal interface ExpressionItem : AntlrExprItem {
     /**
      * Collects the description of an individual data item, to use later
      * in constructing a description of the expression as a whole.
-     * <p/>
+     *
      * This method only needs to be overridden for items that have UIDs that
      * need to be translated into human-readable object names.
-     * <p/>
+     *
      * For other items, evaluate all paths to be sure that we collect the
      * description of any items that may be within this expression.
      *
@@ -57,17 +55,17 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return a dummy value for the item (of the right type, for type checking)
      */
-    default Object getDescription(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return evaluateAllPaths(ctx, visitor);
+    fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluateAllPaths(ctx, visitor)
     }
 
     /**
      * Collects the item id of an individual data item, so it can later be looked
      * up in the database (as with indicators, validation rules and predictors.)
-     * <p/>
+     *
      * This method only needs to be overridden for items that have UIDs that
      * need to be looked up in the database.
-     * <p/>
+     *
      * For other items, evaluate all paths to be sure that we collect the
      * UIDs of any items that may be within this expression. But don't return
      * null from this function, to make sure that no part of the expression is
@@ -77,18 +75,16 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return a dummy value for the item
      */
-    default Object getItemId(ExprContext ctx, CommonExpressionVisitor visitor) {
-        Object value = evaluateAllPaths(ctx, visitor);
-
-        return value == null ? DEFAULT_DOUBLE_VALUE : value;
+    fun getItemId(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return evaluateAllPaths(ctx, visitor) ?: DEFAULT_DOUBLE_VALUE
     }
 
     /**
      * Collects the organisation unit group for which we will need counts.
      * (applies to expression service items).
-     * <p/>
+     *
      * This method only needs to be overridden for the organisation unit group count.
-     * <p/>
+     *
      * For other items, evaluate all paths to be sure that we collect any
      * organisation unit groups that may be within this expression.
      * But if we hit a parser exception (like constant not found), continue.
@@ -97,11 +93,11 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return a dummy value for the item
      */
-    default Object getOrgUnitGroup(ExprContext ctx, CommonExpressionVisitor visitor) {
-        try {
-            return evaluateAllPaths(ctx, visitor);
-        } catch (ParserException e) {
-            return DEFAULT_DOUBLE_VALUE;
+    fun getOrgUnitGroup(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return try {
+            evaluateAllPaths(ctx, visitor)
+        } catch (e: ParserException) {
+            DEFAULT_DOUBLE_VALUE
         }
     }
 
@@ -109,24 +105,24 @@ public interface ExpressionItem
      * Returns the value of the expression item. Also used for syntax checking.
      * (For program indicator-only items, this may return a dummy value because
      * the real evaluation is done in SQL.)
-     * <p/>
+     *
      * For the lower-level Antlr... items, this method calls the lower-level evaluate routine.
-     * <p/>
+     *
      * For all other items, this method must be overridden.
      *
      * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return a dummy value (of the right type) for the item
      */
-    default Object evaluate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return evaluate(ctx, (AntlrExpressionVisitor) visitor);
+    fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor as AntlrExpressionVisitor)
     }
 
     /**
      * Provides a default implementation for the lower-level Antlr... evaluate method.
-     * <p/>
+     *
      * The lower-level Antlr... items must provide this method.
-     * <p/>
+     *
      * If a higher-level item does not override the method evaluate(... CommonExpressionVisitor ...)
      * then this default implementation will be called, resulting in an exception.
      *
@@ -134,47 +130,46 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return a dummy value (of the right type) for the item
      */
-    @Override
-    default Object evaluate(ExprContext ctx, AntlrExpressionVisitor visitor) {
-        throw new ParserExceptionWithoutContext("evaluate not implemnted for " + ctx.getText());
+    override fun evaluate(ctx: ExprContext, visitor: AntlrExpressionVisitor): Any? {
+        throw ParserExceptionWithoutContext("evaluate not implemnted for " + ctx.text)
     }
 
     /**
      * Finds the value of an expression function, evaluating all the arguments
      * of logical functions that might not always evaluate all arguments based
      * on the truth value of some arguments (e.g. if, and, or, firstNonNull).
-     * <p/>
+     *
      * For those few logical functions that may not normally evaluate all arguments,
      * this method must be overridden.
-     * <p/>
+     *
      * For other items, this method does not need to be overridden.
      *
      * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return the value of the function, evaluating all args
      */
-    default Object evaluateAllPaths(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return evaluate(ctx, visitor);
+    fun evaluateAllPaths(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
     }
 
     /**
      * Generates the SQL for a program indicator expression item.
-     * <p/>
+     *
      * This method must be overridden for all items used in program indicator expressions,
      * otherwise an exception will be thrown.
-     * <p/>
+     *
      * For other items, this method does not need to be overridden.
      *
      * @param ctx     the expression context
      * @param visitor the tree visitor
      * @return the generated SQL (as a String) for the function
      */
-    default Object getSql(ExprContext ctx, CommonExpressionVisitor visitor) {
-        throw new ParserExceptionWithoutContext("getSql not implemented for " + ctx.getText());
+    fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        throw ParserExceptionWithoutContext("getSql not implemented for " + ctx.text)
     }
 
-    default Object regenerate(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.regenerateAllChildren(ctx);
+    fun regenerate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return visitor.regenerateAllChildren(ctx)
     }
 
     /**
@@ -184,7 +179,7 @@ public interface ExpressionItem
      * @param visitor the tree visitor
      * @return value to be returned during a count action
      */
-    default Object count(ExprContext ctx, CommonExpressionVisitor visitor) {
-        return evaluate(ctx, visitor);
+    fun count(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
+        return evaluate(ctx, visitor)
     }
 }

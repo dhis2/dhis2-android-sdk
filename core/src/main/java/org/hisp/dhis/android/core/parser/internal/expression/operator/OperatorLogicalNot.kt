@@ -26,12 +26,29 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.function;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.function.AntlrFunctionLog10;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.antlr.operator.AntlrOperatorLogicalNot
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-public class FunctionLog10
-        extends AntlrFunctionLog10
-        implements ExpressionItem {
+/**
+ * Logical operator: Not
+ *
+ * Truth table (same as for SQL):
+ *
+ *       A    not A
+ *     -----  -----
+ *     null   null
+ *     false  true
+ *     true   false
+ *
+ * @author Jim Grace
+ */
+internal class OperatorLogicalNot : AntlrExpressionItem(AntlrOperatorLogicalNot()) {
+
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return "not ${visitor.castStringVisit(ctx.expr(0))}"
+    }
 }

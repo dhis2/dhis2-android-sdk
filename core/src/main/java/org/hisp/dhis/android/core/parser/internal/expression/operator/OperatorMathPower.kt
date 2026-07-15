@@ -26,24 +26,14 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.operator
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorCompareEqual;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.antlr.operator.AntlrOperatorMathPower
 
 /**
- * Compare operator: equal
+ * Expression math operator: Power
  *
  * @author Jim Grace
  */
-public class OperatorCompareEqual
-        extends AntlrOperatorCompareEqual
-        implements ExpressionItem {
-
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.castStringVisit(ctx.expr(0)) + " = " + visitor.castStringVisit(ctx.expr(1));
-    }
-}
+internal class OperatorMathPower : AntlrExpressionItem(AntlrOperatorMathPower())

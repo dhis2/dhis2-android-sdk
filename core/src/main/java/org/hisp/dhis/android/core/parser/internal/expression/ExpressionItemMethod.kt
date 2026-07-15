@@ -43,5 +43,5 @@ internal fun interface ExpressionItemMethod {
      * @param visitor the visitor class for supporting methods
      * @return the method result from the expression item class
      */
-    fun apply(item: ExpressionItem, ctx: ExprContext, visitor: CommonExpressionVisitor): Any
+    fun apply(item: ExpressionItem, ctx: ExprContext, visitor: CommonExpressionVisitor): Any?
 }

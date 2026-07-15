@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,9 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.parser.internal.expression.operator;
+package org.hisp.dhis.android.core.parser.internal.expression.function
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.antlr.operator.AntlrOperatorCompareLessThan;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
+import org.hisp.dhis.android.core.parser.internal.expression.AntlrExpressionItem
+import org.hisp.dhis.antlr.function.AntlrFunctionLog10
 
-/**
- * Compare operator: less than
- *
- * @author Jim Grace
- */
-public class OperatorCompareLessThan
-        extends AntlrOperatorCompareLessThan
-        implements ExpressionItem {
-
-    @Override
-    public Object getSql(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        return visitor.castStringVisit(ctx.expr(0))
-                + " < " + visitor.castStringVisit(ctx.expr(1));
-    }
-}
+internal class FunctionLog10 : AntlrExpressionItem(AntlrFunctionLog10())

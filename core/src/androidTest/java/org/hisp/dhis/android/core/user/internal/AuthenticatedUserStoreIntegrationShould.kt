@@ -26,42 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.user.internal;
+package org.hisp.dhis.android.core.user.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples;
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.user.AuthenticatedUserStoreImpl;
-import org.hisp.dhis.android.persistence.user.AuthenticatedUserTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.user.AuthenticatedUserSamples
+import org.hisp.dhis.android.core.user.AuthenticatedUser
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserStoreImpl
+import org.hisp.dhis.android.persistence.user.AuthenticatedUserTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class AuthenticatedUserStoreIntegrationShould
-        extends ObjectWithoutUidStoreAbstractIntegrationShould<AuthenticatedUser> {
-
-    public AuthenticatedUserStoreIntegrationShould() {
-        super(new AuthenticatedUserStoreImpl(TestDatabaseAdapterFactory.get()), AuthenticatedUserTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class AuthenticatedUserStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<AuthenticatedUser>(
+    AuthenticatedUserStoreImpl(TestDatabaseAdapterFactory.get()),
+    AuthenticatedUserTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): AuthenticatedUser {
+        return AuthenticatedUserSamples.getAuthenticatedUser()
     }
 
-    @Override
-    protected AuthenticatedUser buildObject() {
-        return AuthenticatedUserSamples.getAuthenticatedUser();
-    }
-
-    @Override
-    protected AuthenticatedUser buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): AuthenticatedUser {
         return AuthenticatedUserSamples.getAuthenticatedUser().toBuilder()
-                .hash("new_hash")
-                .build();
+            .hash("new_hash")
+            .build()
     }
 
-    @Override
-    protected AuthenticatedUser buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): AuthenticatedUser {
         return buildObject().toBuilder()
-                .hash(null)
-                .build();
+            .hash(null)
+            .build()
     }
 }

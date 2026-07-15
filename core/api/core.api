@@ -15569,21 +15569,6 @@ public final class org/hisp/dhis/android/core/program/programindicatorengine/int
 	public fun toString ()Ljava/lang/String;
 }
 
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2Concatenate : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2Length : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2ValidatePattern : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
 public final class org/hisp/dhis/android/core/programstageworkinglist/OrgHispDhisAndroidCoreProgramstageworkinglistProgramStageWorkingListDIModuleModuleKt {
 	public static final fun module (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListDIModule;)Lorg/koin/core/module/Module;
 }

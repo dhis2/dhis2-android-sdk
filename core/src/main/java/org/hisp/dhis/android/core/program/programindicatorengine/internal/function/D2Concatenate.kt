@@ -25,27 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-
-public class D2Concatenate
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        StringBuilder builder = new StringBuilder();
-
-        for (ExpressionParser.ExprContext string : ctx.expr()) {
-            String visitedString = visitor.castStringVisit(string);
-            if (visitedString != null) {
-                builder.append(visitedString);
-            }
-        }
-
-        return builder.toString();
+internal class D2Concatenate : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return ctx.expr().joinToString(separator = "") { visitor.castStringVisit(it) ?: "" }
     }
 }

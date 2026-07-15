@@ -109,14 +109,12 @@ internal class OAuth2HandlerImpl(
         runBlocking { handleEnrollmentResponseInternal(serverUrl, iat) }
     }
 
-    override fun blockingBuildLogoutUrl(serverUrl: String): String {
-        return runBlocking { buildLogoutUrlInternal(serverUrl) }
+    override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
+        return runBlocking { buildLogoutUrlInternal(config) }
     }
 
-    private fun buildLogoutUrlInternal(serverUrl: String): String {
-        val state = JWTHelper.generateState()
-        oauth2SecureStore.tempState = state
-        return oauth2NetworkHandler.buildLogoutUrl(serverUrl, state)
+    private fun buildLogoutUrlInternal(config: OAuth2Config): String {
+        return oauth2NetworkHandler.buildLogoutUrl(config)
     }
 
     private suspend fun logInInternal(config: OAuth2Config): String {

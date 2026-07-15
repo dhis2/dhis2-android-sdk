@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
 internal interface OAuth2NetworkHandler {
@@ -59,8 +60,5 @@ internal interface OAuth2NetworkHandler {
         clientAssertion: String,
     ): Result<OAuth2State, D2Error>
 
-    fun buildLogoutUrl(
-        serverUrl: String,
-        state: String,
-    ): String
+    fun buildLogoutUrl(config: OAuth2Config, ): String
 }

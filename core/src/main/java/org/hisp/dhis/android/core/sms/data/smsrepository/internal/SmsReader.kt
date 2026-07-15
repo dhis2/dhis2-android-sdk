@@ -25,163 +25,183 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal
 
-package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.provider.Telephony
+import android.telephony.SmsMessage
+import android.util.Log
 
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.os.Bundle;
-import android.provider.Telephony;
-import android.telephony.SmsMessage;
-import android.util.Log;
+import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
+import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseIssue.RECEIVED_ERROR
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 
-import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+internal class SmsReader(private val context: Context) {
 
-import static org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseIssue.RECEIVED_ERROR;
+    fun waitToReceiveConfirmationSms(
+        waitingTimeoutSeconds: Int,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType
+    ): Completable {
+        val receiver = AtomicReference<BroadcastReceiver>()
 
-class SmsReader {
-    private final static String TAG = SmsReader.class.getSimpleName();
-    private final Context context;
-
-    SmsReader(Context context) {
-        this.context = context;
-    }
-
-    Completable waitToReceiveConfirmationSms(int waitingTimeoutSeconds,
-                                             String requiredSender,
-                                             int submissionId,
-                                             SubmissionType submissionType) {
-        AtomicReference<BroadcastReceiver> receiver = new AtomicReference<>();
-        return Completable.fromPublisher(s -> {
-                    receiver.set(new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            try {
-                                if (isAwaitedSuccessMessage(intent, requiredSender,
-                                        submissionId, submissionType)) {
-                                    s.onComplete();
-                                }
-                            } catch (Exception ex) {
-                                s.onError(ex);
-                            }
+        return Completable.create { emitter ->
+            val broadcastReceiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    try {
+                        if (isAwaitedSuccessMessage(intent, requiredSender, submissionId, submissionType)) {
+                            emitter.onComplete()
                         }
-                    });
-                    context.registerReceiver(receiver.get(),
-                            new IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION));
-                }
-        ).timeout(waitingTimeoutSeconds, TimeUnit.SECONDS, Schedulers.newThread(),
-                Completable.error(new SmsRepository.ResultResponseException(
-                        SmsRepository.ResultResponseIssue.TIMEOUT))
-        ).doFinally(() -> {
-            if (receiver.get() != null) {
-                try {
-                    context.unregisterReceiver(receiver.get());
-                } catch (Throwable t) {
-                    Log.d(TAG, t.getClass().getSimpleName() + " " + t.getMessage());
+                    } catch (ex: Exception) {
+                        if (!emitter.isDisposed) {
+                            emitter.onError(ex)
+                        }
+                    }
                 }
             }
-        });
-    }
-
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    Single<Boolean> findConfirmationSms(Date fromDate, String requiredSender,
-                                        int submissionId, SubmissionType submissionType) {
-        return Single.fromCallable(() -> {
-            ContentResolver cr = context.getContentResolver();
-            Cursor c = cr.query(Telephony.Sms.CONTENT_URI, null, null,
-                    null, Telephony.Sms.DATE + " DESC");
-            if (c == null || !c.moveToFirst()) {
-                return false;
-            }
-            do {
-                String number;
-                String body;
-                Date dateReceived;
+            receiver.set(broadcastReceiver)
+            context.registerReceiver(
+                broadcastReceiver,
+                IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
+            )
+        }.timeout(
+            waitingTimeoutSeconds.toLong(),
+            TimeUnit.SECONDS,
+            Schedulers.newThread(),
+            Completable.error(SmsRepository.ResultResponseException(SmsRepository.ResultResponseIssue.TIMEOUT))
+        ).doFinally {
+            receiver.get()?.let {
                 try {
-                    number = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS));
-                    body = c.getString(c.getColumnIndexOrThrow(Telephony.Sms.BODY));
-                    dateReceived = new Date(c.getLong(c.getColumnIndexOrThrow(Telephony.Sms.DATE)));
-                } catch (Exception e) {
-                    // failed reading this message, go to the next one
-                    continue;
+                    context.unregisterReceiver(it)
+                } catch (t: Throwable) {
+                    Log.d(TAG, "${t.javaClass.simpleName} ${t.message}")
                 }
-                if (isAwaitedSuccessMessage(
-                        number, body, requiredSender, submissionId, submissionType)
-                        && dateReceived.after(fromDate)) {
-                    c.close();
-                    return true;
-                }
-            } while (c.moveToNext());
-            c.close();
-            return false;
-        });
+            }
+        }
     }
 
-    private boolean isAwaitedSuccessMessage(Intent intent, String requiredSender,
-                                            int submissionId, SubmissionType submissionType)
-            throws SmsRepository.ResultResponseException {
-        Bundle bundle = intent.getExtras();
-        if (bundle == null) {
-            return false;
+    fun findConfirmationSms(
+        fromDate: Date,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType
+    ): Single<Boolean> {
+        return Single.fromCallable {
+            val cr = context.contentResolver
+
+            cr.query(
+                Telephony.Sms.CONTENT_URI,
+                null,
+                null,
+                null,
+                "${Telephony.Sms.DATE} DESC"
+            )?.use { c ->
+                if (!c.moveToFirst()) return@fromCallable false
+
+                val addressIndex = c.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)
+                val bodyIndex = c.getColumnIndexOrThrow(Telephony.Sms.BODY)
+                val dateIndex = c.getColumnIndexOrThrow(Telephony.Sms.DATE)
+
+                do {
+                    try {
+                        val number = c.getString(addressIndex)
+                        val body = c.getString(bodyIndex)
+                        val dateReceived = Date(c.getLong(dateIndex))
+
+                        if (isAwaitedSuccessMessage(number, body, requiredSender, submissionId, submissionType) &&
+                            dateReceived.after(fromDate)) {
+                            return@fromCallable true
+                        }
+                    } catch (e: Exception) {
+                        // failed reading this message, go to the next one
+                        continue
+                    }
+                } while (c.moveToNext())
+            }
+            return@fromCallable false
         }
-        // get sms objects
-        Object[] pdus = (Object[]) bundle.get("pdus");
-        if (pdus == null || pdus.length == 0) {
-            return false;
-        }
-        // large message might be broken into many
-        SmsMessage[] messages = new SmsMessage[pdus.length];
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < pdus.length; i++) {
-            messages[i] = SmsMessage.createFromPdu((byte[]) pdus[i]);
-            sb.append(messages[i].getMessageBody());
-        }
-        String sender = messages[0].getOriginatingAddress();
-        String message = sb.toString();
-        return isAwaitedSuccessMessage(sender, message, requiredSender,
-                submissionId, submissionType);
     }
 
-    @SuppressWarnings({"PMD.UnusedFormalParameter"})
-    public boolean isAwaitedSuccessMessage(String sender, String message, String requiredSender,
-                                           int submissionId, SubmissionType submissionType)
-            throws SmsRepository.ResultResponseException {
-        if (requiredSender != null &&
-                (sender == null || !sender.toLowerCase(Locale.ROOT)
-                        .contains(requiredSender.toLowerCase(Locale.ROOT)))) {
-            return false;
+    @Throws(SmsRepository.ResultResponseException::class)
+    private fun isAwaitedSuccessMessage(
+        intent: Intent,
+        requiredSender: String?,
+        submissionId: Int,
+        submissionType: SubmissionType
+    ): Boolean {
+        val bundle = intent.extras ?: return false
+
+        // Cast seguro a Array para los PDUs
+        val pdus = bundle.get("pdus") as? Array<*> ?: return false
+        if (pdus.isEmpty()) return false
+
+        var sender: String? = null
+
+        val message = buildString {
+            for (i in pdus.indices) {
+                val pdu = pdus[i] as? ByteArray ?: continue
+                val smsMessage = SmsMessage.createFromPdu(pdu)
+
+                if (i == 0) {
+                    sender = smsMessage.originatingAddress
+                }
+                append(smsMessage.messageBody)
+            }
         }
-        int firstSeparator = message.indexOf(':');
-        if (firstSeparator < 0 || firstSeparator >= message.length() - 2) {
-            return false;
+
+        return sender != null && isAwaitedSuccessMessage(
+            sender, message, requiredSender, submissionId, submissionType
+        )
+    }
+
+    @Throws(SmsRepository.ResultResponseException::class)
+    fun isAwaitedSuccessMessage(
+        sender: String?,
+        message: String,
+        requiredSender: String?,
+        submissionId: Int,
+        submissionType: SubmissionType
+    ): Boolean {
+        if (requiredSender != null && (sender == null || !sender.lowercase(Locale.ROOT).contains(requiredSender.lowercase(Locale.ROOT)))) {
+            return false
         }
-        int secondSeparator = message.indexOf(':', firstSeparator + 1);
+
+        val firstSeparator = message.indexOf(':')
+        if (firstSeparator < 0 || firstSeparator >= message.length - 2) {
+            return false
+        }
+
+        val secondSeparator = message.indexOf(':', firstSeparator + 1)
         if (secondSeparator < 0) {
-            return false;
+            return false
         }
-        if (!message.substring(0, firstSeparator).equals(Integer.toString(submissionId))) {
-            return false;
+
+        if (message.substring(0, firstSeparator) != submissionId.toString()) {
+            return false
         }
 
         // it's awaited message
-        if (message.substring(firstSeparator + 1, secondSeparator).equals("0")) {
-            return true;
+        return if (message.substring(firstSeparator + 1, secondSeparator) == "0") {
+            true
         } else {
-            throw new SmsRepository.ResultResponseException(RECEIVED_ERROR);
+            throw SmsRepository.ResultResponseException(RECEIVED_ERROR)
         }
+    }
+
+    companion object {
+        private val TAG = SmsReader::class.java.simpleName
     }
 }

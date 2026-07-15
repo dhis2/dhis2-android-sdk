@@ -64,7 +64,7 @@ interface SmsRepository {
     fun listenToConfirmationSms(
         fromDate: Date,
         waitingTimeoutSeconds: Int,
-        requiredSender: String?,
+        requiredSender: String,
         submissionId: Int,
         submissionType: SubmissionType,
     ): Completable
@@ -81,9 +81,9 @@ interface SmsRepository {
      * the error RECEIVED_ERROR is the message is the awaited one but it contains an error.
      */
     fun isAwaitedSuccessMessage(
-        sender: String?,
+        sender: String,
         message: String,
-        requiredSender: String?,
+        requiredSender: String,
         submissionId: Int,
         submissionType: SubmissionType,
     ): Single<Boolean>

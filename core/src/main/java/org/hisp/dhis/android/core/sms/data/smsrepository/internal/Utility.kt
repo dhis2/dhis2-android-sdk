@@ -25,28 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal
 
-package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.util.Log
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.util.Log;
+internal object Utility {
+    private val TAG: String = Utility::class.java.getSimpleName()
 
-final class Utility {
-    private static final String TAG = Utility.class.getSimpleName();
-
-    private Utility() {
+    @JvmStatic
+    fun timeLeft(timeStarted: Long, timeoutSeconds: Int): Long {
+        return timeoutSeconds * 1000L + timeStarted - System.currentTimeMillis()
     }
 
-    static long timeLeft(long timeStarted, int timeoutSeconds) {
-        return timeoutSeconds * 1000L + timeStarted - System.currentTimeMillis();
-    }
-
-    static void unregisterReceiver(Context context, BroadcastReceiver receiver) {
+    @JvmStatic
+    fun unregisterReceiver(context: Context, receiver: BroadcastReceiver?) {
         try {
-            context.unregisterReceiver(receiver);
-        } catch (Exception e) {
-            Log.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e);
+            context.unregisterReceiver(receiver)
+        } catch (e: Exception) {
+            Log.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e)
         }
     }
 }

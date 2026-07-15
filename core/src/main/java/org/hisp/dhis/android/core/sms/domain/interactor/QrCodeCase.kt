@@ -25,55 +25,59 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.interactor
 
-package org.hisp.dhis.android.core.sms.domain.interactor;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DatasetConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DeletionConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.EnrollmentConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.RelationshipConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.SimpleEventConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConverter
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
-import org.hisp.dhis.android.core.sms.domain.converter.internal.DatasetConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.internal.DeletionConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.internal.EnrollmentConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.internal.RelationshipConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.internal.SimpleEventConverter;
-import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConverter;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-
-import io.reactivex.Single;
-
-public class QrCodeCase {
-    private final LocalDbRepository localDbRepository;
-    private final DHISVersionManager dhisVersionManager;
-
-    public QrCodeCase(LocalDbRepository localDbRepository,
-                      DHISVersionManager dhisVersionManager) {
-        this.localDbRepository = localDbRepository;
-        this.dhisVersionManager = dhisVersionManager;
-    }
-
+class QrCodeCase internal constructor(
+    private val localDbRepository: LocalDbRepository,
+    private val dhisVersionManager: DHISVersionManager
+) {
     /**
      * Get a compressed representation of a simple event.
      * @param eventUid Event uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateSimpleEventCode(String eventUid) {
-        return new SimpleEventConverter(localDbRepository, dhisVersionManager, eventUid).readAndConvert();
+    fun generateSimpleEventCode(eventUid: String): Single<String> {
+        return SimpleEventConverter(
+            localDbRepository,
+            dhisVersionManager,
+            eventUid
+        ).readAndConvert()
     }
 
     /**
      * Get a compressed representation of a tracker event.
      * @param eventUid Event uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateTrackerEventCode(String eventUid) {
-        return new TrackerEventConverter(localDbRepository, dhisVersionManager, eventUid).readAndConvert();
+    fun generateTrackerEventCode(eventUid: String): Single<String> {
+        return TrackerEventConverter(
+            localDbRepository,
+            dhisVersionManager,
+            eventUid
+        ).readAndConvert()
     }
 
     /**
      * Get a compressed representation of an enrollment.
      * @param enrollmentUid Enrollment uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateEnrollmentCode(String enrollmentUid) {
-        return new EnrollmentConverter(localDbRepository, dhisVersionManager, enrollmentUid).readAndConvert();
+    fun generateEnrollmentCode(enrollmentUid: String): Single<String> {
+        return EnrollmentConverter(
+            localDbRepository,
+            dhisVersionManager,
+            enrollmentUid
+        ).readAndConvert()
     }
 
     /**
@@ -82,36 +86,47 @@ public class QrCodeCase {
      * @param orgUnit Organisation unit uid.
      * @param period Period identifier.
      * @param attributeOptionComboUid Attribute option combo uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateDataSetCode(String dataSet,
-                                              String orgUnit,
-                                              String period,
-                                              String attributeOptionComboUid) {
-        return new DatasetConverter(
-                localDbRepository,
-                dhisVersionManager,
-                dataSet,
-                orgUnit,
-                period,
-                attributeOptionComboUid).readAndConvert();
+    fun generateDataSetCode(
+        dataSet: String,
+        orgUnit: String,
+        period: String,
+        attributeOptionComboUid: String
+    ): Single<String> {
+        return DatasetConverter(
+            localDbRepository,
+            dhisVersionManager,
+            dataSet,
+            orgUnit,
+            period,
+            attributeOptionComboUid
+        ).readAndConvert()
     }
 
     /**
      * Get a compressed representation of a relationship.
      * @param relationshipUid Relationship uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateRelationshipCode(String relationshipUid) {
-        return new RelationshipConverter(localDbRepository, dhisVersionManager, relationshipUid).readAndConvert();
+    fun generateRelationshipCode(relationshipUid: String): Single<String> {
+        return RelationshipConverter(
+            localDbRepository,
+            dhisVersionManager,
+            relationshipUid
+        ).readAndConvert()
     }
 
     /**
      * Get a compressed representation of the deletion of an event.
      * @param itemToDeleteUid Event uid.
-     * @return {@code Single} with the compressed representation.
+     * @return `Single` with the compressed representation.
      */
-    public Single<String> generateDeletionCode(String itemToDeleteUid) {
-        return new DeletionConverter(localDbRepository, dhisVersionManager, itemToDeleteUid).readAndConvert();
+    fun generateDeletionCode(itemToDeleteUid: String): Single<String> {
+        return DeletionConverter(
+            localDbRepository,
+            dhisVersionManager,
+            itemToDeleteUid
+        ).readAndConvert()
     }
 }

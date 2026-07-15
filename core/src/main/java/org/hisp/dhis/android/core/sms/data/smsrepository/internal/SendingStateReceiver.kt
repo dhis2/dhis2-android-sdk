@@ -25,85 +25,75 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal
 
-package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
+import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.os.Binder
+import android.util.Log
+import org.hisp.dhis.android.core.sms.data.smsrepository.internal.Utility.timeLeft
+import org.hisp.dhis.android.core.sms.data.smsrepository.internal.Utility.unregisterReceiver
+import java.util.Objects
 
-import static android.os.Binder.getCallingUid;
+internal class SendingStateReceiver(
+    private val timeStarted: Long,
+    private val timeoutSeconds: Int,
+    private val sendSmsAction: String
+) : BroadcastReceiver() {
+    private val smsResultsWaiting: MutableSet<String?> = HashSet<String?>()
+    var isError: Boolean = false
+        private set
+    var errorCode: Int = 0
+        private set
 
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-class SendingStateReceiver extends BroadcastReceiver {
-    private final static String TAG = SendingStateReceiver.class.getSimpleName();
-    private final Set<String> smsResultsWaiting = new HashSet<>();
-    private final long timeStarted;
-    private final String sendSmsAction;
-    private final int timeoutSeconds;
-    private boolean error;
-    private int errorCode;
-
-    SendingStateReceiver(long timeStarted, int timeoutSeconds, String sendSmsAction) {
-        this.timeStarted = timeStarted;
-        this.timeoutSeconds = timeoutSeconds;
-        this.sendSmsAction = sendSmsAction;
-        error = false;
+    fun addSmsKey(smsKey: String?) {
+        smsResultsWaiting.add(smsKey)
     }
 
-    void addSmsKey(String smsKey) {
-        smsResultsWaiting.add(smsKey);
+    fun smsResultsWaiting(): Int {
+        return smsResultsWaiting.size
     }
 
-    int smsResultsWaiting() {
-        return smsResultsWaiting.size();
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (Utility.timeLeft(timeStarted, timeoutSeconds) < 0 || error) {
+    override fun onReceive(context: Context, intent: Intent) {
+        if (timeLeft(timeStarted, timeoutSeconds) < 0 || this.isError) {
             // not interested, killing receiver
-            Utility.unregisterReceiver(context, this);
-            return;
+            unregisterReceiver(context, this)
+            return
         }
 
-        Log.d(TAG, Objects.requireNonNull(intent.getAction()));
-        if (!sendSmsAction.equals(intent.getAction()) || smsResultsWaiting.isEmpty()) {
-            Log.w(TAG, "Received an unexpected action. Ignoring...");
-            return;
+        Log.d(TAG, Objects.requireNonNull<String>(intent.getAction()))
+        if (sendSmsAction != intent.getAction() || smsResultsWaiting.isEmpty()) {
+            Log.w(TAG, "Received an unexpected action. Ignoring...")
+            return
         }
 
-        int callingUid = getCallingUid();
+        val callingUid = Binder.getCallingUid()
         if (callingUid != context.getApplicationInfo().uid) {
-            Log.w(TAG, "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring...");
-            return;
+            Log.w(
+                TAG,
+                "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring..."
+            )
+            return
         }
 
-        String smsKey = intent.getStringExtra(SmsRepositoryImpl.SMS_KEY);
+        val smsKey = intent.getStringExtra(SmsRepositoryImpl.SMS_KEY)
         if (smsKey == null || !smsResultsWaiting.contains(smsKey)) {
-            Log.d(TAG, "Received SMS result for a different dataset or missing key. Ignoring...");
-            return;
+            Log.d(TAG, "Received SMS result for a different dataset or missing key. Ignoring...")
+            return
         }
 
-        int resultCode = getResultCode();
+        val resultCode = getResultCode()
         if (resultCode == Activity.RESULT_OK) {
-            smsResultsWaiting.remove(smsKey);
+            smsResultsWaiting.remove(smsKey)
         } else {
-            errorCode = resultCode;
-            error = true;
+            errorCode = resultCode
+            this.isError = true
         }
     }
 
-    public boolean isError() {
-        return error;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
+    companion object {
+        private val TAG: String = SendingStateReceiver::class.java.getSimpleName()
     }
 }

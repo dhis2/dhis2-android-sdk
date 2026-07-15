@@ -99,7 +99,7 @@ internal abstract class Converter<P> internal constructor(
 
     protected abstract fun convert(dataItem: P, user: String, submissionId: Int): Single<out SMSSubmission>
 
-    abstract fun updateSubmissionState(state: State): Completable?
+    abstract fun updateSubmissionState(state: State): Completable
 
     protected abstract fun readItemFromDb(): Single<P>
 

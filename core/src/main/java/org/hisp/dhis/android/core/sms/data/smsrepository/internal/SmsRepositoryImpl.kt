@@ -122,7 +122,7 @@ class SmsRepositoryImpl(private val context: Context) : SmsRepository {
     override fun listenToConfirmationSms(
         fromDate: Date,
         waitingTimeoutSeconds: Int,
-        requiredSender: String?,
+        requiredSender: String,
         submissionId: Int,
         submissionType: SubmissionType,
     ): Completable {
@@ -147,9 +147,9 @@ class SmsRepositoryImpl(private val context: Context) : SmsRepository {
     }
 
     override fun isAwaitedSuccessMessage(
-        sender: String?,
+        sender: String,
         message: String,
-        requiredSender: String?,
+        requiredSender: String,
         submissionId: Int,
         submissionType: SubmissionType,
     ): Single<Boolean> {

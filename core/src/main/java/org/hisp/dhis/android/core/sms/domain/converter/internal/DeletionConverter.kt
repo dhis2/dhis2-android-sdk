@@ -55,7 +55,7 @@ internal class DeletionConverter(
         })
     }
 
-    override fun updateSubmissionState(state: State): Completable? {
+    override fun updateSubmissionState(state: State): Completable {
         return localDbRepository
             .updateEventSubmissionState(eventUid, state)
             .onErrorComplete()

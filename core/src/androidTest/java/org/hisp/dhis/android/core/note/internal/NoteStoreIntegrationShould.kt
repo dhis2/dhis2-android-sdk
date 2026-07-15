@@ -26,42 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance.internal;
+package org.hisp.dhis.android.core.note.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationStoreImpl;
-import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.note.NoteSamples
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.note.NoteStoreImpl
+import org.hisp.dhis.android.persistence.note.NoteTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class ForeignKeyViolationStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<ForeignKeyViolation> {
-
-    public ForeignKeyViolationStoreIntegrationShould() {
-        super(new ForeignKeyViolationStoreImpl(TestDatabaseAdapterFactory.get()),
-                ForeignKeyViolationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class NoteStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Note>(
+    NoteStoreImpl(TestDatabaseAdapterFactory.get()),
+    NoteTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Note {
+        return NoteSamples.getNote()
     }
 
-    @Override
-    protected ForeignKeyViolation buildObject() {
-        return ForeignKeyViolationSamples.get();
+    override fun buildObjectToUpdate(): Note {
+        return NoteSamples.getNote().toBuilder()
+            .syncState(State.SYNCED)
+            .build()
     }
 
-    @Override
-    protected ForeignKeyViolation buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): Note {
         return buildObject().toBuilder()
-                .fromTable(null)
-                .fromColumn(null)
-                .toTable(null)
-                .toColumn(null)
-                .notFoundValue(null)
-                .fromObjectUid(null)
-                .fromObjectRow(null)
-                .created(null)
-                .build();
+            .noteType(null)
+            .event(null)
+            .enrollment(null)
+            .value(null)
+            .storedBy(null)
+            .storedDate(null)
+            .deleted(null)
+            .build()
     }
 }

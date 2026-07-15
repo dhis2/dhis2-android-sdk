@@ -25,40 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.indicator.internal
 
-package org.hisp.dhis.android.core.legendset;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.indicator.DataSetIndicatorLinkSamples
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkStoreImpl
+import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkStoreImpl;
-import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramIndicatorLegendSetLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink> {
-
-    public ProgramIndicatorLegendSetLinkStoreIntegrationShould() {
-        super(new ProgramIndicatorLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataSetIndicatorLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataSetIndicatorLink>(
+        DataSetIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        DataSetIndicatorLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().dataSet()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator();
+    override fun buildObject(): DataSetIndicatorLink {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink()
     }
 
-    @Override
-    protected ProgramIndicatorLegendSetLink buildObject() {
-        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink();
-    }
-
-    @Override
-    protected ProgramIndicatorLegendSetLink buildObjectWithOtherMasterUid() {
-        return buildObject().toBuilder()
-                .programIndicator("new_program_indicator")
-                .build();
+    override fun buildObjectWithOtherMasterUid(): DataSetIndicatorLink {
+        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().toBuilder()
+            .dataSet("new_data_set")
+            .build()
     }
 }

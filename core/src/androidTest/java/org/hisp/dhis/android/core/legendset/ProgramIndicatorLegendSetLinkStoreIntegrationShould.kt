@@ -25,41 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset
 
-package org.hisp.dhis.android.core.option.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.ProgramIndicatorLegendSetLinkSamples
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkStoreImpl
+import org.hisp.dhis.android.persistence.legendset.ProgramIndicatorLegendSetLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.option.OptionGroupOptionLinkSamples;
-import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkStoreImpl;
-import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class OptionGroupOptionLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<OptionGroupOptionLink> {
-
-    public OptionGroupOptionLinkStoreIntegrationShould() {
-        super(new OptionGroupOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                OptionGroupOptionLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramIndicatorLegendSetLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<ProgramIndicatorLegendSetLink>(
+        ProgramIndicatorLegendSetLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        ProgramIndicatorLegendSetLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink().programIndicator()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return OptionGroupOptionLinkSamples.getOptionGroupOptionLink().optionGroup();
+    override fun buildObject(): ProgramIndicatorLegendSetLink {
+        return ProgramIndicatorLegendSetLinkSamples.getProgramIndicatorLegendSetLink()
     }
 
-    @Override
-    protected OptionGroupOptionLink buildObject() {
-        return OptionGroupOptionLinkSamples.getOptionGroupOptionLink();
-    }
-
-    @Override
-    protected OptionGroupOptionLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): ProgramIndicatorLegendSetLink {
         return buildObject().toBuilder()
-                .optionGroup("new_option_group")
-                .build();
+            .programIndicator("new_program_indicator")
+            .build()
     }
 }

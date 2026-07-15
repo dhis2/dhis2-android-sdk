@@ -25,48 +25,33 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.maintenance.internal
 
-package org.hisp.dhis.android.core.option.internal;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.maintenance.D2ErrorStoreImpl
+import org.hisp.dhis.android.persistence.maintenance.D2ErrorTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.option.OptionGroupSamples;
-import org.hisp.dhis.android.core.option.OptionGroup;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.option.OptionGroupStoreImpl;
-import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo;
-import java.util.Date;
-
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class OptionGroupStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup> {
-
-    public OptionGroupStoreIntegrationShould() {
-        super(new OptionGroupStoreImpl(TestDatabaseAdapterFactory.get()),
-                OptionGroupTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class D2ErrorStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<D2Error>(
+    D2ErrorStoreImpl(TestDatabaseAdapterFactory.get()),
+    D2ErrorTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): D2Error {
+        return D2ErrorSamples.get()
     }
 
-    @Override
-    protected OptionGroup buildObject() {
-        return OptionGroupSamples.getOptionGroup();
-    }
-
-    @Override
-    protected OptionGroup buildObjectToUpdate() {
-        return OptionGroupSamples.getOptionGroup().toBuilder()
-                .name("new_name")
-                .build();
-    }
-
-    @Override
-    protected OptionGroup buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): D2Error {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .build();
+            .url(null)
+            .errorComponent(null)
+            .httpErrorCode(null)
+            .created(null)
+            .build()
     }
 }

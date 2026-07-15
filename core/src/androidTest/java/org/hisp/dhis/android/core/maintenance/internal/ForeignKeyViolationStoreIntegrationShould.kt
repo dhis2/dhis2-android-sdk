@@ -26,40 +26,37 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.indicator.internal;
+package org.hisp.dhis.android.core.maintenance.internal
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.indicator.DataSetIndicatorLinkSamples;
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkStoreImpl;
-import org.hisp.dhis.android.persistence.indicator.DataSetIndicatorLinkTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.maintenance.ForeignKeyViolationSamples
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationStoreImpl
+import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class DataSetIndicatorLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataSetIndicatorLink> {
-
-    public DataSetIndicatorLinkStoreIntegrationShould() {
-        super(new DataSetIndicatorLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                DataSetIndicatorLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ForeignKeyViolationStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<ForeignKeyViolation>(
+    ForeignKeyViolationStoreImpl(TestDatabaseAdapterFactory.get()),
+    ForeignKeyViolationTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): ForeignKeyViolation {
+        return ForeignKeyViolationSamples.get()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().dataSet();
-    }
-
-    @Override
-    protected DataSetIndicatorLink buildObject() {
-        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink();
-    }
-
-    @Override
-    protected DataSetIndicatorLink buildObjectWithOtherMasterUid() {
-        return DataSetIndicatorLinkSamples.getDataSetIndicatorLink().toBuilder()
-                .dataSet("new_data_set")
-                .build();
+    override fun buildObjectWithNullableFields(): ForeignKeyViolation {
+        return buildObject().toBuilder()
+            .fromTable(null)
+            .fromColumn(null)
+            .toTable(null)
+            .toColumn(null)
+            .notFoundValue(null)
+            .fromObjectUid(null)
+            .fromObjectRow(null)
+            .created(null)
+            .build()
     }
 }

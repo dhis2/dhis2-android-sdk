@@ -25,49 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal
 
-package org.hisp.dhis.android.core.note.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.LegendSetSamples
+import org.hisp.dhis.android.core.legendset.LegendSet
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.legendset.LegendSetStoreImpl
+import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.note.NoteSamples;
-import org.hisp.dhis.android.core.note.Note;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.note.NoteStoreImpl;
-import org.hisp.dhis.android.persistence.note.NoteTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class NoteStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Note> {
-
-    public NoteStoreIntegrationShould() {
-        super(new NoteStoreImpl(TestDatabaseAdapterFactory.get()),
-                NoteTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class LegendSetStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<LegendSet>(
+    LegendSetStoreImpl(TestDatabaseAdapterFactory.get()),
+    LegendSetTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): LegendSet {
+        return LegendSetSamples.getLegendSet()
     }
 
-    @Override
-    protected Note buildObject() {
-        return NoteSamples.getNote();
+    override fun buildObjectToUpdate(): LegendSet {
+        return LegendSetSamples.getLegendSet().toBuilder()
+            .symbolizer("new_color")
+            .build()
     }
 
-    @Override
-    protected Note buildObjectToUpdate() {
-        return NoteSamples.getNote().toBuilder()
-                .syncState(State.SYNCED)
-                .build();
-    }
-
-    @Override
-    protected Note buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): LegendSet {
         return buildObject().toBuilder()
-                .noteType(null)
-                .event(null)
-                .enrollment(null)
-                .value(null)
-                .storedBy(null)
-                .storedDate(null)
-                .deleted(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .symbolizer(null)
+            .build()
     }
 }

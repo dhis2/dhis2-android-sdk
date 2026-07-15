@@ -26,37 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.maintenance.internal;
+package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.maintenance.D2ErrorSamples;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.maintenance.D2ErrorStoreImpl;
-import org.hisp.dhis.android.persistence.maintenance.D2ErrorTableInfo;
-import org.junit.runner.RunWith;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.option.OptionGroupOptionLinkSamples
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkStoreImpl
+import org.hisp.dhis.android.persistence.option.OptionGroupOptionLinkTableInfo
+import org.junit.runner.RunWith
 
-@RunWith(D2JunitRunner.class)
-public class D2ErrorStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<D2Error> {
-
-    public D2ErrorStoreIntegrationShould() {
-        super(new D2ErrorStoreImpl(TestDatabaseAdapterFactory.get()),
-                D2ErrorTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class OptionGroupOptionLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<OptionGroupOptionLink>(
+    OptionGroupOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+    OptionGroupOptionLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun addMasterUid(): String {
+        return OptionGroupOptionLinkSamples.getOptionGroupOptionLink().optionGroup()
     }
 
-    @Override
-    protected D2Error buildObject() {
-        return D2ErrorSamples.get();
+    override fun buildObject(): OptionGroupOptionLink {
+        return OptionGroupOptionLinkSamples.getOptionGroupOptionLink()
     }
 
-    @Override
-    protected D2Error buildObjectWithNullableFields() {
+    override fun buildObjectWithOtherMasterUid(): OptionGroupOptionLink {
         return buildObject().toBuilder()
-                .url(null)
-                .errorComponent(null)
-                .httpErrorCode(null)
-                .created(null)
-                .build();
+            .optionGroup("new_option_group")
+            .build()
     }
 }

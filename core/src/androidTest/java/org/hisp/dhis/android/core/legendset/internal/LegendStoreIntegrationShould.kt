@@ -25,52 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.legendset.internal
 
-package org.hisp.dhis.android.core.legendset.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.legendset.LegendSamples
+import org.hisp.dhis.android.core.legendset.Legend
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.legendset.LegendStoreImpl
+import org.hisp.dhis.android.persistence.legendset.LegendTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSamples;
-import org.hisp.dhis.android.core.legendset.Legend;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.legendset.LegendStoreImpl;
-import org.hisp.dhis.android.persistence.legendset.LegendTableInfo;
-import java.util.Date;
-
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LegendStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<Legend> {
-
-    public LegendStoreIntegrationShould() {
-        super(new LegendStoreImpl(TestDatabaseAdapterFactory.get()),
-                LegendTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class LegendStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Legend>(
+    LegendStoreImpl(TestDatabaseAdapterFactory.get()),
+    LegendTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Legend {
+        return LegendSamples.getLegend()
     }
 
-    @Override
-    protected Legend buildObject() {
-        return LegendSamples.getLegend();
-    }
-
-    @Override
-    protected Legend buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): Legend {
         return LegendSamples.getLegend().toBuilder()
-                .legendSet(ObjectWithUid.create("new_legend_set_uid"))
-                .build();
+            .legendSet(ObjectWithUid.create("new_legend_set_uid"))
+            .build()
     }
 
-    @Override
-    protected Legend buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): Legend {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .startValue(null)
-                .endValue(null)
-                .color(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .startValue(null)
+            .endValue(null)
+            .color(null)
+            .build()
     }
 }

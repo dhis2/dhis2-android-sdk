@@ -26,48 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.legendset.internal;
+package org.hisp.dhis.android.core.option.internal
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.legendset.LegendSetSamples;
-import org.hisp.dhis.android.core.legendset.LegendSet;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.legendset.LegendSetStoreImpl;
-import org.hisp.dhis.android.persistence.legendset.LegendSetTableInfo;
-import java.util.Date;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.option.OptionGroupSamples
+import org.hisp.dhis.android.core.option.OptionGroup
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.option.OptionGroupStoreImpl
+import org.hisp.dhis.android.persistence.option.OptionGroupTableInfo
+import org.junit.runner.RunWith
 
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class LegendSetStoreIntegrationShould extends IdentifiableObjectStoreAbstractIntegrationShould<LegendSet> {
-
-    public LegendSetStoreIntegrationShould() {
-        super(new LegendSetStoreImpl(TestDatabaseAdapterFactory.get()),
-                LegendSetTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class OptionGroupStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<OptionGroup>(
+    OptionGroupStoreImpl(TestDatabaseAdapterFactory.get()),
+    OptionGroupTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): OptionGroup {
+        return OptionGroupSamples.getOptionGroup()
     }
 
-    @Override
-    protected LegendSet buildObject() {
-        return LegendSetSamples.getLegendSet();
+    override fun buildObjectToUpdate(): OptionGroup {
+        return OptionGroupSamples.getOptionGroup().toBuilder()
+            .name("new_name")
+            .build()
     }
 
-    @Override
-    protected LegendSet buildObjectToUpdate() {
-        return LegendSetSamples.getLegendSet().toBuilder()
-                .symbolizer("new_color")
-                .build();
-    }
-
-    @Override
-    protected LegendSet buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): OptionGroup {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .symbolizer(null)
-                .build();
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .build()
     }
 }

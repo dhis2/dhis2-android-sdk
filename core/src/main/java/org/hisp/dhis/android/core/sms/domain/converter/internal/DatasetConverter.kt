@@ -40,8 +40,8 @@ import org.hisp.dhis.smscompression.models.SMSSubmission
 import java.util.concurrent.Callable
 
 internal class DatasetConverter(
-    private val localDbRepository: LocalDbRepository?,
-    dhisVersionManager: DHISVersionManager?,
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
     private val dataSet: String,
     private val orgUnit: String,
     private val period: String,
@@ -49,9 +49,10 @@ internal class DatasetConverter(
 ) : Converter<SMSDataValueSet>(localDbRepository, dhisVersionManager) {
     override fun convert(
         dataValueSet: SMSDataValueSet,
-        user: String?, submissionId: Int
-    ): Single<out SMSSubmission?>? {
-        return Single.fromCallable<AggregateDatasetSMSSubmission?>(Callable {
+        user: String,
+        submissionId: Int
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable<AggregateDatasetSMSSubmission>(Callable {
             val subm = AggregateDatasetSMSSubmission()
             subm.setSubmissionID(submissionId)
             subm.setUserID(user)
@@ -76,13 +77,13 @@ internal class DatasetConverter(
     }
 
     override fun updateSubmissionState(state: State): Completable {
-        return getLocalDbRepository().updateDataSetSubmissionState(
+        return localDbRepository.updateDataSetSubmissionState(
             dataSet, orgUnit, period, attributeOptionComboUid, state
         )
     }
 
     override fun readItemFromDb(): Single<SMSDataValueSet> {
-        return getLocalDbRepository().getDataValueSet(
+        return localDbRepository.getDataValueSet(
             dataSet,
             orgUnit,
             period,

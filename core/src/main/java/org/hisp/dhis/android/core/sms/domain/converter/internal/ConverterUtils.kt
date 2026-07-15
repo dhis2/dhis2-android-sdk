@@ -25,95 +25,77 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.containsAPoint
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.getPoint
+import org.hisp.dhis.android.core.common.Geometry
+import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.smscompression.SMSConsts.SMSEnrollmentStatus
+import org.hisp.dhis.smscompression.SMSConsts.SMSEventStatus
+import org.hisp.dhis.smscompression.models.GeoPoint
+import org.hisp.dhis.smscompression.models.SMSDataValue
 
-import android.util.Log;
+internal object ConverterUtils {
+    private val TAG: String = ConverterUtils::class.java.getSimpleName()
 
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
-import org.hisp.dhis.android.core.common.Geometry;
-import org.hisp.dhis.android.core.enrollment.EnrollmentStatus;
-import org.hisp.dhis.android.core.event.EventStatus;
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
-import org.hisp.dhis.smscompression.SMSConsts;
-import org.hisp.dhis.smscompression.models.GeoPoint;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
-
-import java.util.ArrayList;
-import java.util.List;
-
-final class ConverterUtils {
-
-    private final static String TAG = ConverterUtils.class.getSimpleName();
-
-    private ConverterUtils() {
-        // no instances
-    }
-
-    static SMSConsts.SMSEventStatus convertEventStatus(EventStatus status) {
+    fun convertEventStatus(status: EventStatus?): SMSEventStatus? {
         if (status == null) {
-            return null;
+            return null
         }
-        switch (status) {
-            case ACTIVE:
-                return SMSConsts.SMSEventStatus.ACTIVE;
-            case COMPLETED:
-                return SMSConsts.SMSEventStatus.COMPLETED;
-            case SCHEDULE:
-                return SMSConsts.SMSEventStatus.SCHEDULE;
-            case SKIPPED:
-                return SMSConsts.SMSEventStatus.SKIPPED;
-            case VISITED:
-                return SMSConsts.SMSEventStatus.VISITED;
-            case OVERDUE:
-                return SMSConsts.SMSEventStatus.OVERDUE;
-            default:
-                return null;
+        when (status) {
+            EventStatus.ACTIVE -> return SMSEventStatus.ACTIVE
+            EventStatus.COMPLETED -> return SMSEventStatus.COMPLETED
+            EventStatus.SCHEDULE -> return SMSEventStatus.SCHEDULE
+            EventStatus.SKIPPED -> return SMSEventStatus.SKIPPED
+            EventStatus.VISITED -> return SMSEventStatus.VISITED
+            EventStatus.OVERDUE -> return SMSEventStatus.OVERDUE
+            else -> return null
         }
     }
 
-    static SMSConsts.SMSEnrollmentStatus convertEnrollmentStatus(EnrollmentStatus status) {
+    fun convertEnrollmentStatus(status: EnrollmentStatus?): SMSEnrollmentStatus? {
         if (status == null) {
-            return null;
+            return null
         }
-        switch (status) {
-            case ACTIVE:
-                return SMSConsts.SMSEnrollmentStatus.ACTIVE;
-            case CANCELLED:
-                return SMSConsts.SMSEnrollmentStatus.CANCELLED;
-            case COMPLETED:
-                return SMSConsts.SMSEnrollmentStatus.COMPLETED;
-            default:
-                return null;
+        when (status) {
+            EnrollmentStatus.ACTIVE -> return SMSEnrollmentStatus.ACTIVE
+            EnrollmentStatus.CANCELLED -> return SMSEnrollmentStatus.CANCELLED
+            EnrollmentStatus.COMPLETED -> return SMSEnrollmentStatus.COMPLETED
+            else -> return null
         }
     }
 
-    static GeoPoint convertGeometryPoint(Geometry geometry) {
-        if (!GeometryHelper.containsAPoint(geometry)) {
-            return null;
+    fun convertGeometryPoint(geometry: Geometry?): GeoPoint? {
+        if (geometry == null|| !containsAPoint(geometry)) {
+            return null
         }
 
         try {
-            List<Double> point = GeometryHelper.getPoint(geometry);
-            return new GeoPoint(point.get(1).floatValue(), point.get(0).floatValue());
-        } catch (D2Error d2Error) {
-            Log.d(TAG, d2Error.errorDescription());
-            return null;
+            val point: List<Double?> = getPoint(geometry)
+            return GeoPoint(point.get(1)!!.toFloat(), point.get(0)!!.toFloat())
+        } catch (d2Error: D2Error) {
+            Log.d(TAG, d2Error.errorDescription())
+            return null
         }
     }
 
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    static List<SMSDataValue> convertDataValues(String catOptionCombo,
-                                                List<TrackedEntityDataValue> trackedEntityDataValues) {
-        ArrayList<SMSDataValue> dataValues = new ArrayList<>();
+    fun convertDataValues(
+        catOptionCombo: String?,
+        trackedEntityDataValues: List<TrackedEntityDataValue>?
+    ): List<SMSDataValue?> {
+        val dataValues = ArrayList<SMSDataValue?>()
         if (trackedEntityDataValues == null) {
-            return dataValues;
+            return dataValues
         }
-        for (TrackedEntityDataValue tedv : trackedEntityDataValues) {
-            String value = tedv.value() == null ? "" : tedv.value();
-            dataValues.add(new SMSDataValue(catOptionCombo, tedv.dataElement(), value));
+        for (tedv in trackedEntityDataValues) {
+            val value = if (tedv.value() == null) "" else tedv.value()
+            dataValues.add(SMSDataValue(catOptionCombo, tedv.dataElement(), value))
         }
-        return dataValues;
+        return dataValues
     }
 }

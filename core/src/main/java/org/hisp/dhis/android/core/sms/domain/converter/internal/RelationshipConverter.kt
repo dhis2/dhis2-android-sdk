@@ -38,15 +38,15 @@ import org.hisp.dhis.smscompression.models.SMSSubmission
 import java.util.concurrent.Callable
 
 internal class RelationshipConverter(
-    private val localDbRepository: LocalDbRepository?,
-    dhisVersionManager: DHISVersionManager?,
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
     private val relationshipUid: String
 ) : Converter<Relationship>(localDbRepository, dhisVersionManager) {
     override fun convert(
         relationship: Relationship,
-        user: String?, submissionId: Int
-    ): Single<out SMSSubmission?>? {
-        return Single.fromCallable<RelationshipSMSSubmission?>(Callable {
+        user: String, submissionId: Int
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable<RelationshipSMSSubmission>(Callable {
             val subm = RelationshipSMSSubmission()
             subm.setSubmissionID(submissionId)
             subm.setUserID(user)
@@ -59,10 +59,10 @@ internal class RelationshipConverter(
     }
 
     override fun updateSubmissionState(state: State): Completable {
-        return getLocalDbRepository().updateRelationshipSubmissionState(relationshipUid, state)
+        return localDbRepository.updateRelationshipSubmissionState(relationshipUid, state)
     }
 
     override fun readItemFromDb(): Single<Relationship> {
-        return getLocalDbRepository().getRelationship(relationshipUid)
+        return localDbRepository.getRelationship(relationshipUid)
     }
 }

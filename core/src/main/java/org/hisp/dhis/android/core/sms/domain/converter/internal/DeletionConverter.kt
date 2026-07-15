@@ -37,16 +37,16 @@ import org.hisp.dhis.smscompression.models.SMSSubmission
 import java.util.concurrent.Callable
 
 internal class DeletionConverter(
-    private val localDbRepository: LocalDbRepository?,
-    dhisVersionManager: DHISVersionManager?,
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
     private val eventUid: String
 ) : Converter<String>(localDbRepository, dhisVersionManager) {
     override fun convert(
         uid: String,
-        user: String?,
+        user: String,
         submissionId: Int
-    ): Single<out SMSSubmission?>? {
-        return Single.fromCallable<DeleteSMSSubmission?>(Callable {
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable<DeleteSMSSubmission>(Callable {
             val subm = DeleteSMSSubmission()
             subm.setSubmissionID(submissionId)
             subm.setUserID(user)
@@ -56,12 +56,12 @@ internal class DeletionConverter(
     }
 
     override fun updateSubmissionState(state: State): Completable? {
-        return getLocalDbRepository()
+        return localDbRepository
             .updateEventSubmissionState(eventUid, state)
             .onErrorComplete()
     }
 
-    override fun readItemFromDb(): Single<String>? {
+    override fun readItemFromDb(): Single<String> {
         return Single.just<String>(eventUid)
     }
 }

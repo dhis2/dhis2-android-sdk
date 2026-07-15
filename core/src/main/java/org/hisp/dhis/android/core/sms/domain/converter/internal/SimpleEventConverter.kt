@@ -39,16 +39,16 @@ import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission
 import java.util.concurrent.Callable
 
 internal class SimpleEventConverter(
-    private val localDbRepository: LocalDbRepository?,
-    dhisVersionManager: DHISVersionManager?,
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
     private val eventUid: String
 ) : Converter<Event>(localDbRepository, dhisVersionManager) {
     public override fun convert(
         e: Event,
-        user: String?,
+        user: String,
         submissionId: Int
-    ): Single<out SMSSubmission?>? {
-        return Single.fromCallable<SimpleEventSMSSubmission?>(Callable {
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable<SimpleEventSMSSubmission>(Callable {
             val subm = SimpleEventSMSSubmission()
             subm.setSubmissionID(submissionId)
             subm.setUserID(user)
@@ -75,10 +75,10 @@ internal class SimpleEventConverter(
     }
 
     override fun updateSubmissionState(state: State): Completable {
-        return getLocalDbRepository().updateEventSubmissionState(eventUid, state)
+        return localDbRepository.updateEventSubmissionState(eventUid, state)
     }
 
     override fun readItemFromDb(): Single<Event> {
-        return getLocalDbRepository().getSimpleEventToSubmit(eventUid)
+        return localDbRepository.getSimpleEventToSubmit(eventUid)
     }
 }

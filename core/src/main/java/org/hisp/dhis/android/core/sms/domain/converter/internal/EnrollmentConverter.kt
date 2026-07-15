@@ -42,7 +42,7 @@ import org.hisp.dhis.smscompression.models.SMSEvent
 import org.hisp.dhis.smscompression.models.SMSSubmission
 
 internal class EnrollmentConverter(
-    private val localDbRepository: LocalDbRepository,
+    localDbRepository: LocalDbRepository,
     dhisVersionManager: DHISVersionManager,
     private val enrollmentUid: String,
 ) : Converter<TrackedEntityInstance>(localDbRepository, dhisVersionManager) {

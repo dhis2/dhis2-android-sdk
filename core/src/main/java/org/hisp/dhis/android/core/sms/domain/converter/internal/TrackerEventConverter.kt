@@ -39,16 +39,16 @@ import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission
 import java.util.concurrent.Callable
 
 internal class TrackerEventConverter(
-    private val localDbRepository: LocalDbRepository?,
-    dhisVersionManager: DHISVersionManager?,
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
     private val eventUid: String
 ) : Converter<Event>(localDbRepository, dhisVersionManager) {
     public override fun convert(
         e: Event,
-        user: String?,
+        user: String,
         submissionId: Int
-    ): Single<out SMSSubmission?>? {
-        return Single.fromCallable<TrackerEventSMSSubmission?>(Callable {
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable<TrackerEventSMSSubmission>(Callable {
             val subm = TrackerEventSMSSubmission()
             subm.setSubmissionID(submissionId)
             subm.setUserID(user)
@@ -76,10 +76,10 @@ internal class TrackerEventConverter(
     }
 
     override fun updateSubmissionState(state: State): Completable {
-        return getLocalDbRepository().updateEventSubmissionState(eventUid, state)
+        return localDbRepository.updateEventSubmissionState(eventUid, state)
     }
 
     override fun readItemFromDb(): Single<Event> {
-        return getLocalDbRepository().getTrackerEventToSubmit(eventUid)
+        return localDbRepository.getTrackerEventToSubmit(eventUid)
     }
 }

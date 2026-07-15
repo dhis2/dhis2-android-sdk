@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.junit.Before
@@ -162,6 +163,21 @@ class OAuth2HandlerImplShould {
     @Test(expected = IllegalArgumentException::class)
     fun blockingHandleEnrollmentResponse_throws_on_expired_iat() {
         handler.blockingHandleEnrollmentResponse("https://server.com", expiredJwt())
+    }
+
+    // endregion
+
+    // region blockingBuildLogoutUrl
+
+    @Test
+    fun blockingBuildLogoutUrl_delegates_config_to_network_handler_and_returns_url() {
+        val config = OAuth2Config(serverUrl = NORMALIZED_URL)
+        whenever(oauth2NetworkHandler.buildLogoutUrl(config)).thenReturn(LOGOUT_URL)
+
+        val result = handler.blockingBuildLogoutUrl(config)
+
+        assertThat(result).isEqualTo(LOGOUT_URL)
+        verify(oauth2NetworkHandler).buildLogoutUrl(config)
     }
 
     // endregion
@@ -527,6 +543,7 @@ class OAuth2HandlerImplShould {
 
     companion object {
         private const val ENROLL_URL = "https://server.com/oauth2/dcr/enroll"
+        private const val LOGOUT_URL = "https://server.com/dhis-web-commons-security/logout.action"
         private const val NORMALIZED_URL = "https://server.com"
         private const val CLIENT_ID = "client-1"
         private const val KEY_ID = "key-1"

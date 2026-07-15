@@ -109,6 +109,14 @@ internal class OAuth2HandlerImpl(
         runBlocking { handleEnrollmentResponseInternal(serverUrl, iat) }
     }
 
+    override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
+        return runBlocking { buildLogoutUrlInternal(config) }
+    }
+
+    private fun buildLogoutUrlInternal(config: OAuth2Config): String {
+        return oauth2NetworkHandler.buildLogoutUrl(config)
+    }
+
     private suspend fun logInInternal(config: OAuth2Config): String {
         check(isDeviceRegistered()) { "Device not registered. Call handleEnrollmentResponse first." }
 

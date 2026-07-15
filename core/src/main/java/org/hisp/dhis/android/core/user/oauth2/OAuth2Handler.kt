@@ -40,6 +40,8 @@ interface OAuth2Handler {
 
     fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String)
 
+    fun blockingBuildLogoutUrl(config: OAuth2Config): String
+
     fun blockingLogIn(config: OAuth2Config): String
 
     fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String): User

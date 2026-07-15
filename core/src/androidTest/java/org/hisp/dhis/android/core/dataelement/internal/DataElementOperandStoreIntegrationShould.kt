@@ -25,45 +25,38 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataelement.internal
 
-package org.hisp.dhis.android.core.dataelement.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataelement.DataElementOperandStoreImpl
+import org.hisp.dhis.android.persistence.dataelement.DataElementOperandTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataelement.DataElementOperandSamples;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataelement.DataElementOperandStoreImpl;
-import org.hisp.dhis.android.persistence.dataelement.DataElementOperandTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataElementOperandStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand> {
-
-    public DataElementOperandStoreIntegrationShould() {
-        super(new DataElementOperandStoreImpl(TestDatabaseAdapterFactory.get()), DataElementOperandTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataElementOperandStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<DataElementOperand>(
+    DataElementOperandStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataElementOperandTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): DataElementOperand {
+        return DataElementOperandSamples.getDataElementOperand()
     }
 
-    @Override
-    protected DataElementOperand buildObject() {
-        return DataElementOperandSamples.getDataElementOperand();
-    }
-
-    @Override
-    protected DataElementOperand buildObjectToUpdate() {
+    override fun buildObjectToUpdate(): DataElementOperand {
         return DataElementOperandSamples.getDataElementOperand().toBuilder()
-                .categoryOptionCombo(ObjectWithUid.create("newCombo"))
-                .build();
+            .categoryOptionCombo(ObjectWithUid.create("newCombo"))
+            .build()
     }
 
-    @Override
-    protected DataElementOperand buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): DataElementOperand {
         return buildObject().toBuilder()
-                .dataElement(null)
-                .categoryOptionCombo(null)
-                .build();
+            .dataElement(null)
+            .categoryOptionCombo(null)
+            .build()
     }
 }

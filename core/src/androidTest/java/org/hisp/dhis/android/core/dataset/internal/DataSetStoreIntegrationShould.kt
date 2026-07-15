@@ -25,41 +25,48 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataSetSamples
+import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.SectionDataElementLinkSamples;
-import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.SectionDataElementLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class SectionDataElementLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<SectionDataElementLink> {
-
-    public SectionDataElementLinkStoreIntegrationShould() {
-        super(new SectionDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                SectionDataElementLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataSetStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<DataSet>(
+    DataSetStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataSetTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): DataSet {
+        return DataSetSamples.getDataSet()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return SectionDataElementLinkSamples.getSectionDataElementLink().section();
+    override fun buildObjectToUpdate(): DataSet {
+        return DataSetSamples.getDataSet().toBuilder()
+            .version(66)
+            .build()
     }
 
-    @Override
-    protected SectionDataElementLink buildObject() {
-        return SectionDataElementLinkSamples.getSectionDataElementLink();
-    }
-
-    @Override
-    protected SectionDataElementLink buildObjectWithOtherMasterUid() {
-        return SectionDataElementLinkSamples.getSectionDataElementLink().toBuilder()
-                .section("new_section")
-                .build();
+    override fun buildObjectWithNullableFields(): DataSet {
+        return buildObject().toBuilder()
+            .code(null)
+            .name(null)
+            .displayName(null)
+            .created(null)
+            .lastUpdated(null)
+            .shortName(null)
+            .displayShortName(null)
+            .description(null)
+            .displayDescription(null)
+            .periodType(null)
+            .version(null)
+            .expiryDays(null)
+            .workflow(null)
+            .build()
     }
 }

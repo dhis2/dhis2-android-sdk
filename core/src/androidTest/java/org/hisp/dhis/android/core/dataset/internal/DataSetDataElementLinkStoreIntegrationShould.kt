@@ -25,22 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples
+import org.hisp.dhis.android.core.dataset.DataSetElement
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+@RunWith(D2JunitRunner::class)
+class DataSetDataElementLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataSetElement>(
+    DataSetDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataSetDataElementLinkTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun addMasterUid(): String {
+        return DataSetElementSamples.getDataSetElement().dataSet().uid()
+    }
 
-public class DataSetCompleteRegistrationCallRealIntegrationShould extends BaseRealIntegrationTest {
+    override fun buildObject(): DataSetElement {
+        return DataSetElementSamples.getDataSetElement()
+    }
 
-    // commented out since it is a flaky test that works against a real server.
-    //@Test
-    public void remove_records_deleted_in_the_server() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-        d2.metadataModule().blockingDownload();
-        d2.aggregatedModule().data().blockingDownload();
-
-        // At this point, delete a record in the server
-
-        d2.aggregatedModule().data().blockingDownload();
+    override fun buildObjectWithOtherMasterUid(): DataSetElement {
+        return DataSetElementSamples.getDataSetElement().toBuilder()
+            .dataSet(ObjectWithUid.create("new_data_set_uid"))
+            .build()
     }
 }

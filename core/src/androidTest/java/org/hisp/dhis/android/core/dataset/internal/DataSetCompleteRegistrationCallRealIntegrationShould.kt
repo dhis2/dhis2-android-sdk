@@ -25,41 +25,20 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples;
-import org.hisp.dhis.android.core.dataset.DataInputPeriod;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.DataInputPeriodStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo;
-import org.junit.runner.RunWith;
+class DataSetCompleteRegistrationCallRealIntegrationShould : BaseRealIntegrationTest() {
+    // commented out since it is a flaky test that works against a real server.
+    // @Test
+    fun remove_records_deleted_in_the_server() {
+        d2.userModule().logIn(username, password, url).blockingGet()
+        d2.metadataModule().blockingDownload()
+        d2.aggregatedModule().data().blockingDownload()
 
-@RunWith(D2JunitRunner.class)
-public class DataInputPeriodLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataInputPeriod> {
+        // At this point, delete a record in the server
 
-    public DataInputPeriodLinkStoreIntegrationShould() {
-        super(new DataInputPeriodStoreImpl(TestDatabaseAdapterFactory.get()), DataInputPeriodTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected String addMasterUid() {
-        return DataInputPeriodSamples.getDataInputPeriod().dataSet().uid();
-    }
-
-    @Override
-    protected DataInputPeriod buildObject() {
-        return DataInputPeriodSamples.getDataInputPeriod();
-    }
-
-    @Override
-    protected DataInputPeriod buildObjectWithOtherMasterUid() {
-        return DataInputPeriodSamples.getDataInputPeriod().toBuilder()
-                .dataSet(ObjectWithUid.create("new_data_set_uid"))
-                .build();
+        d2.aggregatedModule().data().blockingDownload()
     }
 }

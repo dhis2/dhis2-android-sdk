@@ -25,42 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataSetCompulsoryDataElementOperandLinkSamples
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandLinkStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.DataSetElementSamples;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataSetDataElementLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataSetElement> {
-
-    public DataSetDataElementLinkStoreIntegrationShould() {
-        super(new DataSetDataElementLinkStoreImpl(TestDatabaseAdapterFactory.get()), DataSetDataElementLinkTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataSetCompulsoryDataElementOperandLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataSetCompulsoryDataElementOperandLink>(
+        DataSetCompulsoryDataElementOperandLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return buildObject().dataSet()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataSetElementSamples.getDataSetElement().dataSet().uid();
+    override fun buildObject(): DataSetCompulsoryDataElementOperandLink {
+        return DataSetCompulsoryDataElementOperandLinkSamples.getDataSetCompulsoryDataElementOperandLink()
     }
 
-    @Override
-    protected DataSetElement buildObject() {
-        return DataSetElementSamples.getDataSetElement();
-    }
-
-    @Override
-    protected DataSetElement buildObjectWithOtherMasterUid() {
-        return DataSetElementSamples.getDataSetElement().toBuilder()
-                .dataSet(ObjectWithUid.create("new_data_set_uid"))
-                .build();
+    override fun buildObjectWithOtherMasterUid(): DataSetCompulsoryDataElementOperandLink {
+        return buildObject().toBuilder()
+            .dataSet("new_data_set_uid")
+            .build()
     }
 }

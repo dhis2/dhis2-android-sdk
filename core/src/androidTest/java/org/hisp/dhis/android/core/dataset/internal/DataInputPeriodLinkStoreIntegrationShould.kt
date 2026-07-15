@@ -25,41 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataInputPeriodSamples
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.SectionGreyedFieldsLinkSamples;
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.SectionGreyedFieldsLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class SectionGreyedFieldsLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<SectionGreyedFieldsLink> {
-
-    public SectionGreyedFieldsLinkStoreIntegrationShould() {
-        super(new SectionGreyedFieldsLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                SectionGreyedFieldsLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataInputPeriodLinkStoreIntegrationShould : LinkStoreAbstractIntegrationShould<DataInputPeriod>(
+    DataInputPeriodStoreImpl(TestDatabaseAdapterFactory.get()),
+    DataInputPeriodTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun addMasterUid(): String {
+        return DataInputPeriodSamples.getDataInputPeriod().dataSet()!!.uid()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().section();
+    override fun buildObject(): DataInputPeriod {
+        return DataInputPeriodSamples.getDataInputPeriod()
     }
 
-    @Override
-    protected SectionGreyedFieldsLink buildObject() {
-        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink();
-    }
-
-    @Override
-    protected SectionGreyedFieldsLink buildObjectWithOtherMasterUid() {
-        return SectionGreyedFieldsLinkSamples.getSectionGreyedFieldsLink().toBuilder()
-                .section("new_section")
-                .build();
+    override fun buildObjectWithOtherMasterUid(): DataInputPeriod {
+        return DataInputPeriodSamples.getDataInputPeriod().toBuilder()
+            .dataSet(ObjectWithUid.create("new_data_set_uid"))
+            .build()
     }
 }

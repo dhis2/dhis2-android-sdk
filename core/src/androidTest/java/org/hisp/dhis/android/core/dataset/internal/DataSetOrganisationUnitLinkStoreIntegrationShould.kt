@@ -25,41 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.dataset.internal
 
-package org.hisp.dhis.android.core.dataset.internal;
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.dataset.DataSetOrganisationUnitLinkSamples
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkStoreImpl
+import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.dataset.DataSetOrganisationUnitLinkSamples;
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkStoreImpl;
-import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataSetOrganisationUnitLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataSetOrganisationUnitLink> {
-
-    public DataSetOrganisationUnitLinkStoreIntegrationShould() {
-        super(new DataSetOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                DataSetOrganisationUnitLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataSetOrganisationUnitLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataSetOrganisationUnitLink>(
+        DataSetOrganisationUnitLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        DataSetOrganisationUnitLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().organisationUnit()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().organisationUnit();
+    override fun buildObject(): DataSetOrganisationUnitLink {
+        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink()
     }
 
-    @Override
-    protected DataSetOrganisationUnitLink buildObject() {
-        return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink();
-    }
-
-    @Override
-    protected DataSetOrganisationUnitLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): DataSetOrganisationUnitLink {
         return DataSetOrganisationUnitLinkSamples.getDataSetOrganisationUnitLink().toBuilder()
-                .organisationUnit("new_organisation_unit")
-                .build();
+            .organisationUnit("new_organisation_unit")
+            .build()
     }
 }

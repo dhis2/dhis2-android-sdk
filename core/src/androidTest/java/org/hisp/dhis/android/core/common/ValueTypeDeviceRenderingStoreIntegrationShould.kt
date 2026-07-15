@@ -25,41 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.data.common.ValueTypeDeviceRenderingSamples
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingStoreImpl
+import org.hisp.dhis.android.persistence.valuetypedevicerendering.ValueTypeDeviceRenderingTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
-import org.hisp.dhis.android.core.data.attribute.DataElementAttributeValueLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkStoreImpl;
-import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class DataElementAttributeValueLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<DataElementAttributeValueLink> {
-
-    public DataElementAttributeValueLinkStoreIntegrationShould() {
-        super(new DataElementAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                DataElementAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ValueTypeDeviceRenderingStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<ValueTypeDeviceRendering>(
+        ValueTypeDeviceRenderingStoreImpl(TestDatabaseAdapterFactory.get()),
+        ValueTypeDeviceRenderingTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): ValueTypeDeviceRendering {
+        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering()
     }
 
-    @Override
-    protected String addMasterUid() {
-        return DataElementAttributeValueLinkSamples.getDataElementAttribute().dataElement();
+    override fun buildObjectToUpdate(): ValueTypeDeviceRendering {
+        return ValueTypeDeviceRenderingSamples.getValueTypeDeviceRendering().toBuilder()
+            .step(20)
+            .build()
     }
 
-    @Override
-    protected DataElementAttributeValueLink buildObject() {
-        return DataElementAttributeValueLinkSamples.getDataElementAttribute();
-    }
-
-    @Override
-    protected DataElementAttributeValueLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithNullableFields(): ValueTypeDeviceRendering {
         return buildObject().toBuilder()
-                .dataElement("new_data_element")
-                .build();
+            .objectTable(null)
+            .type(null)
+            .min(null)
+            .max(null)
+            .step(null)
+            .decimalPoints(null)
+            .build()
     }
 }

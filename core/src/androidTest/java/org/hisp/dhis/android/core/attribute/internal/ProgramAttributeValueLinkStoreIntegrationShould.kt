@@ -25,50 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal
 
-package org.hisp.dhis.android.core.constant.internal;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
+import org.hisp.dhis.android.core.data.attribute.ProgramAttributeValueLinkSamples
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkStoreImpl
+import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.constant.Constant;
-import org.hisp.dhis.android.core.data.constant.ConstantSamples;
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.constant.ConstantStoreImpl;
-import org.hisp.dhis.android.persistence.constant.ConstantTableInfo;
-import java.util.Date;
-
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ConstantStoreIntegrationShould
-        extends IdentifiableObjectStoreAbstractIntegrationShould<Constant> {
-
-    public ConstantStoreIntegrationShould() {
-        super(new ConstantStoreImpl(TestDatabaseAdapterFactory.get()), ConstantTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ProgramAttributeValueLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<ProgramAttributeValueLink>(
+        ProgramAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        ProgramAttributeValueLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute().program()
     }
 
-    @Override
-    protected Constant buildObject() {
-        return ConstantSamples.getConstant();
+    override fun buildObject(): ProgramAttributeValueLink {
+        return ProgramAttributeValueLinkSamples.getProgramAttribute()
     }
 
-    @Override
-    protected Constant buildObjectToUpdate() {
-        return ConstantSamples.getConstant().toBuilder()
-                .value(25.36)
-                .build();
-    }
-
-    @Override
-    protected Constant buildObjectWithNullableFields() {
+    override fun buildObjectWithOtherMasterUid(): ProgramAttributeValueLink {
         return buildObject().toBuilder()
-                .code(null)
-                .name(null)
-                .displayName(null)
-                .created((Date) null)
-                .lastUpdated((Date) null)
-                .value(null)
-                .build();
+            .program("new_program")
+            .build()
     }
 }

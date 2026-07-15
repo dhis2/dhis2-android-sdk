@@ -25,44 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core.category.internal;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
+import org.hisp.dhis.android.core.data.category.CategoryOptionComboCategoryOptionLinkSamples
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkStoreImpl
+import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
-import org.hisp.dhis.android.core.data.category.CategoryOptionComboCategoryOptionLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkStoreImpl;
-import org.hisp.dhis.android.persistence.category.CategoryOptionComboCategoryOptionLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<CategoryOptionComboCategoryOptionLink> {
-
-    public CategoryOptionComboCategoryOptionLinkStoreIntegrationShould() {
-        super(new CategoryOptionComboCategoryOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected String addMasterUid() {
+@RunWith(D2JunitRunner::class)
+class CategoryOptionComboCategoryOptionLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<CategoryOptionComboCategoryOptionLink>(
+        CategoryOptionComboCategoryOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        CategoryOptionComboCategoryOptionLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
         return CategoryOptionComboCategoryOptionLinkSamples
-                .getCategoryOptionComboCategoryOptionLink().categoryOptionCombo();
+            .getCategoryOptionComboCategoryOptionLink().categoryOptionCombo()
     }
 
-    @Override
-    protected CategoryOptionComboCategoryOptionLink buildObject() {
+    override fun buildObject(): CategoryOptionComboCategoryOptionLink {
         return CategoryOptionComboCategoryOptionLinkSamples
-                .getCategoryOptionComboCategoryOptionLink();
+            .getCategoryOptionComboCategoryOptionLink()
     }
 
-    @Override
-    protected CategoryOptionComboCategoryOptionLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): CategoryOptionComboCategoryOptionLink {
         return buildObject().toBuilder()
-                .categoryOptionCombo("new_category_option_combo")
-                .build();
+            .categoryOptionCombo("new_category_option_combo")
+            .build()
     }
 }

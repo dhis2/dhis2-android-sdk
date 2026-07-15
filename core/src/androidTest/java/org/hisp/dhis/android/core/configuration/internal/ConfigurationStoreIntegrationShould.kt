@@ -25,41 +25,23 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.configuration.internal
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
+import org.hisp.dhis.android.persistence.configuration.ConfigurationTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
-import org.hisp.dhis.android.core.data.attribute.ProgramAttributeValueLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkStoreImpl;
-import org.hisp.dhis.android.persistence.attribute.ProgramAttributeValueLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramAttributeValueLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<ProgramAttributeValueLink> {
-
-    public ProgramAttributeValueLinkStoreIntegrationShould() {
-        super(new ProgramAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
-    }
-
-    @Override
-    protected String addMasterUid() {
-        return ProgramAttributeValueLinkSamples.getProgramAttribute().program();
-    }
-
-    @Override
-    protected ProgramAttributeValueLink buildObject() {
-        return ProgramAttributeValueLinkSamples.getProgramAttribute();
-    }
-
-    @Override
-    protected ProgramAttributeValueLink buildObjectWithOtherMasterUid() {
-        return buildObject().toBuilder()
-                .program("new_program")
-                .build();
+@RunWith(D2JunitRunner::class)
+class ConfigurationStoreIntegrationShould : ObjectStoreAbstractIntegrationShould<Configuration>(
+    ConfigurationStoreImpl(TestDatabaseAdapterFactory.get()),
+    ConfigurationTableInfo.TABLE_INFO,
+    TestDatabaseAdapterFactory.get(),
+) {
+    override fun buildObject(): Configuration {
+        return ConfigurationSamples.getConfiguration()
     }
 }

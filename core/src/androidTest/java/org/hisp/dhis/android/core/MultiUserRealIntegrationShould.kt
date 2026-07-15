@@ -25,27 +25,41 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core.configuration.internal;
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import org.hisp.dhis.android.core.data.configuration.ConfigurationSamples;
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl;
-import org.hisp.dhis.android.persistence.configuration.ConfigurationTableInfo;
-import org.junit.runner.RunWith;
+class MultiUserRealIntegrationShould : BaseRealIntegrationTest() {
 
-@RunWith(D2JunitRunner.class)
-public class ConfigurationStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<Configuration> {
+    // @Test
+    fun connect_to_server_with_2_different_users() {
+        d2.userModule().blockingLogIn(username, password, url)
+        d2.metadataModule().blockingDownload()
+        val programsA0 = d2.programModule().programs().blockingCount()
+        d2.userModule().blockingLogOut()
 
-    public ConfigurationStoreIntegrationShould() {
-        super(new ConfigurationStoreImpl(TestDatabaseAdapterFactory.get()),
-                ConfigurationTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+        d2.userModule().blockingLogIn("admin", "district", url)
+        d2.metadataModule().blockingDownload()
+        val programsA1 = d2.programModule().programs().blockingCount()
+        d2.userModule().blockingLogOut()
+
+        d2.userModule().blockingLogIn(username, password, url)
+        val programsA2 = d2.programModule().programs().blockingCount()
     }
 
-    @Override
-    protected Configuration buildObject() {
-        return ConfigurationSamples.getConfiguration();
+    // @Test
+    fun connect_to_2_different_servers() {
+        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current)
+        d2.metadataModule().blockingDownload()
+        val programsA0 = d2.programModule().programs().blockingCount()
+        d2.userModule().blockingLogOut()
+
+        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_29)
+        d2.metadataModule().blockingDownload()
+        val programsA1 = d2.programModule().programs().blockingCount()
+        d2.userModule().blockingLogOut()
+
+        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current)
+        val programsA2 = d2.programModule().programs().blockingCount()
     }
 }

@@ -25,44 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.category.internal
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
+import org.hisp.dhis.android.core.data.category.CategoryCategoryOptionLinkSamples
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkStoreImpl
+import org.hisp.dhis.android.persistence.category.CategoryCategoryOptionLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-
-public class MultiUserRealIntegrationShould extends BaseRealIntegrationTest {
-
-    //@Test
-    public void connect_to_server_with_2_different_users() {
-        d2.userModule().blockingLogIn(username, password, url);
-        d2.metadataModule().blockingDownload();
-        int programsA0 = d2.programModule().programs().blockingCount();
-        d2.userModule().blockingLogOut();
-
-
-        d2.userModule().blockingLogIn("admin", "district", url);
-        d2.metadataModule().blockingDownload();
-        int programsA1 = d2.programModule().programs().blockingCount();
-        d2.userModule().blockingLogOut();
-
-        d2.userModule().blockingLogIn(username, password, url);
-        int programsA2 = d2.programModule().programs().blockingCount();
+@RunWith(D2JunitRunner::class)
+class CategoryCategoryOptionLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<CategoryCategoryOptionLink>(
+        CategoryCategoryOptionLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        CategoryCategoryOptionLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return CategoryCategoryOptionLinkSamples.getCategoryCategoryOptionLink().category()
     }
 
-    //@Test
-    public void connect_to_2_different_servers() {
-        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current);
-        d2.metadataModule().blockingDownload();
-        int programsA0 = d2.programModule().programs().blockingCount();
-        d2.userModule().blockingLogOut();
+    override fun buildObject(): CategoryCategoryOptionLink {
+        return CategoryCategoryOptionLinkSamples.getCategoryCategoryOptionLink()
+    }
 
-
-        d2.userModule().blockingLogIn(username, password, RealServerMother.url2_29);
-        d2.metadataModule().blockingDownload();
-        int programsA1 = d2.programModule().programs().blockingCount();
-        d2.userModule().blockingLogOut();
-
-        d2.userModule().blockingLogIn(username, password, RealServerMother.android_current);
-        int programsA2 = d2.programModule().programs().blockingCount();
+    override fun buildObjectWithOtherMasterUid(): CategoryCategoryOptionLink {
+        return buildObject().toBuilder()
+            .category("new_category")
+            .build()
     }
 }

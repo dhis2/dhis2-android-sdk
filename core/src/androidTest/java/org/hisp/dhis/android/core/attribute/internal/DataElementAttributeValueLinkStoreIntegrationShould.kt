@@ -25,42 +25,35 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.attribute.internal
 
-package org.hisp.dhis.android.core.attribute.internal;
+import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink
+import org.hisp.dhis.android.core.data.attribute.DataElementAttributeValueLinkSamples
+import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkStoreImpl
+import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink;
-import org.hisp.dhis.android.core.data.attribute.ProgramStageAttributeValueLinkSamples;
-import org.hisp.dhis.android.core.data.database.LinkStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkStoreImpl;
-import org.hisp.dhis.android.persistence.attribute.ProgramStageAttributeValueLinkTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ProgramStageAttributeValueLinkStoreIntegrationShould
-        extends LinkStoreAbstractIntegrationShould<ProgramStageAttributeValueLink> {
-
-    public ProgramStageAttributeValueLinkStoreIntegrationShould() {
-        super(new ProgramStageAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
-                ProgramStageAttributeValueLinkTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class DataElementAttributeValueLinkStoreIntegrationShould :
+    LinkStoreAbstractIntegrationShould<DataElementAttributeValueLink>(
+        DataElementAttributeValueLinkStoreImpl(TestDatabaseAdapterFactory.get()),
+        DataElementAttributeValueLinkTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun addMasterUid(): String {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute().dataElement()
     }
 
-
-    @Override
-    protected String addMasterUid() {
-        return ProgramStageAttributeValueLinkSamples.getProgramStageAttribute().programStage();
+    override fun buildObject(): DataElementAttributeValueLink {
+        return DataElementAttributeValueLinkSamples.getDataElementAttribute()
     }
 
-    @Override
-    protected ProgramStageAttributeValueLink buildObject() {
-        return ProgramStageAttributeValueLinkSamples.getProgramStageAttribute();
-    }
-
-    @Override
-    protected ProgramStageAttributeValueLink buildObjectWithOtherMasterUid() {
+    override fun buildObjectWithOtherMasterUid(): DataElementAttributeValueLink {
         return buildObject().toBuilder()
-                .programStage("new_program_stage")
-                .build();
+            .dataElement("new_data_element")
+            .build()
     }
 }

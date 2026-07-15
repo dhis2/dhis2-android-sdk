@@ -25,40 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core
 
-package org.hisp.dhis.android.core;
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
+class LogInCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-public class LogInCallRealIntegrationShould extends BaseRealIntegrationTest {
+    // @Test
+    fun not_wipe_after_second_login_with_same_user() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-    //@Test
-    public void not_wipe_after_second_login_with_same_user() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.metadataModule().blockingDownload()
 
-        d2.metadataModule().blockingDownload();
-
-        d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn(username, password, url).blockingGet();
+        d2.userModule().logOut().blockingAwait()
+        d2.userModule().logIn(username, password, url).blockingGet()
     }
 
-    //@Test
-    public void wipe_after_second_login_with_different_user() throws Exception {
-        d2.userModule().logIn(username, password, url).blockingGet();
+    // @Test
+    fun wipe_after_second_login_with_different_user() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-        d2.metadataModule().blockingDownload();
+        d2.metadataModule().blockingDownload()
 
-        d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn("admin", "district", url).blockingGet();
+        d2.userModule().logOut().blockingAwait()
+        d2.userModule().logIn("admin", "district", url).blockingGet()
     }
 
-    //@Test
-    public void wipe_after_second_login_with_equivalent_user_in_different_server() throws Exception {
-        d2.userModule().logIn(username, password, RealServerMother.url2_29).blockingGet();
+    // @Test
+    fun wipe_after_second_login_with_equivalent_user_in_different_server() {
+        d2.userModule().logIn(username, password, RealServerMother.url2_29).blockingGet()
 
-        d2.metadataModule().blockingDownload();
+        d2.metadataModule().blockingDownload()
 
-        d2.userModule().logOut().blockingAwait();
-        d2.userModule().logIn(username, password, RealServerMother.android_current).blockingGet();
+        d2.userModule().logOut().blockingAwait()
+        d2.userModule().logIn(username, password, RealServerMother.android_current).blockingGet()
     }
 }

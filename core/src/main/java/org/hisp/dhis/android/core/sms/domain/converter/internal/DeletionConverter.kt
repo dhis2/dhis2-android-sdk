@@ -25,48 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.smscompression.models.DeleteSMSSubmission
+import org.hisp.dhis.smscompression.models.SMSSubmission
+import java.util.concurrent.Callable
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-
-import io.reactivex.Completable;
-import io.reactivex.Single;
-
-public class DeletionConverter extends Converter<String> {
-    private final String eventUid;
-
-    public DeletionConverter(LocalDbRepository localDbRepository,
-                             DHISVersionManager dhisVersionManager,
-                             String eventUid) {
-        super(localDbRepository, dhisVersionManager);
-        this.eventUid = eventUid;
+internal class DeletionConverter(
+    private val localDbRepository: LocalDbRepository?,
+    dhisVersionManager: DHISVersionManager?,
+    private val eventUid: String
+) : Converter<String>(localDbRepository, dhisVersionManager) {
+    override fun convert(
+        uid: String,
+        user: String?,
+        submissionId: Int
+    ): Single<out SMSSubmission?>? {
+        return Single.fromCallable<DeleteSMSSubmission?>(Callable {
+            val subm = DeleteSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setEvent(uid)
+            subm
+        })
     }
 
-    @Override
-    protected Single<? extends SMSSubmission> convert(@NonNull String uid, String user, int submissionId) {
-        return Single.fromCallable(() -> {
-            DeleteSMSSubmission subm = new DeleteSMSSubmission();
-            subm.setSubmissionID(submissionId);
-            subm.setUserID(user);
-            subm.setEvent(uid);
-            return subm;
-        });
+    override fun updateSubmissionState(state: State): Completable? {
+        return getLocalDbRepository()
+            .updateEventSubmissionState(eventUid, state)
+            .onErrorComplete()
     }
 
-    @Override
-    public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateEventSubmissionState(eventUid, state).onErrorComplete();
-    }
-
-    @Override
-    protected Single<String> readItemFromDb() {
-        return Single.just(eventUid);
+    override fun readItemFromDb(): Single<String>? {
+        return Single.just<String>(eventUid)
     }
 }

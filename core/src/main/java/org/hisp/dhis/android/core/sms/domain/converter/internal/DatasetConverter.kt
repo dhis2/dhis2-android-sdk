@@ -25,86 +25,68 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission
+import org.hisp.dhis.smscompression.models.SMSDataValue
+import org.hisp.dhis.smscompression.models.SMSSubmission
+import java.util.concurrent.Callable
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.sms.domain.model.internal.SMSDataValueSet;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSDataValue;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import io.reactivex.Completable;
-import io.reactivex.Single;
-
-public class DatasetConverter extends Converter<SMSDataValueSet> {
-
-    private final String dataSet;
-    private final String orgUnit;
-    private final String period;
-    private final String attributeOptionComboUid;
-
-    public DatasetConverter(LocalDbRepository localDbRepository,
-                            DHISVersionManager dhisVersionManager,
-                            String dataSet,
-                            String orgUnit,
-                            String period,
-                            String attributeOptionComboUid) {
-        super(localDbRepository, dhisVersionManager);
-        this.dataSet = dataSet;
-        this.orgUnit = orgUnit;
-        this.period = period;
-        this.attributeOptionComboUid = attributeOptionComboUid;
+internal class DatasetConverter(
+    private val localDbRepository: LocalDbRepository?,
+    dhisVersionManager: DHISVersionManager?,
+    private val dataSet: String,
+    private val orgUnit: String,
+    private val period: String,
+    private val attributeOptionComboUid: String
+) : Converter<SMSDataValueSet>(localDbRepository, dhisVersionManager) {
+    override fun convert(
+        dataValueSet: SMSDataValueSet,
+        user: String?, submissionId: Int
+    ): Single<out SMSSubmission?>? {
+        return Single.fromCallable<AggregateDatasetSMSSubmission?>(Callable {
+            val subm = AggregateDatasetSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setOrgUnit(orgUnit)
+            subm.setPeriod(period)
+            subm.setDataSet(dataSet)
+            subm.setAttributeOptionCombo(attributeOptionComboUid)
+            subm.setValues(translateValues(dataValueSet.dataValues))
+            subm.setComplete(dataValueSet.completed)
+            subm
+        })
     }
 
-    @Override
-    protected Single<? extends SMSSubmission> convert(
-            @NonNull SMSDataValueSet dataValueSet,
-            String user, int submissionId
-    ) {
-        return Single.fromCallable(() -> {
-            AggregateDatasetSMSSubmission subm = new AggregateDatasetSMSSubmission();
-            subm.setSubmissionID(submissionId);
-            subm.setUserID(user);
-            subm.setOrgUnit(orgUnit);
-            subm.setPeriod(period);
-            subm.setDataSet(dataSet);
-            subm.setAttributeOptionCombo(attributeOptionComboUid);
-            subm.setValues(translateValues(dataValueSet.getDataValues()));
-            subm.setComplete(dataValueSet.getCompleted());
-            return subm;
-        });
-    }
-
-    @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops"})
-    private List<SMSDataValue> translateValues(Collection<DataValue> values) {
-        ArrayList<SMSDataValue> list = new ArrayList<>();
-        for (DataValue value : values) {
-            list.add(new SMSDataValue(
-                    value.categoryOptionCombo(),
-                    value.dataElement(),
-                    value.value()));
+    private fun translateValues(values: Collection<DataValue>): List<SMSDataValue> {
+        return values.map { value ->
+            SMSDataValue(
+                value.categoryOptionCombo(),
+                value.dataElement(),
+                value.value()
+            )
         }
-        return list;
     }
 
-    @Override
-    public Completable updateSubmissionState(State state) {
+    override fun updateSubmissionState(state: State): Completable {
         return getLocalDbRepository().updateDataSetSubmissionState(
-                dataSet, orgUnit, period, attributeOptionComboUid, state);
+            dataSet, orgUnit, period, attributeOptionComboUid, state
+        )
     }
 
-    @Override
-    protected Single<SMSDataValueSet> readItemFromDb() {
-        return getLocalDbRepository().getDataValueSet(dataSet, orgUnit, period, attributeOptionComboUid);
+    override fun readItemFromDb(): Single<SMSDataValueSet> {
+        return getLocalDbRepository().getDataValueSet(
+            dataSet,
+            orgUnit,
+            period,
+            attributeOptionComboUid
+        )
     }
 }

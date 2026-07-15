@@ -25,55 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission
+import org.hisp.dhis.smscompression.models.SMSSubmission
+import java.util.concurrent.Callable
 
-import androidx.annotation.NonNull;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.relationship.Relationship;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-
-import io.reactivex.Completable;
-import io.reactivex.Single;
-
-public class RelationshipConverter extends Converter<Relationship> {
-    private final String relationshipUid;
-
-    public RelationshipConverter(LocalDbRepository localDbRepository,
-                                 DHISVersionManager dhisVersionManager,
-                                 String relationshipUid) {
-        super(localDbRepository, dhisVersionManager);
-        this.relationshipUid = relationshipUid;
+internal class RelationshipConverter(
+    private val localDbRepository: LocalDbRepository?,
+    dhisVersionManager: DHISVersionManager?,
+    private val relationshipUid: String
+) : Converter<Relationship>(localDbRepository, dhisVersionManager) {
+    override fun convert(
+        relationship: Relationship,
+        user: String?, submissionId: Int
+    ): Single<out SMSSubmission?>? {
+        return Single.fromCallable<RelationshipSMSSubmission?>(Callable {
+            val subm = RelationshipSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setRelationship(relationship.uid())
+            subm.setRelationshipType(relationship.relationshipType())
+            subm.setFrom(relationship.from()!!.elementUid())
+            subm.setTo(relationship.to()!!.elementUid())
+            subm
+        })
     }
 
-    @Override
-    protected Single<? extends SMSSubmission> convert(
-            @NonNull Relationship relationship,
-            String user, int submissionId
-    ) {
-        return Single.fromCallable(() -> {
-            RelationshipSMSSubmission subm = new RelationshipSMSSubmission();
-            subm.setSubmissionID(submissionId);
-            subm.setUserID(user);
-            subm.setRelationship(relationship.uid());
-            subm.setRelationshipType(relationship.relationshipType());
-            subm.setFrom(relationship.from().elementUid());
-            subm.setTo(relationship.to().elementUid());
-            return subm;
-        });
+    override fun updateSubmissionState(state: State): Completable {
+        return getLocalDbRepository().updateRelationshipSubmissionState(relationshipUid, state)
     }
 
-    @Override
-    public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateRelationshipSubmissionState(relationshipUid, state);
-    }
-
-    @Override
-    protected Single<Relationship> readItemFromDb() {
-        return getLocalDbRepository().getRelationship(relationshipUid);
+    override fun readItemFromDb(): Single<Relationship> {
+        return getLocalDbRepository().getRelationship(relationshipUid)
     }
 }

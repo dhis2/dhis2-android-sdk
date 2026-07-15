@@ -25,65 +25,61 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.containsAPoint
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.smscompression.models.SMSSubmission
+import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission
+import java.util.concurrent.Callable
 
-import androidx.annotation.NonNull;
+internal class TrackerEventConverter(
+    private val localDbRepository: LocalDbRepository?,
+    dhisVersionManager: DHISVersionManager?,
+    private val eventUid: String
+) : Converter<Event>(localDbRepository, dhisVersionManager) {
+    public override fun convert(
+        e: Event,
+        user: String?,
+        submissionId: Int
+    ): Single<out SMSSubmission?>? {
+        return Single.fromCallable<TrackerEventSMSSubmission?>(Callable {
+            val subm = TrackerEventSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
 
-import org.hisp.dhis.android.core.arch.helpers.GeometryHelper;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.event.Event;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
-import org.hisp.dhis.smscompression.models.TrackerEventSMSSubmission;
+            subm.setEvent(e.uid())
+            subm.setEventDate(e.eventDate())
+            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()))
+            subm.setProgramStage(e.programStage())
+            subm.setDueDate(e.dueDate())
+            subm.setAttributeOptionCombo(e.attributeOptionCombo())
+            subm.setOrgUnit(e.organisationUnit())
+            subm.setEnrollment(e.enrollment())
+            subm.setValues(
+                ConverterUtils.convertDataValues(
+                    e.attributeOptionCombo(),
+                    e.trackedEntityDataValues()
+                )
+            )
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
-
-public class TrackerEventConverter extends Converter<Event> {
-    private final String eventUid;
-
-    public TrackerEventConverter(LocalDbRepository localDbRepository,
-                                 DHISVersionManager dhisVersionManager,
-                                 String eventUid) {
-        super(localDbRepository, dhisVersionManager);
-        this.eventUid = eventUid;
-    }
-
-    @Override
-    public Single<? extends SMSSubmission> convert(@NonNull Event e, String user, int submissionId) {
-        return Single.fromCallable(() -> {
-            TrackerEventSMSSubmission subm = new TrackerEventSMSSubmission();
-
-            subm.setSubmissionID(submissionId);
-            subm.setUserID(user);
-
-            subm.setEvent(e.uid());
-            subm.setEventDate(e.eventDate());
-            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()));
-            subm.setProgramStage(e.programStage());
-            subm.setDueDate(e.dueDate());
-            subm.setAttributeOptionCombo(e.attributeOptionCombo());
-            subm.setOrgUnit(e.organisationUnit());
-            subm.setEnrollment(e.enrollment());
-            subm.setValues(ConverterUtils.convertDataValues(e.attributeOptionCombo(), e.trackedEntityDataValues()));
-
-            if (GeometryHelper.containsAPoint(e.geometry())) {
-                subm.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()));
+            if (containsAPoint(e.geometry())) {
+                subm.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()))
             }
-
-            return subm;
-        });
+            subm
+        })
     }
 
-    @Override
-    public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateEventSubmissionState(eventUid, state);
+    override fun updateSubmissionState(state: State): Completable {
+        return getLocalDbRepository().updateEventSubmissionState(eventUid, state)
     }
 
-    @Override
-    protected Single<Event> readItemFromDb() {
-        return getLocalDbRepository().getTrackerEventToSubmit(eventUid);
+    override fun readItemFromDb(): Single<Event> {
+        return getLocalDbRepository().getTrackerEventToSubmit(eventUid)
     }
 }

@@ -25,43 +25,39 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.data.database.ObjectWithoutUidStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValueSamples
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.trackedentity.ReservedValueSettingSamples;
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingStoreImpl;
-import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class ReservedValueSettingStoreIntegrationShould extends
-        IdentifiableObjectStoreAbstractIntegrationShould<ReservedValueSetting> {
-
-    public ReservedValueSettingStoreIntegrationShould() {
-        super(new ReservedValueSettingStoreImpl(TestDatabaseAdapterFactory.get()),
-                ReservedValueSettingTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class TrackedEntityAttributeValueStoreIntegrationShould :
+    ObjectWithoutUidStoreAbstractIntegrationShould<TrackedEntityAttributeValue>(
+        TrackedEntityAttributeValueStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackedEntityAttributeValueTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValueSamples.get()
     }
 
-    @Override
-    protected ReservedValueSetting buildObject() {
-        return ReservedValueSettingSamples.get();
+    override fun buildObjectToUpdate(): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValueSamples.get().toBuilder()
+            .value("new_value")
+            .build()
     }
 
-    @Override
-    protected ReservedValueSetting buildObjectToUpdate() {
-        return ReservedValueSettingSamples.get().toBuilder()
-                .numberOfValuesToReserve(100)
-                .build();
-    }
-
-    @Override
-    protected ReservedValueSetting buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): TrackedEntityAttributeValue {
         return buildObject().toBuilder()
-                .numberOfValuesToReserve(null)
-                .build();
+            .created(null)
+            .lastUpdated(null)
+            .value(null)
+            .build()
     }
 }

@@ -25,32 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import android.content.ContentValues
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo.Columns
 
-import android.content.ContentValues;
-
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo.Columns;
-
-import androidx.annotation.NonNull;
-
-public class CreateTrackedEntityInstanceUtils {
-    private static final State STATE = State.TO_POST;
+object CreateTrackedEntityInstanceUtils {
+    private val STATE = State.TO_POST
 
     // used for timestamps
-    private static final String DATE = "2011-12-24T12:24:25.203";
+    private const val DATE = "2011-12-24T12:24:25.203"
 
-    public static ContentValues create(@NonNull String uid,
-                                       @NonNull String organisationUnit,
-                                       @NonNull String trackedEntityType) {
-        ContentValues trackedEntityInstance = new ContentValues();
-        trackedEntityInstance.put(Columns.UID, uid);
-        trackedEntityInstance.put(Columns.CREATED, DATE);
-        trackedEntityInstance.put(Columns.LAST_UPDATED, DATE);
-        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, organisationUnit);
-        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, trackedEntityType);
-        trackedEntityInstance.put(Columns.SYNC_STATE, STATE.name());
-        return trackedEntityInstance;
+    fun create(
+        uid: String,
+        organisationUnit: String,
+        trackedEntityType: String,
+    ): ContentValues {
+        val trackedEntityInstance = ContentValues()
+        trackedEntityInstance.put(Columns.UID, uid)
+        trackedEntityInstance.put(Columns.CREATED, DATE)
+        trackedEntityInstance.put(Columns.LAST_UPDATED, DATE)
+        trackedEntityInstance.put(Columns.ORGANISATION_UNIT, organisationUnit)
+        trackedEntityInstance.put(Columns.TRACKED_ENTITY_TYPE, trackedEntityType)
+        trackedEntityInstance.put(Columns.SYNC_STATE, STATE.name)
+        return trackedEntityInstance
     }
 }

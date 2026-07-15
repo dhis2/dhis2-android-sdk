@@ -25,33 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity
 
-package org.hisp.dhis.android.core.trackedentity;
+import com.google.common.truth.Truth
+import org.hisp.dhis.android.core.BaseRealIntegrationTest
 
-import com.google.common.truth.Truth;
+class TrackedEntityInstanceCallRealIntegrationShould : BaseRealIntegrationTest() {
 
-import org.hisp.dhis.android.core.BaseRealIntegrationTest;
+    // This test is commented because technically it is flaky.
+    // It depends on a live server to operate and the login is hardcoded here.
+    // Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
 
-import java.util.List;
+    // @Test
+    fun download_tei_enrollments_and_events() {
+        d2.userModule().logIn(username, password, url).blockingGet()
 
-public class TrackedEntityInstanceCallRealIntegrationShould extends BaseRealIntegrationTest {
-
-    //This test is commented because technically it is flaky.
-    //It depends on a live server to operate and the login is hardcoded here.
-    //Uncomment in order to quickly test changes vs a real server, but keep it uncommented after.
-
-    //@Test
-    public void download_tei_enrollments_and_events() {
-        d2.userModule().logIn(username, password, url).blockingGet();
-
-        d2.metadataModule().blockingDownload();
+        d2.metadataModule().blockingDownload()
 
         d2.trackedEntityModule()
-                .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload();
+            .trackedEntityInstanceDownloader().byUid().eq("IaxoagO9899").blockingDownload()
 
-        List<TrackedEntityInstance> teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
-                .blockingGet();
+        val teiResponse = d2.trackedEntityModule().trackedEntityInstances().byUid().eq("IaxoagO9899")
+            .blockingGet()
 
-        Truth.assertThat(teiResponse.isEmpty()).isFalse();
+        Truth.assertThat(teiResponse.isEmpty()).isFalse()
     }
 }

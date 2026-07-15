@@ -25,34 +25,37 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.ReservedValueSettingSamples
+import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.ReservedValueSettingTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncStoreImpl;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceSyncTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceSyncStoreIntegrationShould extends ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceSync> {
-
-    public TrackedEntityInstanceSyncStoreIntegrationShould() {
-        super(new TrackedEntityInstanceSyncStoreImpl(TestDatabaseAdapterFactory.get()), TrackedEntityInstanceSyncTableInfo.TABLE_INFO,
-                TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class ReservedValueSettingStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<ReservedValueSetting>(
+        ReservedValueSettingStoreImpl(TestDatabaseAdapterFactory.get()),
+        ReservedValueSettingTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): ReservedValueSetting {
+        return ReservedValueSettingSamples.get()
     }
 
-    @Override
-    protected TrackedEntityInstanceSync buildObject() {
-        return TrackedEntityInstanceSyncSamples.get1();
+    override fun buildObjectToUpdate(): ReservedValueSetting {
+        return ReservedValueSettingSamples.get().toBuilder()
+            .numberOfValuesToReserve(100)
+            .build()
     }
 
-    @Override
-    protected TrackedEntityInstanceSync buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): ReservedValueSetting {
         return buildObject().toBuilder()
-                .program(null)
-                .workingListsHash(null)
-                .build();
+            .numberOfValuesToReserve(null)
+            .build()
     }
 }

@@ -25,18 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.api
 
-package org.hisp.dhis.android.core.trackedentity.api;
+import org.hisp.dhis.android.core.data.server.RealServerMother
 
-import org.hisp.dhis.android.core.data.server.RealServerMother;
-
-public class TrackedEntityInstanceAPI30Should extends TrackedEntityInstanceAPIShould {
-
-    public TrackedEntityInstanceAPI30Should() {
-        super(RealServerMother.url2_30, "SYNC");
-    }
-
-    //@Test
-    public void stub() {
+class TrackedEntityInstanceAPI30Should : TrackedEntityInstanceAPIShould(
+    RealServerMother.url2_30,
+    "SYNC",
+) {
+    // @Test
+    fun stub() {
     }
 }

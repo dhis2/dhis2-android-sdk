@@ -25,39 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.trackedentity.internal
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceEventFilterSamples
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
+import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
+import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterStoreImpl
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo
+import org.junit.runner.RunWith
 
-import org.hisp.dhis.android.core.data.database.ObjectStoreAbstractIntegrationShould;
-import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceEventFilterSamples;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter;
-import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory;
-import org.hisp.dhis.android.core.utils.runner.D2JunitRunner;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterStoreImpl;
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo;
-import org.junit.runner.RunWith;
-
-@RunWith(D2JunitRunner.class)
-public class TrackedEntityInstanceEventFilterStoreIntegrationShould
-        extends ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceEventFilter> {
-
-    public TrackedEntityInstanceEventFilterStoreIntegrationShould() {
-        super(new TrackedEntityInstanceEventFilterStoreImpl(TestDatabaseAdapterFactory.get()),
-                TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO, TestDatabaseAdapterFactory.get());
+@RunWith(D2JunitRunner::class)
+class TrackedEntityInstanceEventFilterStoreIntegrationShould :
+    ObjectStoreAbstractIntegrationShould<TrackedEntityInstanceEventFilter>(
+        TrackedEntityInstanceEventFilterStoreImpl(TestDatabaseAdapterFactory.get()),
+        TrackedEntityInstanceEventFilterTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
+    override fun buildObject(): TrackedEntityInstanceEventFilter {
+        return TrackedEntityInstanceEventFilterSamples.get()
     }
 
-    @Override
-    protected TrackedEntityInstanceEventFilter buildObject() {
-        return TrackedEntityInstanceEventFilterSamples.get();
-    }
-
-    @Override
-    protected TrackedEntityInstanceEventFilter buildObjectWithNullableFields() {
+    override fun buildObjectWithNullableFields(): TrackedEntityInstanceEventFilter {
         return buildObject().toBuilder()
-                .programStage(null)
-                .eventStatus(null)
-                .eventCreatedPeriod(null)
-                .assignedUserMode(null)
-                .build();
+            .programStage(null)
+            .eventStatus(null)
+            .eventCreatedPeriod(null)
+            .assignedUserMode(null)
+            .build()
     }
 }

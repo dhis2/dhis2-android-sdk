@@ -27,4 +27,4 @@
  */
 package org.hisp.dhis.android.core.common
 
-class Unit 
+class Unit

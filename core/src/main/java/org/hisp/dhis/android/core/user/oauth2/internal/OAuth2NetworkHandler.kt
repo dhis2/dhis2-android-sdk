@@ -60,5 +60,5 @@ internal interface OAuth2NetworkHandler {
         clientAssertion: String,
     ): Result<OAuth2State, D2Error>
 
-    fun buildLogoutUrl(config: OAuth2Config, ): String
+    fun buildLogoutUrl(config: OAuth2Config): String
 }

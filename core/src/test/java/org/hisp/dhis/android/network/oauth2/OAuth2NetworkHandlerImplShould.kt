@@ -56,41 +56,40 @@ class OAuth2NetworkHandlerImplShould {
     // region buildLogoutUrl
 
     @Test
-    fun buildLogoutUrl_builds_logout_action_url_with_default_redirect_uri_and_state() {
-        val url = networkHandler.buildLogoutUrl(SERVER_URL, STATE)
+    fun buildLogoutUrl_builds_logout_action_url_with_default_redirect_uri() {
+        val url = networkHandler.buildLogoutUrl(OAuth2Config(serverUrl = SERVER_URL))
 
         assertThat(url).isEqualTo(
             "$SERVER_URL/dhis-web-commons-security/logout.action" +
-                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
-                "&state=$STATE",
+                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}",
+        )
+    }
+
+    @Test
+    fun buildLogoutUrl_uses_the_redirect_uri_provided_by_the_config() {
+        val config = OAuth2Config(serverUrl = SERVER_URL, redirectUri = CUSTOM_REDIRECT_URI)
+
+        val url = networkHandler.buildLogoutUrl(config)
+
+        assertThat(url).isEqualTo(
+            "$SERVER_URL/dhis-web-commons-security/logout.action?redirect_uri=$CUSTOM_REDIRECT_URI",
         )
     }
 
     @Test
     fun buildLogoutUrl_appends_path_to_the_provided_server_url_verbatim() {
-        val url = networkHandler.buildLogoutUrl("https://play.dhis2.org/40", STATE)
+        val url = networkHandler.buildLogoutUrl(OAuth2Config(serverUrl = "https://play.dhis2.org/40"))
 
         assertThat(url).isEqualTo(
             "https://play.dhis2.org/40/dhis-web-commons-security/logout.action" +
-                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}" +
-                "&state=$STATE",
+                "?redirect_uri=${OAuth2Config.DEFAULT_REDIRECT_URI}",
         )
-    }
-
-    @Test
-    fun buildLogoutUrl_includes_the_provided_state_as_a_query_parameter() {
-        val withState = networkHandler.buildLogoutUrl(SERVER_URL, "state-a")
-        val withOtherState = networkHandler.buildLogoutUrl(SERVER_URL, "state-b")
-
-        assertThat(withState).endsWith("&state=state-a")
-        assertThat(withOtherState).endsWith("&state=state-b")
-        assertThat(withState).isNotEqualTo(withOtherState)
     }
 
     // endregion
 
     companion object {
         private const val SERVER_URL = "https://server.com"
-        private const val STATE = "state-1"
+        private const val CUSTOM_REDIRECT_URI = "myapp://custom-oauth"
     }
 }

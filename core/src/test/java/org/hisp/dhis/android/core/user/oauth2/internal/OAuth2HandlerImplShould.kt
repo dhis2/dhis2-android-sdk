@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.junit.Before
@@ -169,24 +170,14 @@ class OAuth2HandlerImplShould {
     // region blockingBuildLogoutUrl
 
     @Test
-    fun blockingBuildLogoutUrl_persists_temp_state_and_returns_url() {
-        whenever(oauth2NetworkHandler.buildLogoutUrl(any(), any())).thenReturn(LOGOUT_URL)
+    fun blockingBuildLogoutUrl_delegates_config_to_network_handler_and_returns_url() {
+        val config = OAuth2Config(serverUrl = NORMALIZED_URL)
+        whenever(oauth2NetworkHandler.buildLogoutUrl(config)).thenReturn(LOGOUT_URL)
 
-        val result = handler.blockingBuildLogoutUrl(NORMALIZED_URL)
+        val result = handler.blockingBuildLogoutUrl(config)
 
         assertThat(result).isEqualTo(LOGOUT_URL)
-        assertThat(oauth2SecureStore.tempState).isNotNull()
-        verify(oauth2NetworkHandler).buildLogoutUrl(eq(NORMALIZED_URL), eq(oauth2SecureStore.tempState!!))
-    }
-
-    @Test
-    fun blockingBuildLogoutUrl_delegates_raw_server_url_without_normalizing() {
-        whenever(oauth2NetworkHandler.buildLogoutUrl(any(), any())).thenReturn(LOGOUT_URL)
-
-        handler.blockingBuildLogoutUrl("HTTPS://Server.com/")
-
-        // Unlike enrollment, the logout url is built from the raw server url (no normalization).
-        verify(oauth2NetworkHandler).buildLogoutUrl(eq("HTTPS://Server.com/"), any())
+        verify(oauth2NetworkHandler).buildLogoutUrl(config)
     }
 
     // endregion

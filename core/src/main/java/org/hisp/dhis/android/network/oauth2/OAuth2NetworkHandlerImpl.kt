@@ -135,6 +135,6 @@ internal class OAuth2NetworkHandlerImpl(
 
     override fun buildLogoutUrl(config: OAuth2Config): String {
         return "${config.serverUrl}/dhis-web-commons-security/logout.action" +
-                "?redirect_uri=${config.redirectUri}"
+            "?redirect_uri=${config.redirectUri}"
     }
 }

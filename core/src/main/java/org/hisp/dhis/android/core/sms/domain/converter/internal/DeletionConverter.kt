@@ -39,20 +39,22 @@ import java.util.concurrent.Callable
 internal class DeletionConverter(
     localDbRepository: LocalDbRepository,
     dhisVersionManager: DHISVersionManager,
-    private val eventUid: String
+    private val eventUid: String,
 ) : Converter<String>(localDbRepository, dhisVersionManager) {
     override fun convert(
         uid: String,
         user: String,
-        submissionId: Int
+        submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<DeleteSMSSubmission>(Callable {
-            val subm = DeleteSMSSubmission()
-            subm.setSubmissionID(submissionId)
-            subm.setUserID(user)
-            subm.setEvent(uid)
-            subm
-        })
+        return Single.fromCallable<DeleteSMSSubmission>(
+            Callable {
+                val subm = DeleteSMSSubmission()
+                subm.setSubmissionID(submissionId)
+                subm.setUserID(user)
+                subm.setEvent(uid)
+                subm
+            },
+        )
     }
 
     override fun updateSubmissionState(state: State): Completable {

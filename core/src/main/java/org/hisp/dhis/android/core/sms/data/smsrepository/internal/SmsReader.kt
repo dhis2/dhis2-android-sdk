@@ -34,27 +34,25 @@ import android.content.IntentFilter
 import android.provider.Telephony
 import android.telephony.SmsMessage
 import android.util.Log
-
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseIssue.RECEIVED_ERROR
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
-
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
-
 internal class SmsReader(private val context: Context) {
 
+    @Suppress("TooGenericExceptionCaught")
     fun waitToReceiveConfirmationSms(
         waitingTimeoutSeconds: Int,
         requiredSender: String,
         submissionId: Int,
-        submissionType: SubmissionType
+        submissionType: SubmissionType,
     ): Completable {
         val receiver = AtomicReference<BroadcastReceiver>()
 
@@ -75,13 +73,13 @@ internal class SmsReader(private val context: Context) {
             receiver.set(broadcastReceiver)
             context.registerReceiver(
                 broadcastReceiver,
-                IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION)
+                IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION),
             )
         }.timeout(
             waitingTimeoutSeconds.toLong(),
             TimeUnit.SECONDS,
             Schedulers.newThread(),
-            Completable.error(SmsRepository.ResultResponseException(SmsRepository.ResultResponseIssue.TIMEOUT))
+            Completable.error(SmsRepository.ResultResponseException(SmsRepository.ResultResponseIssue.TIMEOUT)),
         ).doFinally {
             receiver.get()?.let {
                 try {
@@ -93,11 +91,12 @@ internal class SmsReader(private val context: Context) {
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun findConfirmationSms(
         fromDate: Date,
         requiredSender: String,
         submissionId: Int,
-        submissionType: SubmissionType
+        submissionType: SubmissionType,
     ): Single<Boolean> {
         return Single.fromCallable {
             val cr = context.contentResolver
@@ -107,7 +106,7 @@ internal class SmsReader(private val context: Context) {
                 null,
                 null,
                 null,
-                "${Telephony.Sms.DATE} DESC"
+                "${Telephony.Sms.DATE} DESC",
             )?.use { c ->
                 if (!c.moveToFirst()) return@fromCallable false
 
@@ -122,7 +121,8 @@ internal class SmsReader(private val context: Context) {
                         val dateReceived = Date(c.getLong(dateIndex))
 
                         if (isAwaitedSuccessMessage(number, body, requiredSender, submissionId, submissionType) &&
-                            dateReceived.after(fromDate)) {
+                            dateReceived.after(fromDate)
+                        ) {
                             return@fromCallable true
                         }
                     } catch (e: Exception) {
@@ -135,12 +135,13 @@ internal class SmsReader(private val context: Context) {
         }
     }
 
+    @Suppress("ReturnCount")
     @Throws(SmsRepository.ResultResponseException::class)
     private fun isAwaitedSuccessMessage(
         intent: Intent,
         requiredSender: String?,
         submissionId: Int,
-        submissionType: SubmissionType
+        submissionType: SubmissionType,
     ): Boolean {
         val bundle = intent.extras ?: return false
 
@@ -163,19 +164,23 @@ internal class SmsReader(private val context: Context) {
         }
 
         return sender != null && isAwaitedSuccessMessage(
-            sender, message, requiredSender, submissionId, submissionType
+            sender, message, requiredSender, submissionId, submissionType,
         )
     }
 
+    @Suppress("ReturnCount")
     @Throws(SmsRepository.ResultResponseException::class)
     fun isAwaitedSuccessMessage(
         sender: String?,
         message: String,
         requiredSender: String?,
         submissionId: Int,
-        submissionType: SubmissionType
+        submissionType: SubmissionType,
     ): Boolean {
-        if (requiredSender != null && (sender == null || !sender.lowercase(Locale.ROOT).contains(requiredSender.lowercase(Locale.ROOT)))) {
+        if (
+            requiredSender != null &&
+            (sender == null || !sender.lowercase(Locale.ROOT).contains(requiredSender.lowercase(Locale.ROOT)))
+        ) {
             return false
         }
 

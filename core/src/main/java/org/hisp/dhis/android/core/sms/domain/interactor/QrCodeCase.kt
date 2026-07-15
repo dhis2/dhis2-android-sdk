@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 class QrCodeCase internal constructor(
     private val localDbRepository: LocalDbRepository,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
     /**
      * Get a compressed representation of a simple event.
@@ -50,7 +50,7 @@ class QrCodeCase internal constructor(
         return SimpleEventConverter(
             localDbRepository,
             dhisVersionManager,
-            eventUid
+            eventUid,
         ).readAndConvert()
     }
 
@@ -63,7 +63,7 @@ class QrCodeCase internal constructor(
         return TrackerEventConverter(
             localDbRepository,
             dhisVersionManager,
-            eventUid
+            eventUid,
         ).readAndConvert()
     }
 
@@ -76,7 +76,7 @@ class QrCodeCase internal constructor(
         return EnrollmentConverter(
             localDbRepository,
             dhisVersionManager,
-            enrollmentUid
+            enrollmentUid,
         ).readAndConvert()
     }
 
@@ -92,7 +92,7 @@ class QrCodeCase internal constructor(
         dataSet: String,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<String> {
         return DatasetConverter(
             localDbRepository,
@@ -100,7 +100,7 @@ class QrCodeCase internal constructor(
             dataSet,
             orgUnit,
             period,
-            attributeOptionComboUid
+            attributeOptionComboUid,
         ).readAndConvert()
     }
 
@@ -113,7 +113,7 @@ class QrCodeCase internal constructor(
         return RelationshipConverter(
             localDbRepository,
             dhisVersionManager,
-            relationshipUid
+            relationshipUid,
         ).readAndConvert()
     }
 
@@ -126,7 +126,7 @@ class QrCodeCase internal constructor(
         return DeletionConverter(
             localDbRepository,
             dhisVersionManager,
-            itemToDeleteUid
+            itemToDeleteUid,
         ).readAndConvert()
     }
 }

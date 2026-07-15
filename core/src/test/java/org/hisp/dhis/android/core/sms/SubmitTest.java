@@ -146,14 +146,14 @@ public class SubmitTest {
         sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, dhisVersionManager);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
-                        ((SmsSubmitCase.PreconditionFailed) error).type == SmsSubmitCase.PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET);
+                        ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET);
 
         localDbRepository = new MockLocalDbRepository();
         localDbRepository.setModuleEnabled(false).test().assertComplete();
         sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, dhisVersionManager);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
-                        ((SmsSubmitCase.PreconditionFailed) error).type == SmsSubmitCase.PreconditionFailed.Type.SMS_MODULE_DISABLED);
+                        ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.SMS_MODULE_DISABLED);
 
         localDbRepository = new MockLocalDbRepository();
         deviceStateRepository = new MockDeviceStateRepository() {
@@ -165,7 +165,7 @@ public class SubmitTest {
         sender = new SmsSubmitCase(localDbRepository, smsRepository, deviceStateRepository, dhisVersionManager);
         convertTask.call().test()
                 .assertError(error -> error instanceof SmsSubmitCase.PreconditionFailed &&
-                        ((SmsSubmitCase.PreconditionFailed) error).type == SmsSubmitCase.PreconditionFailed.Type.NO_NETWORK);
+                        ((SmsSubmitCase.PreconditionFailed) error).getType() == SmsSubmitCase.PreconditionFailed.Type.NO_NETWORK);
     }
 
     private void testCompress(Callable<Single<String>> compressTask) throws Exception {

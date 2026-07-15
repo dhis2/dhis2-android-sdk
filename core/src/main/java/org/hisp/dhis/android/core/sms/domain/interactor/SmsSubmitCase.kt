@@ -40,11 +40,12 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import java.util.Date
 
+@Suppress("TooManyFunctions")
 class SmsSubmitCase internal constructor(
     private val localDbRepository: LocalDbRepository,
     private val smsRepository: SmsRepository,
     private val deviceStateRepository: DeviceStateRepository,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
     private var converter: Converter<*>? = null
     private var smsParts: List<String>? = null
@@ -118,7 +119,7 @@ class SmsSubmitCase internal constructor(
         dataSet: String,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<Int> {
         return convert(
             DatasetConverter(
@@ -127,8 +128,8 @@ class SmsSubmitCase internal constructor(
                 dataSet,
                 orgUnit,
                 period,
-                attributeOptionComboUid
-            )
+                attributeOptionComboUid,
+            ),
         )
     }
 
@@ -144,7 +145,7 @@ class SmsSubmitCase internal constructor(
         dataSet: String,
         orgUnit: String,
         period: String,
-        attributeOptionComboUid: String
+        attributeOptionComboUid: String,
     ): Single<String> {
         return compress(
             DatasetConverter(
@@ -153,8 +154,8 @@ class SmsSubmitCase internal constructor(
                 dataSet,
                 orgUnit,
                 period,
-                attributeOptionComboUid
-            )
+                attributeOptionComboUid,
+            ),
         )
     }
 
@@ -273,7 +274,7 @@ class SmsSubmitCase internal constructor(
     fun checkConfirmationSms(fromDate: Date): Completable {
         return Single.zip(
             localDbRepository.getConfirmationSenderNumber(),
-            localDbRepository.getWaitingResultTimeout()
+            localDbRepository.getWaitingResultTimeout(),
         ) { number, timeout -> Pair(number, timeout) }
             .flatMapCompletable { pair ->
                 smsRepository.listenToConfirmationSms(
@@ -281,7 +282,7 @@ class SmsSubmitCase internal constructor(
                     pair.second,
                     pair.first,
                     submissionId!!,
-                    getSubmissionType()!!
+                    getSubmissionType()!!,
                 )
             }
             .andThen(converter!!.updateSubmissionState(State.SYNCED_VIA_SMS))
@@ -295,7 +296,7 @@ class SmsSubmitCase internal constructor(
                     message,
                     requiredSender,
                     submissionId!!,
-                    getSubmissionType()!!
+                    getSubmissionType()!!,
                 )
             }.doOnSuccess { isSuccess ->
                 if (isSuccess) {
@@ -325,11 +326,11 @@ class SmsSubmitCase internal constructor(
         return Completable.mergeArray(
             mapFail(
                 deviceStateRepository.hasCheckNetworkPermission(),
-                PreconditionFailed.Type.NO_CHECK_NETWORK_PERMISSION
+                PreconditionFailed.Type.NO_CHECK_NETWORK_PERMISSION,
             ),
             mapFail(deviceStateRepository.hasReceiveSMSPermission(), PreconditionFailed.Type.NO_RECEIVE_SMS_PERMISSION),
             mapFail(deviceStateRepository.hasSendSMSPermission(), PreconditionFailed.Type.NO_SEND_SMS_PERMISSION),
-            mapFail(deviceStateRepository.isNetworkConnected(), PreconditionFailed.Type.NO_NETWORK)
+            mapFail(deviceStateRepository.isNetworkConnected(), PreconditionFailed.Type.NO_NETWORK),
         )
     }
 
@@ -337,14 +338,14 @@ class SmsSubmitCase internal constructor(
         return Completable.mergeArray(
             mapFail(
                 localDbRepository.getGatewayNumber().map { it.isNotEmpty() },
-                PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET
+                PreconditionFailed.Type.NO_GATEWAY_NUMBER_SET,
             ),
             mapFail(localDbRepository.getUserName().map { it.isNotEmpty() }, PreconditionFailed.Type.NO_USER_LOGGED_IN),
             mapFail(
                 localDbRepository.getMetadataIds().map { it.lastSyncDate != null },
-                PreconditionFailed.Type.NO_METADATA_DOWNLOADED
+                PreconditionFailed.Type.NO_METADATA_DOWNLOADED,
             ),
-            mapFail(localDbRepository.isModuleEnabled(), PreconditionFailed.Type.SMS_MODULE_DISABLED)
+            mapFail(localDbRepository.isModuleEnabled(), PreconditionFailed.Type.SMS_MODULE_DISABLED),
         )
     }
 
@@ -367,7 +368,7 @@ class SmsSubmitCase internal constructor(
             NO_GATEWAY_NUMBER_SET,
             NO_USER_LOGGED_IN,
             NO_METADATA_DOWNLOADED,
-            SMS_MODULE_DISABLED
+            SMS_MODULE_DISABLED,
         }
 
         override val message: String

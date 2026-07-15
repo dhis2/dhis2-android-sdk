@@ -40,22 +40,25 @@ import java.util.concurrent.Callable
 internal class RelationshipConverter(
     localDbRepository: LocalDbRepository,
     dhisVersionManager: DHISVersionManager,
-    private val relationshipUid: String
+    private val relationshipUid: String,
 ) : Converter<Relationship>(localDbRepository, dhisVersionManager) {
     override fun convert(
         relationship: Relationship,
-        user: String, submissionId: Int
+        user: String,
+        submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<RelationshipSMSSubmission>(Callable {
-            val subm = RelationshipSMSSubmission()
-            subm.setSubmissionID(submissionId)
-            subm.setUserID(user)
-            subm.setRelationship(relationship.uid())
-            subm.setRelationshipType(relationship.relationshipType())
-            subm.setFrom(relationship.from()!!.elementUid())
-            subm.setTo(relationship.to()!!.elementUid())
-            subm
-        })
+        return Single.fromCallable<RelationshipSMSSubmission>(
+            Callable {
+                val subm = RelationshipSMSSubmission()
+                subm.setSubmissionID(submissionId)
+                subm.setUserID(user)
+                subm.setRelationship(relationship.uid())
+                subm.setRelationshipType(relationship.relationshipType())
+                subm.setFrom(relationship.from()!!.elementUid())
+                subm.setTo(relationship.to()!!.elementUid())
+                subm
+            },
+        )
     }
 
     override fun updateSubmissionState(state: State): Completable {

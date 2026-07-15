@@ -29,7 +29,9 @@ package org.hisp.dhis.android.core.sms.domain.converter.internal
 
 import android.annotation.SuppressLint
 import android.util.Base64
-
+import io.reactivex.Completable
+import io.reactivex.Single
+import io.reactivex.functions.Function3
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -40,13 +42,9 @@ import org.hisp.dhis.smscompression.SMSSubmissionWriter
 import org.hisp.dhis.smscompression.models.SMSMetadata
 import org.hisp.dhis.smscompression.models.SMSSubmission
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import io.reactivex.functions.Function3
-
 internal abstract class Converter<P> internal constructor(
     internal val localDbRepository: LocalDbRepository,
-    private val dhisVersionManager: DHISVersionManager
+    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     fun readAndConvert(): Single<String> = readAndConvert(0)
@@ -58,7 +56,7 @@ internal abstract class Converter<P> internal constructor(
             readItemFromDb(),
             Function3<SMSMetadata, String, P, CompressionData> { metadata, user, item ->
                 CompressionData(metadata, user, item)
-            }
+            },
         ).flatMap { d ->
             convert(d.item, d.metadata, d.user, submissionId)
         }
@@ -72,7 +70,7 @@ internal abstract class Converter<P> internal constructor(
         dataItem: P,
         metadata: SMSMetadata,
         user: String,
-        submissionId: Int
+        submissionId: Int,
     ): Single<String> {
         return convert(dataItem, user, submissionId).map { submission ->
             val writer = SMSSubmissionWriter(metadata)
@@ -87,6 +85,7 @@ internal abstract class Converter<P> internal constructor(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     @SuppressLint("NewApi")
     private fun base64(bytes: ByteArray): String {
         return try {
@@ -106,6 +105,6 @@ internal abstract class Converter<P> internal constructor(
     private inner class CompressionData(
         val metadata: SMSMetadata,
         val user: String,
-        val item: P
+        val item: P,
     )
 }

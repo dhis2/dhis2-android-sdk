@@ -40,7 +40,7 @@ import java.util.Objects
 internal class SendingStateReceiver(
     private val timeStarted: Long,
     private val timeoutSeconds: Int,
-    private val sendSmsAction: String
+    private val sendSmsAction: String,
 ) : BroadcastReceiver() {
     private val smsResultsWaiting: MutableSet<String?> = HashSet<String?>()
     var isError: Boolean = false
@@ -56,6 +56,7 @@ internal class SendingStateReceiver(
         return smsResultsWaiting.size
     }
 
+    @Suppress("ReturnCount")
     override fun onReceive(context: Context, intent: Intent) {
         if (timeLeft(timeStarted, timeoutSeconds) < 0 || this.isError) {
             // not interested, killing receiver
@@ -73,7 +74,7 @@ internal class SendingStateReceiver(
         if (callingUid != context.getApplicationInfo().uid) {
             Log.w(
                 TAG,
-                "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring..."
+                "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring...",
             )
             return
         }

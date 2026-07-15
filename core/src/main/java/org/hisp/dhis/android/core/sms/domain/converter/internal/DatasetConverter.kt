@@ -45,25 +45,27 @@ internal class DatasetConverter(
     private val dataSet: String,
     private val orgUnit: String,
     private val period: String,
-    private val attributeOptionComboUid: String
+    private val attributeOptionComboUid: String,
 ) : Converter<SMSDataValueSet>(localDbRepository, dhisVersionManager) {
     override fun convert(
         dataValueSet: SMSDataValueSet,
         user: String,
-        submissionId: Int
+        submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<AggregateDatasetSMSSubmission>(Callable {
-            val subm = AggregateDatasetSMSSubmission()
-            subm.setSubmissionID(submissionId)
-            subm.setUserID(user)
-            subm.setOrgUnit(orgUnit)
-            subm.setPeriod(period)
-            subm.setDataSet(dataSet)
-            subm.setAttributeOptionCombo(attributeOptionComboUid)
-            subm.setValues(translateValues(dataValueSet.dataValues))
-            subm.setComplete(dataValueSet.completed)
-            subm
-        })
+        return Single.fromCallable<AggregateDatasetSMSSubmission>(
+            Callable {
+                val subm = AggregateDatasetSMSSubmission()
+                subm.setSubmissionID(submissionId)
+                subm.setUserID(user)
+                subm.setOrgUnit(orgUnit)
+                subm.setPeriod(period)
+                subm.setDataSet(dataSet)
+                subm.setAttributeOptionCombo(attributeOptionComboUid)
+                subm.setValues(translateValues(dataValueSet.dataValues))
+                subm.setComplete(dataValueSet.completed)
+                subm
+            },
+        )
     }
 
     private fun translateValues(values: Collection<DataValue>): List<SMSDataValue> {
@@ -71,14 +73,18 @@ internal class DatasetConverter(
             SMSDataValue(
                 value.categoryOptionCombo(),
                 value.dataElement(),
-                value.value()
+                value.value(),
             )
         }
     }
 
     override fun updateSubmissionState(state: State): Completable {
         return localDbRepository.updateDataSetSubmissionState(
-            dataSet, orgUnit, period, attributeOptionComboUid, state
+            dataSet,
+            orgUnit,
+            period,
+            attributeOptionComboUid,
+            state,
         )
     }
 
@@ -87,7 +93,7 @@ internal class DatasetConverter(
             dataSet,
             orgUnit,
             period,
-            attributeOptionComboUid
+            attributeOptionComboUid,
         )
     }
 }

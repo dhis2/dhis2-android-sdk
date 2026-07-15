@@ -43,6 +43,7 @@ import org.hisp.dhis.smscompression.models.SMSDataValue
 internal object ConverterUtils {
     private val TAG: String = ConverterUtils::class.java.getSimpleName()
 
+    @Suppress("ReturnCount")
     fun convertEventStatus(status: EventStatus?): SMSEventStatus? {
         if (status == null) {
             return null
@@ -58,6 +59,7 @@ internal object ConverterUtils {
         }
     }
 
+    @Suppress("ReturnCount")
     fun convertEnrollmentStatus(status: EnrollmentStatus?): SMSEnrollmentStatus? {
         if (status == null) {
             return null
@@ -70,8 +72,9 @@ internal object ConverterUtils {
         }
     }
 
+    @Suppress("ReturnCount")
     fun convertGeometryPoint(geometry: Geometry?): GeoPoint? {
-        if (geometry == null|| !containsAPoint(geometry)) {
+        if (geometry == null || !containsAPoint(geometry)) {
             return null
         }
 
@@ -86,7 +89,7 @@ internal object ConverterUtils {
 
     fun convertDataValues(
         catOptionCombo: String?,
-        trackedEntityDataValues: List<TrackedEntityDataValue>?
+        trackedEntityDataValues: List<TrackedEntityDataValue>?,
     ): List<SMSDataValue?> {
         val dataValues = ArrayList<SMSDataValue?>()
         if (trackedEntityDataValues == null) {

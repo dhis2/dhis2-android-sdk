@@ -25,100 +25,104 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.internal
 
-package org.hisp.dhis.android.core.sms.data.internal;
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import android.telephony.PhoneStateListener
+import android.telephony.ServiceState
+import android.telephony.TelephonyManager
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.telephony.PhoneStateListener;
-import android.telephony.ServiceState;
-import android.telephony.TelephonyManager;
-
-import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
-import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+private const val NETWORK_CHECK_TIMEOUT_SECONDS = 3L
 
 @SuppressLint("MissingPermission")
-public class DeviceStateRepositoryImpl implements DeviceStateRepository {
-    private final Context context;
+class DeviceStateRepositoryImpl(private val context: Context) : DeviceStateRepository {
 
-    public DeviceStateRepositoryImpl(Context context) {
-        this.context = context;
+    @SuppressLint("MissingPermission")
+    override fun isNetworkConnected(): Single<Boolean> {
+        // permission should be checked earlier
+        val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as? TelephonyManager
+            ?: return Single.just(false)
+
+        val serviceState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            telephonyManager.serviceState
+        } else {
+            null
+        }
+
+        return if (serviceState != null) {
+            Single.just(serviceState.state == ServiceState.STATE_IN_SERVICE)
+        } else {
+            // When failed to get current status or too low sdk version
+            // Have to register listener
+            listenToServiceState(telephonyManager)
+        }
     }
 
-    @Override
-    @SuppressLint("MissingPermission")
-    public Single<Boolean> isNetworkConnected() {
-        //permission should be checked earlier
-        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        if (telephonyManager == null) {
-            return Single.just(false);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            ServiceState serviceState = telephonyManager.getServiceState();
-            if (serviceState != null) {
-                return Single.just(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
-            }
-        }
-
-        // When failed to get current status or too low sdk version
-        // Have to register listener
-        AtomicReference<PhoneStateListener> listener = new AtomicReference<>();
-        return Single.create((SingleOnSubscribe<Boolean>) emitter -> {
-            if (emitter.isDisposed()) {
-                return;
+    private fun listenToServiceState(telephonyManager: TelephonyManager): Single<Boolean> {
+        val listener = AtomicReference<PhoneStateListener?>()
+        return Single.create<Boolean> { emitter ->
+            if (emitter.isDisposed) {
+                return@create
             }
             // Set a listener on a telephony manager to get
-            listener.set(new PhoneStateListener() {
-                @Override
-                public void onServiceStateChanged(ServiceState serviceState) {
-                    if (listener.get() == null || emitter.isDisposed()) {
-                        return;
+            listener.set(object : PhoneStateListener() {
+                override fun onServiceStateChanged(serviceState: ServiceState) {
+                    if (listener.get() == null || emitter.isDisposed) {
+                        return
                     }
-                    telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE);
-                    listener.set(null);
-                    emitter.onSuccess(serviceState.getState() == ServiceState.STATE_IN_SERVICE);
+                    telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE)
+                    listener.set(null)
+                    emitter.onSuccess(serviceState.state == ServiceState.STATE_IN_SERVICE)
                 }
-            });
-            telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE);
-        }).subscribeOn(AndroidSchedulers.mainThread()
-        ).timeout(3, TimeUnit.SECONDS, Schedulers.newThread(), Single.fromCallable(() -> {
-            // If information did not come quickly, remove listener and try other method
-            return telephonyManager.getNetworkType() != TelephonyManager.NETWORK_TYPE_UNKNOWN;
-        })).doFinally(() -> {
-            if (listener.get() != null) {
-                telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE);
-                listener.set(null);
+            })
+            telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_SERVICE_STATE)
+        }.subscribeOn(AndroidSchedulers.mainThread())
+            .timeout(
+                NETWORK_CHECK_TIMEOUT_SECONDS,
+                TimeUnit.SECONDS,
+                Schedulers.newThread(),
+                Single.fromCallable {
+                    // If information did not come quickly, remove listener and try other method
+                    telephonyManager.networkType != TelephonyManager.NETWORK_TYPE_UNKNOWN
+                },
+            ).doFinally {
+                if (listener.get() != null) {
+                    telephonyManager.listen(listener.get(), PhoneStateListener.LISTEN_NONE)
+                    listener.set(null)
+                }
             }
-        });
     }
 
-    @Override
-    public Single<Boolean> hasCheckNetworkPermission() {
-        return Single.just(PackageManager.PERMISSION_GRANTED ==
-                context.checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE));
+    override fun hasCheckNetworkPermission(): Single<Boolean> {
+        return Single.just(
+            PackageManager.PERMISSION_GRANTED ==
+                context.checkCallingOrSelfPermission(Manifest.permission.READ_PHONE_STATE),
+        )
     }
 
-    @Override
-    public Single<Boolean> hasSendSMSPermission() {
-        return Single.just(PackageManager.PERMISSION_GRANTED ==
-                context.checkCallingOrSelfPermission(Manifest.permission.SEND_SMS));
+    override fun hasSendSMSPermission(): Single<Boolean> {
+        return Single.just(
+            PackageManager.PERMISSION_GRANTED ==
+                context.checkCallingOrSelfPermission(Manifest.permission.SEND_SMS),
+        )
     }
 
-    @Override
-    public Single<Boolean> hasReceiveSMSPermission() {
-        return Single.just(PackageManager.PERMISSION_GRANTED ==
+    override fun hasReceiveSMSPermission(): Single<Boolean> {
+        return Single.just(
+            PackageManager.PERMISSION_GRANTED ==
                 context.checkCallingOrSelfPermission(Manifest.permission.RECEIVE_SMS) &&
                 PackageManager.PERMISSION_GRANTED ==
-                        context.checkCallingOrSelfPermission(Manifest.permission.READ_SMS));
+                context.checkCallingOrSelfPermission(Manifest.permission.READ_SMS),
+        )
     }
 }

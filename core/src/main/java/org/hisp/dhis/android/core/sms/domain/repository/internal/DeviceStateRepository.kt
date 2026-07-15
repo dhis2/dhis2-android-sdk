@@ -25,30 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository.internal
 
-package org.hisp.dhis.android.core.sms.domain.repository.internal;
+import io.reactivex.Single
 
-import io.reactivex.Single;
-
-public interface DeviceStateRepository {
+interface DeviceStateRepository {
 
     /**
      * @return Information if network is connected and able to send sms
      */
-    Single<Boolean> isNetworkConnected();
+    fun isNetworkConnected(): Single<Boolean>
 
     /**
      * @return Information if possible to check network state
      */
-    Single<Boolean> hasCheckNetworkPermission();
+    fun hasCheckNetworkPermission(): Single<Boolean>
 
     /**
      * @return Information if possible to send SMS
      */
-    Single<Boolean> hasSendSMSPermission();
+    fun hasSendSMSPermission(): Single<Boolean>
 
     /**
      * @return Information if possible to receive and read SMS
      */
-    Single<Boolean> hasReceiveSMSPermission();
+    fun hasReceiveSMSPermission(): Single<Boolean>
 }

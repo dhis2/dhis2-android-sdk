@@ -25,19 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository
 
-package org.hisp.dhis.android.core.sms.domain.repository;
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import java.util.Date
 
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
-
-import java.util.Date;
-import java.util.List;
-
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-
-public interface SmsRepository {
+interface SmsRepository {
 
     /**
      * Sends given text by sms
@@ -47,13 +43,13 @@ public interface SmsRepository {
      * @param sendingTimeoutSeconds After this time error will be returned.
      * @return Observable that emits current status of sending
      */
-    Observable<SmsSendingState> sendSms(String number, List<String> smsParts, int sendingTimeoutSeconds);
+    fun sendSms(number: String, smsParts: List<String>, sendingTimeoutSeconds: Int): Observable<SmsSendingState>
 
     /**
      * @param value text to send
      * @return contents for multiple sms parts
      */
-    Single<List<String>> generateSmsParts(String value);
+    fun generateSmsParts(value: String): Single<List<String>>
 
     /**
      * Starts process of listening to result confirmation sms
@@ -65,11 +61,13 @@ public interface SmsRepository {
      * @param submissionType        submission type to recognize message
      * @return completed when found
      */
-    Completable listenToConfirmationSms(Date fromDate,
-                                        int waitingTimeoutSeconds,
-                                        String requiredSender,
-                                        int submissionId,
-                                        SubmissionType submissionType);
+    fun listenToConfirmationSms(
+        fromDate: Date,
+        waitingTimeoutSeconds: Int,
+        requiredSender: String?,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Completable
 
     /**
      * Check if a message is the expected one or not
@@ -82,70 +80,35 @@ public interface SmsRepository {
      * @return single with true if the message is the response for the current submit case; false otherwise. Returns
      * the error RECEIVED_ERROR is the message is the awaited one but it contains an error.
      */
-    Single<Boolean> isAwaitedSuccessMessage(String sender,
-                                            String message,
-                                            String requiredSender,
-                                            int submissionId,
-                                            SubmissionType submissionType);
+    fun isAwaitedSuccessMessage(
+        sender: String?,
+        message: String,
+        requiredSender: String?,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Single<Boolean>
 
     /**
      * Returned when sms sending error is returned from OS.
      */
-    class ReceivedErrorException extends Exception {
-        private final int errorCode;
-
-        public ReceivedErrorException(int errorCode) {
-            this.errorCode = errorCode;
-        }
-
-        public int getErrorCode() {
-            return errorCode;
-        }
-    }
+    class ReceivedErrorException(val errorCode: Int) : Exception()
 
     /**
      * Returned when not received successful response message
      */
-    class ResultResponseException extends Exception {
-        final ResultResponseIssue reason;
+    class ResultResponseException(val reason: ResultResponseIssue) : Exception()
 
-        public ResultResponseException(ResultResponseIssue reason) {
-            this.reason = reason;
-        }
-
-        public ResultResponseIssue getReason() {
-            return reason;
-        }
-    }
-
-    enum ResultResponseIssue {
-        TIMEOUT, RECEIVED_ERROR, OTHER
+    enum class ResultResponseIssue {
+        TIMEOUT,
+        RECEIVED_ERROR,
+        OTHER,
     }
 
     /**
      * Shows the current status of sending task.
+     *
+     * @property sent Amount of messages sent to this moment
+     * @property total Total number of messages that will be sent
      */
-    class SmsSendingState {
-        private final int sent;
-        private final int total;
-
-        public SmsSendingState(int sent, int total) {
-            this.sent = sent;
-            this.total = total;
-        }
-
-        /**
-         * @return Amount of messages sent to this moment
-         */
-        public int getSent() {
-            return sent;
-        }
-
-        /**
-         * @return Total number of messages that will be sent
-         */
-        public int getTotal() {
-            return total;
-        }
-    }
+    class SmsSendingState(val sent: Int, val total: Int)
 }

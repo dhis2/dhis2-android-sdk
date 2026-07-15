@@ -19481,7 +19481,7 @@ public abstract interface class org/hisp/dhis/android/core/sms/SmsModule {
 	public abstract fun smsSubmitCase ()Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase;
 }
 
-public class org/hisp/dhis/android/core/sms/data/internal/DeviceStateRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/internal/DeviceStateRepository {
+public final class org/hisp/dhis/android/core/sms/data/internal/DeviceStateRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/internal/DeviceStateRepository {
 	public fun <init> (Landroid/content/Context;)V
 	public fun hasCheckNetworkPermission ()Lio/reactivex/Single;
 	public fun hasReceiveSMSPermission ()Lio/reactivex/Single;
@@ -19580,12 +19580,16 @@ public final class org/hisp/dhis/android/core/sms/data/localdbrepository/interna
 	public final fun from (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
 }
 
-public class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
+public final class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
+	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl$Companion;
 	public fun <init> (Landroid/content/Context;)V
 	public fun generateSmsParts (Ljava/lang/String;)Lio/reactivex/Single;
 	public fun isAwaitedSuccessMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Single;
 	public fun listenToConfirmationSms (Ljava/util/Date;ILjava/lang/String;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Completable;
 	public fun sendSms (Ljava/lang/String;Ljava/util/List;I)Lio/reactivex/Observable;
+}
+
+public final class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl$Companion {
 }
 
 public abstract class org/hisp/dhis/android/core/sms/domain/converter/internal/Converter {
@@ -19716,28 +19720,29 @@ public abstract interface class org/hisp/dhis/android/core/sms/domain/repository
 	public abstract fun sendSms (Ljava/lang/String;Ljava/util/List;I)Lio/reactivex/Observable;
 }
 
-public class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ReceivedErrorException : java/lang/Exception {
+public final class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ReceivedErrorException : java/lang/Exception {
 	public fun <init> (I)V
-	public fun getErrorCode ()I
+	public final fun getErrorCode ()I
 }
 
-public class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseException : java/lang/Exception {
+public final class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseException : java/lang/Exception {
 	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;)V
-	public fun getReason ()Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
+	public final fun getReason ()Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue : java/lang/Enum {
 	public static final field OTHER Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
 	public static final field RECEIVED_ERROR Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
 	public static final field TIMEOUT Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
 	public static fun values ()[Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository$ResultResponseIssue;
 }
 
-public class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$SmsSendingState {
+public final class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository$SmsSendingState {
 	public fun <init> (II)V
-	public fun getSent ()I
-	public fun getTotal ()I
+	public final fun getSent ()I
+	public final fun getTotal ()I
 }
 
 public abstract interface class org/hisp/dhis/android/core/sms/domain/repository/WebApiRepository {

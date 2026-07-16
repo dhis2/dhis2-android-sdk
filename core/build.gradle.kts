@@ -195,6 +195,7 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
+    implementation(libs.androidx.core)
     api(libs.androidx.paging.runtime)
 
     // Koin

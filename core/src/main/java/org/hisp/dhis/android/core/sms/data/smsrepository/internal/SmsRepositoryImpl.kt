@@ -33,6 +33,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.SmsManager
 import android.util.Log
+import androidx.core.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
@@ -72,7 +73,12 @@ class SmsRepositoryImpl(private val context: Context) : SmsRepository {
     ) {
         val timeStarted = System.currentTimeMillis()
         val stateReceiver = SendingStateReceiver(timeStarted, timeoutSeconds, sendSmsAction)
-        context.registerReceiver(stateReceiver, IntentFilter(sendSmsAction))
+        ContextCompat.registerReceiver(
+            context,
+            stateReceiver,
+            IntentFilter(sendSmsAction),
+            ContextCompat.RECEIVER_NOT_EXPORTED,
+        )
         var sentNumber = 0
         sendSmsToOS(stateReceiver, number, smsParts)
         val totalMessages = smsParts.size

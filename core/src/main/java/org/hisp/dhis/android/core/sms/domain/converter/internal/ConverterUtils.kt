@@ -48,14 +48,13 @@ internal object ConverterUtils {
         if (status == null) {
             return null
         }
-        when (status) {
-            EventStatus.ACTIVE -> return SMSEventStatus.ACTIVE
-            EventStatus.COMPLETED -> return SMSEventStatus.COMPLETED
-            EventStatus.SCHEDULE -> return SMSEventStatus.SCHEDULE
-            EventStatus.SKIPPED -> return SMSEventStatus.SKIPPED
-            EventStatus.VISITED -> return SMSEventStatus.VISITED
-            EventStatus.OVERDUE -> return SMSEventStatus.OVERDUE
-            else -> return null
+        return when (status) {
+            EventStatus.ACTIVE -> SMSEventStatus.ACTIVE
+            EventStatus.COMPLETED -> SMSEventStatus.COMPLETED
+            EventStatus.SCHEDULE -> SMSEventStatus.SCHEDULE
+            EventStatus.SKIPPED -> SMSEventStatus.SKIPPED
+            EventStatus.VISITED -> SMSEventStatus.VISITED
+            EventStatus.OVERDUE -> SMSEventStatus.OVERDUE
         }
     }
 
@@ -64,11 +63,10 @@ internal object ConverterUtils {
         if (status == null) {
             return null
         }
-        when (status) {
-            EnrollmentStatus.ACTIVE -> return SMSEnrollmentStatus.ACTIVE
-            EnrollmentStatus.CANCELLED -> return SMSEnrollmentStatus.CANCELLED
-            EnrollmentStatus.COMPLETED -> return SMSEnrollmentStatus.COMPLETED
-            else -> return null
+        return when (status) {
+            EnrollmentStatus.ACTIVE -> SMSEnrollmentStatus.ACTIVE
+            EnrollmentStatus.CANCELLED -> SMSEnrollmentStatus.CANCELLED
+            EnrollmentStatus.COMPLETED -> SMSEnrollmentStatus.COMPLETED
         }
     }
 

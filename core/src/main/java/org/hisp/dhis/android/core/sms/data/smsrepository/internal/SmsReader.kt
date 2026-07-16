@@ -34,6 +34,7 @@ import android.content.IntentFilter
 import android.provider.Telephony
 import android.telephony.SmsMessage
 import android.util.Log
+import androidx.core.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -71,9 +72,11 @@ internal class SmsReader(private val context: Context) {
                 }
             }
             receiver.set(broadcastReceiver)
-            context.registerReceiver(
+            ContextCompat.registerReceiver(
+                context,
                 broadcastReceiver,
                 IntentFilter(Telephony.Sms.Intents.SMS_RECEIVED_ACTION),
+                ContextCompat.RECEIVER_NOT_EXPORTED,
             )
         }.timeout(
             waitingTimeoutSeconds.toLong(),

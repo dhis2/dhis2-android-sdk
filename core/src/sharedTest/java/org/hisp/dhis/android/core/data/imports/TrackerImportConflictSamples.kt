@@ -26,16 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.indicator;
+package org.hisp.dhis.android.core.data.imports
 
-import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.imports.ImportStatus
+import org.hisp.dhis.android.core.imports.TrackerImportConflict
+import java.text.ParseException
+import java.util.Date
 
-public class DataSetIndicatorLinkSamples {
+object TrackerImportConflictSamples {
 
-    public static DataSetIndicatorLink getDataSetIndicatorLink() {
-        return DataSetIndicatorLink.builder()
-                .dataSet("data_set")
-                .indicator("indicator")
-                .build();
+    @JvmStatic
+    fun get(): TrackerImportConflict {
+        return TrackerImportConflict.builder()
+            .conflict("conflict")
+            .value("value")
+            .trackedEntityInstance("tracked_entity_instance")
+            .enrollment("enrollment")
+            .event("event")
+            .trackedEntityAttribute("tracked_entity_attribute")
+            .dataElement("data_element")
+            .tableReference("table_reference")
+            .errorCode("error_code")
+            .status(ImportStatus.SUCCESS)
+            .created(getDate("2017-11-29T11:27:46.935"))
+            .displayDescription("display description")
+            .build()
+    }
+
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
         }
+    }
 }

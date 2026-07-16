@@ -25,18 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.dataset
 
-package org.hisp.dhis.android.core.data.dataset;
+import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 
-import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink;
+object SectionGreyedFieldsLinkSamples {
 
-public class SectionGreyedFieldsLinkSamples {
-
-    public static SectionGreyedFieldsLink getSectionGreyedFieldsLink() {
+    @JvmStatic
+    fun getSectionGreyedFieldsLink(): SectionGreyedFieldsLink {
         return SectionGreyedFieldsLink.builder()
-                .section("section")
-                .dataElementOperand("data_element_operand")
-                .categoryOptionCombo("Gmbgme7z9BF")
-                .build();
+            .section("section")
+            .dataElementOperand("data_element_operand")
+            .categoryOptionCombo("Gmbgme7z9BF")
+            .build()
     }
 }

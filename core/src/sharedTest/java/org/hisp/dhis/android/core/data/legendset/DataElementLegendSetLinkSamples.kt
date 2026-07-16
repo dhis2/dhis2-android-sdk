@@ -26,40 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.imports;
+package org.hisp.dhis.android.core.data.legendset
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.imports.ImportStatus;
-import org.hisp.dhis.android.core.imports.TrackerImportConflict;
+import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 
-import java.text.ParseException;
-import java.util.Date;
+object DataElementLegendSetLinkSamples {
 
-public class TrackerImportConflictSamples {
-
-    public static TrackerImportConflict get() {
-        return TrackerImportConflict.builder()
-                .conflict("conflict")
-                .value("value")
-                .trackedEntityInstance("tracked_entity_instance")
-                .enrollment("enrollment")
-                .event("event")
-                .trackedEntityAttribute("tracked_entity_attribute")
-                .dataElement("data_element")
-                .tableReference("table_reference")
-                .errorCode("error_code")
-                .status(ImportStatus.SUCCESS)
-                .created(getDate("2017-11-29T11:27:46.935"))
-                .displayDescription("display description")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @JvmStatic
+    fun getDataElementLegendSetLink(): DataElementLegendSetLink {
+        return DataElementLegendSetLink.builder()
+            .legendSet("legend_set")
+            .sortOrder(1)
+            .dataElement("data_element")
+            .build()
     }
 }

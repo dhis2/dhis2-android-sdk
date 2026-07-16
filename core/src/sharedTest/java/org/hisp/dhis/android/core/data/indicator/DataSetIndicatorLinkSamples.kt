@@ -26,26 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.indicator
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.Section;
+object DataSetIndicatorLinkSamples {
 
-public class SectionSamples {
-
-    public static Section getSection() {
-        Section.Builder sectionBuilder = Section.builder();
-        fillIdentifiableProperties(sectionBuilder);
-        sectionBuilder
-                .description("descr")
-                .sortOrder(2)
-                .showRowTotals(true)
-                .showColumnTotals(false)
-                .dataSet(ObjectWithUid.create("dataSet"))
-                .disableDataElementAutoGroup(true)
-                .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions());
-        return sectionBuilder.build();
+    @JvmStatic
+    fun getDataSetIndicatorLink(): DataSetIndicatorLink {
+        return DataSetIndicatorLink.builder()
+            .dataSet("data_set")
+            .indicator("indicator")
+            .build()
     }
 }

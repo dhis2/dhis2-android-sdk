@@ -26,17 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.fileresource
 
-import org.hisp.dhis.android.core.dataset.SectionDataElementLink;
+import java.io.InputStream
+import java.util.Random
 
-public class SectionDataElementLinkSamples {
+class RandomGeneratedInputStream(private val size: Long) : InputStream() {
 
-    public static SectionDataElementLink getSectionDataElementLink() {
-        return SectionDataElementLink.builder()
-                .section("section")
-                .dataElement("data_element")
-                .sortOrder(3)
-                .build();
+    private val random = Random()
+    private val blockSize: Long = 1
+    private var currentBlockSize: Long = 1
+    private var lastUsedByte: Int = random.nextInt(255)
+    private var index: Long = 0
+
+    override fun read(): Int {
+        if (index == size) {
+            return -1
+        }
+
+        if (index == currentBlockSize) {
+            lastUsedByte = random.nextInt(255)
+            currentBlockSize += blockSize
+        }
+
+        index++
+
+        return lastUsedByte
     }
 }

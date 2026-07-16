@@ -25,18 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.dataset
 
-package org.hisp.dhis.android.core.data.legendset;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.dataset.Section
 
-import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink;
+object SectionSamples {
 
-public class DataElementLegendSetLinkSamples {
-
-    public static DataElementLegendSetLink getDataElementLegendSetLink() {
-        return DataElementLegendSetLink.builder()
-                .legendSet("legend_set")
-                .sortOrder(1)
-                .dataElement("data_element")
-                .build();
+    @JvmStatic
+    fun getSection(): Section {
+        val sectionBuilder = Section.builder()
+        fillIdentifiableProperties(sectionBuilder)
+        sectionBuilder
+            .description("descr")
+            .sortOrder(2)
+            .showRowTotals(true)
+            .showColumnTotals(false)
+            .dataSet(ObjectWithUid.create("dataSet"))
+            .disableDataElementAutoGroup(true)
+            .displayOptions(SectionDisplayOptionsSamples.getDisplayOptions())
+        return sectionBuilder.build()
     }
 }

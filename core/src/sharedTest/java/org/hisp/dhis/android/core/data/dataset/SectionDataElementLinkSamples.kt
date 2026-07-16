@@ -25,36 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.dataset
 
-package org.hisp.dhis.android.core.data.legendset;
+import org.hisp.dhis.android.core.dataset.SectionDataElementLink
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.legendset.Legend;
+object SectionDataElementLinkSamples {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class LegendSamples {
-
-    public static Legend getLegend() {
-        Legend.Builder legendBuilder = Legend.builder();
-
-        fillIdentifiableProperties(legendBuilder);
-        legendBuilder
-                .startValue(30.5)
-                .endValue(40.0)
-                .color("#d9f0a3")
-                .legendSet(ObjectWithUid.create("legend_set_uid"));
-        return legendBuilder.build();
-    }
-
-    public static Legend get45To60() {
-        return Legend.builder()
-                .uid("BzQkRWHS7lu")
-                .name("45 - 60")
-                .startValue(45.0)
-                .endValue(60.0)
-                .color("#F38026")
-                .legendSet(ObjectWithUid.create("TiOkbpGEud4"))
-                .build();
+    @JvmStatic
+    fun getSectionDataElementLink(): SectionDataElementLink {
+        return SectionDataElementLink.builder()
+            .section("section")
+            .dataElement("data_element")
+            .sortOrder(3)
+            .build()
     }
 }

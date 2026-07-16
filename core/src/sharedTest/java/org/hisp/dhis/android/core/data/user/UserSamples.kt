@@ -26,19 +26,28 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.data.user
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
+import org.hisp.dhis.android.core.user.User
 
-import org.hisp.dhis.android.core.user.UserGroup;
+object UserSamples {
 
-public class UserGroupSamples {
+    @JvmStatic
+    fun getUser(): User {
+        val builder = User.builder()
 
-    public static UserGroup getUserGroup() {
-        UserGroup.Builder builder = UserGroup.builder();
-
-        fillIdentifiableProperties(builder);
         return builder
-                .build();
+            .uid("DXyJmlo9rge")
+            .name("John Barnes")
+            .displayName("John Barnes")
+            .created(FillPropertiesTestUtils.parseDate("2015-03-31T13:31:09.324"))
+            .lastUpdated(FillPropertiesTestUtils.parseDate("2016-04-06T00:05:57.495"))
+            .firstName("John")
+            .surname("Barnes")
+            .email("john@hmail.com")
+            .username("android")
+            .twoFactorAuthEnabled(true)
+            .build()
     }
 }

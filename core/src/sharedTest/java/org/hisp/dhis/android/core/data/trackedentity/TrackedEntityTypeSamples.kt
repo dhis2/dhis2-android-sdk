@@ -26,19 +26,39 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.user.UserRole;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.FeatureType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
+import java.text.ParseException
+import java.util.Date
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object TrackedEntityTypeSamples {
 
-public class UserRoleSamples {
+    @JvmStatic
+    fun get(): TrackedEntityType {
+        return TrackedEntityType.builder()
+            .uid("nEenWmSyUEp")
+            .name("Person")
+            .displayName("Person")
+            .created(getDate("2014-08-20T12:28:56.409"))
+            .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+            .description("Person")
+            .displayDescription("Person")
+            .featureType(FeatureType.NONE)
+            .access(AccessHelper.createForDataWrite(true))
+            .displayTrackedEntityTypesLabel("TrackedEntityTypesLabel")
+            .build()
+    }
 
-    public static UserRole getUserRole() {
-        UserRole.Builder builder = UserRole.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .build();
+    private fun getDate(dateStr: String): Date {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            Date()
+        }
     }
 }

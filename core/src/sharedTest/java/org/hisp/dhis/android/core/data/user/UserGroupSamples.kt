@@ -26,40 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.data.user
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnit;
-import org.hisp.dhis.android.core.user.UserOrganisationUnitLink;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.user.UserGroup
 
-public class UserOrganisationUnitLinkSamples {
+object UserGroupSamples {
 
-    public static UserOrganisationUnitLink getUserOrganisationUnitLink() {
-        return UserOrganisationUnitLink.builder()
-                .user("user")
-                .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name())
-                .organisationUnit("organisation_unit")
-                .root(true)
-                .userAssigned(true)
-                .build();
-    }
+    @JvmStatic
+    fun getUserGroup(): UserGroup {
+        val builder = UserGroup.builder()
 
-    public static UserOrganisationUnitLink getAssignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
-        return UserOrganisationUnitLink.builder()
-                .user("user")
-                .organisationUnitScope(scope.name())
-                .organisationUnit("organisation_unit_child_1")
-                .root(false)
-                .userAssigned(true)
-                .build();
-    }
-
-    public static UserOrganisationUnitLink getUnassignedUserOrganisationUnitLink(OrganisationUnit.Scope scope) {
-        return UserOrganisationUnitLink.builder()
-                .user("user")
-                .organisationUnitScope(scope.name())
-                .organisationUnit("organisation_unit_child_2")
-                .root(false)
-                .userAssigned(false)
-                .build();
+        fillIdentifiableProperties(builder)
+        return builder
+            .build()
     }
 }

@@ -26,19 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.event.internal;
+package org.hisp.dhis.android.core.data.user
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.user.UserRole
 
-public class EventSyncSamples {
+object UserRoleSamples {
 
-    public static EventSync get1() {
-        return EventSync.builder()
-                .program("program")
-                .organisationUnitIdsHash(865)
-                .downloadLimit(500)
-                .workingListsHash(12345)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    @JvmStatic
+    fun getUserRole(): UserRole {
+        val builder = UserRole.builder()
+
+        fillIdentifiableProperties(builder)
+        return builder
+            .build()
     }
 }

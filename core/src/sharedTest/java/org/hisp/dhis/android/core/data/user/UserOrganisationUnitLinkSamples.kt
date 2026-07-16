@@ -26,19 +26,43 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.trackedentity.internal;
+package org.hisp.dhis.android.core.data.user
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
+import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 
-public class TrackedEntityInstanceSyncSamples {
+object UserOrganisationUnitLinkSamples {
 
-    public static TrackedEntityInstanceSync get1() {
-        return TrackedEntityInstanceSync.builder()
-                .program("program")
-                .organisationUnitIdsHash(999)
-                .downloadLimit(500)
-                .workingListsHash(12345)
-                .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
-                .build();
+    @JvmStatic
+    fun getUserOrganisationUnitLink(): UserOrganisationUnitLink {
+        return UserOrganisationUnitLink.builder()
+            .user("user")
+            .organisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE.name)
+            .organisationUnit("organisation_unit")
+            .root(true)
+            .userAssigned(true)
+            .build()
+    }
+
+    @JvmStatic
+    fun getAssignedUserOrganisationUnitLink(scope: OrganisationUnit.Scope): UserOrganisationUnitLink {
+        return UserOrganisationUnitLink.builder()
+            .user("user")
+            .organisationUnitScope(scope.name)
+            .organisationUnit("organisation_unit_child_1")
+            .root(false)
+            .userAssigned(true)
+            .build()
+    }
+
+    @JvmStatic
+    fun getUnassignedUserOrganisationUnitLink(scope: OrganisationUnit.Scope): UserOrganisationUnitLink {
+        return UserOrganisationUnitLink.builder()
+            .user("user")
+            .organisationUnitScope(scope.name)
+            .organisationUnit("organisation_unit_child_2")
+            .root(false)
+            .userAssigned(false)
+            .build()
     }
 }

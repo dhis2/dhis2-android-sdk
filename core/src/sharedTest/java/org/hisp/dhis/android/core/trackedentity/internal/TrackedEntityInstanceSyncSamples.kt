@@ -26,16 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.user;
+package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.user.AuthenticatedUser;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
 
-public class AuthenticatedUserSamples {
+object TrackedEntityInstanceSyncSamples {
 
-    public static AuthenticatedUser getAuthenticatedUser() {
-        return AuthenticatedUser.builder()
-                .user("user")
-                .hash("hash")
-                .build();
+    @JvmStatic
+    fun get1(): TrackedEntityInstanceSync {
+        return TrackedEntityInstanceSync.builder()
+            .program("program")
+            .organisationUnitIdsHash(999)
+            .downloadLimit(500)
+            .workingListsHash(12345)
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .build()
     }
 }

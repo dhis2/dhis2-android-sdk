@@ -26,39 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.FeatureType;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityType;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
 
-import java.text.ParseException;
-import java.util.Date;
+object EventSyncSamples {
 
-public class TrackedEntityTypeSamples {
-
-    public static TrackedEntityType get() {
-        return TrackedEntityType.builder()
-                .uid("nEenWmSyUEp")
-                .name("Person")
-                .displayName("Person")
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .description("Person")
-                .displayDescription("Person")
-                .featureType(FeatureType.NONE)
-                .access(AccessHelper.createForDataWrite(true))
-                .displayTrackedEntityTypesLabel("TrackedEntityTypesLabel")
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @JvmStatic
+    fun get1(): EventSync {
+        return EventSync.builder()
+            .program("program")
+            .organisationUnitIdsHash(865)
+            .downloadLimit(500)
+            .workingListsHash(12345)
+            .lastUpdated(parseDate("2017-11-29T11:27:46.935"))
+            .build()
     }
 }

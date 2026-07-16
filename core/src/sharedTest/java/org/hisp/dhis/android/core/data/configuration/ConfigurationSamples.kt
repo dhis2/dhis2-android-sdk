@@ -26,18 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.configuration
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataset.DataSetElement;
+import org.hisp.dhis.android.core.configuration.internal.Configuration
 
-public class DataSetElementSamples {
+object ConfigurationSamples {
 
-    public static DataSetElement getDataSetElement() {
-        return DataSetElement.builder()
-                .dataSet(ObjectWithUid.create("data_set_uid"))
-                .dataElement(ObjectWithUid.create("data_element_uid"))
-                .categoryCombo(ObjectWithUid.create("category_combo"))
-                .build();
+    @JvmStatic
+    fun getConfiguration(): Configuration {
+        return Configuration.builder()
+            .serverUrl("http://testserver.org/api/")
+            .build()
     }
 }

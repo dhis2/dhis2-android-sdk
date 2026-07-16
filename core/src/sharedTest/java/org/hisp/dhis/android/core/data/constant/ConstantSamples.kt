@@ -26,20 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.constant
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.dataset.DataInputPeriod;
+import org.hisp.dhis.android.core.constant.Constant
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 
-public class DataInputPeriodSamples {
+object ConstantSamples {
 
-    public static DataInputPeriod getDataInputPeriod() {
-        return DataInputPeriod.builder()
-                .dataSet(ObjectWithUid.create("data_set_uid"))
-                .period(ObjectWithUid.create("period_uid"))
-                .openingDate(FillPropertiesTestUtils.parseDate("2012-10-20T18:20:27.132"))
-                .closingDate(FillPropertiesTestUtils.parseDate("2018-11-20T18:20:27.132"))
-                .build();
+    @JvmStatic
+    fun getConstant(): Constant {
+        val builder = Constant.builder()
+        fillIdentifiableProperties(builder)
+        return builder
+            .value(20.05).build()
     }
 }

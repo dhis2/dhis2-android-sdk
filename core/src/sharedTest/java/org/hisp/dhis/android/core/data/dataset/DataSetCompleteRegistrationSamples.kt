@@ -26,41 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataelement;
+package org.hisp.dhis.android.core.data.dataset
 
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.common.ValueType;
-import org.hisp.dhis.android.core.dataelement.DataElement;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
+object DataSetCompleteRegistrationSamples {
 
-public class DataElementSamples {
-
-    public static DataElement getDataElement() {
-        DataElement.Builder dataElementBuilder = DataElement.builder();
-
-        fillNameableProperties(dataElementBuilder);
-        dataElementBuilder
-                .formName("form-name")
-                .displayFormName("display-form-name")
-                .valueType(ValueType.TEXT)
-                .zeroIsSignificant(Boolean.TRUE)
-                .domainType("TRACKER")
-                .aggregationType("AVERAGE")
-                .optionSet(ObjectWithUid.create("bWuNrMHEoZ0"))
-                .categoryCombo(ObjectWithUid.create("cWuNrMHEoZ1"))
-                .fieldMask("XXXX");
-        return dataElementBuilder.build();
-    }
-
-    public static DataElement getDataElement(String name, ObjectWithUid optionSet, ObjectWithUid categoryCombo, String domainType) {
-        return getDataElement().toBuilder()
-                .uid(new UidGeneratorImpl().generate())
-                .name(name)
-                .optionSet(optionSet)
-                .categoryCombo(categoryCombo)
-                .domainType(domainType)
-                .build();
+    @JvmStatic
+    fun getDataSetCompleteRegistration(): DataSetCompleteRegistration {
+        return DataSetCompleteRegistration.builder()
+            .period("period")
+            .dataSet("data_set")
+            .organisationUnit("organisation_unit")
+            .attributeOptionCombo("attribute_option_combo")
+            .date(parseDate("2012-10-20T18:20:27.132"))
+            .storedBy("stored_by")
+            .build()
     }
 }

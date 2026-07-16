@@ -26,16 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.dataset
 
-import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataset.DataSetElement
 
-public class DataSetCompulsoryDataElementOperandLinkSamples {
+object DataSetElementSamples {
 
-    public static DataSetCompulsoryDataElementOperandLink getDataSetCompulsoryDataElementOperandLink() {
-        return DataSetCompulsoryDataElementOperandLink.builder()
-                .dataSet("data_set")
-                .dataElementOperand("data_element_operand")
-                .build();
+    @JvmStatic
+    fun getDataSetElement(): DataSetElement {
+        return DataSetElement.builder()
+            .dataSet(ObjectWithUid.create("data_set_uid"))
+            .dataElement(ObjectWithUid.create("data_element_uid"))
+            .categoryCombo(ObjectWithUid.create("category_combo"))
+            .build()
     }
 }

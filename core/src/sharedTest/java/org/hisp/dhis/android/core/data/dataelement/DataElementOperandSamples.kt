@@ -26,23 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.common;
+package org.hisp.dhis.android.core.data.dataelement
 
-import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering;
-import org.hisp.dhis.android.core.common.ValueTypeRenderingType;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID
+import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
-public class ValueTypeDeviceRenderingSamples {
+object DataElementOperandSamples {
 
-    public static ValueTypeDeviceRendering getValueTypeDeviceRendering() {
-        return ValueTypeDeviceRendering.builder()
-                .uid("uid")
-                .objectTable("object_table")
-                .deviceType("device_type")
-                .type(ValueTypeRenderingType.DROPDOWN)
-                .min(0)
-                .max(10)
-                .step(1)
-                .decimalPoints(0)
-                .build();
+    @JvmStatic
+    fun getDataElementOperand(): DataElementOperand {
+        val builder = DataElementOperand.builder()
+        builder
+            .uid(UID)
+            .dataElement(ObjectWithUid.create("dataElement"))
+            .categoryOptionCombo(ObjectWithUid.create("optionCombo"))
+            .deleted(false)
+        return builder.build()
     }
 }

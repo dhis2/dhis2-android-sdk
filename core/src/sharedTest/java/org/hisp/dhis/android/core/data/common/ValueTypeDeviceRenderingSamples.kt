@@ -26,15 +26,24 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.configuration;
+package org.hisp.dhis.android.core.data.common
 
-import org.hisp.dhis.android.core.configuration.internal.Configuration;
+import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
+import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 
-public class ConfigurationSamples {
+object ValueTypeDeviceRenderingSamples {
 
-    public static Configuration getConfiguration() {
-        return Configuration.builder()
-                .serverUrl("http://testserver.org/api/")
-                .build();
+    @JvmStatic
+    fun getValueTypeDeviceRendering(): ValueTypeDeviceRendering {
+        return ValueTypeDeviceRendering.builder()
+            .uid("uid")
+            .objectTable("object_table")
+            .deviceType("device_type")
+            .type(ValueTypeRenderingType.DROPDOWN)
+            .min(0)
+            .max(10)
+            .step(1)
+            .decimalPoints(0)
+            .build()
     }
 }

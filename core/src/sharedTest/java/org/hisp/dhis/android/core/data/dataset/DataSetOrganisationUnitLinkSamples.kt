@@ -26,16 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.dataset
 
-import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink;
+import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 
-public class DataSetOrganisationUnitLinkSamples {
+object DataSetOrganisationUnitLinkSamples {
 
-    public static DataSetOrganisationUnitLink getDataSetOrganisationUnitLink() {
+    @JvmStatic
+    fun getDataSetOrganisationUnitLink(): DataSetOrganisationUnitLink {
         return DataSetOrganisationUnitLink.builder()
-                .dataSet("data_set")
-                .organisationUnit("organisation_unit")
-                .build();
+            .dataSet("data_set")
+            .organisationUnit("organisation_unit")
+            .build()
     }
 }

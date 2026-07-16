@@ -26,18 +26,47 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.constant;
+package org.hisp.dhis.android.core.data.dataelement
 
-import org.hisp.dhis.android.core.constant.Constant;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.common.ValueType
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties
+import org.hisp.dhis.android.core.dataelement.DataElement
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object DataElementSamples {
 
-public class ConstantSamples {
+    @JvmStatic
+    fun getDataElement(): DataElement {
+        val dataElementBuilder = DataElement.builder()
 
-    public static Constant getConstant() {
-        Constant.Builder builder = Constant.builder();
-        fillIdentifiableProperties(builder);
-        return builder
-                .value(20.05).build();
+        fillNameableProperties(dataElementBuilder)
+        dataElementBuilder
+            .formName("form-name")
+            .displayFormName("display-form-name")
+            .valueType(ValueType.TEXT)
+            .zeroIsSignificant(true)
+            .domainType("TRACKER")
+            .aggregationType("AVERAGE")
+            .optionSet(ObjectWithUid.create("bWuNrMHEoZ0"))
+            .categoryCombo(ObjectWithUid.create("cWuNrMHEoZ1"))
+            .fieldMask("XXXX")
+        return dataElementBuilder.build()
+    }
+
+    @JvmStatic
+    fun getDataElement(
+        name: String?,
+        optionSet: ObjectWithUid?,
+        categoryCombo: ObjectWithUid,
+        domainType: String?,
+    ): DataElement {
+        return getDataElement().toBuilder()
+            .uid(UidGeneratorImpl().generate())
+            .name(name)
+            .optionSet(optionSet)
+            .categoryCombo(categoryCombo)
+            .domainType(domainType)
+            .build()
     }
 }

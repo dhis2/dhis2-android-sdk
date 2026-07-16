@@ -26,21 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataset;
+package org.hisp.dhis.android.core.data.dataset
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.dataset.DataInputPeriod
 
-public class DataSetCompleteRegistrationSamples {
+object DataInputPeriodSamples {
 
-    public static DataSetCompleteRegistration getDataSetCompleteRegistration() {
-        return DataSetCompleteRegistration.builder()
-                .period("period")
-                .dataSet("data_set")
-                .organisationUnit("organisation_unit")
-                .attributeOptionCombo("attribute_option_combo")
-                .date(FillPropertiesTestUtils.parseDate("2012-10-20T18:20:27.132"))
-                .storedBy("stored_by")
-                .build();
+    @JvmStatic
+    fun getDataInputPeriod(): DataInputPeriod {
+        return DataInputPeriod.builder()
+            .dataSet(ObjectWithUid.create("data_set_uid"))
+            .period(ObjectWithUid.create("period_uid"))
+            .openingDate(parseDate("2012-10-20T18:20:27.132"))
+            .closingDate(parseDate("2018-11-20T18:20:27.132"))
+            .build()
     }
 }

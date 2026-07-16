@@ -26,22 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.dataelement;
+package org.hisp.dhis.android.core.data.dataset
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.UID;
+import org.hisp.dhis.android.core.dataset.DataSetCompulsoryDataElementOperandLink
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElementOperand;
+object DataSetCompulsoryDataElementOperandLinkSamples {
 
-public class DataElementOperandSamples {
-
-    public static DataElementOperand getDataElementOperand() {
-        DataElementOperand.Builder builder = DataElementOperand.builder();
-        builder
-                .uid(UID)
-                .dataElement(ObjectWithUid.create("dataElement"))
-                .categoryOptionCombo(ObjectWithUid.create("optionCombo"))
-                .deleted(Boolean.FALSE);
-        return builder.build();
+    @JvmStatic
+    fun getDataSetCompulsoryDataElementOperandLink(): DataSetCompulsoryDataElementOperandLink {
+        return DataSetCompulsoryDataElementOperandLink.builder()
+            .dataSet("data_set")
+            .dataElementOperand("data_element_operand")
+            .build()
     }
 }

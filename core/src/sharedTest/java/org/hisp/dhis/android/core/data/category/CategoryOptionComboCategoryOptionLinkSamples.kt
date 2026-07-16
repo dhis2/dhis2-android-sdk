@@ -26,29 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.category.CategoryCombo;
+import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object CategoryOptionComboCategoryOptionLinkSamples {
 
-public class CategoryComboSamples {
-
-    public static CategoryCombo getCategoryCombo(String name, boolean isDefault) {
-        CategoryCombo.Builder builder = CategoryCombo.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .uid(new UidGeneratorImpl().generate())
-                .isDefault(isDefault)
-                .name(name)
-                .build();
-    }
-    public static CategoryCombo getCategoryComboDatabase() {
-        CategoryCombo.Builder builder = CategoryCombo.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder.build();
+    @JvmStatic
+    fun getCategoryOptionComboCategoryOptionLink(): CategoryOptionComboCategoryOptionLink {
+        return CategoryOptionComboCategoryOptionLink.builder()
+            .categoryOptionCombo("category_option_combo")
+            .categoryOption("category_option")
+            .build()
     }
 }

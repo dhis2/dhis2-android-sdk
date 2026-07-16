@@ -26,16 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.category.CategoryOptionComboCategoryOptionLink;
+import org.hisp.dhis.android.core.arch.helpers.AccessHelper
+import org.hisp.dhis.android.core.category.CategoryOption
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties
 
-public class CategoryOptionComboCategoryOptionLinkSamples {
+object CategoryOptionSamples {
 
-    public static CategoryOptionComboCategoryOptionLink getCategoryOptionComboCategoryOptionLink() {
-        return CategoryOptionComboCategoryOptionLink.builder()
-                .categoryOptionCombo("category_option_combo")
-                .categoryOption("category_option")
-                .build();
+    @JvmStatic
+    fun getCategoryOption(): CategoryOption {
+        val builder = CategoryOption.builder()
+
+        fillNameableProperties(builder)
+        return builder
+            .startDate(CREATED)
+            .endDate(LAST_UPDATED)
+            .access(AccessHelper.createForDataWrite(false))
+            .build()
+    }
+
+    @JvmStatic
+    fun getCategoryOptionDatabase(): CategoryOption {
+        val builder = CategoryOption.builder()
+
+        fillNameableProperties(builder)
+        return builder.build()
     }
 }

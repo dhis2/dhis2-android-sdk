@@ -26,17 +26,31 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.attribute;
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.attribute.DataElementAttributeValueLink;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 
-public class DataElementAttributeValueLinkSamples {
+object CategoryComboSamples {
 
-    public static DataElementAttributeValueLink getDataElementAttribute() {
-        return DataElementAttributeValueLink.builder()
-                .dataElement("data_element")
-                .attribute("attribute")
-                .value("value")
-                .build();
+    @JvmStatic
+    fun getCategoryCombo(name: String?, isDefault: Boolean): CategoryCombo {
+        val builder = CategoryCombo.builder()
+
+        fillIdentifiableProperties(builder)
+        return builder
+            .uid(UidGeneratorImpl().generate())
+            .isDefault(isDefault)
+            .name(name)
+            .build()
+    }
+
+    @JvmStatic
+    fun getCategoryComboDatabase(): CategoryCombo {
+        val builder = CategoryCombo.builder()
+
+        fillIdentifiableProperties(builder)
+        return builder.build()
     }
 }

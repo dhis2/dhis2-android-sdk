@@ -25,34 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.category
 
-package org.hisp.dhis.android.core.data.category;
+import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 
-import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl;
-import org.hisp.dhis.android.core.category.CategoryCombo;
-import org.hisp.dhis.android.core.category.CategoryOptionCombo;
-import org.hisp.dhis.android.core.common.ObjectWithUid;
+object CategoryCategoryComboLinkSamples {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
-
-public class CategoryOptionComboSamples {
-
-    public static CategoryOptionCombo getCategoryOptionCombo(String name, CategoryCombo categoryCombo) {
-        CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .uid(new UidGeneratorImpl().generate())
-                .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
-                .name(name)
-                .build();
-    }
-
-    public static CategoryOptionCombo getCategoryOptionComboDatabase() {
-        CategoryOptionCombo.Builder builder = CategoryOptionCombo.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder.build();
-
+    @JvmStatic
+    fun getCategoryCategoryComboLink(): CategoryCategoryComboLink {
+        return CategoryCategoryComboLink.builder()
+            .categoryCombo("category_combo")
+            .category("category")
+            .sortOrder(3)
+            .build()
     }
 }

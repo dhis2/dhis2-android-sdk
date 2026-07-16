@@ -25,32 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.attribute
 
-package org.hisp.dhis.android.core.data.category;
+import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 
-import org.hisp.dhis.android.core.arch.helpers.AccessHelper;
-import org.hisp.dhis.android.core.category.CategoryOption;
+object ProgramStageAttributeValueLinkSamples {
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.CREATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.LAST_UPDATED;
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillNameableProperties;
-
-public class CategoryOptionSamples {
-
-    public static CategoryOption getCategoryOption() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder
-                .startDate(CREATED)
-                .endDate(LAST_UPDATED)
-                .access(AccessHelper.createForDataWrite(false))
-                .build();
-    }
-    public static CategoryOption getCategoryOptionDatabase() {
-        CategoryOption.Builder builder = CategoryOption.builder();
-
-        fillNameableProperties(builder);
-        return builder.build();
+    @JvmStatic
+    fun getProgramStageAttribute(): ProgramStageAttributeValueLink {
+        return ProgramStageAttributeValueLink.builder()
+            .programStage("program_stage")
+            .attribute("attribute")
+            .value("value")
+            .build()
     }
 }

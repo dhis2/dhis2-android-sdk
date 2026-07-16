@@ -26,17 +26,33 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.category.CategoryCategoryComboLink;
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.category.CategoryCombo
+import org.hisp.dhis.android.core.category.CategoryOptionCombo
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
 
-public class CategoryCategoryComboLinkSamples {
+object CategoryOptionComboSamples {
 
-    public static CategoryCategoryComboLink getCategoryCategoryComboLink() {
-        return CategoryCategoryComboLink.builder()
-                .categoryCombo("category_combo")
-                .category("category")
-                .sortOrder(3)
-                .build();
+    @JvmStatic
+    fun getCategoryOptionCombo(name: String?, categoryCombo: CategoryCombo): CategoryOptionCombo {
+        val builder = CategoryOptionCombo.builder()
+
+        fillIdentifiableProperties(builder)
+        return builder
+            .uid(UidGeneratorImpl().generate())
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .name(name)
+            .build()
+    }
+
+    @JvmStatic
+    fun getCategoryOptionComboDatabase(): CategoryOptionCombo {
+        val builder = CategoryOptionCombo.builder()
+
+        fillIdentifiableProperties(builder)
+        return builder.build()
     }
 }

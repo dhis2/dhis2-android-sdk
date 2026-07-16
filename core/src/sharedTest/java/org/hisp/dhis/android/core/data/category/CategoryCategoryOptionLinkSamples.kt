@@ -26,17 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.category;
+package org.hisp.dhis.android.core.data.category
 
-import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink;
+import org.hisp.dhis.android.core.category.CategoryCategoryOptionLink
 
-public class CategoryCategoryOptionLinkSamples {
+object CategoryCategoryOptionLinkSamples {
 
-    public static CategoryCategoryOptionLink getCategoryCategoryOptionLink() {
+    @JvmStatic
+    fun getCategoryCategoryOptionLink(): CategoryCategoryOptionLink {
         return CategoryCategoryOptionLink.builder()
-                .category("category")
-                .categoryOption("category_option")
-                .sortOrder(3)
-                .build();
+            .category("category")
+            .categoryOption("category_option")
+            .sortOrder(3)
+            .build()
     }
 }

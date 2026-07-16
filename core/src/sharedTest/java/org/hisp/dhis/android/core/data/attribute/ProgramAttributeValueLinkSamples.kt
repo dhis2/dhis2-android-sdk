@@ -25,17 +25,18 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.attribute
 
-package org.hisp.dhis.android.core.data.attribute;
-import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink;
+import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 
-public class ProgramAttributeValueLinkSamples {
+object ProgramAttributeValueLinkSamples {
 
-    public static ProgramAttributeValueLink getProgramAttribute() {
+    @JvmStatic
+    fun getProgramAttribute(): ProgramAttributeValueLink {
         return ProgramAttributeValueLink.builder()
-                .program("program")
-                .attribute("attribute")
-                .value("value")
-                .build();
+            .program("program")
+            .attribute("attribute")
+            .value("value")
+            .build()
     }
 }

@@ -35,13 +35,11 @@ internal object Utility {
     private val TAG: String = Utility::class.java.getSimpleName()
 
     @Suppress("MagicNumber")
-    @JvmStatic
     fun timeLeft(timeStarted: Long, timeoutSeconds: Int): Long {
         return timeoutSeconds * 1000L + timeStarted - System.currentTimeMillis()
     }
 
     @Suppress("TooGenericExceptionCaught")
-    @JvmStatic
     fun unregisterReceiver(context: Context, receiver: BroadcastReceiver?) {
         try {
             context.unregisterReceiver(receiver)

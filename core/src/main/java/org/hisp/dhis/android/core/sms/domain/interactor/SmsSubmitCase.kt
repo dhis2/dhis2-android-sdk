@@ -32,7 +32,13 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.sms.domain.converter.internal.*
+import org.hisp.dhis.android.core.sms.domain.converter.internal.Converter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DatasetConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.DeletionConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.EnrollmentConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.RelationshipConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.SimpleEventConverter
+import org.hisp.dhis.android.core.sms.domain.converter.internal.TrackerEventConverter
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
@@ -358,7 +364,7 @@ class SmsSubmitCase internal constructor(
         }
     }
 
-    class PreconditionFailed(val type: Type) : Throwable() {
+    internal class PreconditionFailed(val type: Type) : Throwable() {
 
         enum class Type {
             NO_NETWORK,

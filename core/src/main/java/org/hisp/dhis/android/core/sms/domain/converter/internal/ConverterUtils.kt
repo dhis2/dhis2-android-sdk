@@ -90,8 +90,8 @@ internal object ConverterUtils {
     fun convertDataValues(
         catOptionCombo: String?,
         trackedEntityDataValues: List<TrackedEntityDataValue>?,
-    ): List<SMSDataValue?> {
-        val dataValues = ArrayList<SMSDataValue?>()
+    ): List<SMSDataValue> {
+        val dataValues = mutableListOf<SMSDataValue>()
         if (trackedEntityDataValues == null) {
             return dataValues
         }

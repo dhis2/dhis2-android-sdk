@@ -42,13 +42,13 @@ internal class SendingStateReceiver(
     private val timeoutSeconds: Int,
     private val sendSmsAction: String,
 ) : BroadcastReceiver() {
-    private val smsResultsWaiting: MutableSet<String?> = HashSet<String?>()
+    private val smsResultsWaiting: MutableSet<String> = HashSet<String>()
     var isError: Boolean = false
         private set
     var errorCode: Int = 0
         private set
 
-    fun addSmsKey(smsKey: String?) {
+    fun addSmsKey(smsKey: String) {
         smsResultsWaiting.add(smsKey)
     }
 

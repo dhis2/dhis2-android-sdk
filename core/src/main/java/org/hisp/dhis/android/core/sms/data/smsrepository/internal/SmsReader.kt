@@ -145,7 +145,6 @@ internal class SmsReader(private val context: Context) {
     ): Boolean {
         val bundle = intent.extras ?: return false
 
-        // Cast seguro a Array para los PDUs
         val pdus = bundle.get("pdus") as? Array<*> ?: return false
         if (pdus.isEmpty()) return false
 

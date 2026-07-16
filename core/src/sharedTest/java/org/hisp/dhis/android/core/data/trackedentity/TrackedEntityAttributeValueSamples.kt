@@ -25,21 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.trackedentity
 
-package org.hisp.dhis.android.core.data.trackedentity;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
+import java.text.ParseException
+import java.util.Date
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute;
+object TrackedEntityAttributeValueSamples {
 
-public class TrackedEntityTypeAttributeSamples {
+    @JvmStatic
+    fun get(): TrackedEntityAttributeValue {
+        return get("cejWyOfXge6", "tracked_entity_instance", "value")
+    }
 
-    public static TrackedEntityTypeAttribute get() {
-        return TrackedEntityTypeAttribute.builder()
-                .trackedEntityType(ObjectWithUid.create("nEenWmSyUEp"))
-                .trackedEntityAttribute(ObjectWithUid.create("w75KJ2mc4zz"))
-                .displayInList(true)
-                .searchable(true)
-                .mandatory(false)
-                .build();
+    @JvmStatic
+    fun get(
+        trackedEntityAttribute: String,
+        trackedEntityInstance: String,
+        value: String,
+    ): TrackedEntityAttributeValue {
+        return TrackedEntityAttributeValue.builder()
+            .value(value)
+            .created(getDate("2014-08-20T12:28:56.409"))
+            .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+            .trackedEntityAttribute(trackedEntityAttribute)
+            .trackedEntityInstance(trackedEntityInstance)
+            .syncState(State.SYNCED)
+            .build()
+    }
+
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

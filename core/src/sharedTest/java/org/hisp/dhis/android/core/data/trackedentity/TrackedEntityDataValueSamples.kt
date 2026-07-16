@@ -26,44 +26,41 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.systeminfo;
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.systeminfo.SystemInfo;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import java.text.ParseException
+import java.util.Date
 
-import java.text.ParseException;
-import java.util.Date;
+object TrackedEntityDataValueSamples {
 
-public class SystemInfoSamples {
-
-    public static SystemInfo get1() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2017-11-29T11:27:46.935"))
-                .dateFormat("yyyy-mm-dd")
-                .version("2.41.0")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
+    @JvmStatic
+    fun get(): TrackedEntityDataValue {
+        return get("sWoqcoByYmD", "event_uid", "value")
     }
 
-    public static SystemInfo get2() {
-        return SystemInfo.builder()
-                .serverDate(getDate("2018-04-29T11:27:46.935"))
-                .dateFormat("yyyy-DD-mm")
-                .version("2.29")
-                .contextPath("https://play.dhis2.org/android-current")
-                .systemName("DHIS 2 Demo - Sierra Leone")
-                .serverTimeZoneId("Etc/UTC")
-                .build();
+    @JvmStatic
+    fun get(dataElement: String, event: String, value: String): TrackedEntityDataValue {
+        return TrackedEntityDataValue.builder()
+            .event(event)
+            .created(getDate("2014-08-20T12:28:56.409"))
+            .lastUpdated(getDate("2015-10-14T13:36:53.063"))
+            .dataElement(dataElement)
+            .storedBy("username")
+            .value(value)
+            .providedElsewhere(true)
+            .syncState(State.SYNCED)
+            .build()
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
         }
     }
 }

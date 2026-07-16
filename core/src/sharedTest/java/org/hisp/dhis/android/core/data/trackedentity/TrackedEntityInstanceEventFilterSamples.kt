@@ -26,16 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.trackedentity.ReservedValueSetting;
+import org.hisp.dhis.android.core.common.AssignedUserMode
+import org.hisp.dhis.android.core.common.FilterPeriod
+import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
 
-public class ReservedValueSettingSamples {
+object TrackedEntityInstanceEventFilterSamples {
 
-    public static ReservedValueSetting get() {
-        return ReservedValueSetting.builder()
-                .uid("attribute_uid")
-                .numberOfValuesToReserve(50)
-                .build();
+    @JvmStatic
+    fun get(): TrackedEntityInstanceEventFilter {
+        return TrackedEntityInstanceEventFilter.builder()
+            .trackedEntityInstanceFilter("tei_filter")
+            .eventStatus(EventStatus.ACTIVE)
+            .assignedUserMode(AssignedUserMode.CURRENT)
+            .programStage("program_stage_uid")
+            .eventCreatedPeriod(FilterPeriod.create(-11, 11))
+            .build()
     }
 }

@@ -26,40 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.trackedentity;
+package org.hisp.dhis.android.core.data.trackedentity
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 
-import java.text.ParseException;
-import java.util.Date;
+object TrackedEntityTypeAttributeSamples {
 
-public class TrackedEntityDataValueSamples {
-
-    public static TrackedEntityDataValue get() {
-        return get("sWoqcoByYmD", "event_uid", "value");
-    }
-
-    public static TrackedEntityDataValue get(String dataElement, String event, String value) {
-        return TrackedEntityDataValue.builder()
-                .event(event)
-                .created(getDate("2014-08-20T12:28:56.409"))
-                .lastUpdated(getDate("2015-10-14T13:36:53.063"))
-                .dataElement(dataElement)
-                .storedBy("username")
-                .value(value)
-                .providedElsewhere(Boolean.TRUE)
-                .syncState(State.SYNCED)
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @JvmStatic
+    fun get(): TrackedEntityTypeAttribute {
+        return TrackedEntityTypeAttribute.builder()
+            .trackedEntityType(ObjectWithUid.create("nEenWmSyUEp"))
+            .trackedEntityAttribute(ObjectWithUid.create("w75KJ2mc4zz"))
+            .displayInList(true)
+            .searchable(true)
+            .mandatory(false)
+            .build()
     }
 }

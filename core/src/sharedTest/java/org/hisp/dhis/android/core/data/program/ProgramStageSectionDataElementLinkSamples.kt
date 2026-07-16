@@ -26,21 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.relationship;
+package org.hisp.dhis.android.core.data.program
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType;
-import org.hisp.dhis.android.core.relationship.RelationshipItem;
-import org.hisp.dhis.android.core.relationship.RelationshipItemEvent;
+import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 
+object ProgramStageSectionDataElementLinkSamples {
 
-public class RelationshipItemSamples {
-
-    public static RelationshipItem getRelationshipItem() {
-        return RelationshipItem.builder()
-                .relationship(ObjectWithUid.create("relationship"))
-                .relationshipItemType(RelationshipConstraintType.FROM)
-                .event(RelationshipItemEvent.builder().event("event").build())
-                .build();
+    @JvmStatic
+    fun getProgramStageSectionDataElementLink(): ProgramStageSectionDataElementLink {
+        return ProgramStageSectionDataElementLink.builder()
+            .programStageSection("program_stage_section")
+            .dataElement("data_element")
+            .sortOrder(5)
+            .build()
     }
 }

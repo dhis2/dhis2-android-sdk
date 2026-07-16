@@ -26,19 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.settings.FilterSetting;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils
+import org.hisp.dhis.android.core.settings.DataSetSetting
 
-public class FilterSettingSamples {
-
-    public static FilterSetting getFilterSetting() {
-        return FilterSetting.builder()
-                .scope("ProgramFilter")
-                .filterType("event")
-                .uid("aBcDeFg")
-                .filter(true)
-                .sort(true)
-                .build();
+object DataSetSettingSamples {
+    @JvmStatic
+    fun getDataSetSetting(): DataSetSetting {
+        return DataSetSetting.builder()
+            .uid("BfMAe6Itzgt")
+            .name("Child Health")
+            .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
+            .periodDSDownload(10)
+            .periodDSDBTrimming(20)
+            .build()
     }
 }

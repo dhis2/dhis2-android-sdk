@@ -26,21 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils;
-import org.hisp.dhis.android.core.settings.DataSetSetting;
-import org.hisp.dhis.android.core.settings.DownloadPeriod;
+import org.hisp.dhis.android.core.settings.SystemSetting
 
-public class DataSetSettingSamples {
-
-    public static DataSetSetting getDataSetSetting() {
-        return DataSetSetting.builder()
-                .uid("BfMAe6Itzgt")
-                .name("Child Health")
-                .lastUpdated(FillPropertiesTestUtils.LAST_UPDATED)
-                .periodDSDownload(10)
-                .periodDSDBTrimming(20)
-                .build();
+object SystemSettingSamples {
+    @JvmStatic
+    fun getSystemSetting(): SystemSetting {
+        return SystemSetting.builder()
+            .key(SystemSetting.SystemSettingKey.FLAG)
+            .value("value")
+            .build()
     }
 }

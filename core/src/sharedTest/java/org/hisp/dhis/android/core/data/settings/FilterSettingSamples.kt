@@ -26,16 +26,19 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.settings.UserSettings;
+import org.hisp.dhis.android.core.settings.FilterSetting
 
-public class UserSettingsSamples {
-
-    public static UserSettings getUserSettings() {
-        return UserSettings.builder()
-                .keyUiLocale("key_ui_locale")
-                .keyDbLocale("key_db_locale")
-                .build();
+object FilterSettingSamples {
+    @JvmStatic
+    fun getFilterSetting(): FilterSetting {
+        return FilterSetting.builder()
+            .scope("ProgramFilter")
+            .filterType("event")
+            .uid("aBcDeFg")
+            .filter(true)
+            .sort(true)
+            .build()
     }
 }

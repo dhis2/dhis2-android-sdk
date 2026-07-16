@@ -26,16 +26,16 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.settings.SystemSetting;
+import org.hisp.dhis.android.core.settings.UserSettings
 
-public class SystemSettingSamples {
-
-    public static SystemSetting getSystemSetting() {
-        return SystemSetting.builder()
-                .key(SystemSetting.SystemSettingKey.FLAG)
-                .value("value")
-                .build();
+object UserSettingsSamples {
+    @JvmStatic
+    fun getUserSettings(): UserSettings {
+        return UserSettings.builder()
+            .keyUiLocale("key_ui_locale")
+            .keyDbLocale("key_db_locale")
+            .build()
     }
 }

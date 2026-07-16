@@ -26,27 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.settings;
+package org.hisp.dhis.android.core.data.relationship
 
-import org.hisp.dhis.android.core.settings.DataSetSettings;
-import org.hisp.dhis.android.core.settings.DataSyncPeriod;
-import org.hisp.dhis.android.core.settings.MetadataSyncPeriod;
-import org.hisp.dhis.android.core.settings.ProgramSettings;
-import org.hisp.dhis.android.core.settings.SynchronizationSettings;
-import org.hisp.dhis.android.core.tracker.TrackerExporterVersion;
-import org.hisp.dhis.android.core.tracker.TrackerImporterVersion;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipItem
+import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 
-public class SynchronizationSettingsSamples {
+object RelationshipItemSamples {
 
-    public static SynchronizationSettings getSynchronizationSettings() {
-        return SynchronizationSettings.builder()
-                .dataSync(DataSyncPeriod.EVERY_24_HOURS)
-                .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
-                .trackerImporterVersion(TrackerImporterVersion.V2)
-                .trackerExporterVersion(TrackerExporterVersion.V2)
-                .fileMaxLengthBytes(10240000)
-                .programSettings(ProgramSettings.builder().build())
-                .dataSetSettings(DataSetSettings.builder().build())
-                .build();
+    @JvmStatic
+    fun getRelationshipItem(): RelationshipItem {
+        return RelationshipItem.builder()
+            .relationship(ObjectWithUid.create("relationship"))
+            .relationshipItemType(RelationshipConstraintType.FROM)
+            .event(RelationshipItemEvent.builder().event("event").build())
+            .build()
     }
 }

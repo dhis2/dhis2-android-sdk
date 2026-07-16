@@ -26,17 +26,27 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program;
+package org.hisp.dhis.android.core.data.settings
 
-import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink;
+import org.hisp.dhis.android.core.settings.DataSetSettings
+import org.hisp.dhis.android.core.settings.DataSyncPeriod
+import org.hisp.dhis.android.core.settings.MetadataSyncPeriod
+import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.settings.SynchronizationSettings
+import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.TrackerImporterVersion
 
-public class ProgramStageSectionDataElementLinkSamples {
-
-    public static ProgramStageSectionDataElementLink getProgramStageSectionDataElementLink() {
-        return ProgramStageSectionDataElementLink.builder()
-                .programStageSection("program_stage_section")
-                .dataElement("data_element")
-                .sortOrder(5)
-                .build();
+object SynchronizationSettingsSamples {
+    @JvmStatic
+    fun getSynchronizationSettings(): SynchronizationSettings {
+        return SynchronizationSettings.builder()
+            .dataSync(DataSyncPeriod.EVERY_24_HOURS)
+            .metadataSync(MetadataSyncPeriod.EVERY_12_HOURS)
+            .trackerImporterVersion(TrackerImporterVersion.V2)
+            .trackerExporterVersion(TrackerExporterVersion.V2)
+            .fileMaxLengthBytes(10240000)
+            .programSettings(ProgramSettings.builder().build())
+            .dataSetSettings(DataSetSettings.builder().build())
+            .build()
     }
 }

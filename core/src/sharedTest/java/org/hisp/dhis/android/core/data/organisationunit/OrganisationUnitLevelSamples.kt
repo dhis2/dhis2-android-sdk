@@ -26,17 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit
 
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink;
+object OrganisationUnitLevelSamples {
 
-public class OrganisationUnitOrganisationUnitGroupLinkSamples {
+    @JvmStatic
+    fun getOrganisationUnitLevel(): OrganisationUnitLevel {
+        val builder = OrganisationUnitLevel.builder()
 
-    public static OrganisationUnitOrganisationUnitGroupLink getOrganisationUnitOrganisationUnitGroupLink() {
-        return OrganisationUnitOrganisationUnitGroupLink.builder()
-                .organisationUnit("organisation_unit")
-                .organisationUnitGroup("organisation_unit_group")
-                .build();
+        fillIdentifiableProperties(builder)
+        return builder
+            .level(2)
+            .build()
     }
 }

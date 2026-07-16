@@ -26,17 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.legendset;
+package org.hisp.dhis.android.core.data.maintenance
 
-import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
+import java.text.ParseException
+import java.util.Date
 
-public class ProgramIndicatorLegendSetLinkSamples {
+object ForeignKeyViolationSamples {
 
-    public static ProgramIndicatorLegendSetLink getProgramIndicatorLegendSetLink() {
-        return ProgramIndicatorLegendSetLink.builder()
-                .legendSet("legend_set")
-                .sortOrder(1)
-                .programIndicator("program_indicator")
-                .build();
+    @JvmStatic
+    fun get(): ForeignKeyViolation {
+        return ForeignKeyViolation.builder()
+            .fromTable("from_table")
+            .fromColumn("from_column")
+            .toTable("to_table")
+            .toColumn("to_column")
+            .notFoundValue("value")
+            .fromObjectUid("uid")
+            .fromObjectRow("from_object_row")
+            .created(getDate("2017-11-29T11:27:46.935"))
+            .build()
+    }
+
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

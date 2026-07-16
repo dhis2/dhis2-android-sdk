@@ -26,20 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.organisationunit;
+package org.hisp.dhis.android.core.data.note
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel;
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.note.Note
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object NoteSamples {
 
-public class OrganisationUnitLevelSamples {
-
-    public static OrganisationUnitLevel getOrganisationUnitLevel() {
-        OrganisationUnitLevel.Builder builder = OrganisationUnitLevel.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .level(2)
-                .build();
+    @JvmStatic
+    fun getNote(): Note {
+        return Note.builder()
+            .noteType(Note.NoteType.ENROLLMENT_NOTE)
+            .event("eventUid")
+            .value("value")
+            .storedBy("user")
+            .storedDate("2018-03-19T15:20:55.058")
+            .uid("noteUId")
+            .syncState(State.TO_POST)
+            .build()
     }
 }

@@ -26,21 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup;
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object OrganisationUnitOrganisationUnitGroupLinkSamples {
 
-public class OrganisationUnitGroupSamples {
-
-    public static OrganisationUnitGroup getOrganisationUnitGroup() {
-        OrganisationUnitGroup.Builder builder = OrganisationUnitGroup.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .shortName("short_name")
-                .displayShortName("display_short_name")
-                .build();
+    @JvmStatic
+    fun getOrganisationUnitOrganisationUnitGroupLink(): OrganisationUnitOrganisationUnitGroupLink {
+        return OrganisationUnitOrganisationUnitGroupLink.builder()
+            .organisationUnit("organisation_unit")
+            .organisationUnitGroup("organisation_unit_group")
+            .build()
     }
 }

@@ -26,23 +26,23 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.note;
+package org.hisp.dhis.android.core.data.maintenance
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.note.Note;
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import java.util.Date
 
-public class NoteSamples {
+object D2ErrorSamples {
 
-    public static Note getNote() {
-
-        return Note.builder()
-                .noteType(Note.NoteType.ENROLLMENT_NOTE)
-                .event("eventUid")
-                .value("value")
-                .storedBy("user")
-                .storedDate("2018-03-19T15:20:55.058")
-                .uid("noteUId")
-                .syncState(State.TO_POST)
-                .build();
+    @JvmStatic
+    fun get(): D2Error {
+        return D2Error.builder()
+            .url("http://dhis2.org/api/programs/test_uid")
+            .errorComponent(D2ErrorComponent.Server)
+            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorDescription("Error processing response")
+            .created(Date())
+            .build()
     }
 }

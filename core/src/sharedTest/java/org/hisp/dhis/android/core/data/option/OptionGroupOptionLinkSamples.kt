@@ -26,21 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.option;
+package org.hisp.dhis.android.core.data.option
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.option.OptionGroup;
+import org.hisp.dhis.android.core.option.OptionGroupOptionLink
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object OptionGroupOptionLinkSamples {
 
-public class OptionGroupSamples {
-
-    public static OptionGroup getOptionGroup() {
-        OptionGroup.Builder OptionGroupBuilder = OptionGroup.builder();
-
-        fillIdentifiableProperties(OptionGroupBuilder);
-        return OptionGroupBuilder
-                .optionSet(ObjectWithUid.create("option_set"))
-                .build();
+    @JvmStatic
+    fun getOptionGroupOptionLink(): OptionGroupOptionLink {
+        return OptionGroupOptionLink.builder()
+            .optionGroup("option_group")
+            .option("option")
+            .build()
     }
 }

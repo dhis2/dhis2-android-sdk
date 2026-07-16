@@ -26,16 +26,18 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.option;
+package org.hisp.dhis.android.core.data.legendset
 
-import org.hisp.dhis.android.core.option.OptionGroupOptionLink;
+import org.hisp.dhis.android.core.legendset.ProgramIndicatorLegendSetLink
 
-public class OptionGroupOptionLinkSamples {
+object ProgramIndicatorLegendSetLinkSamples {
 
-    public static OptionGroupOptionLink getOptionGroupOptionLink() {
-        return OptionGroupOptionLink.builder()
-                .optionGroup("option_group")
-                .option("option")
-                .build();
+    @JvmStatic
+    fun getProgramIndicatorLegendSetLink(): ProgramIndicatorLegendSetLink {
+        return ProgramIndicatorLegendSetLink.builder()
+            .legendSet("legend_set")
+            .sortOrder(1)
+            .programIndicator("program_indicator")
+            .build()
     }
 }

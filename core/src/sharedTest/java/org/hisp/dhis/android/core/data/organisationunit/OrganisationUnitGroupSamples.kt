@@ -26,23 +26,21 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.maintenance;
+package org.hisp.dhis.android.core.data.organisationunit
 
-import org.hisp.dhis.android.core.maintenance.D2Error;
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode;
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 
-import java.util.Date;
+object OrganisationUnitGroupSamples {
 
-public class D2ErrorSamples {
+    @JvmStatic
+    fun getOrganisationUnitGroup(): OrganisationUnitGroup {
+        val builder = OrganisationUnitGroup.builder()
 
-    public static D2Error get() {
-        return D2Error.builder()
-                .url("http://dhis2.org/api/programs/test_uid")
-                .errorComponent(D2ErrorComponent.Server)
-                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                .errorDescription("Error processing response")
-                .created(new Date())
-                .build();
+        fillIdentifiableProperties(builder)
+        return builder
+            .shortName("short_name")
+            .displayShortName("display_short_name")
+            .build()
     }
 }

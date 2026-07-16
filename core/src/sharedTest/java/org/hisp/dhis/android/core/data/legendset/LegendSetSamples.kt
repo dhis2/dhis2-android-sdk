@@ -26,35 +26,35 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.maintenance;
+package org.hisp.dhis.android.core.data.legendset
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation;
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.parseDate
+import org.hisp.dhis.android.core.legendset.LegendSet
 
-import java.text.ParseException;
-import java.util.Date;
+object LegendSetSamples {
 
-public class ForeignKeyViolationSamples {
+    @JvmStatic
+    fun getLegendSet(): LegendSet {
+        val legendSetBuilder = LegendSet.builder()
 
-    public static ForeignKeyViolation get() {
-        return ForeignKeyViolation.builder()
-                .fromTable("from_table")
-                .fromColumn("from_column")
-                .toTable("to_table")
-                .toColumn("to_column")
-                .notFoundValue("value")
-                .fromObjectUid("uid")
-                .fromObjectRow("from_object_row")
-                .created(getDate("2017-11-29T11:27:46.935"))
-                .build();
+        fillIdentifiableProperties(legendSetBuilder)
+        legendSetBuilder
+            .symbolizer("color")
+            .legends(null)
+        return legendSetBuilder.build()
     }
 
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+    @JvmStatic
+    fun getAge15yInterval(): LegendSet {
+        return LegendSet.builder()
+            .uid("TiOkbpGEud4")
+            .code("AGE15YINT")
+            .created(parseDate("2017-06-02T11:40:33.452"))
+            .lastUpdated(parseDate("2017-06-02T11:41:01.999"))
+            .name("Age 15y interval")
+            .displayName("Age 15y interval")
+            .symbolizer("color")
+            .build()
     }
 }

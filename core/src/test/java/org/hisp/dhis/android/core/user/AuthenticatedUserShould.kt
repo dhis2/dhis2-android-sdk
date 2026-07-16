@@ -25,27 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.user
 
-package org.hisp.dhis.android.core.maintenance;
+import nl.jqno.equalsverifier.EqualsVerifier
+import nl.jqno.equalsverifier.Warning
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-public class D2ErrorSamples {
+@RunWith(JUnit4::class)
+class AuthenticatedUserShould {
 
-    public static D2Error get() {
-        return D2Error.builder()
-                .url("http://dhis2.org/api/programs/test_uid")
-                .errorComponent(D2ErrorComponent.Server)
-                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                .errorDescription("Error processing response")
-                .build();
-    }
-
-    public static D2Error notFound() {
-        return D2Error.builder()
-                .url("http://dhis2.org/api/programs/test_uid")
-                .errorComponent(D2ErrorComponent.Server)
-                .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
-                .errorDescription("Not found")
-                .httpErrorCode(404)
-                .build();
+    @Test
+    fun have_the_equals_method_conform_to_contract() {
+        EqualsVerifier.forClass(AuthenticatedUser.builder().build().javaClass)
+            .suppress(Warning.NULL_FIELDS)
+            .verify()
     }
 }

@@ -19649,26 +19649,6 @@ public final class org/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCas
 public final class org/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$Companion {
 }
 
-public final class org/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed : java/lang/Throwable {
-	public fun <init> (Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;)V
-	public fun getMessage ()Ljava/lang/String;
-	public final fun getType ()Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-}
-
-public final class org/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type : java/lang/Enum {
-	public static final field NO_CHECK_NETWORK_PERMISSION Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_GATEWAY_NUMBER_SET Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_METADATA_DOWNLOADED Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_NETWORK Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_RECEIVE_SMS_PERMISSION Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_SEND_SMS_PERMISSION Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field NO_USER_LOGGED_IN Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static final field SMS_MODULE_DISABLED Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-	public static fun values ()[Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase$PreconditionFailed$Type;
-}
-
 public abstract interface class org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
 	public abstract fun generateSmsParts (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isAwaitedSuccessMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Single;

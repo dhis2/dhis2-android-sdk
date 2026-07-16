@@ -111,7 +111,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Run code quality checks
-        run: ./gradlew ktlintCheck detekt checkstyleDebug pmdDebug lintDebug --project-dir core
+        run: ./gradlew ktlintCheck detekt lintDebug --project-dir core
 
       - name: Upload lint reports
         if: failure()

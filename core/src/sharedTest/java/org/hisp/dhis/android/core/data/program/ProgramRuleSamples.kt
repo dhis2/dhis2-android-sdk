@@ -25,33 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.data.program
 
-package org.hisp.dhis.android.core.data.period;
+import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties
+import org.hisp.dhis.android.core.program.ProgramRule
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject;
-import org.hisp.dhis.android.core.period.Period;
-import org.hisp.dhis.android.core.period.PeriodType;
+object ProgramRuleSamples {
 
-import java.text.ParseException;
-import java.util.Date;
+    @JvmStatic
+    fun getProgramRule(): ProgramRule {
+        val builder = ProgramRule.builder()
 
-public class PeriodSamples {
-
-    public static Period getPeriod() {
-        return Period.builder()
-                .periodId("20171231")
-                .periodType(PeriodType.Daily)
-                .startDate(getDate("2017-12-31T00:00:00.000"))
-                .endDate(getDate("2017-12-31T23:59:59.999"))
-                .build();
-    }
-
-    private static Date getDate(String dateStr) {
-        try {
-            return BaseIdentifiableObject.DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
+        fillIdentifiableProperties(builder)
+        return builder
+            .priority(2)
+            .condition("condition")
+            .program(ObjectWithUid.create("program_uid"))
+            .programStage(ObjectWithUid.create("program_stage_uid"))
+            .build()
     }
 }

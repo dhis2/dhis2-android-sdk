@@ -26,17 +26,17 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.organisationunit;
+package org.hisp.dhis.android.core.data.organisationunit
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 
-import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink;
+object OrganisationUnitProgramLinkSamples {
 
-public class OrganisationUnitProgramLinkSamples {
-
-    public static OrganisationUnitProgramLink getOrganisationUnitProgramLink() {
+    @JvmStatic
+    fun getOrganisationUnitProgramLink(): OrganisationUnitProgramLink {
         return OrganisationUnitProgramLink.builder()
-                .organisationUnit("organisation_unit")
-                .program("program")
-                .build();
+            .organisationUnit("organisation_unit")
+            .program("program")
+            .build()
     }
 }

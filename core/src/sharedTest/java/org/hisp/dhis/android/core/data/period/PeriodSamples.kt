@@ -26,24 +26,32 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program;
+package org.hisp.dhis.android.core.data.period
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.program.ProgramRule;
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
+import org.hisp.dhis.android.core.period.Period
+import org.hisp.dhis.android.core.period.PeriodType
+import java.text.ParseException
+import java.util.Date
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object PeriodSamples {
 
-public class ProgramRuleSamples {
+    @JvmStatic
+    fun getPeriod(): Period {
+        return Period.builder()
+            .periodId("20171231")
+            .periodType(PeriodType.Daily)
+            .startDate(getDate("2017-12-31T00:00:00.000"))
+            .endDate(getDate("2017-12-31T23:59:59.999"))
+            .build()
+    }
 
-    public static ProgramRule getProgramRule() {
-        ProgramRule.Builder builder = ProgramRule.builder();
-
-        fillIdentifiableProperties(builder);
-        return builder
-                .priority(2)
-                .condition("condition")
-                .program(ObjectWithUid.create("program_uid"))
-                .programStage(ObjectWithUid.create("program_stage_uid"))
-                .build();
+    private fun getDate(dateStr: String): Date? {
+        return try {
+            BaseIdentifiableObject.DATE_FORMAT.parse(dateStr)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            null
+        }
     }
 }

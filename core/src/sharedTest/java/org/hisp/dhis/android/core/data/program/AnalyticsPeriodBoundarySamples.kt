@@ -26,28 +26,22 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.data.program;
+package org.hisp.dhis.android.core.data.program
 
-import org.hisp.dhis.android.core.common.ObjectWithUid;
-import org.hisp.dhis.android.core.dataelement.DataElement;
-import org.hisp.dhis.android.core.program.ProgramStageDataElement;
+import org.hisp.dhis.android.core.period.PeriodType
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
+import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 
-import static org.hisp.dhis.android.core.data.utils.FillPropertiesTestUtils.fillIdentifiableProperties;
+object AnalyticsPeriodBoundarySamples {
 
-public class ProgramStageDataElementSamples {
-
-    public static ProgramStageDataElement getProgramStageDataElement() {
-        ProgramStageDataElement.Builder builder = ProgramStageDataElement.builder();
-
-        fillIdentifiableProperties(builder);
-        builder
-                .displayInReports(true)
-                .dataElement(ObjectWithUid.create("data_element"))
-                .compulsory(false)
-                .allowProvidedElsewhere(true)
-                .sortOrder(0)
-                .allowFutureDate(false)
-                .programStage(ObjectWithUid.create("program_stage"));
-        return builder.build();
+    @JvmStatic
+    fun getAnalyticsPeriodBoundary(): AnalyticsPeriodBoundary {
+        return AnalyticsPeriodBoundary.builder()
+            .programIndicator("program_indicator")
+            .boundaryTarget("Custom boundary")
+            .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
+            .offsetPeriods(2)
+            .offsetPeriodType(PeriodType.Daily)
+            .build()
     }
 }

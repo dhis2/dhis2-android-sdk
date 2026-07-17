@@ -247,7 +247,8 @@ class TrackedEntityInstanceLocalQueryHelperShould {
 
         val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)
 
-        assertThat(sqlQuery).contains("(teav.value IS NULL OR teav.value = '')")
+        assertThat(sqlQuery).contains("NOT EXISTS (")
+        assertThat(sqlQuery).contains("(teav.value IS NOT NULL AND teav.value != '')")
     }
 
     @Test

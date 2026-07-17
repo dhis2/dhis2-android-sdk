@@ -367,6 +367,11 @@ internal class TrackedEntityInstanceLocalQueryHelper(
 
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
+            // NULL_OR_BLANK must also match TEIs without a row for the attribute, so it is expressed as the
+            // negation of NOT_NULL_AND_NOT_BLANK instead of looking for existing rows with a blank value.
+            val isNullOrBlank = item.operator() == FilterItemOperator.NULL_OR_BLANK
+            val operator = if (isNullOrBlank) FilterItemOperator.NOT_NULL_AND_NOT_BLANK else item.operator()
+
             val sub = String.format(
                 "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
@@ -375,13 +380,17 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                 dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute),
                 escapeQuotes(item.key()),
-                item.operator().getSqlCondition(
+                operator.getSqlCondition(
                     dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
                     getFilterItemValueStr(item),
                 ),
             )
 
-            where.appendExistsSubQuery(sub)
+            if (isNullOrBlank) {
+                where.appendNotExistsSubQuery(sub)
+            } else {
+                where.appendExistsSubQuery(sub)
+            }
         }
     }
 
@@ -565,26 +574,38 @@ internal class TrackedEntityInstanceLocalQueryHelper(
         where: WhereClauseBuilder,
         dataValues: List<RepositoryScopeFilterItem>,
     ) {
+        val valueColumn = dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE)
         dataValues
             .groupBy { it.key() }
             .forEach { (key, items) ->
-                val sub = "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
-                    "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
-                    "${dot(eventAlias, IdentifiableColumns.UID)} " +
-                    "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
-                    "'${escapeQuotes(key)}' " +
+                // NULL_OR_BLANK must also match events without a row for the data element, so it is expressed as
+                // the negation of NOT_NULL_AND_NOT_BLANK instead of looking for existing rows with a blank value.
+                val (nullOrBlankItems, otherItems) = items.partition {
+                    it.operator() == FilterItemOperator.NULL_OR_BLANK
+                }
 
-                    items.joinToString("") { item ->
-                        "AND ${
-                            item.operator().getSqlCondition(
-                                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
-                                getFilterItemValueStr(item),
-                            )
-                        } "
+                if (nullOrBlankItems.isNotEmpty()) {
+                    val condition =
+                        "AND ${FilterItemOperator.NOT_NULL_AND_NOT_BLANK.getSqlCondition(valueColumn)} "
+                    where.appendNotExistsSubQuery(getDataValueSubQuery(key, condition))
+                }
+
+                if (otherItems.isNotEmpty()) {
+                    val conditions = otherItems.joinToString("") { item ->
+                        "AND ${item.operator().getSqlCondition(valueColumn, getFilterItemValueStr(item))} "
                     }
-
-                where.appendExistsSubQuery(sub)
+                    where.appendExistsSubQuery(getDataValueSubQuery(key, conditions))
+                }
             }
+    }
+
+    private fun getDataValueSubQuery(key: String, conditions: String): String {
+        return "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
+            "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
+            "${dot(eventAlias, IdentifiableColumns.UID)} " +
+            "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
+            "'${escapeQuotes(key)}' " +
+            conditions
     }
 
     private fun getFilterItemValueStr(item: RepositoryScopeFilterItem): String {

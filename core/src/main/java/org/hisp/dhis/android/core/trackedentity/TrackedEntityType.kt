@@ -31,7 +31,7 @@ package org.hisp.dhis.android.core.trackedentity
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
@@ -56,7 +56,7 @@ data class TrackedEntityType(
     val access: Access,
     override val style: ObjectStyle,
     val displayTrackedEntityTypesLabel: String?,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun trackedEntityTypeAttributes(): List<TrackedEntityTypeAttribute>? = trackedEntityTypeAttributes
     fun featureType(): FeatureType? = featureType

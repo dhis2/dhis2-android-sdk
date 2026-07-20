@@ -25,30 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.common
 
-package org.hisp.dhis.android.core.program.programindicatorengine.internal.function;
+open class CoreColumns {
+    open fun all(): Array<String> {
+        return arrayOf()
+    }
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor;
-import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem;
-import org.hisp.dhis.parser.expression.antlr.ExpressionParser;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils.wrap;
-
-public class D2ValidatePattern
-        implements ExpressionItem {
-
-    @Override
-    public Object evaluate(ExpressionParser.ExprContext ctx, CommonExpressionVisitor visitor) {
-        String input = visitor.castStringVisit(ctx.expr(0));
-        String regex = visitor.castStringVisit(ctx.expr(1));
-
-        Pattern pattern = Pattern.compile(regex);
-
-        Matcher matcher = pattern.matcher(input);
-
-        return wrap(String.valueOf(matcher.matches()));
+    open fun whereUpdate(): Array<String> {
+        return arrayOf()
     }
 }

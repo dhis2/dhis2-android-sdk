@@ -33,19 +33,27 @@ import java.text.ParseException
 import java.util.Date
 
 interface BaseIdentifiableObject : IdentifiableObject, ObjectWithDeleteInterface {
-    override fun uid(): String
+    val uid: String
+    val code: String?
+    val name: String?
+    val displayName: String?
+    val created: Date?
+    val lastUpdated: Date?
+    val deleted: Boolean?
 
-    override fun code(): String?
+    override fun uid(): String = uid
 
-    override fun name(): String?
+    override fun code(): String? = code
 
-    override fun displayName(): String?
+    override fun name(): String? = name
 
-    override fun created(): Date?
+    override fun displayName(): String? = displayName
 
-    override fun lastUpdated(): Date?
+    override fun created(): Date? = created
 
-    override fun deleted(): Boolean?
+    override fun lastUpdated(): Date? = lastUpdated
+
+    override fun deleted(): Boolean? = deleted
 
     interface Builder<T : Builder<T>> {
         fun uid(uid: String): T

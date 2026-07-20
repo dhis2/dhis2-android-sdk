@@ -131,7 +131,7 @@ class SQLStatementBuilderShould {
         }
 
         private class TestColumns : CoreColumns() {
-            override fun all(): Array<String>? {
+            override fun all(): Array<String> {
                 return arrayOf(COL_1, COL_2)
             }
         }
@@ -147,7 +147,7 @@ class SQLStatementBuilderShould {
         }
 
         private class TestColumnsOrder : CoreColumns() {
-            override fun all(): Array<String>? {
+            override fun all(): Array<String> {
                 return arrayOf(COL_1, COL_ORDER)
             }
         }

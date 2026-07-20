@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -48,7 +48,7 @@ data class Option(
     val sortOrder: Int?,
     val optionSet: ObjectWithUid,
     override val style: ObjectStyle,
-) : BaseIdentifiableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseIdentifiableObject, CoreObject, ObjectWithStyleKt {
 
     fun sortOrder(): Int? = sortOrder
     fun optionSet(): ObjectWithUid = optionSet

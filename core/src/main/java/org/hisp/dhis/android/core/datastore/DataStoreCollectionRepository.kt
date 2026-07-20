@@ -41,7 +41,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.DataColumns
-import org.hisp.dhis.android.core.common.DeletableColumns
+import org.hisp.dhis.android.core.common.DeletableDataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 import org.hisp.dhis.android.core.datastore.internal.DataStorePostCall
@@ -92,7 +92,7 @@ class DataStoreCollectionRepository internal constructor(
     }
 
     fun byDeleted(): BooleanFilterConnector<DataStoreCollectionRepository> {
-        return cf.bool(DeletableColumns.DELETED)
+        return cf.bool(DeletableDataColumns.DELETED)
     }
 
     internal companion object {

@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.visualization
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -74,7 +74,7 @@ data class Visualization(
     val columns: List<VisualizationDimension>?,
     val rows: List<VisualizationDimension>?,
     val filters: List<VisualizationDimension>?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
     fun description(): String? = description
     fun displayDescription(): String? = displayDescription
     fun displayFormName(): String? = displayFormName

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.option
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ValueType
 import java.util.Date
@@ -45,7 +45,7 @@ data class OptionSet(
     override val deleted: Boolean?,
     val version: Int?,
     val valueType: ValueType?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun version(): Int? = version
     fun valueType(): ValueType? = valueType

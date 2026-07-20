@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.relationship
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -49,7 +49,7 @@ data class RelationshipType(
     val toConstraint: RelationshipConstraint?,
     val bidirectional: Boolean?,
     val access: Access,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
 
     fun fromToName(): String? = fromToName
     fun toFromName(): String? = toFromName

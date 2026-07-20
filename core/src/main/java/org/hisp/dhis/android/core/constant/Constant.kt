@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.constant
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseIdentifiableObjectKt
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import java.util.Date
 
@@ -42,7 +42,7 @@ data class Constant(
     override val lastUpdated: Date?,
     override val deleted: Boolean?,
     val value: Double?,
-) : BaseIdentifiableObjectKt, CoreObject {
+) : BaseIdentifiableObject, CoreObject {
     fun value(): Double? = value
 
     fun toBuilder(): Builder = ConstantBuilder.from(this)

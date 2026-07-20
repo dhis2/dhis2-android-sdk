@@ -32,7 +32,7 @@ import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.ObjectStyle
@@ -98,7 +98,7 @@ data class Program(
     val enrollmentCategoryCombo: ObjectWithUid,
     internal val categoryMappings: List<CategoryMapping>?,
     override val style: ObjectStyle,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun version(): Int? = version
     fun onlyEnrollOnce(): Boolean? = onlyEnrollOnce

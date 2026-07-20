@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.validation
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
@@ -55,7 +55,7 @@ data class ValidationRule(
     val leftSide: ValidationRuleExpression,
     val rightSide: ValidationRuleExpression,
     val organisationUnitLevels: List<Int>,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
 
     fun instruction(): String? = instruction
     fun importance(): ValidationRuleImportance? = importance

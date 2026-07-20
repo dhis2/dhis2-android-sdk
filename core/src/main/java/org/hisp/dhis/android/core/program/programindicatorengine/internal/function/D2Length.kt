@@ -25,36 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.common;
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
-import androidx.annotation.Nullable;
-
-public abstract class BaseDataObject implements DataObject {
-
-    /**
-     * @deprecated Use {@link #syncState()} instead.
-     */
-    @Deprecated
-    @Override
-    @Nullable
-    public State state() {
-        return syncState();
-    }
-
-    @Override
-    @Nullable
-    public abstract State syncState();
-
-    protected interface Builder<T extends Builder<T>> {
-        T syncState(@Nullable State syncState);
-
-        /**
-         * @deprecated Use {@link #syncState(State)} instead.
-         */
-        @Deprecated
-        default T state(State state) {
-            return syncState(state);
-        }
+internal class D2Length : ExpressionItem {
+    override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+        return visitor.castStringVisit(ctx.expr(0)).length.toString()
     }
 }

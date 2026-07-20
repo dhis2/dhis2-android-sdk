@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.attribute
 
 import org.hisp.dhis.android.annotations.ModelBuilder
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ValueType
 import java.util.Date
@@ -81,7 +81,7 @@ data class Attribute(
     val dataElementGroupSetAttribute: Boolean?,
     val organisationUnitGroupSetAttribute: Boolean?,
     val optionAttribute: Boolean?,
-) : BaseNameableObjectKt, CoreObject {
+) : BaseNameableObject, CoreObject {
 
     fun valueType(): ValueType? = valueType
     fun unique(): Boolean? = unique

@@ -3029,7 +3029,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/storage/internal
 public abstract interface class org/hisp/dhis/android/core/arch/storage/internal/SecureStore : org/hisp/dhis/android/core/arch/storage/internal/KeyValueStore {
 }
 
-public final class org/hisp/dhis/android/core/attribute/Attribute : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/attribute/Attribute : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/attribute/Attribute$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/attribute/Attribute$Builder;
@@ -3550,7 +3550,7 @@ public final class org/hisp/dhis/android/core/attribute/ProgramStageAttributeVal
 	public final fun from (Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink;)Lorg/hisp/dhis/android/core/attribute/ProgramStageAttributeValueLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/category/Category : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/category/Category : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/category/Category$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/category/Category$Builder;
@@ -3751,7 +3751,7 @@ public final class org/hisp/dhis/android/core/category/CategoryCollectionReposit
 	public final fun withCategoryOptions ()Lorg/hisp/dhis/android/core/category/CategoryCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/category/CategoryCombo : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/category/CategoryCombo : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/category/CategoryCombo$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/category/CategoryCombo$Builder;
@@ -3867,7 +3867,7 @@ public abstract interface class org/hisp/dhis/android/core/category/CategoryModu
 	public abstract fun categoryOptions ()Lorg/hisp/dhis/android/core/category/CategoryOptionCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/category/CategoryOption : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/category/CategoryOption : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/category/CategoryOption$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/util/Date;Ljava/util/Date;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -4014,7 +4014,7 @@ public final class org/hisp/dhis/android/core/category/CategoryOptionCollectionR
 	public final fun withOrganisationUnits ()Lorg/hisp/dhis/android/core/category/CategoryOptionCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/category/CategoryOptionCombo : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/category/CategoryOptionCombo : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/category/CategoryOptionCombo$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/category/CategoryOptionCombo$Builder;
@@ -4339,73 +4339,6 @@ public final class org/hisp/dhis/android/core/common/AuthorizationType : java/la
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/AuthorizationType;
 }
 
-public abstract class org/hisp/dhis/android/core/common/BaseDataObject : org/hisp/dhis/android/core/common/DataObject {
-	public fun <init> ()V
-	public fun state ()Lorg/hisp/dhis/android/core/common/State;
-	public abstract fun syncState ()Lorg/hisp/dhis/android/core/common/State;
-}
-
-protected abstract interface class org/hisp/dhis/android/core/common/BaseDataObject$Builder {
-	public fun state (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
-	public abstract fun syncState (Lorg/hisp/dhis/android/core/common/State;)Lorg/hisp/dhis/android/core/common/BaseDataObject$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/common/BaseDeletableDataObject : org/hisp/dhis/android/core/common/BaseDataObject, org/hisp/dhis/android/core/common/DeletableDataObject {
-	public fun <init> ()V
-	public abstract fun deleted ()Ljava/lang/Boolean;
-}
-
-protected abstract interface class org/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder : org/hisp/dhis/android/core/common/BaseDataObject$Builder {
-	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseDeletableDataObject$Builder;
-}
-
-public abstract class org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa : org/hisp/dhis/android/core/common/BaseIdentifiableObject {
-	public static final field CODE Ljava/lang/String;
-	public static final field CREATED Ljava/lang/String;
-	public static field DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
-	public static final field DELETED Ljava/lang/String;
-	public static final field DISPLAY_NAME Ljava/lang/String;
-	public static final field LAST_UPDATED Ljava/lang/String;
-	public static final field NAME Ljava/lang/String;
-	public static field SPACE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
-	public static final field UID Ljava/lang/String;
-	public static final field UUID Ljava/lang/String;
-	public fun <init> ()V
-	public abstract fun code ()Ljava/lang/String;
-	public abstract fun created ()Ljava/util/Date;
-	public static fun dateToDateStr (Ljava/util/Date;)Ljava/lang/String;
-	public static fun dateToSpaceDateStr (Ljava/util/Date;)Ljava/lang/String;
-	public abstract fun deleted ()Ljava/lang/Boolean;
-	public abstract fun displayName ()Ljava/lang/String;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun name ()Ljava/lang/String;
-	public static fun parseDate (Ljava/lang/String;)Ljava/util/Date;
-	public static fun parseSpaceDate (Ljava/lang/String;)Ljava/util/Date;
-	public abstract fun uid ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
-	public fun <init> ()V
-	public abstract fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun code (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun created (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun created (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun deleted (Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun displayName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun lastUpdated (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun lastUpdated (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun name (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-	public abstract fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObAuVa$Builder;
-	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder;
-}
-
 public abstract interface class org/hisp/dhis/android/core/common/BaseIdentifiableObject : org/hisp/dhis/android/core/common/IdentifiableObject, org/hisp/dhis/android/core/common/ObjectWithDeleteInterface {
 	public static final field CODE Ljava/lang/String;
 	public static final field CREATED Ljava/lang/String;
@@ -4418,17 +4351,24 @@ public abstract interface class org/hisp/dhis/android/core/common/BaseIdentifiab
 	public static final field SPACE_DATE_FORMAT Lorg/hisp/dhis/android/core/arch/dateformat/internal/SafeDateFormat;
 	public static final field UID Ljava/lang/String;
 	public static final field UUID Ljava/lang/String;
-	public abstract fun code ()Ljava/lang/String;
-	public abstract fun created ()Ljava/util/Date;
+	public fun code ()Ljava/lang/String;
+	public fun created ()Ljava/util/Date;
 	public static fun dateToDateStr (Ljava/util/Date;)Ljava/lang/String;
 	public static fun dateToSpaceDateStr (Ljava/util/Date;)Ljava/lang/String;
-	public abstract fun deleted ()Ljava/lang/Boolean;
-	public abstract fun displayName ()Ljava/lang/String;
-	public abstract fun lastUpdated ()Ljava/util/Date;
-	public abstract fun name ()Ljava/lang/String;
+	public fun deleted ()Ljava/lang/Boolean;
+	public fun displayName ()Ljava/lang/String;
+	public abstract fun getCode ()Ljava/lang/String;
+	public abstract fun getCreated ()Ljava/util/Date;
+	public abstract fun getDeleted ()Ljava/lang/Boolean;
+	public abstract fun getDisplayName ()Ljava/lang/String;
+	public abstract fun getLastUpdated ()Ljava/util/Date;
+	public abstract fun getName ()Ljava/lang/String;
+	public abstract fun getUid ()Ljava/lang/String;
+	public fun lastUpdated ()Ljava/util/Date;
+	public fun name ()Ljava/lang/String;
 	public static fun parseDate (Ljava/lang/String;)Ljava/util/Date;
 	public static fun parseSpaceDate (Ljava/lang/String;)Ljava/util/Date;
-	public abstract fun uid ()Ljava/lang/String;
+	public fun uid ()Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
@@ -4455,31 +4395,14 @@ public final class org/hisp/dhis/android/core/common/BaseIdentifiableObject$Comp
 	public final fun parseSpaceDate (Ljava/lang/String;)Ljava/util/Date;
 }
 
-public abstract interface class org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt : org/hisp/dhis/android/core/common/BaseIdentifiableObject {
-	public fun code ()Ljava/lang/String;
-	public fun created ()Ljava/util/Date;
-	public fun deleted ()Ljava/lang/Boolean;
-	public fun displayName ()Ljava/lang/String;
-	public abstract fun getCode ()Ljava/lang/String;
-	public abstract fun getCreated ()Ljava/util/Date;
-	public abstract fun getDeleted ()Ljava/lang/Boolean;
-	public abstract fun getDisplayName ()Ljava/lang/String;
-	public abstract fun getLastUpdated ()Ljava/util/Date;
-	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun getUid ()Ljava/lang/String;
-	public fun lastUpdated ()Ljava/util/Date;
-	public fun name ()Ljava/lang/String;
-	public fun uid ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt$DefaultImpls {
-	public static fun code (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/lang/String;
-	public static fun created (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/util/Date;
-	public static fun deleted (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/lang/Boolean;
-	public static fun displayName (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/lang/String;
-	public static fun lastUpdated (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/util/Date;
-	public static fun name (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/lang/String;
-	public static fun uid (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObjectKt;)Ljava/lang/String;
+public final class org/hisp/dhis/android/core/common/BaseIdentifiableObject$DefaultImpls {
+	public static fun code (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/lang/String;
+	public static fun created (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/util/Date;
+	public static fun deleted (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/lang/Boolean;
+	public static fun displayName (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/lang/String;
+	public static fun lastUpdated (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/util/Date;
+	public static fun name (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/lang/String;
+	public static fun uid (Lorg/hisp/dhis/android/core/common/BaseIdentifiableObject;)Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/BaseNameableObject : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/NameableObject {
@@ -4488,10 +4411,14 @@ public abstract interface class org/hisp/dhis/android/core/common/BaseNameableOb
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
-	public abstract fun description ()Ljava/lang/String;
-	public abstract fun displayDescription ()Ljava/lang/String;
-	public abstract fun displayShortName ()Ljava/lang/String;
-	public abstract fun shortName ()Ljava/lang/String;
+	public fun description ()Ljava/lang/String;
+	public fun displayDescription ()Ljava/lang/String;
+	public fun displayShortName ()Ljava/lang/String;
+	public abstract fun getDescription ()Ljava/lang/String;
+	public abstract fun getDisplayDescription ()Ljava/lang/String;
+	public abstract fun getDisplayShortName ()Ljava/lang/String;
+	public abstract fun getShortName ()Ljava/lang/String;
+	public fun shortName ()Ljava/lang/String;
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/BaseNameableObject$Builder : org/hisp/dhis/android/core/common/BaseIdentifiableObject$Builder {
@@ -4513,29 +4440,18 @@ public final class org/hisp/dhis/android/core/common/BaseNameableObject$Companio
 	public static final field SHORT_NAME Ljava/lang/String;
 }
 
-public abstract interface class org/hisp/dhis/android/core/common/BaseNameableObjectKt : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/BaseNameableObject {
-	public fun description ()Ljava/lang/String;
-	public fun displayDescription ()Ljava/lang/String;
-	public fun displayShortName ()Ljava/lang/String;
-	public abstract fun getDescription ()Ljava/lang/String;
-	public abstract fun getDisplayDescription ()Ljava/lang/String;
-	public abstract fun getDisplayShortName ()Ljava/lang/String;
-	public abstract fun getShortName ()Ljava/lang/String;
-	public fun shortName ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/android/core/common/BaseNameableObjectKt$DefaultImpls {
-	public static fun code (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun created (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/util/Date;
-	public static fun deleted (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/Boolean;
-	public static fun description (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun displayDescription (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun displayName (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun displayShortName (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun lastUpdated (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/util/Date;
-	public static fun name (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun shortName (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
-	public static fun uid (Lorg/hisp/dhis/android/core/common/BaseNameableObjectKt;)Ljava/lang/String;
+public final class org/hisp/dhis/android/core/common/BaseNameableObject$DefaultImpls {
+	public static fun code (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun created (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/util/Date;
+	public static fun deleted (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/Boolean;
+	public static fun description (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun displayDescription (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun displayName (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun displayShortName (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun lastUpdated (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/util/Date;
+	public static fun name (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun shortName (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
+	public static fun uid (Lorg/hisp/dhis/android/core/common/BaseNameableObject;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/common/Coordinates {
@@ -4707,11 +4623,6 @@ public final class org/hisp/dhis/android/core/common/DatePeriodType : java/lang/
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/DatePeriodType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/common/DatePeriodType;
-}
-
-public class org/hisp/dhis/android/core/common/DeletableColumns : org/hisp/dhis/android/core/common/CoreColumns {
-	public static final field DELETED Ljava/lang/String;
-	public fun <init> ()V
 }
 
 public final class org/hisp/dhis/android/core/common/DeletableDataColumns : org/hisp/dhis/android/core/common/DataColumns {
@@ -4963,20 +4874,17 @@ public abstract interface class org/hisp/dhis/android/core/common/IdentifiableOb
 	public abstract fun name ()Ljava/lang/String;
 }
 
-public class org/hisp/dhis/android/core/common/IdentifiableWithStyleColumns : org/hisp/dhis/android/core/common/IdentifiableColumns {
-	public static final field COLOR Ljava/lang/String;
-	public static final field ICON Ljava/lang/String;
-	public fun <init> ()V
-	public fun all ()[Ljava/lang/String;
-}
-
 public class org/hisp/dhis/android/core/common/NameableColumns : org/hisp/dhis/android/core/common/IdentifiableColumns {
+	public static final field Companion Lorg/hisp/dhis/android/core/common/NameableColumns$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_DESCRIPTION Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field SHORT_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/common/NameableColumns$Companion {
 }
 
 public abstract interface class org/hisp/dhis/android/core/common/NameableObject : org/hisp/dhis/android/core/common/IdentifiableObject {
@@ -4988,9 +4896,13 @@ public abstract interface class org/hisp/dhis/android/core/common/NameableObject
 
 public class org/hisp/dhis/android/core/common/NameableWithStyleColumns : org/hisp/dhis/android/core/common/NameableColumns {
 	public static final field COLOR Ljava/lang/String;
+	public static final field Companion Lorg/hisp/dhis/android/core/common/NameableWithStyleColumns$Companion;
 	public static final field ICON Ljava/lang/String;
 	public fun <init> ()V
 	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/common/NameableWithStyleColumns$Companion {
 }
 
 public final class org/hisp/dhis/android/core/common/ObjectStyle {
@@ -6038,7 +5950,7 @@ public final class org/hisp/dhis/android/core/configuration/internal/OrgHispDhis
 	public static final fun module (Lorg/hisp/dhis/android/core/configuration/internal/ConfigurationDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/constant/Constant : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/constant/Constant$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/constant/Constant$Builder;
@@ -6233,7 +6145,7 @@ public final class org/hisp/dhis/android/core/dataapproval/OrgHispDhisAndroidCor
 	public static final fun module (Lorg/hisp/dhis/android/core/dataapproval/DataApprovalDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/dataelement/DataElement : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/dataelement/DataElement : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/dataelement/DataElement$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun aggregationType ()Ljava/lang/String;
@@ -6602,7 +6514,7 @@ public final class org/hisp/dhis/android/core/dataset/DataInputPeriodBuilder$Com
 	public final fun from (Lorg/hisp/dhis/android/core/dataset/DataInputPeriod;)Lorg/hisp/dhis/android/core/dataset/DataInputPeriod$Builder;
 }
 
-public final class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/dataset/DataSet : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/dataset/DataSet$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/dataset/DataSetDisplayOptions;Lorg/hisp/dhis/android/core/common/Access;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -7468,7 +7380,7 @@ public final class org/hisp/dhis/android/core/dataset/OrgHispDhisAndroidCoreData
 	public static final fun module (Lorg/hisp/dhis/android/core/dataset/DataSetDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/dataset/Section : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/dataset/Section$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataset/SectionDisplayOptions;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/dataset/Section$Builder;
@@ -9196,7 +9108,7 @@ public final class org/hisp/dhis/android/core/event/EventEditableStatus$NonEdita
 	public final fun getReason ()Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 }
 
-public final class org/hisp/dhis/android/core/event/EventFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/event/EventFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/event/EventFilter$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/event/EventQueryCriteria;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/event/EventFilter$Builder;
@@ -9962,7 +9874,7 @@ public final class org/hisp/dhis/android/core/event/search/EventQueryScopeOrderC
 	public final fun from (Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/event/search/EventQueryScopeOrderColumn$Builder;
 }
 
-public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/expressiondimensionitem/ExpressionDimensionItem$Builder;
@@ -10563,7 +10475,7 @@ public final class org/hisp/dhis/android/core/indicator/DataSetIndicatorLinkBuil
 	public final fun from (Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink;)Lorg/hisp/dhis/android/core/indicator/DataSetIndicatorLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/indicator/Indicator : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/indicator/Indicator : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/indicator/Indicator$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun annualized ()Ljava/lang/Boolean;
@@ -10757,7 +10669,7 @@ public abstract interface class org/hisp/dhis/android/core/indicator/IndicatorMo
 	public abstract fun indicators ()Lorg/hisp/dhis/android/core/indicator/IndicatorCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/indicator/IndicatorType : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/indicator/IndicatorType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/indicator/IndicatorType$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/indicator/IndicatorType$Builder;
@@ -10971,7 +10883,7 @@ public final class org/hisp/dhis/android/core/legendset/IndicatorLegendSetLinkBu
 	public final fun from (Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink;)Lorg/hisp/dhis/android/core/legendset/IndicatorLegendSetLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/legendset/Legend : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/legendset/Legend : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/legendset/Legend$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/Legend$Builder;
@@ -11086,7 +10998,7 @@ public final class org/hisp/dhis/android/core/legendset/LegendCollectionReposito
 	public final fun byStartValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/DoubleFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/legendset/LegendSet : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/legendset/LegendSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/legendset/LegendSet$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/legendset/LegendSet$Builder;
@@ -12062,7 +11974,7 @@ public final class org/hisp/dhis/android/core/note/OrgHispDhisAndroidCoreNoteNot
 	public static final fun module (Lorg/hisp/dhis/android/core/note/NoteDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/option/Option : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/option/Option : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/option/Option$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/option/Option$Builder;
@@ -12174,7 +12086,7 @@ public final class org/hisp/dhis/android/core/option/OptionCollectionRepository 
 	public final fun orderBySortOrder (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/option/OptionCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/option/OptionGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/option/OptionGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/option/OptionGroup$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/option/OptionGroup$Builder;
@@ -12356,7 +12268,7 @@ public final class org/hisp/dhis/android/core/option/OptionServiceImpl : org/his
 	public fun suspendSearchForOptions (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class org/hisp/dhis/android/core/option/OptionSet : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/option/OptionSet : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/option/OptionSet$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/ValueType;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/option/OptionSet$Builder;
@@ -12481,7 +12393,7 @@ public final class org/hisp/dhis/android/core/organisationunit/OrgHispDhisAndroi
 	public static final fun module (Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnit : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnit : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/Geometry;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnit$Builder;
@@ -12681,7 +12593,7 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitC
 	public final fun withProgramUids ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitGroup$Builder;
@@ -12782,7 +12694,7 @@ public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitG
 	public final fun byShortName ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
 }
 
-public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitLevel$Builder;
@@ -13422,7 +13334,7 @@ public final class org/hisp/dhis/android/core/program/OrgHispDhisAndroidCoreProg
 	public static final fun module (Lorg/hisp/dhis/android/core/program/ProgramDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/Program$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -13829,7 +13741,7 @@ public final class org/hisp/dhis/android/core/program/ProgramCollectionRepositor
 	public final fun withTrackedEntityType ()Lorg/hisp/dhis/android/core/program/ProgramCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramIndicator : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramIndicator : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramIndicator$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/AggregationType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/AnalyticsType;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;)V
 	public final fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;
@@ -14051,7 +13963,7 @@ public abstract interface class org/hisp/dhis/android/core/program/ProgramModule
 	public abstract fun programs ()Lorg/hisp/dhis/android/core/program/ProgramCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramRule : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramRule : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRule$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRule$Builder;
@@ -14107,7 +14019,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRule$Companion {
 	public final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRule$Builder;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramRuleAction : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramRuleAction : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/program/ProgramRuleActionType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/String;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleAction$Builder;
@@ -14388,7 +14300,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleCollectionRepos
 	public final fun withProgramRuleActions ()Lorg/hisp/dhis/android/core/program/ProgramRuleCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramRuleVariable : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramRuleVariable$Builder;
@@ -14529,7 +14441,7 @@ public final class org/hisp/dhis/android/core/program/ProgramRuleVariableSourceT
 	public static fun values ()[Lorg/hisp/dhis/android/core/program/ProgramRuleVariableSourceType;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramSection : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/program/ProgramSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramSection$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/String;Lorg/hisp/dhis/android/core/program/SectionRendering;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun attributes ()Ljava/util/List;
@@ -14719,7 +14631,7 @@ public final class org/hisp/dhis/android/core/program/ProgramSectionCollectionRe
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramSectionCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStage : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/program/ProgramStage : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStage$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/common/FormType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/period/PeriodType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ValidationStrategy;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -15027,7 +14939,7 @@ public final class org/hisp/dhis/android/core/program/ProgramStageCollectionRepo
 	public final fun withAttributes ()Lorg/hisp/dhis/android/core/program/ProgramStageCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStageDataElement : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramStageDataElement : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStageDataElement$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/dataelement/DataElement;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)V
 	public final fun allowFutureDate ()Ljava/lang/Boolean;
@@ -15171,7 +15083,7 @@ public final class org/hisp/dhis/android/core/program/ProgramStageDataElementCol
 	public final fun withRenderType ()Lorg/hisp/dhis/android/core/program/ProgramStageDataElementCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramStageSection : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramStageSection : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramStageSection$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/program/SectionRendering;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/String;Ljava/lang/String;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/program/ProgramStageSection$Builder;
@@ -15404,7 +15316,7 @@ public final class org/hisp/dhis/android/core/program/ProgramStageSectionsCollec
 	public final fun withProgramIndicators ()Lorg/hisp/dhis/android/core/program/ProgramStageSectionsCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttribute$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/Integer;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ValueTypeRendering;)V
 	public final fun allowFutureDate ()Ljava/lang/Boolean;
@@ -15657,21 +15569,6 @@ public final class org/hisp/dhis/android/core/program/programindicatorengine/int
 	public fun toString ()Ljava/lang/String;
 }
 
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2Concatenate : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2Length : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
-public class org/hisp/dhis/android/core/program/programindicatorengine/internal/function/D2ValidatePattern : org/hisp/dhis/android/core/parser/internal/expression/ExpressionItem {
-	public fun <init> ()V
-	public fun evaluate (Lorg/hisp/dhis/parser/expression/antlr/ExpressionParser$ExprContext;Lorg/hisp/dhis/android/core/parser/internal/expression/CommonExpressionVisitor;)Ljava/lang/Object;
-}
-
 public final class org/hisp/dhis/android/core/programstageworkinglist/OrgHispDhisAndroidCoreProgramstageworkinglistProgramStageWorkingListDIModuleModuleKt {
 	public static final fun module (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingListDIModule;)Lorg/koin/core/module/Module;
 }
@@ -15790,7 +15687,7 @@ public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramSta
 	public final fun from (Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria$Builder;
 }
 
-public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageQueryCriteria;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/programstageworkinglist/ProgramStageWorkingList$Builder;
@@ -16564,7 +16461,7 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipService$D
 	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
 }
 
-public final class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/relationship/RelationshipType$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Lorg/hisp/dhis/android/core/relationship/RelationshipConstraint;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/Access;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -20486,7 +20383,7 @@ public final class org/hisp/dhis/android/core/trackedentity/ReservedValueSummary
 	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSummary;)Lorg/hisp/dhis/android/core/trackedentity/ReservedValueSummary$Builder;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttribute$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ValueType;Ljava/lang/String;Lorg/hisp/dhis/android/core/common/AggregationType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/Access;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/TrackerSearchOperator;Ljava/util/List;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -21368,7 +21265,7 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter;)Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceEventFilter$Builder;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/common/ObjectStyle;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/lang/String;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/trackedentity/EntityQueryCriteria;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceFilter$Builder;
@@ -21546,7 +21443,7 @@ public abstract interface class org/hisp/dhis/android/core/trackedentity/Tracked
 	public abstract fun trackedEntityTypes ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityType : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
+public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityType : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/common/Access;Lorg/hisp/dhis/android/core/common/ObjectStyle;Ljava/lang/String;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
@@ -22942,7 +22839,7 @@ public abstract interface class org/hisp/dhis/android/core/user/TwoFactorAuthMan
 	public abstract fun is2faEnabled (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/user/User : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/user/User$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 	public final fun birthday ()Ljava/lang/String;
@@ -23195,7 +23092,7 @@ public final class org/hisp/dhis/android/core/user/UserCredentialsObjectReposito
 	public final fun withUserRoles ()Lorg/hisp/dhis/android/core/user/UserCredentialsObjectRepository;
 }
 
-public final class org/hisp/dhis/android/core/user/UserGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/user/UserGroup : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/user/UserGroup$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserGroup$Builder;
@@ -23386,7 +23283,7 @@ public final class org/hisp/dhis/android/core/user/UserOrganisationUnitLinkBuild
 	public final fun from (Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink;)Lorg/hisp/dhis/android/core/user/UserOrganisationUnitLink$Builder;
 }
 
-public final class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/user/UserRole : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/user/UserRole$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/user/UserRole$Builder;
@@ -23681,7 +23578,7 @@ public abstract interface class org/hisp/dhis/android/core/validation/Validation
 	public abstract fun validationRules ()Lorg/hisp/dhis/android/core/validation/ValidationRuleCollectionRepository;
 }
 
-public final class org/hisp/dhis/android/core/validation/ValidationRule : org/hisp/dhis/android/core/common/BaseNameableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/validation/ValidationRule : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/validation/ValidationRule$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/validation/ValidationRuleImportance;Lorg/hisp/dhis/android/core/validation/ValidationRuleOperator;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;Lorg/hisp/dhis/android/core/validation/ValidationRuleExpression;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/validation/ValidationRule$Builder;
@@ -24239,7 +24136,7 @@ public final class org/hisp/dhis/android/core/visualization/OrgHispDhisAndroidCo
 	public static final fun module (Lorg/hisp/dhis/android/core/visualization/VisualizationDIModule;)Lorg/koin/core/module/Module;
 }
 
-public final class org/hisp/dhis/android/core/visualization/TrackerVisualization : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/visualization/TrackerVisualization : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationOutputType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 	public static final fun builder ()Lorg/hisp/dhis/android/core/visualization/TrackerVisualization$Builder;
@@ -24599,7 +24496,7 @@ public final class org/hisp/dhis/android/core/visualization/TrackerVisualization
 	public static fun values ()[Lorg/hisp/dhis/android/core/visualization/TrackerVisualizationType;
 }
 
-public final class org/hisp/dhis/android/core/visualization/Visualization : org/hisp/dhis/android/core/common/BaseIdentifiableObjectKt, org/hisp/dhis/android/core/common/CoreObject {
+public final class org/hisp/dhis/android/core/visualization/Visualization : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
 	public static final field Companion Lorg/hisp/dhis/android/core/visualization/Visualization$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/visualization/VisualizationType;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/HideEmptyItemStrategy;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/visualization/VisualizationLegend;Lorg/hisp/dhis/android/core/visualization/DisplayDensity;Lorg/hisp/dhis/android/core/visualization/DigitGroupSeparator;Lorg/hisp/dhis/android/core/common/AggregationType;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 	public final fun aggregationType ()Lorg/hisp/dhis/android/core/common/AggregationType;

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.TrackerSearchOperator
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.AggregationType
-import org.hisp.dhis.android.core.common.BaseNameableObjectKt
+import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
@@ -78,7 +78,7 @@ data class TrackedEntityAttribute(
     val blockedSearchOperators: List<TrackerSearchOperator>?,
     val minCharactersToSearch: Int?,
     override val style: ObjectStyle,
-) : BaseNameableObjectKt, CoreObject, ObjectWithStyleKt {
+) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun pattern(): String? = pattern
     fun sortOrderInListNoProgram(): Int? = sortOrderInListNoProgram

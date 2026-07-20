@@ -25,23 +25,47 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-package org.hisp.dhis.android.core.user;
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+@RunWith(MockitoJUnitRunner::class)
+class D2LengthShould {
+    private val context: ExprContext = mock()
+    private val visitor: CommonExpressionVisitor = mock()
+    private val mockedFirstExpr: ExprContext = mock()
 
-import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
+    private val functionToTest = D2Length()
 
-@RunWith(JUnit4.class)
-public class AuthenticatedUserShould {
+    @Before
+    fun setUp() {
+        whenever(context.expr(0)).thenReturn(mockedFirstExpr)
+    }
 
     @Test
-    public void have_the_equals_method_conform_to_contract() {
-        EqualsVerifier.forClass(AuthenticatedUser.builder().build().getClass())
-                .suppress(Warning.NULL_FIELDS)
-                .verify();
+    fun return_length_of_argument() {
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn("")
+
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("0")
+
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abc")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("3")
+
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn("abcdef")
+        assertThat(functionToTest.evaluate(context, visitor)).isEqualTo("6")
+    }
+
+    @Test(expected = NullPointerException::class)
+    fun throw_null_pointer_exception_when_arguments_is_null() {
+        whenever(visitor.castStringVisit(mockedFirstExpr)).thenReturn(null)
+        functionToTest.evaluate(context, visitor)
     }
 }

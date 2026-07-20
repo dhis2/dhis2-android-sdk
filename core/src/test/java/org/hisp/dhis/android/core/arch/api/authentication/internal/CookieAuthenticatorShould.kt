@@ -29,51 +29,86 @@
 package org.hisp.dhis.android.core.arch.api.authentication.internal
 
 import com.google.common.truth.Truth.assertThat
-import io.ktor.client.call.HttpClientCall
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
 import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.get
+import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Headers
-import io.ktor.http.HeadersImpl
-import io.ktor.http.HttpProtocolVersion
-import io.ktor.http.HttpStatusCode
-import io.ktor.util.date.GMTDate
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.InternalAPI
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
-import org.mockito.kotlin.mock
-import kotlin.coroutines.CoroutineContext
 
 class CookieAuthenticatorShould {
 
-    @OptIn(InternalAPI::class)
-    @Test
-    fun store_multiple_cookies() {
-        val cookieHelper = CookieAuthenticatorHelper()
+    private val hostA = "server-a.com"
+    private val hostB = "server-b.com"
 
-        val response = object : HttpResponse() {
-            override val call: HttpClientCall = mock()
-            override val rawContent: ByteReadChannel = mock()
-            override val coroutineContext: CoroutineContext = mock()
-            override val requestTime: GMTDate = GMTDate.START
-            override val responseTime: GMTDate = GMTDate.START
-            override val status: HttpStatusCode = HttpStatusCode.OK
-            override val version: HttpProtocolVersion = HttpProtocolVersion.HTTP_2_0
-            override val headers: Headers = HeadersImpl(
-                mapOf(
-                    "set-cookie" to listOf(
-                        "JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; Path=/current; Secure; HttpOnly",
-                        "_ga=34FJALK23LLFLF; Secure; HttpOnly",
-                    ),
-                ),
-            )
-        }
+    private fun clientRespondingWithCookies(cookies: List<String>): HttpClient {
+        return HttpClient(
+            MockEngine { _ ->
+                respond(
+                    content = "OK",
+                    headers = Headers.build {
+                        cookies.forEach { append("set-cookie", it) }
+                    },
+                )
+            },
+        )
+    }
 
+    private suspend fun HttpClient.storeCookiesFrom(cookieHelper: CookieAuthenticatorHelper, url: String) {
+        val response: HttpResponse = get(url)
         cookieHelper.storeCookieIfSentByServer(response)
+    }
 
-        val requestBuilder = HttpRequestBuilder()
+    @Test
+    fun store_multiple_cookies() = runTest {
+        val cookieHelper = CookieAuthenticatorHelper()
+        val client = clientRespondingWithCookies(
+            listOf(
+                "JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; Path=/current; Secure; HttpOnly",
+                "_ga=34FJALK23LLFLF; Secure; HttpOnly",
+            ),
+        )
+
+        client.storeCookiesFrom(cookieHelper, "https://$hostA/api")
+
+        val requestBuilder = HttpRequestBuilder().apply { url("https://$hostA/api/me") }
         cookieHelper.addCookieHeader(requestBuilder)
 
         assertThat(requestBuilder.headers["Cookie"])
             .isEqualTo("JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; _ga=34FJALK23LLFLF")
+    }
+
+    @Test
+    fun not_mix_cookies_between_hosts() = runTest {
+        val cookieHelper = CookieAuthenticatorHelper()
+        val client = clientRespondingWithCookies(listOf("JSESSIONID=HOST_A_SESSION; Path=/"))
+
+        client.storeCookiesFrom(cookieHelper, "https://$hostA/api")
+
+        assertThat(cookieHelper.isCookieDefined(hostA)).isTrue()
+        assertThat(cookieHelper.isCookieDefined(hostB)).isFalse()
+
+        val requestToOtherHost = HttpRequestBuilder().apply { url("https://$hostB/api/me") }
+        cookieHelper.addCookieHeader(requestToOtherHost)
+
+        assertThat(requestToOtherHost.headers["Cookie"]).isNull()
+    }
+
+    @Test
+    fun remove_cookies_only_for_the_given_host() = runTest {
+        val cookieHelper = CookieAuthenticatorHelper()
+        clientRespondingWithCookies(listOf("JSESSIONID=HOST_A_SESSION; Path=/"))
+            .storeCookiesFrom(cookieHelper, "https://$hostA/api")
+        clientRespondingWithCookies(listOf("JSESSIONID=HOST_B_SESSION; Path=/"))
+            .storeCookiesFrom(cookieHelper, "https://$hostB/api")
+
+        cookieHelper.removeCookie(hostA)
+
+        assertThat(cookieHelper.isCookieDefined(hostA)).isFalse()
+        assertThat(cookieHelper.isCookieDefined(hostB)).isTrue()
     }
 }

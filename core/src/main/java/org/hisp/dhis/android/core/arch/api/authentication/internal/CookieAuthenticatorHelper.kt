@@ -40,34 +40,40 @@ internal class CookieAuthenticatorHelper {
         private const val SET_COOKIE_KEY = "set-cookie"
     }
 
-    private val cookieMap = mutableMapOf<String, String>()
+    private val cookieMapByHost = mutableMapOf<String, MutableMap<String, String>>()
 
     fun storeCookieIfSentByServer(res: HttpResponse) {
+        val host = res.call.request.url.host
         val cookies = res.headers.getAll(SET_COOKIE_KEY)
 
         if (!cookies.isNullOrEmpty()) {
+            val hostCookies = cookieMapByHost.getOrPut(host) { mutableMapOf() }
             cookies.forEach { cookie ->
                 val nameValue = cookie.substringBefore(";")
                 val name = nameValue.substringBefore("=").trim()
                 if (name.isNotEmpty()) {
-                    cookieMap[name] = nameValue
+                    hostCookies[name] = nameValue
                 }
             }
         }
     }
 
-    fun isCookieDefined(): Boolean {
-        return cookieMap.isNotEmpty()
+    fun isCookieDefined(host: String): Boolean {
+        return !cookieMapByHost[host].isNullOrEmpty()
     }
 
-    fun removeCookie() {
-        cookieMap.clear()
+    fun removeCookie(host: String) {
+        cookieMapByHost.remove(host)
     }
 
     fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
-        requestBuilder.apply {
-            headers.remove(COOKIE_KEY)
-            header(COOKIE_KEY, cookieMap.values.joinToString("; "))
+        val host = requestBuilder.url.host
+        val hostCookies = cookieMapByHost[host]
+        if (!hostCookies.isNullOrEmpty()) {
+            requestBuilder.apply {
+                headers.remove(COOKIE_KEY)
+                header(COOKIE_KEY, hostCookies.values.joinToString("; "))
+            }
         }
     }
 }

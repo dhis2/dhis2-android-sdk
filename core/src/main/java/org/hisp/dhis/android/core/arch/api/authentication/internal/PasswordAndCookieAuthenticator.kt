@@ -54,7 +54,8 @@ internal class PasswordAndCookieAuthenticator(
         credentials: Credentials,
     ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
-        val useCookie = cookieHelper.isCookieDefined()
+        val host = requestBuilder.url.host
+        val useCookie = cookieHelper.isCookieDefined(host)
         if (useCookie) {
             cookieHelper.addCookieHeader(requestBuilder)
         } else {
@@ -63,7 +64,7 @@ internal class PasswordAndCookieAuthenticator(
         val call = sender.proceed(requestBuilder)
 
         val finalCall = if (useCookie && hasAuthenticationFailed(call.response)) {
-            cookieHelper.removeCookie()
+            cookieHelper.removeCookie(host)
             val originalRequest: HttpRequestBuilder = HttpRequestBuilder().apply {
                 takeFrom(call.request)
             }

@@ -25,46 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos.testobjects
 
-package org.hisp.dhis.android.core.sms.mockrepos.testobjects;
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import com.google.common.collect.Lists;
+class MockMetadata : SMSMetadata() {
 
-import org.hisp.dhis.android.core.datavalue.DataValue;
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class MockMetadata extends SMSMetadata {
-
-    public MockMetadata() {
-        users = Collections.singletonList(new ID(MockObjects.user));
-        trackedEntityTypes = Collections.singletonList(new ID(MockObjects.teiUid));
-        trackedEntityAttributes = getTrackedEntityAttributes();
-        programs = Collections.singletonList(new ID(MockObjects.program));
-        organisationUnits = Collections.singletonList(new ID(MockObjects.orgUnit));
-        categoryOptionCombos = Lists.newArrayList(
-                new ID(MockObjects.categoryOptionCombo),
-                new ID(MockObjects.attributeOptionCombo));
-        dataElements = getDataElements();
+    init {
+        users = listOf(SMSMetadata.ID(MockObjects.user))
+        trackedEntityTypes = listOf(SMSMetadata.ID(MockObjects.teiUid))
+        trackedEntityAttributes = getTrackedEntityAttributes()
+        programs = listOf(SMSMetadata.ID(MockObjects.program))
+        organisationUnits = listOf(SMSMetadata.ID(MockObjects.orgUnit))
+        categoryOptionCombos = listOf(
+            SMSMetadata.ID(MockObjects.categoryOptionCombo),
+            SMSMetadata.ID(MockObjects.attributeOptionCombo),
+        )
+        dataElements = getDataElements()
     }
 
-    private List<ID> getTrackedEntityAttributes() {
-        ArrayList<ID> attrs = new ArrayList<>();
-        for (TrackedEntityAttributeValue item : MockObjects.getTestAttributeValues()) {
-            attrs.add(new ID(item.trackedEntityAttribute()));
-        }
-        return attrs;
+    private fun getTrackedEntityAttributes(): List<SMSMetadata.ID> {
+        return MockObjects.getTestAttributeValues().map { SMSMetadata.ID(it.trackedEntityAttribute()) }
     }
 
-    private List<ID> getDataElements() {
-        ArrayList<ID> attrs = new ArrayList<>();
-        for (DataValue item : MockObjects.getDataValues()) {
-            attrs.add(new ID(item.dataElement()));
-        }
-        return attrs;
+    private fun getDataElements(): List<SMSMetadata.ID> {
+        return MockObjects.getDataValues().map { SMSMetadata.ID(it.dataElement()) }
     }
 }

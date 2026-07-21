@@ -25,45 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms
 
-package org.hisp.dhis.android.core.sms;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
+import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository
+import org.hisp.dhis.android.core.sms.mockrepos.MockWebApiRepository
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import java.util.concurrent.TimeUnit
 
-import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
-import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
-import org.hisp.dhis.android.core.sms.mockrepos.MockWebApiRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-
-import java.util.concurrent.TimeUnit;
-
-@RunWith(JUnit4.class)
-public class InitTest {
+@RunWith(JUnit4::class)
+class InitTest {
 
     @Test
-    public void allData() {
-        String testGateway = "testGateway";
-        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
-        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
+    fun allData() {
+        val testGateway = "testGateway"
+        val testLocalDbRepository = MockLocalDbRepository()
+        val testWebApiRepository = MockWebApiRepository()
 
-        new ConfigCase(testWebApiRepository, testLocalDbRepository)
-                .setGatewayNumber(testGateway)
-                .test()
-                .awaitDone(3, TimeUnit.SECONDS)
-                .assertNoErrors();
+        ConfigCase(testWebApiRepository, testLocalDbRepository)
+            .setGatewayNumber(testGateway)
+            .test()
+            .awaitDone(3, TimeUnit.SECONDS)
+            .assertNoErrors()
 
-        testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway);
+        testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway)
     }
 
     @Test
-    public void emptyData() {
-        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
-        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
+    fun emptyData() {
+        val testLocalDbRepository = MockLocalDbRepository()
+        val testWebApiRepository = MockWebApiRepository()
 
-        new ConfigCase(testWebApiRepository, testLocalDbRepository)
-                .setGatewayNumber(null)
-                .test()
-                .awaitDone(3, TimeUnit.SECONDS)
-                .assertError(IllegalArgumentException.class);
+        ConfigCase(testWebApiRepository, testLocalDbRepository)
+            .setGatewayNumber(null)
+            .test()
+            .awaitDone(3, TimeUnit.SECONDS)
+            .assertError(IllegalArgumentException::class.java)
     }
 }

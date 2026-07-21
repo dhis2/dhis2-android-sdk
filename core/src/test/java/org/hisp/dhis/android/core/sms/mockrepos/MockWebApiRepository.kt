@@ -25,25 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class MockWebApiRepository : WebApiRepository {
+    private val metadata: SMSMetadata = MockMetadata()
 
-import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
-import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
-
-import io.reactivex.Single;
-import kotlin.coroutines.Continuation;
-
-public class MockWebApiRepository implements WebApiRepository {
-    private final SMSMetadata metadata = new MockMetadata();
-
-    @Nullable
-    @Override
-    public Object getMetadataIds(@NonNull GetMetadataIdsConfig config, @NonNull Continuation<? super SMSMetadata> $completion) {
-        return metadata;
+    override suspend fun getMetadataIds(config: WebApiRepository.GetMetadataIdsConfig): SMSMetadata {
+        return metadata
     }
 }

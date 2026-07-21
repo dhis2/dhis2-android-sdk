@@ -25,32 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import io.reactivex.Single
+import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository
 
-import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
+open class MockDeviceStateRepository : DeviceStateRepository {
 
-import io.reactivex.Single;
-
-public class MockDeviceStateRepository implements DeviceStateRepository {
-
-    @Override
-    public Single<Boolean> isNetworkConnected() {
-        return Single.fromCallable(() -> true);
+    override fun isNetworkConnected(): Single<Boolean> {
+        return Single.fromCallable { true }
     }
 
-    @Override
-    public Single<Boolean> hasCheckNetworkPermission() {
-        return Single.fromCallable(() -> true);
+    override fun hasCheckNetworkPermission(): Single<Boolean> {
+        return Single.fromCallable { true }
     }
 
-    @Override
-    public Single<Boolean> hasSendSMSPermission() {
-        return Single.fromCallable(() -> true);
+    override fun hasSendSMSPermission(): Single<Boolean> {
+        return Single.fromCallable { true }
     }
 
-    @Override
-    public Single<Boolean> hasReceiveSMSPermission() {
-        return Single.fromCallable(() -> true);
+    override fun hasReceiveSMSPermission(): Single<Boolean> {
+        return Single.fromCallable { true }
     }
 }

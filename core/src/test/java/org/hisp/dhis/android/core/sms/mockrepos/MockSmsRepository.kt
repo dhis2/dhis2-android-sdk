@@ -25,41 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import java.util.Date
 
-import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
-
-public class MockSmsRepository implements SmsRepository {
-    @Override
-    public Observable<SmsSendingState> sendSms(String number, List<String> smsParts, int sendingTimeoutSeconds) {
-        return Observable.defer(() -> Observable.just(
-                new SmsSendingState(0, 1),
-                new SmsSendingState(1, 1)
-        ));
+class MockSmsRepository : SmsRepository {
+    override fun sendSms(
+        number: String,
+        smsParts: List<String>,
+        sendingTimeoutSeconds: Int,
+    ): Observable<SmsRepository.SmsSendingState> {
+        return Observable.defer {
+            Observable.just(
+                SmsRepository.SmsSendingState(0, 1),
+                SmsRepository.SmsSendingState(1, 1),
+            )
+        }
     }
 
-    @Override
-    public Single<List<String>> generateSmsParts(String value) {
-        return Single.fromCallable(() -> Collections.singletonList(value));
+    override fun generateSmsParts(value: String): Single<List<String>> {
+        return Single.fromCallable { listOf(value) }
     }
 
-    @Override
-    public Completable listenToConfirmationSms(Date fromDate, int waitingTimeoutSeconds, String requiredSender, int submissionId, SubmissionType submissionType) {
-        return Completable.complete();
+    override fun listenToConfirmationSms(
+        fromDate: Date,
+        waitingTimeoutSeconds: Int,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Completable {
+        return Completable.complete()
     }
 
-    @Override
-    public Single<Boolean> isAwaitedSuccessMessage(String sender, String message, String requiredSender, int submissionId, SubmissionType submissionType) {
-        return Single.just(true);
+    override fun isAwaitedSuccessMessage(
+        sender: String,
+        message: String,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Single<Boolean> {
+        return Single.just(true)
     }
 }

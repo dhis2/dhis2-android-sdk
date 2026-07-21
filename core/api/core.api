@@ -19481,14 +19481,6 @@ public abstract interface class org/hisp/dhis/android/core/sms/SmsModule {
 	public abstract fun smsSubmitCase ()Lorg/hisp/dhis/android/core/sms/domain/interactor/SmsSubmitCase;
 }
 
-public final class org/hisp/dhis/android/core/sms/data/internal/DeviceStateRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/internal/DeviceStateRepository {
-	public fun <init> (Landroid/content/Context;)V
-	public fun hasCheckNetworkPermission ()Lio/reactivex/Single;
-	public fun hasReceiveSMSPermission ()Lio/reactivex/Single;
-	public fun hasSendSMSPermission ()Lio/reactivex/Single;
-	public fun isNetworkConnected ()Lio/reactivex/Single;
-}
-
 public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/FileResourceCleaner {
 	public fun <init> (Lorg/hisp/dhis/android/core/dataelement/DataElementModule;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityModule;Lorg/hisp/dhis/android/core/fileresource/FileResourceModule;)V
 }
@@ -19578,18 +19570,6 @@ public class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSO
 
 public final class org/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmissionBuilder$Companion {
 	public final fun from (Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission;)Lorg/hisp/dhis/android/core/sms/data/localdbrepository/internal/SMSOngoingSubmission$Builder;
-}
-
-public final class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl : org/hisp/dhis/android/core/sms/domain/repository/SmsRepository {
-	public static final field Companion Lorg/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl$Companion;
-	public fun <init> (Landroid/content/Context;)V
-	public fun generateSmsParts (Ljava/lang/String;)Lio/reactivex/Single;
-	public fun isAwaitedSuccessMessage (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Single;
-	public fun listenToConfirmationSms (Ljava/util/Date;ILjava/lang/String;ILorg/hisp/dhis/android/core/sms/domain/repository/internal/SubmissionType;)Lio/reactivex/Completable;
-	public fun sendSms (Ljava/lang/String;Ljava/util/List;I)Lio/reactivex/Observable;
-}
-
-public final class org/hisp/dhis/android/core/sms/data/smsrepository/internal/SmsRepositoryImpl$Companion {
 }
 
 public final class org/hisp/dhis/android/core/sms/domain/interactor/ConfigCase {

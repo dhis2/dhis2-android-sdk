@@ -36,7 +36,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.SMSSubmission
 import org.hisp.dhis.smscompression.models.SimpleEventSMSSubmission
-import java.util.concurrent.Callable
 
 internal class SimpleEventConverter(
     localDbRepository: LocalDbRepository,
@@ -48,32 +47,30 @@ internal class SimpleEventConverter(
         user: String,
         submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<SimpleEventSMSSubmission>(
-            Callable {
-                val subm = SimpleEventSMSSubmission()
-                subm.setSubmissionID(submissionId)
-                subm.setUserID(user)
+        return Single.fromCallable {
+            val subm = SimpleEventSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
 
-                subm.setEvent(e.uid())
-                subm.setEventDate(e.eventDate())
-                subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()))
-                subm.setEventProgram(e.program())
-                subm.setDueDate(e.dueDate())
-                subm.setAttributeOptionCombo(e.attributeOptionCombo())
-                subm.setOrgUnit(e.organisationUnit())
-                subm.setValues(
-                    ConverterUtils.convertDataValues(
-                        e.attributeOptionCombo(),
-                        e.trackedEntityDataValues(),
-                    ),
-                )
+            subm.setEvent(e.uid())
+            subm.setEventDate(e.eventDate())
+            subm.setEventStatus(ConverterUtils.convertEventStatus(e.status()))
+            subm.setEventProgram(e.program())
+            subm.setDueDate(e.dueDate())
+            subm.setAttributeOptionCombo(e.attributeOptionCombo())
+            subm.setOrgUnit(e.organisationUnit())
+            subm.setValues(
+                ConverterUtils.convertDataValues(
+                    e.attributeOptionCombo(),
+                    e.trackedEntityDataValues(),
+                ),
+            )
 
-                if (containsAPoint(e.geometry())) {
-                    subm.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()))
-                }
-                subm
-            },
-        )
+            if (containsAPoint(e.geometry())) {
+                subm.setCoordinates(ConverterUtils.convertGeometryPoint(e.geometry()))
+            }
+            subm
+        }
     }
 
     override fun updateSubmissionState(state: State): Completable {

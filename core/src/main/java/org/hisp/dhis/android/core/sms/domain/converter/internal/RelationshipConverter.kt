@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission
 import org.hisp.dhis.smscompression.models.SMSSubmission
-import java.util.concurrent.Callable
 
 internal class RelationshipConverter(
     localDbRepository: LocalDbRepository,
@@ -47,18 +46,16 @@ internal class RelationshipConverter(
         user: String,
         submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<RelationshipSMSSubmission>(
-            Callable {
-                val subm = RelationshipSMSSubmission()
-                subm.setSubmissionID(submissionId)
-                subm.setUserID(user)
-                subm.setRelationship(relationship.uid())
-                subm.setRelationshipType(relationship.relationshipType())
-                subm.setFrom(relationship.from()!!.elementUid())
-                subm.setTo(relationship.to()!!.elementUid())
-                subm
-            },
-        )
+        return Single.fromCallable {
+            val subm = RelationshipSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setRelationship(relationship.uid())
+            subm.setRelationshipType(relationship.relationshipType())
+            subm.setFrom(relationship.from()!!.elementUid())
+            subm.setTo(relationship.to()!!.elementUid())
+            subm
+        }
     }
 
     override fun updateSubmissionState(state: State): Completable {

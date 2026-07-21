@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.AggregateDatasetSMSSubmission
 import org.hisp.dhis.smscompression.models.SMSDataValue
 import org.hisp.dhis.smscompression.models.SMSSubmission
-import java.util.concurrent.Callable
 
 internal class DatasetConverter(
     localDbRepository: LocalDbRepository,
@@ -52,20 +51,18 @@ internal class DatasetConverter(
         user: String,
         submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<AggregateDatasetSMSSubmission>(
-            Callable {
-                val subm = AggregateDatasetSMSSubmission()
-                subm.setSubmissionID(submissionId)
-                subm.setUserID(user)
-                subm.setOrgUnit(orgUnit)
-                subm.setPeriod(period)
-                subm.setDataSet(dataSet)
-                subm.setAttributeOptionCombo(attributeOptionComboUid)
-                subm.setValues(translateValues(dataValueSet.dataValues))
-                subm.setComplete(dataValueSet.completed)
-                subm
-            },
-        )
+        return Single.fromCallable {
+            val subm = AggregateDatasetSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setOrgUnit(orgUnit)
+            subm.setPeriod(period)
+            subm.setDataSet(dataSet)
+            subm.setAttributeOptionCombo(attributeOptionComboUid)
+            subm.setValues(translateValues(dataValueSet.dataValues))
+            subm.setComplete(dataValueSet.completed)
+            subm
+        }
     }
 
     private fun translateValues(values: Collection<DataValue>): List<SMSDataValue> {

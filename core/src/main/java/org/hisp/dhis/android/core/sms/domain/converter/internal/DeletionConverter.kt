@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbReposito
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.smscompression.models.DeleteSMSSubmission
 import org.hisp.dhis.smscompression.models.SMSSubmission
-import java.util.concurrent.Callable
 
 internal class DeletionConverter(
     localDbRepository: LocalDbRepository,
@@ -46,15 +45,13 @@ internal class DeletionConverter(
         user: String,
         submissionId: Int,
     ): Single<out SMSSubmission> {
-        return Single.fromCallable<DeleteSMSSubmission>(
-            Callable {
-                val subm = DeleteSMSSubmission()
-                subm.setSubmissionID(submissionId)
-                subm.setUserID(user)
-                subm.setEvent(uid)
-                subm
-            },
-        )
+        return Single.fromCallable {
+            val subm = DeleteSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setEvent(uid)
+            subm
+        }
     }
 
     override fun updateSubmissionState(state: State): Completable {

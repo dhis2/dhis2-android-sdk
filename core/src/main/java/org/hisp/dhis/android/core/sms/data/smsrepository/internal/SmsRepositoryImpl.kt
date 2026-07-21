@@ -48,7 +48,7 @@ import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import java.util.Date
 import java.util.UUID
 
-class SmsRepositoryImpl(private val context: Context) : SmsRepository {
+internal class SmsRepositoryImpl(private val context: Context) : SmsRepository {
 
     private val sendSmsAction: String = context.packageName + ".SEND_SMS"
 

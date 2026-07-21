@@ -45,7 +45,7 @@ import java.util.concurrent.atomic.AtomicReference
 private const val NETWORK_CHECK_TIMEOUT_SECONDS = 3L
 
 @SuppressLint("MissingPermission")
-class DeviceStateRepositoryImpl(private val context: Context) : DeviceStateRepository {
+internal class DeviceStateRepositoryImpl(private val context: Context) : DeviceStateRepository {
 
     @SuppressLint("MissingPermission")
     override fun isNetworkConnected(): Single<Boolean> {

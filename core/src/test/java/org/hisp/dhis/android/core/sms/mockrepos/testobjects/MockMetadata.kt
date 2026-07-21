@@ -25,32 +25,30 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos.testobjects
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import org.hisp.dhis.android.core.sms.domain.repository.internal.DeviceStateRepository;
+class MockMetadata : SMSMetadata() {
 
-import io.reactivex.Single;
-
-public class MockDeviceStateRepository implements DeviceStateRepository {
-
-    @Override
-    public Single<Boolean> isNetworkConnected() {
-        return Single.fromCallable(() -> true);
+    init {
+        users = listOf(SMSMetadata.ID(MockObjects.user))
+        trackedEntityTypes = listOf(SMSMetadata.ID(MockObjects.teiUid))
+        trackedEntityAttributes = getTrackedEntityAttributes()
+        programs = listOf(SMSMetadata.ID(MockObjects.program))
+        organisationUnits = listOf(SMSMetadata.ID(MockObjects.orgUnit))
+        categoryOptionCombos = listOf(
+            SMSMetadata.ID(MockObjects.categoryOptionCombo),
+            SMSMetadata.ID(MockObjects.attributeOptionCombo),
+        )
+        dataElements = getDataElements()
     }
 
-    @Override
-    public Single<Boolean> hasCheckNetworkPermission() {
-        return Single.fromCallable(() -> true);
+    private fun getTrackedEntityAttributes(): List<SMSMetadata.ID> {
+        return MockObjects.getTestAttributeValues().map { SMSMetadata.ID(it.trackedEntityAttribute()) }
     }
 
-    @Override
-    public Single<Boolean> hasSendSMSPermission() {
-        return Single.fromCallable(() -> true);
-    }
-
-    @Override
-    public Single<Boolean> hasReceiveSMSPermission() {
-        return Single.fromCallable(() -> true);
+    private fun getDataElements(): List<SMSMetadata.ID> {
+        return MockObjects.getDataValues().map { SMSMetadata.ID(it.dataElement()) }
     }
 }

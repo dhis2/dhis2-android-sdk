@@ -25,45 +25,16 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos
 
-package org.hisp.dhis.android.core.sms;
+import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
+import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata
+import org.hisp.dhis.smscompression.models.SMSMetadata
 
-import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase;
-import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository;
-import org.hisp.dhis.android.core.sms.mockrepos.MockWebApiRepository;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
+class MockWebApiRepository : WebApiRepository {
+    private val metadata: SMSMetadata = MockMetadata()
 
-import java.util.concurrent.TimeUnit;
-
-@RunWith(JUnit4.class)
-public class InitTest {
-
-    @Test
-    public void allData() {
-        String testGateway = "testGateway";
-        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
-        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
-
-        new ConfigCase(testWebApiRepository, testLocalDbRepository)
-                .setGatewayNumber(testGateway)
-                .test()
-                .awaitDone(3, TimeUnit.SECONDS)
-                .assertNoErrors();
-
-        testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway);
-    }
-
-    @Test
-    public void emptyData() {
-        MockLocalDbRepository testLocalDbRepository = new MockLocalDbRepository();
-        MockWebApiRepository testWebApiRepository = new MockWebApiRepository();
-
-        new ConfigCase(testWebApiRepository, testLocalDbRepository)
-                .setGatewayNumber(null)
-                .test()
-                .awaitDone(3, TimeUnit.SECONDS)
-                .assertError(IllegalArgumentException.class);
+    override suspend fun getMetadataIds(config: WebApiRepository.GetMetadataIdsConfig): SMSMetadata {
+        return metadata
     }
 }

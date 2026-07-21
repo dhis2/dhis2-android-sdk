@@ -25,41 +25,43 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
+import org.hisp.dhis.android.core.sms.mockrepos.MockLocalDbRepository
+import org.hisp.dhis.android.core.sms.mockrepos.MockWebApiRepository
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
+import java.util.concurrent.TimeUnit
 
-import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType;
+@RunWith(JUnit4::class)
+class InitTest {
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+    @Test
+    fun allData() {
+        val testGateway = "testGateway"
+        val testLocalDbRepository = MockLocalDbRepository()
+        val testWebApiRepository = MockWebApiRepository()
 
-import io.reactivex.Completable;
-import io.reactivex.Observable;
-import io.reactivex.Single;
+        ConfigCase(testWebApiRepository, testLocalDbRepository)
+            .setGatewayNumber(testGateway)
+            .test()
+            .awaitDone(3, TimeUnit.SECONDS)
+            .assertNoErrors()
 
-public class MockSmsRepository implements SmsRepository {
-    @Override
-    public Observable<SmsSendingState> sendSms(String number, List<String> smsParts, int sendingTimeoutSeconds) {
-        return Observable.defer(() -> Observable.just(
-                new SmsSendingState(0, 1),
-                new SmsSendingState(1, 1)
-        ));
+        testLocalDbRepository.getGatewayNumber().test().assertNoErrors().assertValue(testGateway)
     }
 
-    @Override
-    public Single<List<String>> generateSmsParts(String value) {
-        return Single.fromCallable(() -> Collections.singletonList(value));
-    }
+    @Test
+    fun emptyData() {
+        val testLocalDbRepository = MockLocalDbRepository()
+        val testWebApiRepository = MockWebApiRepository()
 
-    @Override
-    public Completable listenToConfirmationSms(Date fromDate, int waitingTimeoutSeconds, String requiredSender, int submissionId, SubmissionType submissionType) {
-        return Completable.complete();
-    }
-
-    @Override
-    public Single<Boolean> isAwaitedSuccessMessage(String sender, String message, String requiredSender, int submissionId, SubmissionType submissionType) {
-        return Single.just(true);
+        ConfigCase(testWebApiRepository, testLocalDbRepository)
+            .setGatewayNumber(null)
+            .test()
+            .awaitDone(3, TimeUnit.SECONDS)
+            .assertError(IllegalArgumentException::class.java)
     }
 }

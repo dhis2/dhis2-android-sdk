@@ -25,25 +25,50 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.mockrepos
 
-package org.hisp.dhis.android.core.sms.mockrepos;
+import io.reactivex.Completable
+import io.reactivex.Observable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
+import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
+import java.util.Date
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+class MockSmsRepository : SmsRepository {
+    override fun sendSms(
+        number: String,
+        smsParts: List<String>,
+        sendingTimeoutSeconds: Int,
+    ): Observable<SmsRepository.SmsSendingState> {
+        return Observable.defer {
+            Observable.just(
+                SmsRepository.SmsSendingState(0, 1),
+                SmsRepository.SmsSendingState(1, 1),
+            )
+        }
+    }
 
-import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository;
-import org.hisp.dhis.android.core.sms.mockrepos.testobjects.MockMetadata;
-import org.hisp.dhis.smscompression.models.SMSMetadata;
+    override fun generateSmsParts(value: String): Single<List<String>> {
+        return Single.fromCallable { listOf(value) }
+    }
 
-import io.reactivex.Single;
-import kotlin.coroutines.Continuation;
+    override fun listenToConfirmationSms(
+        fromDate: Date,
+        waitingTimeoutSeconds: Int,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Completable {
+        return Completable.complete()
+    }
 
-public class MockWebApiRepository implements WebApiRepository {
-    private final SMSMetadata metadata = new MockMetadata();
-
-    @Nullable
-    @Override
-    public Object getMetadataIds(@NonNull GetMetadataIdsConfig config, @NonNull Continuation<? super SMSMetadata> $completion) {
-        return metadata;
+    override fun isAwaitedSuccessMessage(
+        sender: String,
+        message: String,
+        requiredSender: String,
+        submissionId: Int,
+        submissionType: SubmissionType,
+    ): Single<Boolean> {
+        return Single.just(true)
     }
 }

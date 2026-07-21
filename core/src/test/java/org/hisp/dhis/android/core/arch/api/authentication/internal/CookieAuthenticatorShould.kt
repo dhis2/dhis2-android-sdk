@@ -42,8 +42,10 @@ import org.junit.Test
 
 class CookieAuthenticatorShould {
 
-    private val hostA = "server-a.com"
-    private val hostB = "server-b.com"
+    private val host = "play.im.dhis2.org"
+    private val otherHost = "another.dhis2.org"
+    private val instanceAPath = "/stable-2-41-9"
+    private val instanceBPath = "/stable-2-43-0-1"
 
     private fun clientRespondingWithCookies(cookies: List<String>): HttpClient {
         return HttpClient(
@@ -58,24 +60,29 @@ class CookieAuthenticatorShould {
         )
     }
 
-    private suspend fun HttpClient.storeCookiesFrom(cookieHelper: CookieAuthenticatorHelper, url: String) {
-        val response: HttpResponse = get(url)
+    private suspend fun storeCookiesFrom(cookieHelper: CookieAuthenticatorHelper, host: String, cookies: List<String>) {
+        val response: HttpResponse = clientRespondingWithCookies(cookies).get("https://$host/api/me")
         cookieHelper.storeCookieIfSentByServer(response)
     }
 
+    private fun requestTo(host: String, instancePath: String): HttpRequestBuilder {
+        return HttpRequestBuilder().apply { url("https://$host$instancePath/api/metadata") }
+    }
+
     @Test
-    fun store_multiple_cookies() = runTest {
+    fun store_and_send_cookies_matching_the_request_path() = runTest {
         val cookieHelper = CookieAuthenticatorHelper()
-        val client = clientRespondingWithCookies(
+
+        storeCookiesFrom(
+            cookieHelper,
+            host,
             listOf(
-                "JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; Path=/current; Secure; HttpOnly",
+                "JSESSIONID=4DD96301F71D2F5EC41DFD1D3BC012AB; Path=$instanceAPath; Secure; HttpOnly",
                 "_ga=34FJALK23LLFLF; Secure; HttpOnly",
             ),
         )
 
-        client.storeCookiesFrom(cookieHelper, "https://$hostA/api")
-
-        val requestBuilder = HttpRequestBuilder().apply { url("https://$hostA/api/me") }
+        val requestBuilder = requestTo(host, instanceAPath)
         cookieHelper.addCookieHeader(requestBuilder)
 
         assertThat(requestBuilder.headers["Cookie"])
@@ -83,32 +90,43 @@ class CookieAuthenticatorShould {
     }
 
     @Test
+    fun not_mix_cookies_between_instances_sharing_the_same_host() = runTest {
+        val cookieHelper = CookieAuthenticatorHelper()
+
+        storeCookiesFrom(cookieHelper, host, listOf("JSESSIONID=INSTANCE_A_SESSION; Path=$instanceAPath"))
+
+        assertThat(cookieHelper.isCookieDefined(requestTo(host, instanceAPath))).isTrue()
+        assertThat(cookieHelper.isCookieDefined(requestTo(host, instanceBPath))).isFalse()
+
+        val requestToOtherInstance = requestTo(host, instanceBPath)
+        cookieHelper.addCookieHeader(requestToOtherInstance)
+
+        assertThat(requestToOtherInstance.headers["Cookie"]).isNull()
+    }
+
+    @Test
     fun not_mix_cookies_between_hosts() = runTest {
         val cookieHelper = CookieAuthenticatorHelper()
-        val client = clientRespondingWithCookies(listOf("JSESSIONID=HOST_A_SESSION; Path=/"))
 
-        client.storeCookiesFrom(cookieHelper, "https://$hostA/api")
+        storeCookiesFrom(cookieHelper, host, listOf("JSESSIONID=INSTANCE_A_SESSION; Path=$instanceAPath"))
 
-        assertThat(cookieHelper.isCookieDefined(hostA)).isTrue()
-        assertThat(cookieHelper.isCookieDefined(hostB)).isFalse()
+        assertThat(cookieHelper.isCookieDefined(requestTo(otherHost, instanceAPath))).isFalse()
 
-        val requestToOtherHost = HttpRequestBuilder().apply { url("https://$hostB/api/me") }
+        val requestToOtherHost = requestTo(otherHost, instanceAPath)
         cookieHelper.addCookieHeader(requestToOtherHost)
 
         assertThat(requestToOtherHost.headers["Cookie"]).isNull()
     }
 
     @Test
-    fun remove_cookies_only_for_the_given_host() = runTest {
+    fun remove_cookies_only_for_the_matching_instance() = runTest {
         val cookieHelper = CookieAuthenticatorHelper()
-        clientRespondingWithCookies(listOf("JSESSIONID=HOST_A_SESSION; Path=/"))
-            .storeCookiesFrom(cookieHelper, "https://$hostA/api")
-        clientRespondingWithCookies(listOf("JSESSIONID=HOST_B_SESSION; Path=/"))
-            .storeCookiesFrom(cookieHelper, "https://$hostB/api")
+        storeCookiesFrom(cookieHelper, host, listOf("JSESSIONID=INSTANCE_A_SESSION; Path=$instanceAPath"))
+        storeCookiesFrom(cookieHelper, host, listOf("JSESSIONID=INSTANCE_B_SESSION; Path=$instanceBPath"))
 
-        cookieHelper.removeCookie(hostA)
+        cookieHelper.removeCookie(requestTo(host, instanceAPath))
 
-        assertThat(cookieHelper.isCookieDefined(hostA)).isFalse()
-        assertThat(cookieHelper.isCookieDefined(hostB)).isTrue()
+        assertThat(cookieHelper.isCookieDefined(requestTo(host, instanceAPath))).isFalse()
+        assertThat(cookieHelper.isCookieDefined(requestTo(host, instanceBPath))).isTrue()
     }
 }

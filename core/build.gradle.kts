@@ -42,9 +42,6 @@ plugins {
     alias(libs.plugins.koin.compiler)
 }
 
-apply(from = project.file("plugins/android-checkstyle.gradle"))
-apply(from = project.file("plugins/android-pmd.gradle"))
-
 repositories {
     mavenCentral()
     maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
@@ -198,6 +195,7 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
+    implementation(libs.androidx.core)
     api(libs.androidx.paging.runtime)
 
     // Koin
@@ -327,8 +325,6 @@ tasks.register("testAll") {
         "clean",
         "ktlintFormat",
         "detekt",
-        "checkstyleDebug",
-        "pmdDebug",
         "lintDebug",
         "apiDump",
         "testDebugUnitTest",
@@ -337,9 +333,7 @@ tasks.register("testAll") {
 
     tasks.findByName("ktlintFormat")?.mustRunAfter("clean")
     tasks.findByName("detekt")?.mustRunAfter("ktlintFormat")
-    tasks.findByName("checkstyleDebug")?.mustRunAfter("detekt")
-    tasks.findByName("pmdDebug")?.mustRunAfter("checkstyleDebug")
-    tasks.findByName("lintDebug")?.mustRunAfter("pmdDebug")
+    tasks.findByName("lintDebug")?.mustRunAfter("detekt")
     tasks.findByName("apiDump")?.mustRunAfter("lintDebug")
     tasks.findByName("testDebugUnitTest")?.mustRunAfter("apiDump")
     tasks.findByName("connectedDebugAndroidTest")?.mustRunAfter("testDebugUnitTest")

@@ -25,28 +25,44 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-package org.hisp.dhis.android.core.sms.data.smsrepository.internal;
+import io.reactivex.Completable
+import io.reactivex.Single
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
+import org.hisp.dhis.smscompression.models.RelationshipSMSSubmission
+import org.hisp.dhis.smscompression.models.SMSSubmission
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.util.Log;
-
-final class Utility {
-    private static final String TAG = Utility.class.getSimpleName();
-
-    private Utility() {
-    }
-
-    static long timeLeft(long timeStarted, int timeoutSeconds) {
-        return timeoutSeconds * 1000L + timeStarted - System.currentTimeMillis();
-    }
-
-    static void unregisterReceiver(Context context, BroadcastReceiver receiver) {
-        try {
-            context.unregisterReceiver(receiver);
-        } catch (Exception e) {
-            Log.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e);
+internal class RelationshipConverter(
+    localDbRepository: LocalDbRepository,
+    dhisVersionManager: DHISVersionManager,
+    private val relationshipUid: String,
+) : Converter<Relationship>(localDbRepository, dhisVersionManager) {
+    override fun convert(
+        relationship: Relationship,
+        user: String,
+        submissionId: Int,
+    ): Single<out SMSSubmission> {
+        return Single.fromCallable {
+            val subm = RelationshipSMSSubmission()
+            subm.setSubmissionID(submissionId)
+            subm.setUserID(user)
+            subm.setRelationship(relationship.uid())
+            subm.setRelationshipType(relationship.relationshipType())
+            subm.setFrom(relationship.from()!!.elementUid())
+            subm.setTo(relationship.to()!!.elementUid())
+            subm
         }
+    }
+
+    override fun updateSubmissionState(state: State): Completable {
+        return localDbRepository.updateRelationshipSubmissionState(relationshipUid, state)
+    }
+
+    override fun readItemFromDb(): Single<Relationship> {
+        return localDbRepository.getRelationship(relationshipUid)
     }
 }

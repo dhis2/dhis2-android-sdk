@@ -21,6 +21,7 @@ libraryDesugaring = "2.1.4"
 
 # android
 annotation = "1.9.1"
+androidx-core = "1.13.1"
 paging = "3.3.6"
 androidx-room = "2.8.4"
 
@@ -75,6 +76,7 @@ rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJa
 rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxAndroid" }
 
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 

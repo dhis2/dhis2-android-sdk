@@ -25,30 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.data.smsrepository.internal
 
-package org.hisp.dhis.android.core.sms.domain.repository.internal;
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.util.Log
 
-import io.reactivex.Single;
+internal object Utility {
+    private val TAG: String = Utility::class.java.getSimpleName()
 
-public interface DeviceStateRepository {
+    @Suppress("MagicNumber")
+    fun timeLeft(timeStarted: Long, timeoutSeconds: Int): Long {
+        return timeoutSeconds * 1000L + timeStarted - System.currentTimeMillis()
+    }
 
-    /**
-     * @return Information if network is connected and able to send sms
-     */
-    Single<Boolean> isNetworkConnected();
-
-    /**
-     * @return Information if possible to check network state
-     */
-    Single<Boolean> hasCheckNetworkPermission();
-
-    /**
-     * @return Information if possible to send SMS
-     */
-    Single<Boolean> hasSendSMSPermission();
-
-    /**
-     * @return Information if possible to receive and read SMS
-     */
-    Single<Boolean> hasReceiveSMSPermission();
+    @Suppress("TooGenericExceptionCaught")
+    fun unregisterReceiver(context: Context, receiver: BroadcastReceiver?) {
+        try {
+            context.unregisterReceiver(receiver)
+        } catch (e: Exception) {
+            Log.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e)
+        }
+    }
 }

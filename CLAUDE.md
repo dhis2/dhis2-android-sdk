@@ -30,8 +30,8 @@ All commands should be run from the project root. The `core` module is the prima
 # Run instrumented tests (requires connected device/emulator)
 ./gradlew :core:connectedDebugAndroidTest
 
-# Code quality checks (ktlint, detekt, checkstyle, pmd, lint)
-./gradlew :core:ktlintCheck :core:detekt :core:checkstyleDebug :core:pmdDebug :core:lintDebug
+# Code quality checks (ktlint, detekt, lint)
+./gradlew :core:ktlintCheck :core:detekt :core:lintDebug
 
 # Fix ktlint formatting
 ./gradlew :core:ktlintFormat

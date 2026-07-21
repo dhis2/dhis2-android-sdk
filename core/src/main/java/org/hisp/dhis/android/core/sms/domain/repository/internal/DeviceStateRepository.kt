@@ -25,48 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.hisp.dhis.android.core.sms.domain.repository.internal
 
-package org.hisp.dhis.android.core.sms.domain.converter.internal;
+import io.reactivex.Single
 
-import androidx.annotation.NonNull;
+interface DeviceStateRepository {
 
-import org.hisp.dhis.android.core.common.State;
-import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository;
-import org.hisp.dhis.android.core.systeminfo.DHISVersionManager;
-import org.hisp.dhis.smscompression.models.DeleteSMSSubmission;
-import org.hisp.dhis.smscompression.models.SMSSubmission;
+    /**
+     * @return Information if network is connected and able to send sms
+     */
+    fun isNetworkConnected(): Single<Boolean>
 
-import io.reactivex.Completable;
-import io.reactivex.Single;
+    /**
+     * @return Information if possible to check network state
+     */
+    fun hasCheckNetworkPermission(): Single<Boolean>
 
-public class DeletionConverter extends Converter<String> {
-    private final String eventUid;
+    /**
+     * @return Information if possible to send SMS
+     */
+    fun hasSendSMSPermission(): Single<Boolean>
 
-    public DeletionConverter(LocalDbRepository localDbRepository,
-                             DHISVersionManager dhisVersionManager,
-                             String eventUid) {
-        super(localDbRepository, dhisVersionManager);
-        this.eventUid = eventUid;
-    }
-
-    @Override
-    protected Single<? extends SMSSubmission> convert(@NonNull String uid, String user, int submissionId) {
-        return Single.fromCallable(() -> {
-            DeleteSMSSubmission subm = new DeleteSMSSubmission();
-            subm.setSubmissionID(submissionId);
-            subm.setUserID(user);
-            subm.setEvent(uid);
-            return subm;
-        });
-    }
-
-    @Override
-    public Completable updateSubmissionState(State state) {
-        return getLocalDbRepository().updateEventSubmissionState(eventUid, state).onErrorComplete();
-    }
-
-    @Override
-    protected Single<String> readItemFromDb() {
-        return Single.just(eventUid);
-    }
+    /**
+     * @return Information if possible to receive and read SMS
+     */
+    fun hasReceiveSMSPermission(): Single<Boolean>
 }

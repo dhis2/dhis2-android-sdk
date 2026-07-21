@@ -113,9 +113,11 @@ internal class CookieAuthenticatorHelper {
     }
 
     private fun pathMatches(cookiePath: String, requestPath: String): Boolean {
-        if (cookiePath == requestPath) return true
-        if (!requestPath.startsWith(cookiePath)) return false
-        return cookiePath.endsWith("/") || requestPath.getOrNull(cookiePath.length) == '/'
+        return cookiePath == requestPath ||
+            (
+                requestPath.startsWith(cookiePath) &&
+                    (cookiePath.endsWith("/") || requestPath.getOrNull(cookiePath.length) == '/')
+                )
     }
 
     private fun cookieId(name: String, path: String): String = "$name@$path"

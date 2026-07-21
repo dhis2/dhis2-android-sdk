@@ -349,48 +349,41 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                     }
 
                 val sub = String.format(
-                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s",
+                    "SELECT 1 FROM %s %s WHERE %s = %s",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                     teavAlias,
                     dot(teavAlias, trackedEntityInstance),
                     dot(teiAlias, IdentifiableColumns.UID),
-                    query.operator().getSqlCondition(
-                        dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                        valueStr,
-                    ),
                 )
 
-                where.appendExistsSubQuery(sub)
+                query.operator().getSqlLinkTable(
+                    where = where,
+                    sub = sub,
+                    column = dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    valueStr = valueStr,
+                )
             }
         }
     }
 
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
-            // NULL_OR_BLANK must also match TEIs without a row for the attribute, so it is expressed as the
-            // negation of NOT_NULL_AND_NOT_BLANK instead of looking for existing rows with a blank value.
-            val isNullOrBlank = item.operator() == FilterItemOperator.NULL_OR_BLANK
-            val operator = if (isNullOrBlank) FilterItemOperator.NOT_NULL_AND_NOT_BLANK else item.operator()
-
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s'",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 teavAlias,
                 dot(teavAlias, trackedEntityInstance),
                 dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute),
                 escapeQuotes(item.key()),
-                operator.getSqlCondition(
-                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                    getFilterItemValueStr(item),
-                ),
             )
 
-            if (isNullOrBlank) {
-                where.appendNotExistsSubQuery(sub)
-            } else {
-                where.appendExistsSubQuery(sub)
-            }
+            item.operator().getSqlLinkTable(
+                where = where,
+                sub = sub,
+                column = dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                valueStr = getFilterItemValueStr(item),
+            )
         }
     }
 
@@ -578,34 +571,24 @@ internal class TrackedEntityInstanceLocalQueryHelper(
         dataValues
             .groupBy { it.key() }
             .forEach { (key, items) ->
-                // NULL_OR_BLANK must also match events without a row for the data element, so it is expressed as
-                // the negation of NOT_NULL_AND_NOT_BLANK instead of looking for existing rows with a blank value.
-                val (nullOrBlankItems, otherItems) = items.partition {
-                    it.operator() == FilterItemOperator.NULL_OR_BLANK
-                }
-
-                if (nullOrBlankItems.isNotEmpty()) {
-                    val condition =
-                        "AND ${FilterItemOperator.NOT_NULL_AND_NOT_BLANK.getSqlCondition(valueColumn)} "
-                    where.appendNotExistsSubQuery(getDataValueSubQuery(key, condition))
-                }
-
-                if (otherItems.isNotEmpty()) {
-                    val conditions = otherItems.joinToString("") { item ->
-                        "AND ${item.operator().getSqlCondition(valueColumn, getFilterItemValueStr(item))} "
-                    }
-                    where.appendExistsSubQuery(getDataValueSubQuery(key, conditions))
+                val sub = getDataValueSubQuery(key)
+                items.forEach { item ->
+                    item.operator().getSqlLinkTable(
+                        where = where,
+                        sub = sub,
+                        column = valueColumn,
+                        valueStr = getFilterItemValueStr(item),
+                    )
                 }
             }
     }
 
-    private fun getDataValueSubQuery(key: String, conditions: String): String {
+    private fun getDataValueSubQuery(key: String): String {
         return "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
             "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
             "${dot(eventAlias, IdentifiableColumns.UID)} " +
             "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
-            "'${escapeQuotes(key)}' " +
-            conditions
+            "'${escapeQuotes(key)}'"
     }
 
     private fun getFilterItemValueStr(item: RepositoryScopeFilterItem): String {

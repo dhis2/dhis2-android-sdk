@@ -44,7 +44,7 @@ internal class PasswordAndCookieAuthenticator(
 ) {
 
     companion object {
-        private val LOGIN_KEY_LIST = listOf("login.action", "dhis-web-login")
+        private val LOGIN_KEY_LIST = listOf("login.action", "dhis-web-login", "login")
         const val LOCATION_KEY = "Location"
     }
 

@@ -349,18 +349,19 @@ internal class TrackedEntityInstanceLocalQueryHelper(
                     }
 
                 val sub = String.format(
-                    "SELECT 1 FROM %s %s WHERE %s = %s AND %s",
+                    "SELECT 1 FROM %s %s WHERE %s = %s",
                     TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                     teavAlias,
                     dot(teavAlias, trackedEntityInstance),
                     dot(teiAlias, IdentifiableColumns.UID),
-                    query.operator().getSqlCondition(
-                        dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                        valueStr,
-                    ),
                 )
 
-                where.appendExistsSubQuery(sub)
+                query.operator().getSqlLinkTable(
+                    where = where,
+                    sub = sub,
+                    column = dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                    valueStr = valueStr,
+                )
             }
         }
     }
@@ -368,20 +369,21 @@ internal class TrackedEntityInstanceLocalQueryHelper(
     private fun appendFiltersWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
         for (item in scope.filter()) {
             val sub = String.format(
-                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s' AND %s",
+                "SELECT 1 FROM %s %s WHERE %s = %s AND %s = '%s'",
                 TrackedEntityAttributeValueTableInfo.TABLE_INFO.name(),
                 teavAlias,
                 dot(teavAlias, trackedEntityInstance),
                 dot(teiAlias, IdentifiableColumns.UID),
                 dot(teavAlias, trackedEntityAttribute),
                 escapeQuotes(item.key()),
-                item.operator().getSqlCondition(
-                    dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
-                    getFilterItemValueStr(item),
-                ),
             )
 
-            where.appendExistsSubQuery(sub)
+            item.operator().getSqlLinkTable(
+                where = where,
+                sub = sub,
+                column = dot(teavAlias, TrackedEntityAttributeValueTableInfo.Columns.VALUE),
+                valueStr = getFilterItemValueStr(item),
+            )
         }
     }
 
@@ -565,26 +567,28 @@ internal class TrackedEntityInstanceLocalQueryHelper(
         where: WhereClauseBuilder,
         dataValues: List<RepositoryScopeFilterItem>,
     ) {
+        val valueColumn = dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE)
         dataValues
             .groupBy { it.key() }
             .forEach { (key, items) ->
-                val sub = "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
-                    "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
-                    "${dot(eventAlias, IdentifiableColumns.UID)} " +
-                    "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
-                    "'${escapeQuotes(key)}' " +
-
-                    items.joinToString("") { item ->
-                        "AND ${
-                            item.operator().getSqlCondition(
-                                dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.VALUE),
-                                getFilterItemValueStr(item),
-                            )
-                        } "
-                    }
-
-                where.appendExistsSubQuery(sub)
+                val sub = getDataValueSubQuery(key)
+                items.forEach { item ->
+                    item.operator().getSqlLinkTable(
+                        where = where,
+                        sub = sub,
+                        column = valueColumn,
+                        valueStr = getFilterItemValueStr(item),
+                    )
+                }
             }
+    }
+
+    private fun getDataValueSubQuery(key: String): String {
+        return "SELECT 1 FROM ${TrackedEntityDataValueTableInfo.TABLE_INFO.name()} $tedvAlias " +
+            "WHERE ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.EVENT)} = " +
+            "${dot(eventAlias, IdentifiableColumns.UID)} " +
+            "AND ${dot(tedvAlias, TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT)} = " +
+            "'${escapeQuotes(key)}'"
     }
 
     private fun getFilterItemValueStr(item: RepositoryScopeFilterItem): String {

@@ -168,6 +168,14 @@ internal class WhereClauseBuilder {
         return this
     }
 
+    fun appendNotExistsSubQuery(subQuery: String?): WhereClauseBuilder {
+        val andOpt = if (addOperator) AND else ""
+        addOperator = true
+        whereClause.append(andOpt).append(NOT_EXISTS).append(PARENTHESES_START).append(subQuery)
+            .append(PARENTHESES_END)
+        return this
+    }
+
     fun appendOperator(operator: String?): WhereClauseBuilder {
         whereClause.append(operator)
         addOperator = false
@@ -193,6 +201,7 @@ internal class WhereClauseBuilder {
         private const val PARENTHESES_START = "("
         private const val PARENTHESES_END = ")"
         private const val EXISTS = " EXISTS "
+        private const val NOT_EXISTS = " NOT EXISTS "
         private const val EQ_NUMBER = " = "
         private const val AND = " AND "
         private const val OR = " OR "

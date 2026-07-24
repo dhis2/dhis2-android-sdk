@@ -35,19 +35,22 @@ import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 
 @Serializable
 internal data class AnalyticsPeriodBoundaryDTO(
-    val programIndicator: String?,
     val boundaryTarget: String?,
     val analyticsPeriodBoundaryType: String?,
     val offsetPeriods: Int?,
     val offsetPeriodType: String?,
 ) {
-    fun toDomain(): AnalyticsPeriodBoundary {
-        return AnalyticsPeriodBoundary.builder()
-            .programIndicator(programIndicator)
-            .boundaryTarget(boundaryTarget)
-            .analyticsPeriodBoundaryType(analyticsPeriodBoundaryType?.let { AnalyticsPeriodBoundaryType.valueOf(it) })
-            .offsetPeriods(offsetPeriods)
-            .offsetPeriodType(offsetPeriodType?.let { PeriodType.valueOf(it) })
-            .build()
+    fun toDomain(programIndicatorId: String): AnalyticsPeriodBoundary? {
+        return if (boundaryTarget != null && analyticsPeriodBoundaryType != null) {
+            AnalyticsPeriodBoundary.builder()
+                .programIndicator(programIndicatorId)
+                .boundaryTarget(boundaryTarget)
+                .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.valueOf(analyticsPeriodBoundaryType))
+                .offsetPeriods(offsetPeriods)
+                .offsetPeriodType(offsetPeriodType?.let { PeriodType.valueOf(it) })
+                .build()
+        } else {
+            null
+        }
     }
 }

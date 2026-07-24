@@ -38,7 +38,7 @@ internal data class SectionRenderingDTO(
     @SerialName("MOBILE") val mobile: SectionDeviceRenderingDTO?,
 ) {
     fun toDomain(): SectionRendering {
-        return SectionRendering.create(
+        return SectionRendering(
             desktop?.toDomain(),
             mobile?.toDomain(),
         )

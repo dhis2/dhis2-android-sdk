@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor.accessEvents
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollmentTransformer
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.NewTrackerImporterEventTransformer
@@ -39,7 +38,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntityTransformer
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.accessEnrollments
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -74,10 +72,10 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
         oldPayload.trackedEntityInstances.forEach { tei ->
             addTrackedEntityToWrapper(wrapper, tei, tetAttributeMap)
 
-            accessEnrollments(tei).forEach { enrollment ->
+            tei.enrollments.orEmpty().forEach { enrollment ->
                 addEnrollmentToWrapper(wrapper, enrollment, tei.trackedEntityAttributeValues(), programAttributeMap)
 
-                accessEvents(enrollment).forEach { event ->
+                enrollment.events()?.forEach { event ->
                     addEventToWrapper(wrapper, event)
                 }
             }
@@ -169,8 +167,7 @@ internal class NewTrackerImporterTrackedEntityPostPayloadGenerator internal cons
 
     private suspend fun getTrackedEntityTypeAttributeMap(): Map<String, List<String>> {
         return trackedEntityTypeAttributeStore.selectAll()
-            .filter { it.trackedEntityType()?.uid() != null }
-            .groupBy { it.trackedEntityType()?.uid()!! }
-            .mapValues { it.value.mapNotNull { a -> a.trackedEntityAttribute()?.uid() } }
+            .groupBy { it.trackedEntityType().uid() }
+            .mapValues { it.value.map { a -> a.trackedEntityAttribute().uid() } }
     }
 }

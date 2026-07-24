@@ -49,14 +49,10 @@ data class LoginConfig(
     val useCustomLogoFront: Boolean = false,
     val oidcProviders: List<LoginOidcProvider> = emptyList(),
 ) {
-    fun isOauthEnabled(): Boolean {
-        return OAUTH_ENABLED
-    }
+    var isOauthEnabled: Boolean = false
+        internal set
 
     internal companion object {
-        // return false for SDK release 1.14.0 to prevent issues until fully implemented
-        private const val OAUTH_ENABLED = false
-
         fun createDefault(serverUrl: String): LoginConfig {
             return LoginConfig(
                 applicationTitle = serverUrl,

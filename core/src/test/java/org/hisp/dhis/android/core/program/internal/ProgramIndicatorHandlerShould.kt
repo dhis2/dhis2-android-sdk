@@ -126,6 +126,6 @@ class ProgramIndicatorHandlerShould {
     @Test
     fun call_program_indicator_analytics_period_boundary_handler_and_store() = runTest {
         programIndicatorHandler.handleMany(programIndicators)
-        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any(), any())
+        verify(analyticsPeriodBoundaryHandler).handleMany(any(), any())
     }
 }

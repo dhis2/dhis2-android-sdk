@@ -36,9 +36,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
-import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
@@ -132,12 +130,8 @@ class TrackedEntitySearchCollectionRepository internal constructor(
     val resultDataSource: DataSource<TrackedEntitySearchItem, Result<TrackedEntitySearchItem, D2Error>>
         get() = TrackedEntitySearchDataSourceResult(getDataFetcher())
 
-    override fun blockingGet(): List<TrackedEntitySearchItem> {
-        return runBlocking { getInternal() }
-    }
-
     @Suppress("TooGenericExceptionCaught", "TooGenericExceptionThrown")
-    private suspend fun getInternal(): List<TrackedEntitySearchItem> {
+    override suspend fun suspendGet(): List<TrackedEntitySearchItem> {
         val dataFetcher = getDataFetcher()
         val searchResult =
             if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
@@ -154,24 +148,12 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         }
     }
 
-    override fun get(): Single<List<TrackedEntitySearchItem>> {
-        return Single.fromCallable { blockingGet() }
+    override suspend fun suspendCount(): Int {
+        return suspendGet().size
     }
 
-    override fun count(): Single<Int> {
-        return Single.fromCallable { blockingCount() }
-    }
-
-    override fun blockingCount(): Int {
-        return blockingGet().size
-    }
-
-    override fun isEmpty(): Single<Boolean> {
-        return Single.fromCallable { blockingIsEmpty() }
-    }
-
-    override fun blockingIsEmpty(): Boolean {
-        return blockingCount() == 0
+    override suspend fun suspendIsEmpty(): Boolean {
+        return suspendCount() == 0
     }
 
     override fun one(): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
@@ -195,19 +177,11 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         return byTrackedEntities().eq(uid).objectRepository { o -> o.find { uid == it.uid() } }
     }
 
-    override fun getUids(): Single<List<String>> {
-        return Single.fromCallable { blockingGetUids() }
-    }
-
-    override fun blockingGetUids(): List<String> {
-        return runBlocking { getUidsInternal() }
-    }
-
-    private suspend fun getUidsInternal(): List<String> {
+    override suspend fun suspendGetUids(): List<String> {
         return if (scope.mode() == RepositoryMode.OFFLINE_ONLY || scope.mode() == RepositoryMode.OFFLINE_FIRST) {
             getDataFetcher().queryAllOfflineUids()
         } else {
-            UidsHelper.getUids(getInternal()).toList()
+            UidsHelper.getUids(suspendGet()).toList()
         }
     }
 
@@ -215,21 +189,13 @@ class TrackedEntitySearchCollectionRepository internal constructor(
         transformer: Transformer<List<TrackedEntitySearchItem>, TrackedEntitySearchItem?>,
     ): ReadOnlyObjectRepository<TrackedEntitySearchItem> {
         return object : ReadOnlyObjectRepository<TrackedEntitySearchItem> {
-            override fun get(): Single<TrackedEntitySearchItem?> {
-                return Single.fromCallable { this.blockingGet() }
-            }
-
-            override fun blockingGet(): TrackedEntitySearchItem? {
-                val list = this@TrackedEntitySearchCollectionRepository.blockingGet()
+            override suspend fun suspendGet(): TrackedEntitySearchItem? {
+                val list = this@TrackedEntitySearchCollectionRepository.suspendGet()
                 return transformer.transform(list)
             }
 
-            override fun exists(): Single<Boolean> {
-                return Single.fromCallable { blockingExists() }
-            }
-
-            override fun blockingExists(): Boolean {
-                return blockingGet() != null
+            override suspend fun suspendExists(): Boolean {
+                return suspendGet() != null
             }
         }
     }

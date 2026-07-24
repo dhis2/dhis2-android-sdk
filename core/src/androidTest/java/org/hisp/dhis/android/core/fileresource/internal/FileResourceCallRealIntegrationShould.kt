@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.BaseRealIntegrationTest
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.data.server.RealServerMother
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.event.EventCreateProjection
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceElementType
@@ -52,7 +51,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
         assertThat(fileResources.size).isEqualTo(2)
 
-        val file = File(fileResources[0]!!.path()!!)
+        val file = File(fileResources[0].path()!!)
         assertThat(file.exists()).isTrue()
     }
 
@@ -65,7 +64,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
-        val file = File(fileResources[0]!!.path()!!)
+        val file = File(fileResources[0].path()!!)
         assertThat(file.exists()).isTrue()
 
         val valueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
@@ -80,7 +79,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
         val fileResources2 = d2.fileResourceModule().fileResources().blockingGet()
-        val file2 = File(fileResources2[1]!!.path()!!)
+        val file2 = File(fileResources2[1].path()!!)
         assertThat(file2.exists()).isTrue()
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
@@ -98,7 +97,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.fileResourceModule().fileResourceDownloader().blockingDownload()
 
         val fileResources = d2.fileResourceModule().fileResources().blockingGet()
-        val file = File(fileResources[0]!!.path()!!)
+        val file = File(fileResources[0].path()!!)
         assertThat(file.exists()).isTrue()
 
         val valueUid = d2.fileResourceModule().fileResources().blockingAdd(file)
@@ -112,7 +111,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.eventModule().events().blockingUpload()
 
         val fileResources2 = d2.fileResourceModule().fileResources().blockingGet()
-        val file2 = File(fileResources2[1]!!.path()!!)
+        val file2 = File(fileResources2[1].path()!!)
         assertThat(file2.exists()).isTrue()
     }
 
@@ -140,9 +139,9 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         val newEventUid = d2.eventModule().events().blockingAdd(
             EventCreateProjection.create(
                 existingEvent.enrollment(),
-                existingEvent.program(),
-                existingEvent.programStage(),
-                existingEvent.organisationUnit(),
+                existingEvent.program()!!,
+                existingEvent.programStage()!!,
+                existingEvent.organisationUnit()!!,
                 existingEvent.attributeOptionCombo(),
             ),
         )
@@ -189,7 +188,7 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
             .blockingGet()!!
 
         // Copy to following period
-        val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(dataValue.period()!!)
+        val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId(dataValue.period())
         val nextPeriod = d2.periodModule().periodHelper()
             .blockingGetPeriodForPeriodTypeAndDate(period.periodType()!!, period.startDate()!!, 1)
 
@@ -202,11 +201,11 @@ class FileResourceCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.dataValueModule().dataValues()
             .value(
                 nextPeriod.periodId()!!,
-                dataValue.organisationUnit()!!,
-                dataValue.dataElement()!!,
-                dataValue.categoryOptionCombo()!!,
-                dataValue.attributeOptionCombo()!!,
-                DataValueInternalAccessor.accessSourceDataSet(dataValue)!!,
+                dataValue.organisationUnit(),
+                dataValue.dataElement(),
+                dataValue.categoryOptionCombo(),
+                dataValue.attributeOptionCombo(),
+                dataValue.sourceDataSet()!!,
             )
             .blockingSet(uid)
 

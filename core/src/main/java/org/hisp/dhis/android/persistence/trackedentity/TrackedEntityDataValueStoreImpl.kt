@@ -154,6 +154,6 @@ internal class TrackedEntityDataValueStoreImpl(
     ): Map<String, List<TrackedEntityDataValue>> {
         val dataValueList = selectRawQuery(queryStatement)
 
-        return dataValueList.filter { it.event() != null }.groupBy { it.event()!! }
+        return dataValueList.groupBy { it.event() }
     }
 }

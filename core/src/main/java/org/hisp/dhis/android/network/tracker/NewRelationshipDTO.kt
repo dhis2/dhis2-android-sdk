@@ -39,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.toDto
 @Serializable
 internal data class NewRelationshipDTO(
     override val deleted: Boolean?,
-    val relationship: String?,
+    val relationship: String,
     val relationshipType: String?,
     val relationshipName: String?,
     val createdAt: DateStringDTO?,

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterCon
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
 
+@Suppress("TooManyFunctions")
 interface EventLineListRepository : BaseRepository {
 
     /**
@@ -78,7 +79,10 @@ interface EventLineListRepository : BaseRepository {
      *
      * It is mandatory to specify a programStage using the method [byProgramStage]. Other parameters are optional.
      */
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     fun evaluate(): Single<List<LineListResponse>>
+
+    fun rxEvaluate(): Single<List<LineListResponse>>
 
     /**
      * Blocking version of [evaluate].
@@ -86,4 +90,6 @@ interface EventLineListRepository : BaseRepository {
      * @see evaluate
      */
     fun blockingEvaluate(): List<LineListResponse>
+
+    suspend fun suspendEvaluate(): List<LineListResponse>
 }

@@ -47,11 +47,11 @@ internal class DataValueConflictStoreImpl(
     override suspend fun deleteDataValueWhereIfExists(dataValue: DataValue) {
         val dao = databaseAdapter.getCurrentDatabase().dataValueConflictDao()
         dao.deleteDataValueConflict(
-            dataValue.attributeOptionCombo()!!,
-            dataValue.categoryOptionCombo()!!,
-            dataValue.dataElement()!!,
-            dataValue.period()!!,
-            dataValue.organisationUnit()!!,
+            dataValue.attributeOptionCombo(),
+            dataValue.categoryOptionCombo(),
+            dataValue.dataElement(),
+            dataValue.period(),
+            dataValue.organisationUnit(),
         )
     }
 }

@@ -282,7 +282,7 @@ internal class FileResourceDownloadCall(
                 null
             }
         } catch (d2Error: D2Error) {
-            fileResource.uid()?.let { fileResourceStore.deleteIfExists(it) }
+            fileResource.uid.let { fileResourceStore.deleteIfExists(it) }
             Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
             null
         }

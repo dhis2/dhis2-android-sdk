@@ -75,7 +75,7 @@ internal object FileResourceUtil {
     fun saveFileFromResponse(body: ByteArray, fileResource: FileResource, context: Context): File {
         val destinationFile = File(
             FileResourceDirectoryHelper.getFileResourceDirectory(context),
-            generateFileName(fileResource.uid()!!, getExtension(fileResource.name()!!)),
+            generateFileName(fileResource.uid(), getExtension(fileResource.name()!!)),
         )
         writeInputStream(ByteArrayInputStream(body), destinationFile, body.size.toLong())
         return destinationFile

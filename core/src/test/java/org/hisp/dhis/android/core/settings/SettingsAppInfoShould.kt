@@ -43,7 +43,7 @@ internal class SettingsAppInfoShould : CoreObjectShould<SettingsAppInfoDTO>(
         val appInfoDTO = deserialize()
         val appInfo = appInfoDTO.toDomain()
 
-        assertThat(appInfo.dataStoreVersion()).isEqualTo(SettingsAppDataStoreVersion.V2_0)
-        assertThat(appInfo.androidSettingsVersion()).isEqualTo("2.0.0")
+        assertThat(appInfo.dataStoreVersion).isEqualTo(SettingsAppDataStoreVersion.V2_0)
+        assertThat(appInfo.androidSettingsVersion).isEqualTo("2.0.0")
     }
 }

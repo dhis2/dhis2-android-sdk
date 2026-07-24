@@ -148,27 +148,27 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         val childProgramUid = "IpHINAT79UW"
 
         // Organisation unit module -> get one organisation unit
-        val organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()
+        val organisationUnit = d2.organisationUnitModule().organisationUnits().one().blockingGet()!!
 
         // Program module -> get the program by its uid
         val program = d2.programModule().programs()
             .uid(childProgramUid)
-            .blockingGet()
+            .blockingGet()!!
 
         // Tracked entity module -> add a new tracked entity instance
         val teiUid = d2.trackedEntityModule().trackedEntityInstances()
             .blockingAdd(
                 TrackedEntityInstanceCreateProjection.builder()
-                    .organisationUnit(organisationUnit?.uid())
-                    .trackedEntityType(program?.trackedEntityType()?.uid())
+                    .organisationUnit(organisationUnit.uid())
+                    .trackedEntityType(program.trackedEntityType()!!.uid())
                     .build(),
             )
 
         // Enrollment module -> enroll the tracked entity instance to the program
         d2.enrollmentModule().enrollments().blockingAdd(
             EnrollmentCreateProjection.builder()
-                .organisationUnit(organisationUnit?.uid())
-                .program(program?.uid())
+                .organisationUnit(organisationUnit!!.uid())
+                .program(program!!.uid())
                 .trackedEntityInstance(teiUid)
                 .attributeOptionCombo(null)
                 .build(),

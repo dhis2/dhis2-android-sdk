@@ -54,5 +54,6 @@ internal class TrackedEntityTypeShould : CoreObjectShould<TrackedEntityTypeDTO>(
         assertThat(entityType.displayDescription()).isEqualTo("Person")
         assertThat(entityType.featureType()).isEqualTo(FeatureType.NONE)
         assertThat(entityType.access()).isEqualTo(AccessHelper.createForDataWrite(true))
+        assertThat(entityType.displayTrackedEntityTypesLabel()).isEqualTo("Persons")
     }
 }

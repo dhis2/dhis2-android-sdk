@@ -85,9 +85,9 @@ class AnalyticsTeiSettingHandlerShould {
     fun call_data_handlers() = runTest {
         analyticsTeiSettingHandler.handleMany(analyticsTeiSettingList)
 
-        verify(teiDataElementHandler).handleMany(any(), any(), any())
-        verify(teiIndicatorHandler).handleMany(any(), any(), any())
-        verify(teiAttributeHandler).handleMany(any(), any(), any())
+        verify(teiDataElementHandler).handleMany(any(), any())
+        verify(teiIndicatorHandler).handleMany(any(), any())
+        verify(teiAttributeHandler).handleMany(any(), any())
         verify(whoDataHandler).handleMany(any(), any())
     }
 }

@@ -30,13 +30,12 @@ package org.hisp.dhis.android.core.relationship.internal
 import org.hisp.dhis.android.core.arch.cleaners.internal.OrphanCleaner
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.relationship.BaseRelationship
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipCollectionRepository
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 
-internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R : BaseRelationship>(
+internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R : Relationship>(
     private val relationshipStore: RelationshipStore,
     private val relationshipRepository: RelationshipCollectionRepository,
 ) : OrphanCleaner<O, R> {

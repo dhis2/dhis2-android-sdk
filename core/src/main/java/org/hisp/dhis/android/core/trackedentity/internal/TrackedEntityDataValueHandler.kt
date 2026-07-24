@@ -56,7 +56,7 @@ internal class TrackedEntityDataValueHandler(
         }
 
         val eventUid = trackedEntityDataValues.iterator().next().event()
-        val dataElementUids = trackedEntityDataValues.mapNotNull { it.dataElement() }
-        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(eventUid!!, dataElementUids)
+        val dataElementUids = trackedEntityDataValues.map { it.dataElement() }
+        trackedEntityDataValueStore.deleteByEventAndNotInDataElements(eventUid, dataElementUids)
     }
 }

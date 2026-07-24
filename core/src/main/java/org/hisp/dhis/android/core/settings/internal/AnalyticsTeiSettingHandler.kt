@@ -49,17 +49,11 @@ internal class AnalyticsTeiSettingHandler(
     }
 
     override suspend fun afterObjectHandled(o: AnalyticsTeiSetting, action: HandleAction) {
-        teiDataElementHandler.handleMany(o.uid(), o.data()?.dataElements() ?: emptyList()) { de ->
-            de.toBuilder().teiSetting(o.uid()).build()
-        }
+        teiDataElementHandler.handleMany(o.uid(), o.data()?.dataElements() ?: emptyList())
 
-        teiIndicatorHandler.handleMany(o.uid(), o.data()?.indicators() ?: emptyList()) { ind ->
-            ind.toBuilder().teiSetting(o.uid()).build()
-        }
+        teiIndicatorHandler.handleMany(o.uid(), o.data()?.indicators() ?: emptyList())
 
-        teiAttributeHandler.handleMany(o.uid(), o.data()?.attributes() ?: emptyList()) { att ->
-            att.toBuilder().teiSetting(o.uid()).build()
-        }
+        teiAttributeHandler.handleMany(o.uid(), o.data()?.attributes() ?: emptyList())
 
         whoNutritionDataHandler.handleMany(o.uid(), listOfNotNull(o.whoNutritionData()))
     }

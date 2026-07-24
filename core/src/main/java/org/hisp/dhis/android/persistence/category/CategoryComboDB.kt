@@ -36,6 +36,6 @@ internal fun CategoryCombo.toDB(): CategoryComboDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        isDefault = isDefault(),
+        isDefault = isDefault,
     )
 }

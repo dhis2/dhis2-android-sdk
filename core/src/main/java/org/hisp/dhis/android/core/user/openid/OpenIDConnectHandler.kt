@@ -31,6 +31,9 @@ package org.hisp.dhis.android.core.user.openid
 import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 
 interface OpenIDConnectHandler {
@@ -39,4 +42,13 @@ interface OpenIDConnectHandler {
     fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User>
     fun blockingHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User
     fun logOutObservable(): Observable<Unit>
+
+    suspend fun suspendSetPin(pin: String): Result<Unit, D2Error>
+
+    fun blockingSetPin(pin: String): Result<Unit, D2Error> = runBlocking { suspendSetPin(pin) }
+
+    suspend fun suspendChangePin(currentPin: String, newPin: String): Result<Unit, D2Error>
+
+    fun blockingChangePin(currentPin: String, newPin: String): Result<Unit, D2Error> =
+        runBlocking { suspendChangePin(currentPin, newPin) }
 }

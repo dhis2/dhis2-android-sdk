@@ -41,7 +41,7 @@ internal class NewTrackerImporterTrackedEntityDataValueShould : CoreObjectShould
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize()
-        val dataValue = dataValueDTO.toDomain("xE7jOejl9FI")
+        val dataValue = dataValueDTO.toDomain("xE7jOejl9FI")!!
 
         assertThat(dataValue.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2017-01-20T10:44:03.231"))
         assertThat(dataValue.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2022-09-28T14:23:29.016"))

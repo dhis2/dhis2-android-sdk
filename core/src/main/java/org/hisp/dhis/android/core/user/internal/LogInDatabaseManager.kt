@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -39,19 +40,21 @@ internal class LogInDatabaseManager(
     private val generalSettingCall: GeneralSettingCall,
 ) {
 
-    suspend fun loadDatabaseOnline(serverUrl: String, username: String) {
+    suspend fun loadDatabaseOnline(serverUrl: String, username: String, authorizationType: AuthorizationType) {
         try {
             val isEncrypted = generalSettingCall.isDatabaseEncrypted()
             multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
                 serverUrl,
                 username,
                 isEncrypted,
+                authorizationType,
             )
         } catch (ignored: Exception) {
             multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
                 serverUrl,
                 username,
                 false,
+                authorizationType,
             )
         }
     }

@@ -37,10 +37,12 @@ internal data class VisualizationDimensionDTO(
     val id: String?,
     val items: List<VisualizationDimensionItemDTO?>? = emptyList(),
 ) {
-    fun toDomain(visualization: String, position: LayoutPosition): VisualizationDimension {
-        return VisualizationDimension.builder()
-            .id(id)
-            .items(items?.mapNotNull { it?.toDomain(visualization, position, id) } ?: emptyList())
-            .build()
+    fun toDomain(visualization: String, position: LayoutPosition): VisualizationDimension? {
+        return id?.let {
+            VisualizationDimension.builder()
+                .id(id)
+                .items(items?.mapNotNull { it?.toDomain(visualization, position, id) } ?: emptyList())
+                .build()
+        }
     }
 }

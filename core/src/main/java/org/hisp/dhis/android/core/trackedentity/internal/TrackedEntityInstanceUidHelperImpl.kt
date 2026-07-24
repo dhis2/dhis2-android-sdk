@@ -28,11 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,7 +48,7 @@ internal class TrackedEntityInstanceUidHelperImpl(
         trackedEntityInstances: Collection<TrackedEntityInstance>,
     ): Set<String> {
         val uids = trackedEntityInstances.flatMap {
-            val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            val enrollments = it.enrollments
             getEnrollmentsUids(enrollments) + it.organisationUnit()
         }.filterNotNull().toSet()
 
@@ -59,12 +57,12 @@ internal class TrackedEntityInstanceUidHelperImpl(
 
     private fun getEnrollmentsUids(enrollments: List<Enrollment>?): Set<String> {
         return enrollments?.flatMap {
-            val events = EnrollmentInternalAccessor.accessEvents(it)
+            val events = it.events()
             getEventsUids(events) + it.organisationUnit()
         }?.filterNotNull()?.toSet() ?: emptySet()
     }
 
-    private fun getEventsUids(events: MutableList<Event>?): Set<String> {
+    private fun getEventsUids(events: List<Event>?): Set<String> {
         return events?.mapNotNull { it.organisationUnit() }?.toSet() ?: emptySet()
     }
 }

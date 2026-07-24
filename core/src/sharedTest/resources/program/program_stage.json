@@ -15,7 +15,6 @@
   "repeatable": false,
   "featureType": "POINT",
   "enableUserAssignment": "true",
-  "captureCoordinates": true,
   "formType": "DEFAULT",
   "dueDateLabel": "Due date",
   "programStageLabel": "ProgramStage Label",
@@ -102,6 +101,7 @@
   "userGroupAccesses": [],
   "attributeValues": [],
   "programStageSections": [],
-  "periodType": "Monthly"
+  "periodType": "Monthly",
+  "displayEventsLabel": "Events Label"
 }
 

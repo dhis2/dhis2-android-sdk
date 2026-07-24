@@ -33,7 +33,6 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
@@ -227,7 +226,7 @@ class DataValuePostCallShould {
             .syncState(State.TO_POST)
             .created(Date())
             .lastUpdated(Date())
-        DataValueInternalAccessor.insertSourceDataSet(builder, dataSet)
+            .sourceDataSet(dataSet)
         return builder.build()
     }
 }

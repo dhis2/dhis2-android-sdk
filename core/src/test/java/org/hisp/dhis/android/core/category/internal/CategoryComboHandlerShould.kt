@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor.accessCategoryOptionCombos
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.junit.Before
 import org.junit.Test
@@ -64,7 +63,7 @@ class CategoryComboHandlerShould {
     fun setUp() = runTest {
         categories = listOf(category)
         whenever(combo.uid()).doReturn(comboUid)
-        whenever(accessCategoryOptionCombos(combo)).doReturn(optionCombos)
+        whenever(combo.categoryOptionCombos()).doReturn(optionCombos)
         whenever(combo.categories()).thenReturn(categories)
         whenever(categoryComboStore.updateOrInsert(any<List<CategoryCombo>>())).doReturn(listOf(HandleAction.Insert))
 

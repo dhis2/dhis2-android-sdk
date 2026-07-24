@@ -29,6 +29,6 @@ package org.hisp.dhis.android.core.trackedentity.search
 
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 
-internal interface QueryScopeOrderByItem {
+interface QueryScopeOrderByItem {
     fun toAPIString(version: TrackerExporterVersion): String?
 }

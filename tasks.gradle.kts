@@ -37,8 +37,6 @@ tasks.register("runChecks") {
         ":core:clean",
         ":core:ktlintCheck",
         ":core:detekt",
-        ":core:checkstyleDebug",
-        ":core:pmdDebug",
         ":core:lintDebug"
     )
 }

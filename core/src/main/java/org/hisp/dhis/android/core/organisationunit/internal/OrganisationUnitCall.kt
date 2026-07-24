@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
@@ -59,7 +58,7 @@ internal class OrganisationUnitCall(
     suspend fun download(user: User) {
         handler.resetLinks()
         val rootSearchOrgUnits =
-            OrganisationUnitTree.findRoots(UserInternalAccessor.accessTeiSearchOrganisationUnits(user))
+            OrganisationUnitTree.findRoots(user.teiSearchOrganisationUnits)
 
         downloadSearchOrgUnits(rootSearchOrgUnits, user)
         val searchOrgUnitIds = userOrganisationUnitLinkStore
@@ -91,7 +90,7 @@ internal class OrganisationUnitCall(
         searchOrgUnits: List<OrganisationUnit>,
         user: User,
     ) {
-        val allRootCaptureOrgUnits = OrganisationUnitTree.findRoots(UserInternalAccessor.accessOrganisationUnits(user))
+        val allRootCaptureOrgUnits = OrganisationUnitTree.findRoots(user.organisationUnits)
         val rootCaptureOrgUnitsOutsideSearchScope =
             OrganisationUnitTree.findRootsOutsideSearchScope(allRootCaptureOrgUnits, rootSearchOrgUnits)
         linkCaptureOrgUnitsInSearchScope(

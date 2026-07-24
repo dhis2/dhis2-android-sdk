@@ -102,11 +102,11 @@ internal class EventDownloadCall internal constructor(
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val eventQuery = TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = bundle.commonParams().program,
-                limit = bundle.commonParams().uids.size,
+            commonParams = bundle.commonParams.copy(
+                program = bundle.commonParams.program,
+                limit = bundle.commonParams.uids.size,
             ),
-            uids = bundle.commonParams().uids,
+            uids = bundle.commonParams.uids,
         )
 
         try {
@@ -139,7 +139,7 @@ internal class EventDownloadCall internal constructor(
         orgunitUid: String?,
         limit: Int,
     ): TrackerAPIQuery? {
-        val eventUids = if (bundle.eventFilters() != null) {
+        val eventUids = if (bundle.eventFilters != null) {
             val filteredUids = getEventUidsByFilters(bundle, orgunitUid)
 
             filteredUids.takeIf { it.isNotEmpty() }
@@ -149,11 +149,11 @@ internal class EventDownloadCall internal constructor(
 
         return eventUids?.let {
             TrackerAPIQuery(
-                commonParams = bundle.commonParams().copy(
+                commonParams = bundle.commonParams.copy(
                     program = program,
                     limit = limit,
                 ),
-                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams),
                 orgUnit = orgunitUid,
                 uids = eventUids.distinct(),
             )
@@ -164,10 +164,10 @@ internal class EventDownloadCall internal constructor(
         bundle: EventQueryBundle,
         orgunitUid: String?,
     ): List<String> {
-        return bundle.eventFilters()?.flatMap {
+        return bundle.eventFilters?.flatMap {
             eventQueryCollectionRepository
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .byOrgUnitMode().eq(bundle.commonParams.ouMode)
                 .byEventFilterObject().eq(it)
                 .onlineOnly().getDataFetcher().getUids()
         } ?: emptyList()

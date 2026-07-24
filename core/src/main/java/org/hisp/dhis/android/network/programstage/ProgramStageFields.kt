@@ -43,7 +43,6 @@ import org.hisp.dhis.android.persistence.program.ProgramStageTableInfo.Columns
 
 internal object ProgramStageFields : BaseFields<ProgramStage>() {
     private const val PROGRAM_STAGE_DATA_ELEMENTS = "programStageDataElements"
-    private const val CAPTURE_COORDINATES = "captureCoordinates"
     private const val STYLE = "style"
     private const val PROGRAM_STAGE_SECTIONS = "programStageSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
@@ -62,7 +61,6 @@ internal object ProgramStageFields : BaseFields<ProgramStage>() {
         fh.field(Columns.REPORT_DATE_TO_USE),
         fh.field(Columns.OPEN_AFTER_ENROLLMENT),
         fh.field(Columns.REPEATABLE),
-        fh.field(CAPTURE_COORDINATES),
         fh.field(Columns.FEATURE_TYPE),
         fh.field(Columns.FORM_TYPE),
         fh.field(Columns.DISPLAY_GENERATE_EVENT_BOX),
@@ -86,5 +84,6 @@ internal object ProgramStageFields : BaseFields<ProgramStage>() {
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
         fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.data.with(DataAccessFields.write)),
+        fh.field(Columns.DISPLAY_EVENTS_LABEL),
     )
 }

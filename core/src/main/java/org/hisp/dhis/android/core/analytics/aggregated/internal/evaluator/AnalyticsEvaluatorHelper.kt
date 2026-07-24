@@ -227,7 +227,7 @@ internal object AnalyticsEvaluatorHelper {
         builder: WhereClauseBuilder,
         metadata: Map<String, MetadataItem>,
     ): WhereClauseBuilder {
-        val innerClause = WhereClauseBuilder().apply {
+        val innerBuilder = WhereClauseBuilder().apply {
             items.map { it as DimensionItem.CategoryItem }.map { item ->
                 metadata[item.uid]?.let { it as MetadataItem.CategoryItem }.let { category ->
                     val columnName =
@@ -239,12 +239,13 @@ internal object AnalyticsEvaluatorHelper {
                     columnName?.let { appendOrInSubQuery(it, getCategoryOptionClause(item.uid, item.categoryOption)) }
                 }
             }
-        }.build()
+        }
 
-        return builder.appendComplexQuery(innerClause)
+        if (innerBuilder.isEmpty) return builder
+        return builder.appendComplexQuery(innerBuilder.build())
     }
 
-    private fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
+    internal fun getCategoryOptionClause(categoryUid: String, categoryOptionUid: String): String {
         return "SELECT ${cocInfo.Columns.UID} " +
             "FROM ${cocInfo.TABLE_INFO.name()} " +
             "WHERE " +

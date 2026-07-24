@@ -48,14 +48,14 @@ internal data class OptionDTO(
     override val lastUpdated: String?,
     override val deleted: Boolean?,
     val sortOrder: Int?,
-    val optionSet: ObjectWithUidDTO?,
+    val optionSet: ObjectWithUidDTO,
     val style: ObjectWithStyleDTO?,
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): Option {
         return Option.builder().apply {
             applyBaseIdentifiableFields(this@OptionDTO)
             sortOrder(sortOrder)
-            optionSet?.let { optionSet(optionSet.toDomain()) }
+            optionSet(optionSet.toDomain())
             style?.let { style(style.toDomain()) }
         }.build()
     }

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.event
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
@@ -76,7 +75,7 @@ internal data class EventDTO(
             deleted(deleted)
             uid(event)
             enrollment(enrollment)
-            EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntityInstance)
+            trackedEntityInstance(trackedEntityInstance)
             created(created?.toDomain())
             lastUpdated(lastUpdated?.toDomain())
             createdAtClient(createdAtClient?.toDomain())
@@ -94,7 +93,7 @@ internal data class EventDTO(
             assignedUser(assignedUser)
             notes(notes?.map { it.toDomain(event = event) })
             relationships(relationships?.map { it.toDomain() })
-            trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
+            trackedEntityDataValues(dataValues?.mapNotNull { it.toDomain(event) })
         }.build()
     }
 }
@@ -104,7 +103,7 @@ internal fun Event.toDto(): EventDTO {
         deleted = this.deleted(),
         event = this.uid(),
         enrollment = this.enrollment(),
-        trackedEntityInstance = EventInternalAccessor.accessTrackedEntityInstance(this),
+        trackedEntityInstance = this.trackedEntityInstance(),
         created = this.created()?.toZonedDateDto(),
         lastUpdated = this.lastUpdated()?.toZonedDateDto(),
         createdAtClient = this.createdAtClient()?.toZonedDateDto(),
@@ -121,7 +120,7 @@ internal fun Event.toDto(): EventDTO {
         attributeOptionCombo = this.attributeOptionCombo(),
         assignedUser = this.assignedUser(),
         notes = this.notes()?.map { it.toDto() },
-        relationships = EventInternalAccessor.accessRelationships(this)?.map { it.toDto() },
+        relationships = this.relationships?.map { it.toDto() },
         dataValues = this.trackedEntityDataValues()?.map { it.toDto() },
     )
 }

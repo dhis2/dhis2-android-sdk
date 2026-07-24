@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.State.Companion.uploadableStatesIncludingError
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationStore
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentModule
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
@@ -52,7 +51,6 @@ import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMeta
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityModule
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.core.user.AuthenticatedUserObjectRepository
@@ -157,19 +155,19 @@ internal class LocalDbRepositoryImpl(
         return eventModule.events().withTrackedEntityDataValues()
             .byUid().eq(eventUid).one()
             .get()
-            .flatMap { event: Event? -> fileResourceCleaner.removeFileDataValues(event) }
+            .flatMap { event: Event -> fileResourceCleaner.removeFileDataValues(event) }
     }
 
     override fun getTeiEnrollmentToSubmit(enrollmentUid: String): Single<TrackedEntityInstance> {
         return Single.fromCallable {
             val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet()!!
             val events = getEventsForEnrollment(enrollmentUid).blockingGet()
-            val enrollmentWithEvents = EnrollmentInternalAccessor
-                .insertEvents(enrollment.toBuilder(), events)
+            val enrollmentWithEvents = enrollment.toBuilder()
+                .events(events)
                 .build()
             val trackedEntityInstance = getTrackedEntityInstance(enrollment.trackedEntityInstance()).blockingGet()
-            TrackedEntityInstanceInternalAccessor
-                .insertEnrollments(trackedEntityInstance.toBuilder(), listOf(enrollmentWithEvents))
+            trackedEntityInstance.toBuilder()
+                .enrollments(listOf(enrollmentWithEvents))
                 .build()
         }
     }
@@ -179,7 +177,7 @@ internal class LocalDbRepositoryImpl(
             .withTrackedEntityAttributeValues()
             .uid(instanceUid)
             .get()
-            .flatMap { instance: TrackedEntityInstance? -> fileResourceCleaner.removeFileAttributeValues(instance) }
+            .flatMap { instance: TrackedEntityInstance -> fileResourceCleaner.removeFileAttributeValues(instance) }
     }
 
     private fun getEventsForEnrollment(enrollmentUid: String): Single<List<Event>> {
@@ -203,8 +201,8 @@ internal class LocalDbRepositoryImpl(
 
     override fun updateEnrollmentSubmissionState(tei: TrackedEntityInstance, state: State): Completable {
         return rxCompletable {
-            val enrollment = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)[0]
-            val events = EnrollmentInternalAccessor.accessEvents(enrollment)
+            val enrollment = tei.enrollments!![0]
+            val events = enrollment.events()
             events?.forEach { event ->
                 eventStore.setSyncState(event.uid(), state)
                 dataStatePropagator.propagateEventUpdate(event)
@@ -299,10 +297,10 @@ internal class LocalDbRepositoryImpl(
             val values = dataSetsStore.getDataValues(dataset, orgUnit, period, attributeOptionComboUid)
             val isCompleted = isDataValueSetCompleted(dataset, orgUnit, period, attributeOptionComboUid)
 
-            SMSDataValueSet.builder()
-                .dataValues(values)
-                .completed(isCompleted)
-                .build()
+            SMSDataValueSet(
+                dataValues = values,
+                completed = isCompleted,
+            )
         }
     }
 

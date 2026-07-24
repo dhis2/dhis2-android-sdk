@@ -56,8 +56,8 @@ internal fun TrackedEntityAttributeValue.toDB(): TrackedEntityAttributeValueDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         value = value(),
-        trackedEntityAttribute = trackedEntityAttribute()!!,
-        trackedEntityInstance = trackedEntityInstance()!!,
+        trackedEntityAttribute = trackedEntityAttribute(),
+        trackedEntityInstance = trackedEntityInstance(),
         syncState = syncState()?.toDB(),
     )
 }

@@ -134,18 +134,18 @@ class TrackedEntityInstanceQueryFactoryShould {
 
     @Test
     fun create_a_single_bundle_when_global() = runTest {
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
-        assertThat(query.orgUnits()).isEqualTo(rootOrgUnits)
-        assertThat(query.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
-        assertThat(query.commonParams().program).isNull()
+        assertThat(query.orgUnits).isEqualTo(rootOrgUnits)
+        assertThat(query.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(query.commonParams.program).isNull()
     }
 
     @Test
     fun get_enrollment_date_value_if_defined() = runTest {
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
 
         val settings = ProgramSetting.builder().uid(p1).enrollmentDateDownload(DownloadPeriod.LAST_3_MONTHS).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
@@ -153,49 +153,58 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
-                assertThat(query.commonParams().startDate).isNotNull()
+            if (query.commonParams.program != null) {
+                assertThat(query.commonParams.program).isEqualTo(p1)
+                assertThat(query.commonParams.startDate).isNotNull()
             }
         }
     }
 
     @Test
     fun single_query_if_program_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000).program(p1).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+            program = p1,
+        )
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         for (query in queries) {
-            assertThat(query.commonParams().program).isEqualTo(p1)
-            assertThat(query.commonParams().limit).isEqualTo(5000)
+            assertThat(query.commonParams.program).isEqualTo(p1)
+            assertThat(query.commonParams.limit).isEqualTo(5000)
         }
     }
 
     @Test
     fun single_query_if_working_list_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000)
-            .programStageWorkingLists(listOf(w1)).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+            programStageWorkingLists = listOf(w1),
+        )
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.programStageWorkingLists()?.size).isEqualTo(1)
-        assertThat(query.programStageWorkingLists()?.first()).isEqualTo(w1)
+        assertThat(query.programStageWorkingLists?.size).isEqualTo(1)
+        assertThat(query.programStageWorkingLists?.first()).isEqualTo(w1)
     }
 
     @Test
     fun single_query_if_tei_filter_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000)
-            .trackedEntityInstanceFilters(listOf(f1)).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+            trackedEntityInstanceFilters = listOf(f1),
+        )
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.trackedEntityInstanceFilters()?.size).isEqualTo(1)
-        assertThat(query.trackedEntityInstanceFilters()?.first()).isEqualTo(f1)
+        assertThat(query.trackedEntityInstanceFilters?.size).isEqualTo(1)
+        assertThat(query.trackedEntityInstanceFilters?.first()).isEqualTo(f1)
     }
 
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+        )
 
         val settings = ProgramSetting.builder().uid(p1).teiDownload(100).build()
         whenever(programSettings.specificSettings()).thenReturn(mapOf(p1 to settings))
@@ -203,19 +212,22 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(2)
         for (query in queries) {
-            if (query.commonParams().program != null) {
-                assertThat(query.commonParams().program).isEqualTo(p1)
-                assertThat(query.commonParams().limit).isEqualTo(100)
+            if (query.commonParams.program != null) {
+                assertThat(query.commonParams.program).isEqualTo(p1)
+                assertThat(query.commonParams.limit).isEqualTo(100)
             } else {
-                assertThat(query.commonParams().limit).isEqualTo(4800)
+                assertThat(query.commonParams.limit).isEqualTo(4800)
             }
         }
     }
 
     @Test
     fun single_query_if_tei_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().uids(listOf("tei_uid")).build()
+        val params = ProgramDataDownloadParams(
+            uids = listOf("tei_uid"),
+        )
 
         val queries = queryFactory.getQueries(params)
+        assertThat(queries.size).isEqualTo(1)
     }
 }

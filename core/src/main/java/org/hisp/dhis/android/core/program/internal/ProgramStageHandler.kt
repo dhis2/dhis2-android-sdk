@@ -34,8 +34,6 @@ import org.hisp.dhis.android.core.attribute.ProgramStageAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.ProgramStageAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
-import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,26 +48,14 @@ internal class ProgramStageHandler(
 ) : IdentifiableHandlerImpl<ProgramStage>(programStageStore) {
 
     override suspend fun afterObjectHandled(o: ProgramStage, action: HandleAction) {
-        programStageDataElementHandler.handleMany(
-            ProgramStageInternalAccessor.accessProgramStageDataElements(o),
-        )
+        programStageDataElementHandler.handleMany(o.programStageDataElements())
         programStageSectionHandler.handleMany(
-            ProgramStageInternalAccessor.accessProgramStageSections(o),
-        ) { programStageSection: ProgramStageSection ->
-            programStageSection.toBuilder()
-                .programStage(ObjectWithUid.create(o.uid()))
-                .build()
-        }
+            o.programStageSections(),
+        )
 
         if (action === HandleAction.Update) {
-            programStageDataElementCleaner.deleteOrphan(
-                o,
-                ProgramStageInternalAccessor.accessProgramStageDataElements(o),
-            )
-            programStageSectionCleaner.deleteOrphan(
-                o,
-                ProgramStageInternalAccessor.accessProgramStageSections(o),
-            )
+            programStageDataElementCleaner.deleteOrphan(o, o.programStageDataElements())
+            programStageSectionCleaner.deleteOrphan(o, o.programStageSections())
         }
 
         if (o.attributeValues() != null) {

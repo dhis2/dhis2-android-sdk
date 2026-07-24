@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.NewTrackerImporterPayload
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipManagerImpl
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
@@ -66,11 +65,11 @@ internal class TrackerImporterBreakTheGlassHelper(
         }.mapNotNull { enrollment ->
             instances.mapNotNull { tei ->
                 val teiEnrollment =
-                    TrackedEntityInstanceInternalAccessor.accessEnrollments(tei).find { it.uid() == enrollment.uid() }
+                    tei.enrollments.orEmpty().find { it.uid() == enrollment.uid() }
 
                 if (teiEnrollment != null) {
-                    TrackedEntityInstanceInternalAccessor
-                        .insertEnrollments(tei.toBuilder(), listOf(teiEnrollment))
+                    tei.toBuilder()
+                        .enrollments(listOf(teiEnrollment))
                         .build()
                 } else {
                     null
@@ -138,7 +137,7 @@ internal class TrackerImporterBreakTheGlassHelper(
      */
     suspend fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
         instances.forEach { instance ->
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(instance).forEach { enrollment ->
+            instance.enrollments.orEmpty().forEach { enrollment ->
                 if (instance.uid() != null && enrollment.program() != null) {
                     ownershipManagerImpl.fakeBreakGlass(instance.uid()!!, enrollment.program()!!)
                 }

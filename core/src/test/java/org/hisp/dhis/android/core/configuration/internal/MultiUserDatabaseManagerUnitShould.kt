@@ -31,6 +31,7 @@ import android.content.Context
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
@@ -63,6 +64,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .serverUrl(serverUrl)
         .encrypted(false)
         .databaseCreationDate(DATE)
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfigurationEncrypted = DatabaseAccount.builder()
@@ -71,6 +73,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         .serverUrl(serverUrl)
         .encrypted(true)
         .databaseCreationDate(DATE)
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val unencryptedConfiguration = DatabasesConfiguration.builder()
@@ -102,10 +105,24 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     fun create_new_db_when_no_previous_configuration_on_loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew() =
         runTest {
             val encrypt = false
-            whenever(configurationHelper.addOrUpdateAccount(null, serverUrl, username, encrypt))
-                .doReturn(unencryptedConfiguration)
+            whenever(
+                configurationHelper.addOrUpdateAccount(
+                    null,
+                    serverUrl,
+                    username,
+                    encrypt,
+                    null,
+                    null,
+                    AuthorizationType.BASIC,
+                ),
+            ).doReturn(unencryptedConfiguration)
 
-            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                serverUrl,
+                username,
+                encrypt,
+                AuthorizationType.BASIC,
+            )
 
             verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
         }
@@ -116,12 +133,26 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             val encrypt = true
             val password = "test-password"
             whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-            whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, encrypt))
-                .doReturn(encryptedConfiguration)
+            whenever(
+                configurationHelper.addOrUpdateAccount(
+                    unencryptedConfiguration,
+                    serverUrl,
+                    username,
+                    encrypt,
+                    null,
+                    null,
+                    AuthorizationType.BASIC,
+                ),
+            ).doReturn(encryptedConfiguration)
             whenever(passwordManager.getPassword(encryptedDbName)).doReturn(password)
             whenever(databaseManager.databaseExists(unencryptedDbName)).doReturn(true)
 
-            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(serverUrl, username, encrypt)
+            manager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
+                serverUrl,
+                username,
+                encrypt,
+                AuthorizationType.BASIC,
+            )
 
             verify(databaseManager).createOrOpenEncryptedDatabase(encryptedDbName, password)
             verify(databaseExport).encrypt(serverUrl, userConfigurationUnencrypted)
@@ -137,12 +168,49 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     @Test
     fun open_database_when_existing_when_calling_loadExistingKeepingEncryption() = runTest {
         whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
-        whenever(configurationHelper.addOrUpdateAccount(unencryptedConfiguration, serverUrl, username, false))
-            .doReturn(unencryptedConfiguration)
+        whenever(
+            configurationHelper.addOrUpdateAccount(
+                unencryptedConfiguration,
+                serverUrl,
+                username,
+                false,
+                null,
+                null,
+                AuthorizationType.BASIC,
+            ),
+        ).doReturn(unencryptedConfiguration)
 
         manager.loadExistingKeepingEncryption(serverUrl, username)
 
         verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
+    }
+
+    @Test
+    fun forward_oauth2_authorization_type_to_configurationHelper_on_createNew() {
+        whenever(databaseManager.databaseExists(any())).doReturn(true)
+        whenever(
+            configurationHelper.addOrUpdateAccount(
+                null,
+                serverUrl,
+                username,
+                false,
+                null,
+                null,
+                AuthorizationType.OAUTH2,
+            ),
+        ).doReturn(unencryptedConfiguration)
+
+        manager.createNew(serverUrl, username, false, AuthorizationType.OAUTH2)
+
+        verify(configurationHelper).addOrUpdateAccount(
+            null,
+            serverUrl,
+            username,
+            false,
+            null,
+            null,
+            AuthorizationType.OAUTH2,
+        )
     }
 
     @Test
@@ -165,10 +233,19 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         val newUsername = "new_username"
         val newServerUrl = "new_server_url"
         val newConfiguration = buildUserConfiguration(newUsername, "2021-06-01T00:01:04.000", newServerUrl)
-        whenever(configurationHelper.addOrUpdateAccount(configuration, newServerUrl, newUsername, false))
-            .doReturn(DatabasesConfiguration.builder().accounts(listOf(newConfiguration)).build())
+        whenever(
+            configurationHelper.addOrUpdateAccount(
+                configuration,
+                newServerUrl,
+                newUsername,
+                false,
+                null,
+                null,
+                AuthorizationType.BASIC,
+            ),
+        ).doReturn(DatabasesConfiguration.builder().accounts(listOf(newConfiguration)).build())
 
-        manager.createNew(newServerUrl, newUsername, false)
+        manager.createNew(newServerUrl, newUsername, false, AuthorizationType.BASIC)
 
         verify(databaseConfigurationSecureStore, times(2)).set(any())
         verify(databaseManager, times(4)).deleteDatabase(any(), any())

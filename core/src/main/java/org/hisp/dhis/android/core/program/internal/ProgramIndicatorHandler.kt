@@ -43,7 +43,7 @@ internal class ProgramIndicatorHandler(
 
     override suspend fun afterCollectionHandled(oCollection: Collection<ProgramIndicator>?) {
         val inDbProgramIndicatorUids = programIndicatorStore.selectUids()
-        val apiProgramIndicatorUids = oCollection?.map(ProgramIndicator::uid)
+        val apiProgramIndicatorUids = oCollection?.map { it.uid() }
         val deleteProgramIndicatorUid = inDbProgramIndicatorUids.filter { inDbProgramIndicatorUid ->
             val isPresentOnline = apiProgramIndicatorUids?.contains(inDbProgramIndicatorUid)
             isPresentOnline == false
@@ -62,8 +62,6 @@ internal class ProgramIndicatorHandler(
                 .sortOrder(sortOrder)
                 .build()
         }
-        analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList()) { b ->
-            b.toBuilder().programIndicator(o.uid()).build()
-        }
+        analyticsPeriodBoundaryHandler.handleMany(o.uid(), o.analyticsPeriodBoundaries() ?: emptyList())
     }
 }

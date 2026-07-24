@@ -56,4 +56,10 @@ internal open class PayloadJson<T>(
     ): PayloadJson<P> {
         return PayloadJson(pager, items.map(transform))
     }
+
+    fun <P> mapNotNullItems(
+        transform: (T) -> P?,
+    ): PayloadJson<P> {
+        return PayloadJson(pager, items.mapNotNull(transform))
+    }
 }

@@ -30,9 +30,13 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 import io.reactivex.Observable
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
+import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
+import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
 import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
@@ -48,6 +52,10 @@ internal class OAuth2HandlerImpl(
     private val oauth2NetworkHandler: OAuth2NetworkHandler,
     private val keyStoreManager: KeyStoreManager,
     private val oauth2SecureStore: OAuth2SecureStore,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val authenticatedUserStore: AuthenticatedUserStore,
+    private val logInExceptions: LogInExceptions,
 ) : OAuth2Handler {
 
     private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
@@ -99,6 +107,14 @@ internal class OAuth2HandlerImpl(
 
     override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String) {
         runBlocking { handleEnrollmentResponseInternal(serverUrl, iat) }
+    }
+
+    override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
+        return runBlocking { buildLogoutUrlInternal(config) }
+    }
+
+    private fun buildLogoutUrlInternal(config: OAuth2Config): String {
+        return oauth2NetworkHandler.buildLogoutUrl(config)
     }
 
     private suspend fun logInInternal(config: OAuth2Config): String {
@@ -159,8 +175,10 @@ internal class OAuth2HandlerImpl(
         return when (result) {
             is Result.Success -> {
                 val oauth2State = result.value.copy(keyId = keyId)
-                oauth2SecureStore.clearTemporaryData()
-                logInCall.logInOAuth2(normalizedUrl, oauth2State)
+                val user = logInCall.logInOAuth2(normalizedUrl, oauth2State)
+                oauth2StateSecureStore.set(normalizedUrl, user.username()!!, oauth2State)
+                oauth2SecureStore.clearAll()
+                user
             }
             is Result.Failure -> {
                 oauth2SecureStore.clearTemporaryData()
@@ -180,18 +198,57 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun isLoggedIn(): Boolean {
-        return logInCall.isUserLoggedIn() && oauth2SecureStore.clientId != null
+        return logInCall.isUserLoggedIn() && credentialsSecureStore.get()?.oauth2State != null
     }
 
     override fun getClientId(): String? {
-        return oauth2SecureStore.clientId
+        return credentialsSecureStore.get()?.oauth2State?.clientId
+    }
+
+    override suspend fun suspendSetPin(pin: String): Result<Unit, D2Error> {
+        val credentials = credentialsSecureStore.get()
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.oauth2State == null -> Result.Failure(logInExceptions.pinRequiresTokenBasedAccountError())
+            else -> {
+                val updated = credentials.copy(password = pin)
+                credentialsSecureStore.set(updated)
+                val existing = authenticatedUserStore.selectFirst()
+                if (existing == null) {
+                    Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
+                } else {
+                    authenticatedUserStore.updateOrInsertWhere(
+                        existing.toBuilder().hash(updated.getHash()).build(),
+                    )
+                    Result.Success(Unit)
+                }
+            }
+        }
+    }
+
+    override suspend fun suspendChangePin(currentPin: String, newPin: String): Result<Unit, D2Error> {
+        val credentials = credentialsSecureStore.get()
+        return when {
+            credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
+            credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
+            else -> suspendSetPin(newPin)
+        }
     }
 
     override fun blockingLogOut() {
         logoutHandler.logOut()
     }
 
+    override suspend fun suspendLogOut() {
+        logoutHandler.logOut()
+    }
+
+    @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
     override fun logOutObservable(): Observable<Unit> {
+        return logoutHandler.logOutObservable()
+    }
+
+    override fun rxLogOutObservable(): Observable<Unit> {
         return logoutHandler.logOutObservable()
     }
 

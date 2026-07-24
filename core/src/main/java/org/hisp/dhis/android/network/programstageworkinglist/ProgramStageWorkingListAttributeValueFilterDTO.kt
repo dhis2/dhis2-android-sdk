@@ -44,6 +44,7 @@ internal data class ProgramStageWorkingListAttributeValueFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
+    override val isEmpty: Boolean?,
     val attribute: String,
     val ew: String?,
     val sw: String?,

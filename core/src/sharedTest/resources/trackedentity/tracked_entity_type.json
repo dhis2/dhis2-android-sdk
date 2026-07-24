@@ -7,6 +7,7 @@
   "displayDescription": "Person",
   "displayName": "Person",
   "description": "Person",
+  "displayTrackedEntityTypesLabel": "Persons",
   "featureType": "NONE",
   "externalAccess": false,
   "access": {

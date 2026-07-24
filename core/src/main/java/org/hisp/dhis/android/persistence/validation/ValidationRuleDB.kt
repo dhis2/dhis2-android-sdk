@@ -34,11 +34,11 @@ internal data class ValidationRuleDB(
     val periodType: String?,
     val skipFormValidation: Boolean?,
     val leftSideExpression: String?,
-    val leftSideDescription: String?,
-    val leftSideMissingValueStrategy: String?,
+    val leftSideDescription: String,
+    val leftSideMissingValueStrategy: String,
     val rightSideExpression: String?,
-    val rightSideDescription: String?,
-    val rightSideMissingValueStrategy: String?,
+    val rightSideDescription: String,
+    val rightSideMissingValueStrategy: String,
     val organisationUnitLevels: IntegerListDB?,
 ) : EntityDB<ValidationRule>, BaseNameableObjectDB {
 
@@ -54,24 +54,24 @@ internal data class ValidationRuleDB(
                 ValidationRuleExpression.builder()
                     .expression(leftSideExpression)
                     .description(leftSideDescription)
-                    .missingValueStrategy(leftSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
+                    .missingValueStrategy(MissingValueStrategy.valueOf(leftSideMissingValueStrategy))
                     .build(),
             )
             rightSide(
                 ValidationRuleExpression.builder()
                     .expression(rightSideExpression)
                     .description(rightSideDescription)
-                    .missingValueStrategy(rightSideMissingValueStrategy?.let { MissingValueStrategy.valueOf(it) })
+                    .missingValueStrategy(MissingValueStrategy.valueOf(rightSideMissingValueStrategy))
                     .build(),
             )
-            organisationUnitLevels(organisationUnitLevels?.toDomain())
+            organisationUnitLevels?.let { organisationUnitLevels(it.toDomain()) }
         }.build()
     }
 }
 
 internal fun ValidationRule.toDB(): ValidationRuleDB {
     return ValidationRuleDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -88,10 +88,10 @@ internal fun ValidationRule.toDB(): ValidationRuleDB {
         skipFormValidation = skipFormValidation(),
         leftSideExpression = leftSide().expression(),
         leftSideDescription = leftSide().description(),
-        leftSideMissingValueStrategy = leftSide().missingValueStrategy()?.name,
+        leftSideMissingValueStrategy = leftSide().missingValueStrategy().name,
         rightSideExpression = rightSide().expression(),
         rightSideDescription = rightSide().description(),
-        rightSideMissingValueStrategy = rightSide().missingValueStrategy()?.name,
-        organisationUnitLevels = organisationUnitLevels()?.toDB(),
+        rightSideMissingValueStrategy = rightSide().missingValueStrategy().name,
+        organisationUnitLevels = organisationUnitLevels().toDB(),
     )
 }

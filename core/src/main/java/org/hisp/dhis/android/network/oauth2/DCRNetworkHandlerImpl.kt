@@ -35,12 +35,14 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.internal.DCRNetworkHandler
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DCRNetworkHandlerImpl(
     httpClient: HttpServiceClient,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val oAuth2SecureStore: OAuth2SecureStore,
 ) : DCRNetworkHandler {
 
     private val service = DCRService(httpClient)
@@ -71,6 +73,8 @@ internal class DCRNetworkHandlerImpl(
         scope: String,
         jwks: String,
     ): Result<String, D2Error> {
+        val jwksUri = oAuth2SecureStore.jwksUri
+            ?: error("jwks_uri not configured. checkServerUrl must run before client registration.")
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val request = ClientRegistrationRequestDTO(
                 clientName = clientName,
@@ -80,7 +84,7 @@ internal class DCRNetworkHandlerImpl(
                 tokenEndpointAuthMethod = "private_key_jwt",
                 tokenEndpointAuthSigningAlg = "RS256",
                 scope = scope,
-                jwksUri = "https://dhis2.org/jwks.json",
+                jwksUri = jwksUri,
                 jwks = json.parseToJsonElement(jwks),
             )
 

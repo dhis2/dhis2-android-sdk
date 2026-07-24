@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -36,7 +35,6 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -74,13 +72,13 @@ internal class TrackerPostStateManager internal constructor(
 
         trackedEntityInstances.forEach { instance ->
             h.addState(teiMap, instance, forcedState)
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(instance)?.forEach { enrollment ->
+            instance.enrollments?.forEach { enrollment ->
                 h.addState(enrollmentMap, enrollment, forcedState)
-                for (event in EnrollmentInternalAccessor.accessEvents(enrollment)) {
+                for (event in enrollment.events().orEmpty()) {
                     h.addState(eventMap, event, forcedState)
                 }
             }
-            TrackedEntityInstanceInternalAccessor.accessRelationships(instance)?.forEach { r ->
+            instance.relationships?.forEach { r ->
                 h.addState(relationshipMap, r, forcedState)
             }
         }

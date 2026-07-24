@@ -92,7 +92,7 @@ internal class CategoryOptionOrganisationUnitsCall(
     private suspend fun handleEntry(entry: Map.Entry<String, List<CategoryOptionRestriction>>) {
         handler.handleMany(
             masterUid = entry.key,
-            slaves = entry.value,
+            items = entry.value,
             transformer = { o ->
                 val orgUnit = when (o) {
                     is CategoryOptionRestriction.NotAccessibleToUser -> null

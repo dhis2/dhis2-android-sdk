@@ -21,7 +21,7 @@ internal data class SMSConfigDB(
 
 internal fun KeyValuePair.toDB(): SMSConfigDB {
     return SMSConfigDB(
-        key = key()!!,
+        key = key(),
         value = value(),
     )
 }

@@ -32,7 +32,7 @@ internal data class OrganisationUnitGroupDB(
 
 internal fun OrganisationUnitGroup.toDB(): OrganisationUnitGroupDB {
     return OrganisationUnitGroupDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

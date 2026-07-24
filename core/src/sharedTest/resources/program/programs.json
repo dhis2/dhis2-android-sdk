@@ -37,6 +37,9 @@
       "expiryPeriodType": "BiMonthly",
       "minAttributesRequiredToSearch": 7,
       "maxTeiCountToReturn": 20,
+      "displayEnrollmentsLabel": "Enrollments Label",
+      "displayProgramStagesLabel": "Program Stages Label",
+      "displayEventsLabel": "Events Label",
       "style": {
         "color": "#333",
         "icon": "antenatal_icon"
@@ -113,6 +116,23 @@
             "id": "b0vcadVrn08"
           }
         }
+      ],
+      "categoryMappings": [
+        {
+          "id": "genderMappingForGSae40Fyppf",
+          "categoryId": "cX5k9anHEHd",
+          "mappingName": "standard Gender mapping",
+          "optionMappings": [
+            {
+              "optionId": "apsOixVZlf1",
+              "filter": "1 == 1"
+            },
+            {
+              "optionId": "jRbMi0aBjYn",
+              "filter": "1 == 1"
+            }
+          ]
+        }
       ]
     },
     {
@@ -162,6 +182,19 @@
       "enrollmentCategoryCombo": {
         "id": "m2jTvAj5kkm"
       },
+      "categoryMappings": [
+        {
+          "id": "catMapping001",
+          "categoryId": "GLevLNI9wkl",
+          "mappingName": "Default mapping",
+          "optionMappings": [
+            {
+              "optionId": "xYerKDKCefk",
+              "filter": "#{condition1}"
+            }
+          ]
+        }
+      ],
       "programRuleVariables": [
       ],
       "programTrackedEntityAttributes": [
@@ -342,7 +375,20 @@
       },
       "enrollmentCategoryCombo": {
         "id": "m2jTvAj5kkm"
-      }
+      },
+      "categoryMappings": [
+        {
+          "id": "catMapping002",
+          "categoryId": "GLevLNI9wkl",
+          "mappingName": "Second mapping",
+          "optionMappings": [
+            {
+              "optionId": "xYerKDKCefk",
+              "filter": "#{condition2}"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

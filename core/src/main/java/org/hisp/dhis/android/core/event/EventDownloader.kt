@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
@@ -38,6 +40,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerD2Progress
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class EventDownloader internal constructor(
     private val call: EventDownloadCall,
     private val params: ProgramDataDownloadParams,
@@ -58,35 +61,44 @@ class EventDownloader internal constructor(
      *
      * @return -
      */
+    fun flowDownload(): Flow<TrackerD2Progress> {
+        return call.download(params)
+    }
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<TrackerD2Progress> {
-        return call.download(params).asObservable()
+        return flowDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<TrackerD2Progress> {
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        flowDownload().collectAndWrapException()
     }
 
     fun byUid(): ListFilterConnector<EventDownloader, String> =
-        connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
+        connectorFactory.listConnector { uids -> params.copy(uids = uids) }
 
     fun byProgramUid(programUid: String): EventDownloader =
         connectorFactory.eqConnector<String> { programUid ->
-            params.toBuilder().program(programUid).build()
+            params.copy(program = programUid)
         }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): EventDownloader =
         connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
-            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+            params.copy(limitByOrgunit = limitByOrgunit)
         }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): EventDownloader =
         connectorFactory.eqConnector<Boolean> { limitByProgram ->
-            params.toBuilder().limitByProgram(limitByProgram).build()
+            params.copy(limitByProgram = limitByProgram)
         }.eq(limitByProgram)
 
     fun limit(limit: Int): EventDownloader =
         connectorFactory.eqConnector<Int> { limit ->
-            params.toBuilder().limit(limit).build()
+            params.copy(limit = limit)
         }.eq(limit)
 
     fun byFilterUid(): ListFilterConnector<EventDownloader, String> {
@@ -95,12 +107,12 @@ class EventDownloader internal constructor(
                 .byUid().`in`(filterUids)
                 .withEventDataFilters()
                 .blockingGet()
-            params.toBuilder().eventFilters(eventFilters).build()
+            params.copy(eventFilters = eventFilters)
         }
     }
 
     fun byEventFilter(): ListFilterConnector<EventDownloader, EventFilter> =
         connectorFactory.listConnector { eventFilters ->
-            params.toBuilder().eventFilters(eventFilters).build()
+            params.copy(eventFilters = eventFilters)
         }
 }

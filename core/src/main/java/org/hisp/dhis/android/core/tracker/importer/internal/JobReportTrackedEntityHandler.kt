@@ -83,7 +83,7 @@ internal class JobReportTrackedEntityHandler internal constructor(
 
         if (teType != null) {
             val tetAttributes = trackedEntityTypeAttributeStore.getForTrackedEntityType(teType)
-                .mapNotNull { it.trackedEntityAttribute()?.uid() }
+                .map { it.trackedEntityAttribute().uid() }
 
             if (tetAttributes.isNotEmpty()) {
                 trackedEntityAttributeValueStore.setSyncStateByAttributes(uid, tetAttributes, State.SYNCED)

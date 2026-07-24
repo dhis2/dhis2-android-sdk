@@ -36,8 +36,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEv
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOption
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.attributeOptionCombo
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.category
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOption1
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.dataElement2
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.level1
@@ -167,13 +167,13 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_disaggregate_by_category_option() = runTest {
-        createDataValue("2", categoryOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("2", categoryOptionComboUid = categoryOptionCombo1.uid())
         createDataValue("5", categoryOptionComboUid = attributeOptionCombo.uid())
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
                 DimensionItem.DataItem.DataElementItem(dataElement1.uid()),
-                DimensionItem.CategoryItem(category.uid(), categoryOption.uid()),
+                DimensionItem.CategoryItem(category.uid(), categoryOption1.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),
@@ -188,7 +188,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
     @Test
     fun should_disaggregate_by_attribute_option() = runTest {
-        createDataValue("2", attributeOptionComboUid = categoryOptionCombo.uid())
+        createDataValue("2", attributeOptionComboUid = categoryOptionCombo1.uid())
         createDataValue("5", attributeOptionComboUid = attributeOptionCombo.uid())
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
@@ -233,7 +233,7 @@ internal class DataElementSQLEvaluatorIntegrationShould : BaseEvaluatorIntegrati
 
         val evaluationItem = AnalyticsServiceEvaluationItem(
             dimensionItems = listOf(
-                DimensionItem.DataItem.DataElementOperandItem(dataElement1.uid(), categoryOptionCombo.uid()),
+                DimensionItem.DataItem.DataElementOperandItem(dataElement1.uid(), categoryOptionCombo1.uid()),
             ),
             filters = listOf(
                 DimensionItem.OrganisationUnitItem.Absolute(orgunitParent.uid()),

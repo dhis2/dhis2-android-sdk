@@ -28,20 +28,36 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
-interface ReadOnlyWithDownloadObjectRepository<M> : ReadOnlyObjectRepository<M> {
+interface ReadOnlyWithDownloadObjectRepository<M : Any> : ReadOnlyObjectRepository<M> {
+    /**
+     * Downloads the resource in scope in a suspend way. The coroutine will complete when the
+     * download and processing is finished.
+     */
+    suspend fun suspendDownload()
+
     /**
      * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable
      * is completed.
      * @return a `Completable` that completes when the download and processing is finished
      */
-    fun download(): Completable
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
+    fun download(): Completable = rxDownload()
+
+    /**
+     * Downloads the resource in scope in an asynchronous way. As soon as it's downloaded and processed, the Completable
+     * is completed.
+     * @return a `Completable` that completes when the download and processing is finished
+     */
+    fun rxDownload(): Completable = rxCompletable { suspendDownload() }
 
     /**
      * Downloads the resource in scope in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get]. The method will finish
+     * executed in the main thread. Consider the asynchronous version [.rxDownload]. The method will finish
      * with a void as soon as the whole download and processing is finished.
      */
-    fun blockingDownload()
+    fun blockingDownload() = runBlocking { suspendDownload() }
 }

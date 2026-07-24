@@ -105,7 +105,7 @@ internal class RelationshipItemStoreImpl(
 
     override suspend fun getByItem(item: RelationshipItem): List<RelationshipItem> {
         val clauseBuilder = WhereClauseBuilder().apply {
-            appendKeyStringValue(item.elementType(), item.elementUid())
+            appendKeyStringValue(item.elementType(), item.elementUid()!!)
 
             item.relationshipItemType()?.let {
                 appendKeyStringValue(RelationshipItemTableInfo.Columns.RELATIONSHIP_ITEM_TYPE, it.name)

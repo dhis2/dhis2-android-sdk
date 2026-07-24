@@ -29,25 +29,29 @@
 package org.hisp.dhis.android.network.trackedentitytype
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityTypeAttribute
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
 internal data class TrackedEntityTypeAttributeDTO(
     val trackedEntityAttribute: ObjectWithUidDTO?,
-    val trackedEntityType: ObjectWithUidDTO?,
     val displayInList: Boolean,
     val mandatory: Boolean?,
     val searchable: Boolean,
 
 ) {
-    fun toDomain(): TrackedEntityTypeAttribute {
-        return TrackedEntityTypeAttribute.builder()
-            .trackedEntityType(trackedEntityType?.toDomain())
-            .trackedEntityAttribute(trackedEntityAttribute?.toDomain())
-            .displayInList(displayInList)
-            .mandatory(mandatory)
-            .searchable(searchable)
-            .build()
+    fun toDomain(trackedEntityType: String): TrackedEntityTypeAttribute? {
+        return if (trackedEntityAttribute != null) {
+            TrackedEntityTypeAttribute.builder()
+                .trackedEntityType(ObjectWithUid.create(trackedEntityType))
+                .trackedEntityAttribute(trackedEntityAttribute.toDomain())
+                .displayInList(displayInList)
+                .mandatory(mandatory)
+                .searchable(searchable)
+                .build()
+        } else {
+            null
+        }
     }
 }

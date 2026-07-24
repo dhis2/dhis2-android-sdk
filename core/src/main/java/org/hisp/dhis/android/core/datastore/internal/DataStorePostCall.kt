@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.datastore.internal
 
 import io.ktor.http.HttpStatusCode
-import io.reactivex.Observable
-import kotlinx.coroutines.rx2.rxObservable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -45,21 +45,17 @@ internal class DataStorePostCall(
     private val dataStoreEntryImportHandler: DataStoreImportHandler,
     private val store: DataStoreEntryStore,
 ) {
-    fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Observable<D2Progress> =
-        Observable.defer {
-            if (entries.isEmpty()) {
-                Observable.empty()
-            } else {
-                val progressManager = D2ProgressManager(entries.size)
-                rxObservable {
-                    entries.forEach { entry ->
-                        postEntry(entry)
-                        send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
-                    }
-                    send(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
-                }
-            }
+    fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Flow<D2Progress> = flow {
+        if (entries.isEmpty()) {
+            return@flow
         }
+        val progressManager = D2ProgressManager(entries.size)
+        entries.forEach { entry ->
+            postEntry(entry)
+            emit(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
+        }
+        emit(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
+    }
 
     private suspend fun postEntry(entry: DataStoreEntry) {
         store.setState(entry, forcedOrOwn(entry, State.UPLOADING))

@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
-import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -69,13 +66,10 @@ class DataValueObjectRepository internal constructor(
     },
 ),
     ReadWriteValueObjectRepository<DataValue> {
-    override fun set(value: String?): Completable {
-        return Completable.fromAction { blockingSet(value) }
-    }
 
     @Throws(D2Error::class)
-    override fun blockingSet(value: String?) {
-        updateIfChanged(value, { it?.value() }) { dataValue: DataValue?, newValue ->
+    override suspend fun suspendSet(value: String?) {
+        updateIfChangedInternal(value, { it?.value() }) { dataValue: DataValue?, newValue ->
             setBuilder(dataValue).value(newValue).deleted(false).build()
         }
     }
@@ -94,20 +88,11 @@ class DataValueObjectRepository internal constructor(
         }
     }
 
-    override fun delete(): Completable {
-        return rxCompletable { deleteInternal() }
-    }
-
     @Throws(D2Error::class)
-    override fun blockingDelete() {
-        runBlocking { deleteInternal() }
-    }
-
-    @Throws(D2Error::class)
-    override suspend fun deleteInternal() {
+    override suspend fun suspendDelete() {
         getWithoutChildrenInternal()?.let { dataValue ->
             if (dataValue.syncState() === State.TO_POST) {
-                super.deleteInternal(dataValue)
+                super.suspendDelete(dataValue)
             } else {
                 setObject(dataValue.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
             }

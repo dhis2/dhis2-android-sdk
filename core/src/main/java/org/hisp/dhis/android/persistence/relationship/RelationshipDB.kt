@@ -47,7 +47,7 @@ internal data class RelationshipDB(
 
 internal fun Relationship.toDB(): RelationshipDB {
     return RelationshipDB(
-        uid = uid()!!,
+        uid = uid(),
         name = name(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),

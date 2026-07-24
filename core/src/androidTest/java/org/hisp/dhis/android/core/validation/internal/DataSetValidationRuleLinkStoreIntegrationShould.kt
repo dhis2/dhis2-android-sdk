@@ -44,7 +44,7 @@ class DataSetValidationRuleLinkStoreIntegrationShould : LinkStoreAbstractIntegra
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
-        return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink.dataSet()!!
+        return DataSetValidationRuleLinkSamples.dataSetValidationRuleLink.dataSet()
     }
 
     override fun buildObject(): DataSetValidationRuleLink {

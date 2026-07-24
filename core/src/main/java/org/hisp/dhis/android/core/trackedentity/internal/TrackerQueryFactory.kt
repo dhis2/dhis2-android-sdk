@@ -54,7 +54,7 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync>(
         return if (!params.hasProgramOrFilters()) {
             val programs = programStore.getUidsByProgramType(programType)
             when {
-                params.uids().isNotEmpty() ->
+                params.uids.isNotEmpty() ->
                     internalFactory.queryGlobal(programs)
                 commonHelper.hasLimitByProgram(params, programSettings) ->
                     programs.flatMap { internalFactory.queryPerProgram(it) }
@@ -67,13 +67,13 @@ internal abstract class TrackerQueryFactory<T, S : TrackerBaseSync>(
                         internalFactory.queryGlobal(globalPrograms)
                 }
             }
-        } else if (params.program() != null) {
-            internalFactory.queryPerProgram(params.program())
+        } else if (params.program != null) {
+            internalFactory.queryPerProgram(params.program)
         } else {
-            val workingListPrograms = params.programStageWorkingLists()?.map { it.program().uid() } ?: emptyList()
+            val workingListPrograms = params.programStageWorkingLists?.map { it.program().uid() } ?: emptyList()
             val teiFilterPrograms =
-                params.trackedEntityInstanceFilters()?.mapNotNull { it.program()?.uid() } ?: emptyList()
-            val eventFilterPrograms = params.eventFilters()?.map { it.program() } ?: emptyList()
+                params.trackedEntityInstanceFilters?.mapNotNull { it.program()?.uid() } ?: emptyList()
+            val eventFilterPrograms = params.eventFilters?.map { it.program() } ?: emptyList()
             val programs = workingListPrograms + teiFilterPrograms + eventFilterPrograms
             programs.flatMap { internalFactory.queryPerProgram(it) }
         }

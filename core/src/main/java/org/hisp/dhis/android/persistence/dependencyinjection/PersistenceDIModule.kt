@@ -28,9 +28,16 @@
 
 package org.hisp.dhis.android.persistence.dependencyinjection
 
+import org.hisp.dhis.android.core.arch.ArchDIModule
+import org.hisp.dhis.android.core.configuration.internal.ConfigurationDIModule
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 
-@Module
+@Module(
+    includes = [
+        ArchDIModule::class,
+        ConfigurationDIModule::class,
+    ],
+)
 @ComponentScan("org.hisp.dhis.android.persistence")
 internal class PersistenceDIModule

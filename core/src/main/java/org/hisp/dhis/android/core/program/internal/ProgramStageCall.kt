@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.program.internal
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -49,9 +48,9 @@ internal class ProgramStageCall internal constructor(
     }
 
     private fun transform(stage: ProgramStage): ProgramStage {
-        return ProgramStageInternalAccessor.accessProgramStageDataElements(stage)?.let { dataElements ->
+        return stage.programStageDataElements()?.let { dataElements ->
             val psdes = dataElements.filter { it.dataElement() != null }
-            ProgramStageInternalAccessor.insertProgramStageDataElements(stage.toBuilder(), psdes).build()
+            stage.toBuilder().programStageDataElements(psdes).build()
         } ?: stage
     }
 

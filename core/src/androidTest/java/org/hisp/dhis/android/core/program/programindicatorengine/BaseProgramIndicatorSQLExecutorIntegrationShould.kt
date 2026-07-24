@@ -31,7 +31,8 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorIntegrationShould
-import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryCombo
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.categoryOptionCombo1
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.generator
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.BaseEvaluatorSamples.program
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -51,10 +52,11 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
         koin.get(),
         koin.get(),
         koin.get(),
+        koin.get(),
         databaseAdapter,
     )
 
-    protected val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo.uid())
+    protected val helper = BaseTrackerDataIntegrationHelper(categoryOptionCombo1.uid())
 
     protected suspend fun evaluateTeiCount(
         filter: String? = null,
@@ -138,6 +140,8 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
             .expression(expression)
             .filter(filter)
             .analyticsPeriodBoundaries(actualBoundaries)
+            .categoryCombo(ObjectWithUid.create(categoryCombo.uid()))
+            .attributeCombo(ObjectWithUid.create(categoryCombo.uid()))
             .build()
 
         return programIndicator.also {
@@ -148,10 +152,12 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
     private val defaultEventBoundaries: List<AnalyticsPeriodBoundary> =
         listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("EVENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),
@@ -160,10 +166,12 @@ internal open class BaseProgramIndicatorSQLExecutorIntegrationShould : BaseEvalu
     private val defaultEnrollmentBoundaries: List<AnalyticsPeriodBoundary> =
         listOf(
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("ENROLLMENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD)
                 .build(),
             AnalyticsPeriodBoundary.builder()
+                .programIndicator("programIndicatorUid")
                 .boundaryTarget("ENROLLMENT_DATE")
                 .analyticsPeriodBoundaryType(AnalyticsPeriodBoundaryType.BEFORE_END_OF_REPORTING_PERIOD)
                 .build(),

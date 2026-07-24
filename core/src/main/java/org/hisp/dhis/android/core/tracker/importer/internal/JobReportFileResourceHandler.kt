@@ -40,7 +40,7 @@ internal class JobReportFileResourceHandler internal constructor(
     suspend fun updateFileResourceStates(jobObjects: List<TrackerJobObject>) {
         val progress = D2ProgressManager(null)
 
-        val fileResources = jobObjects.flatMap { it.fileResources() }
+        val fileResources = jobObjects.flatMap { it.fileResources }
 
         fileResourceHelper.updateFileResourceStates(fileResources, FileResourceDataDomainType.TRACKER)
 

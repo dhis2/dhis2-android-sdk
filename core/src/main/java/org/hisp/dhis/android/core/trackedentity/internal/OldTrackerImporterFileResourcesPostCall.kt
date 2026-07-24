@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
@@ -38,7 +37,6 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceValue
 import org.hisp.dhis.android.core.imports.internal.ItemsWithFileResources
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -86,7 +84,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
         val uploadedFileResources = mutableListOf<String>()
         val updatedAttributes = trackedEntityInstance.trackedEntityAttributeValues()?.map { attributeValue ->
             fileResourceHelper.findAttributeFileResource(attributeValue, fileResources)?.let { fileResource ->
-                val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute()!!)
+                val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute())
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                     uploadedFileResources.add(it)
                 }
@@ -94,7 +92,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
             } ?: attributeValue
         }
 
-        val updatedEnrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
+        val updatedEnrollments = trackedEntityInstance.enrollments.orEmpty()
             .map { enrollment ->
                 uploadEnrollment(enrollment, fileResources)
                     .also { uploadedFileResources.addAll(it.second) }
@@ -102,8 +100,8 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
             }
 
         return Pair(
-            TrackedEntityInstanceInternalAccessor
-                .insertEnrollments(trackedEntityInstance.toBuilder(), updatedEnrollments)
+            trackedEntityInstance.toBuilder()
+                .enrollments(updatedEnrollments)
                 .trackedEntityAttributeValues(updatedAttributes)
                 .build(),
             uploadedFileResources,
@@ -115,7 +113,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
         fileResources: List<FileResource>,
     ): Pair<Enrollment, List<String>> {
         val uploadedFileResources = mutableListOf<String>()
-        val updatedEvents = EnrollmentInternalAccessor.accessEvents(enrollment)
+        val updatedEvents = enrollment.events().orEmpty()
             .map { event ->
                 uploadEvent(event, fileResources)
                     .also { uploadedFileResources.addAll(it.second) }
@@ -123,7 +121,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
             }
 
         return Pair(
-            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), updatedEvents).build(),
+            enrollment.toBuilder().events(updatedEvents).build(),
             uploadedFileResources,
         )
     }
@@ -135,7 +133,7 @@ internal class OldTrackerImporterFileResourcesPostCall internal constructor(
         val uploadedFileResources = mutableListOf<String>()
         val updatedDataValues = event.trackedEntityDataValues()?.map { dataValue ->
             fileResourceHelper.findDataValueFileResource(dataValue, fileResources)?.let { fileResource ->
-                val fValue = FileResourceValue.EventValue(dataValue.dataElement()!!)
+                val fValue = FileResourceValue.EventValue(dataValue.dataElement())
                 val newUid = fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
                     uploadedFileResources.add(it)
                 }

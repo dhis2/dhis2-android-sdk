@@ -150,19 +150,26 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
                     val clause = items.map { item ->
                         val operator = if (upper) item.operator().apiUpperOperator else item.operator().apiOperator
 
-                        ":" + operator + ":" + getAPIValue(item)
+                        ":" + operator + (getAPIValue(item)?.let { ":$it" } ?: "")
                     }
 
                     key + clause.joinToString(separator = "")
                 }
         }
 
-        private fun getAPIValue(item: RepositoryScopeFilterItem): String {
-            return if (item.operator() == FilterItemOperator.IN) {
-                val list = FilterOperatorsHelper.strToList(item.value()).map { escapeChars(it) }
-                list.joinToString(";")
-            } else {
-                escapeChars(item.value())
+        private fun getAPIValue(item: RepositoryScopeFilterItem): String? {
+            val value = item.value() ?: return null
+            return when (item.operator) {
+                FilterItemOperator.IN -> {
+                    val list = FilterOperatorsHelper.strToList(value).map { escapeChars(it) }
+                    list.joinToString(";")
+                }
+
+                FilterItemOperator.NOT_NULL_AND_NOT_BLANK,
+                FilterItemOperator.NULL_OR_BLANK,
+                -> null
+
+                else -> escapeChars(value)
             }
         }
 

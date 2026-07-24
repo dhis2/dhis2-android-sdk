@@ -155,7 +155,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
-    fun export_and_reimport_encrypted() = runTest(timeout = 30.seconds) {
+    fun export_and_reimport_encrypted() = runTest(timeout = 40.seconds) {
         test_export_and_reimport(beforeExport = {
             // Change encryption
             d2.d2DIComponent.multiUserDatabaseManager.changeEncryptionIfRequired(

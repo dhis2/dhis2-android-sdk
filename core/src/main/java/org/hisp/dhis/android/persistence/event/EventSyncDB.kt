@@ -7,7 +7,7 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.event.internal.EventSync
 import org.hisp.dhis.android.core.util.dateFormatNonNull
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.program.ProgramDB
 
@@ -47,7 +47,7 @@ internal data class EventSyncDB(
             .organisationUnitIdsHash(organisationUnitIdsHash)
             .downloadLimit(downloadLimit)
             .workingListsHash(workingListsHash)
-            .lastUpdated(lastUpdated.toJavaDate())
+            .lastUpdated(lastUpdated.toJavaDateNonNull())
             .build()
     }
 }

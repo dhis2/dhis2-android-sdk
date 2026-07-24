@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfigurationUtil.buildUserConfiguration
 import org.junit.Test
 
@@ -49,6 +50,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfig12 = DatabaseAccount.builder()
@@ -58,6 +60,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val userConfig22 = DatabaseAccount.builder()
@@ -67,6 +70,7 @@ class DatabasesConfigurationHelperShould {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val singleServerSingleUserConfig = DatabasesConfiguration.builder()
@@ -128,19 +132,37 @@ class DatabasesConfigurationHelperShould {
 
     @Test
     fun add_new_configuration_to_empty() {
-        val config = helper.addOrUpdateAccount(null, url1, username1, false)
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
         assertThat(config).isEqualTo(singleServerSingleUserConfig)
     }
 
     @Test
     fun add_new_configuration_to_single_server_single_user_in_same_server() {
-        val config = helper.addOrUpdateAccount(singleServerSingleUserConfig, url1, username2, false)
+        val config = helper.addOrUpdateAccount(
+            configuration = singleServerSingleUserConfig,
+            serverUrl = url1,
+            username = username2,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
         assertThat(config).isEqualTo(singleServer2UserConfig)
     }
 
     @Test
     fun add_new_configuration_to_single_server_single_user_in_other_server() {
-        val config = helper.addOrUpdateAccount(singleServerSingleUserConfig, url2, username2, false)
+        val config = helper.addOrUpdateAccount(
+            configuration = singleServerSingleUserConfig,
+            serverUrl = url2,
+            username = username2,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
         assertThat(
             DatabaseConfigurationHelper
                 .getLoggedAccount(config, username2, url2),
@@ -299,7 +321,13 @@ class DatabasesConfigurationHelperShould {
     @Test
     fun add_account_with_backslashes_updates_existing_account_with_forward_slashes() {
         val config = createConfigWithAccount(URL_WITH_SLASHES)
-        val updatedConfig = helper.addOrUpdateAccount(config, URL_WITH_BACKSLASHES, username1, false)
+        val updatedConfig = helper.addOrUpdateAccount(
+            configuration = config,
+            serverUrl = URL_WITH_BACKSLASHES,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
 
         assertThat(updatedConfig.accounts().size).isEqualTo(1)
     }
@@ -307,9 +335,57 @@ class DatabasesConfigurationHelperShould {
     @Test
     fun add_account_with_forward_slashes_updates_existing_account_with_backslashes() {
         val config = createConfigWithAccount(URL_WITH_BACKSLASHES)
-        val updatedConfig = helper.addOrUpdateAccount(config, URL_WITH_SLASHES, username1, false)
+        val updatedConfig = helper.addOrUpdateAccount(
+            configuration = config,
+            serverUrl = URL_WITH_SLASHES,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
 
         assertThat(updatedConfig.accounts().size).isEqualTo(1)
+    }
+
+    @Test
+    fun set_basic_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.BASIC,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.BASIC)
+    }
+
+    @Test
+    fun set_open_id_connect_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.OPEN_ID_CONNECT,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+    }
+
+    @Test
+    fun set_oauth2_authorization_type_when_adding_account() {
+        val config = helper.addOrUpdateAccount(
+            configuration = null,
+            serverUrl = url1,
+            username = username1,
+            encrypt = false,
+            authorizationType = AuthorizationType.OAUTH2,
+        )
+
+        assertThat(DatabaseConfigurationHelper.getLoggedAccount(config, username1, url1).authorizationType())
+            .isEqualTo(AuthorizationType.OAUTH2)
     }
 
     private fun createConfigWithAccount(serverUrl: String): DatabasesConfiguration {

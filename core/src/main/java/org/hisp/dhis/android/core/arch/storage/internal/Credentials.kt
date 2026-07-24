@@ -29,15 +29,23 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-data class Credentials(
+internal data class Credentials(
     val username: String,
     val serverUrl: String,
     val password: String?,
     val openIDConnectState: AuthState?,
     val oauth2State: OAuth2State? = null,
 ) {
+
+    val authorizationType: AuthorizationType = when {
+        openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
+        oauth2State != null -> AuthorizationType.OAUTH2
+        else -> AuthorizationType.BASIC
+    }
+
     fun getHash(): String? {
         return password?.let { UserHelper.md5(username, it) }
     }

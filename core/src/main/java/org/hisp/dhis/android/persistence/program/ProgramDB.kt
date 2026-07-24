@@ -16,7 +16,6 @@ import org.hisp.dhis.android.persistence.category.CategoryComboDB
 import org.hisp.dhis.android.persistence.common.AccessDB
 import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
-import org.hisp.dhis.android.persistence.common.ObjectWithUidDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
 import org.hisp.dhis.android.persistence.common.toDB
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeDB
@@ -94,6 +93,9 @@ internal data class ProgramDB(
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
     val enrollmentCategoryCombo: String,
+    val displayEnrollmentsLabel: String?,
+    val displayProgramStagesLabel: String?,
+    val displayEventsLabel: String?,
 ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
@@ -113,7 +115,6 @@ internal data class ProgramDB(
             displayFrontPageList(displayFrontPageList)
             programType?.let { programType(ProgramType.valueOf(it)) }
             relatedProgram?.let { relatedProgram(ObjectWithUid.create(it)) }
-            relatedProgram?.let { relatedProgram(ObjectWithUidDB(it).toDomain()) }
             trackedEntityType?.let { trackedEntityType(TrackedEntityType.builder().uid(it).build()) }
             categoryCombo(ObjectWithUid.create(categoryCombo))
             accessDataWrite?.let { access(it.toDomain()) }
@@ -134,13 +135,16 @@ internal data class ProgramDB(
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
             enrollmentCategoryCombo(ObjectWithUid.create(enrollmentCategoryCombo))
+            displayEnrollmentsLabel(displayEnrollmentsLabel)
+            displayProgramStagesLabel(displayProgramStagesLabel)
+            displayEventsLabel(displayEventsLabel)
         }.build()
     }
 }
 
 internal fun Program.toDB(): ProgramDB {
     return ProgramDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -174,16 +178,19 @@ internal fun Program.toDB(): ProgramDB {
         maxTeiCountToReturn = maxTeiCountToReturn(),
         featureType = featureType()?.name,
         accessLevel = accessLevel()?.name,
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         displayEnrollmentLabel = displayEnrollmentLabel(),
+        displayEnrollmentsLabel = displayEnrollmentsLabel(),
         displayFollowUpLabel = displayFollowUpLabel(),
         displayOrgUnitLabel = displayOrgUnitLabel(),
         displayRelationshipLabel = displayRelationshipLabel(),
         displayNoteLabel = displayNoteLabel(),
         displayTrackedEntityAttributeLabel = displayTrackedEntityAttributeLabel(),
         displayProgramStageLabel = displayProgramStageLabel(),
+        displayProgramStagesLabel = displayProgramStagesLabel(),
         displayEventLabel = displayEventLabel(),
+        displayEventsLabel = displayEventsLabel(),
         enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
     )
 }

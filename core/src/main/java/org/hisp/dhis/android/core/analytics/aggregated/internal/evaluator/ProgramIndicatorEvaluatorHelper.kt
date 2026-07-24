@@ -33,14 +33,19 @@ import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluatorHelper.getCategoryOptionClause
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.category.CategoryDataDimensionType
 import org.hisp.dhis.android.core.common.AggregationType
 import org.hisp.dhis.android.core.common.AnalyticsType
+import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
+import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
 import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundary
 import org.hisp.dhis.android.core.program.AnalyticsPeriodBoundaryType
 import org.hisp.dhis.android.core.program.BoundaryTargetType
 import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.program.internal.CategoryOptionMappingStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryParser
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.AnalyticsBoundaryTarget
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils
@@ -111,11 +116,14 @@ internal object ProgramIndicatorEvaluatorHelper {
             hasEndBoundary
     }
 
-    fun getEventWhereClause(
+    @Suppress("LongParameterList")
+    suspend fun getEventWhereClause(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
+        sqlVisitor: CommonExpressionVisitor,
+        mappingStore: CategoryOptionMappingStore,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -145,6 +153,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             queryMods = queryMods,
                         )
                     }
+
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
                             columnName = EventTableInfo.Columns.ORGANISATION_UNIT,
@@ -152,14 +161,18 @@ internal object ProgramIndicatorEvaluatorHelper {
                             builder = this,
                             metadata = metadata,
                         )
+
                     is Dimension.Category ->
-                        AnalyticsEvaluatorHelper.appendCategoryWhereClause(
+                        appendPICategoryWhereClause(
                             attributeColumnName = EventTableInfo.Columns.ATTRIBUTE_OPTION_COMBO,
-                            disaggregationColumnName = null,
+                            programIndicator = programIndicator,
                             items = entry.value,
                             builder = this,
                             metadata = metadata,
+                            sqlVisitor = sqlVisitor,
+                            mappingStore = mappingStore,
                         )
+
                     else -> {
                     }
                 }
@@ -167,11 +180,14 @@ internal object ProgramIndicatorEvaluatorHelper {
         }.build()
     }
 
-    fun getEnrollmentWhereClause(
+    @Suppress("LongParameterList")
+    suspend fun getEnrollmentWhereClause(
         programIndicator: ProgramIndicator,
         evaluationItem: AnalyticsServiceEvaluationItem,
         metadata: Map<String, MetadataItem>,
         queryMods: QueryMods?,
+        sqlVisitor: CommonExpressionVisitor,
+        mappingStore: CategoryOptionMappingStore,
     ): String {
         val items = AnalyticsDimensionHelper.getItemsByDimension(evaluationItem)
 
@@ -197,6 +213,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                             metadata = metadata,
                             queryMods = queryMods,
                         )
+
                     is Dimension.OrganisationUnit ->
                         AnalyticsEvaluatorHelper.appendOrgunitWhereClause(
                             columnName = EnrollmentTableInfo.Columns.ORGANISATION_UNIT,
@@ -204,7 +221,17 @@ internal object ProgramIndicatorEvaluatorHelper {
                             builder = this,
                             metadata = metadata,
                         )
-                    is Dimension.Category -> TODO()
+
+                    is Dimension.Category -> appendPICategoryWhereClause(
+                        attributeColumnName = null,
+                        programIndicator = programIndicator,
+                        items = entry.value,
+                        builder = this,
+                        metadata = metadata,
+                        sqlVisitor = sqlVisitor,
+                        mappingStore = mappingStore,
+                    )
+
                     else -> {
                     }
                 }
@@ -235,6 +262,89 @@ internal object ProgramIndicatorEvaluatorHelper {
                 builder.appendComplexQuery(it)
             }
         }
+    }
+
+    @Suppress("LongParameterList", "NestedBlockDepth")
+    private suspend fun appendPICategoryWhereClause(
+        attributeColumnName: String?,
+        programIndicator: ProgramIndicator,
+        items: List<DimensionItem>,
+        builder: WhereClauseBuilder,
+        metadata: Map<String, MetadataItem>,
+        sqlVisitor: CommonExpressionVisitor? = null,
+        mappingStore: CategoryOptionMappingStore? = null,
+    ): WhereClauseBuilder {
+        val categoryItems = items.map { it as DimensionItem.CategoryItem }
+        if (categoryItems.isEmpty()) return builder
+
+        val isAttribute = (metadata[categoryItems.first().uid] as? MetadataItem.CategoryItem)
+            ?.item?.dataDimensionType() == CategoryDataDimensionType.ATTRIBUTE.name
+
+        val innerBuilder = WhereClauseBuilder().apply {
+            if (isAttribute) {
+                categoryItems.forEach { item ->
+                    attributeColumnName?.let {
+                        appendOrInSubQuery(
+                            it,
+                            getCategoryOptionClause(item.uid, item.categoryOption),
+                        )
+                    }
+                }
+            } else {
+                appendComplexQuery(
+                    buildDisaggregationCategoryFilter(
+                        programIndicator = programIndicator,
+                        items = categoryItems,
+                        sqlVisitor = sqlVisitor!!,
+                        mappingStore = mappingStore!!,
+                    ),
+                )
+            }
+        }
+
+        return if (innerBuilder.isEmpty) builder else builder.appendComplexQuery(innerBuilder.build())
+    }
+
+    @Suppress("ReturnCount")
+    private suspend fun buildDisaggregationCategoryFilter(
+        programIndicator: ProgramIndicator,
+        items: List<DimensionItem.CategoryItem>,
+        sqlVisitor: CommonExpressionVisitor,
+        mappingStore: CategoryOptionMappingStore,
+    ): String {
+        if (items.isEmpty()) return "1"
+
+        val filtersByCategoryAndOption = getFiltersByCategoryAndOption(programIndicator, mappingStore)
+        if (filtersByCategoryAndOption.isEmpty()) return "0"
+
+        val itemsByCategory = items.groupBy { (it.dimension as Dimension.Category).uid }
+
+        val categoryFragments = itemsByCategory.map { (categoryUid, categoryItems) ->
+            val itemFragments = categoryItems.map { item ->
+                val filter = filtersByCategoryAndOption[categoryUid to item.categoryOption]
+                    ?: return@map "0"
+
+                when (filter.trim()) {
+                    "true", "1", "" -> "1"
+                    else -> "(${CommonParser.visit(filter, sqlVisitor)})"
+                }
+            }
+            itemFragments.joinToString(" OR ", prefix = "(", postfix = ")")
+        }
+
+        return categoryFragments.joinToString(" AND ")
+    }
+
+    private suspend fun getFiltersByCategoryAndOption(
+        programIndicator: ProgramIndicator,
+        mappingStore: CategoryOptionMappingStore,
+    ): Map<Pair<String, String>, String> {
+        val mappingIds = programIndicator.categoryMappingIds().orEmpty()
+        val programUid = programIndicator.program()?.uid()
+        if (mappingIds.isEmpty() || programUid == null) return emptyMap()
+
+        return mappingStore
+            .selectFiltersForProgram(programUid, mappingIds)
     }
 
     private fun buildDefaultBoundariesClause(
@@ -342,6 +452,7 @@ internal object ProgramIndicatorEvaluatorHelper {
                 when (analyticsType) {
                     AnalyticsType.EVENT ->
                         throw AnalyticsException.InvalidArguments("PS_EVENTDATE not supported for EVENT analytics")
+
                     AnalyticsType.ENROLLMENT -> {
                         val whereClauses = boundaries.map {
                             getBoundaryCondition(
@@ -375,6 +486,7 @@ internal object ProgramIndicatorEvaluatorHelper {
             AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
             AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD,
             -> ">="
+
             else -> "<="
         }
 
@@ -382,6 +494,7 @@ internal object ProgramIndicatorEvaluatorHelper {
             AnalyticsPeriodBoundaryType.AFTER_START_OF_REPORTING_PERIOD,
             AnalyticsPeriodBoundaryType.BEFORE_START_OF_REPORTING_PERIOD,
             -> startDate
+
             else -> endDate
         }
 

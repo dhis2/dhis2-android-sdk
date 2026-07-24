@@ -38,9 +38,9 @@ internal data class AttributeValueDTO(
     val attribute: ObjectWithUidDTO?,
 ) {
     fun toDomain(): AttributeValue {
-        return AttributeValue.builder()
-            .value(value)
-            .attribute(attribute?.toDomain())
-            .build()
+        return AttributeValue.builder().apply {
+            value?.let { value(it) }
+            attribute?.let { attribute(it.toDomain()) }
+        }.build()
     }
 }

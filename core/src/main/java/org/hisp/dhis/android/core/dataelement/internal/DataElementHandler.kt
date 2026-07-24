@@ -63,7 +63,7 @@ internal class DataElementHandler(
             dataElementLegendSetLinkHandler.handleMany(
                 o.uid(),
                 o.legendSets(),
-            ) { legendSet: ObjectWithUid, sortOrder: Int? ->
+            ) { legendSet: ObjectWithUid, sortOrder: Int ->
                 DataElementLegendSetLink.builder()
                     .dataElement(o.uid())
                     .legendSet(legendSet.uid())

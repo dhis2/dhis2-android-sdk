@@ -104,7 +104,7 @@ internal data class VisualizationDB(
 
 internal fun Visualization.toDB(): VisualizationDB {
     return VisualizationDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

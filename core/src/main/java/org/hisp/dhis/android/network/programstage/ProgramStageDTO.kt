@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ValidationStrategy
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
@@ -88,6 +87,7 @@ internal data class ProgramStageDTO(
     val displayProgramStageLabel: String?,
     val eventLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValueDTO>? = emptyList(),
 ) : BaseIdentifiableObjectDTO {
     fun toDomain(): ProgramStage {
@@ -113,15 +113,9 @@ internal data class ProgramStageDTO(
             blockEntryForm(blockEntryForm)
             minDaysFromStart(minDaysFromStart)
             standardInterval(standardInterval)
-            enableUserAssignment(enableUserAssignment)
-            ProgramStageInternalAccessor.insertProgramStageSections(
-                this,
-                programStageSections?.map { it.toDomain() },
-            )
-            ProgramStageInternalAccessor.insertProgramStageDataElements(
-                this,
-                programStageDataElements?.map { it.toDomain() },
-            )
+            enableUserAssignment?.let { enableUserAssignment(it) }
+            programStageSections(programStageSections?.map { it.toDomain(id) })
+            programStageDataElements(programStageDataElements?.map { it.toDomain() })
             periodType(periodType?.let { PeriodType.valueOf(it) })
             program(program?.toDomain())
             access?.let { access(access.toDomain()) }
@@ -129,6 +123,7 @@ internal data class ProgramStageDTO(
             validationStrategy(validationStrategy?.let { ValidationStrategy.valueOf(it) })
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel)
             attributeValues(attributeValues?.map { it.toDomain() })
         }
             .build()

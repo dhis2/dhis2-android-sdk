@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.loginconfig
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.server.LoginConfig
+import org.hisp.dhis.android.core.server.OauthConfig
 import org.hisp.dhis.android.core.server.internal.LoginConfigNetworkHandler
 import org.koin.core.annotation.Singleton
 
@@ -49,10 +50,15 @@ internal class LoginConfigNetworkHandlerImpl(
     }
 
     override suspend fun loginConfig(): LoginConfig {
-        val loginConfigDTO = coroutineAPICallExecutor.wrap {
-            service.getLoginConfig()
-        }.getOrThrow()
+        val loginConfigDTO = service.getLoginConfig()
 
         return loginConfigDTO.toDomain()
+    }
+
+    override suspend fun oauthConfigFor(
+        serverUrl: String,
+        oauthInfoPath: String,
+    ): OauthConfig {
+        return service.getOauthConfigFor(serverUrl, oauthInfoPath).toDomain()
     }
 }

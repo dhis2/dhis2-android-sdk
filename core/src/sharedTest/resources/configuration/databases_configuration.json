@@ -7,14 +7,16 @@
       "serverUrl": "server1",
       "databaseName": "dbname1.db",
       "encrypted": true,
-      "databaseCreationDate": "2014-06-06T20:44:21.375"
+      "databaseCreationDate": "2014-06-06T20:44:21.375",
+      "authorizationType": "OAUTH2"
     },
     {
       "username": "user2",
       "serverUrl": "server2",
       "databaseName": "dbname2.db",
       "encrypted": true,
-      "databaseCreationDate": "2014-06-04T20:44:21.375"
+      "databaseCreationDate": "2014-06-04T20:44:21.375",
+      "authorizationType": "OPEN_ID_CONNECT"
     }
   ]
 }

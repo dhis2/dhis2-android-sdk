@@ -54,7 +54,7 @@ internal class DataSetHandler(
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 
     override suspend fun afterObjectHandled(o: DataSet, action: HandleAction) {
-        val sections = DataSetInternalAccessor.accessSections(o)
+        val sections = o.sections()
         sectionHandler.handleMany(sections)
         compulsoryDataElementOperandHandler.handleMany(o.compulsoryDataElementOperands())
         dataSetCompulsoryDataElementOperandLinkHandler.handleMany(

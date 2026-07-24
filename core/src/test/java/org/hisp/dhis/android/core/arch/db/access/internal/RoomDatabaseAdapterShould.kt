@@ -192,7 +192,13 @@ class RoomDatabaseAdapterShould {
 
     @Test
     fun `upsertObject calls updateOrInsert on correct store`() = runTest {
-        val dataValue = DataValue.builder().build()
+        val dataValue = DataValue.builder()
+            .dataElement("dataElementId")
+            .period("2023-01")
+            .organisationUnit("orgUnitId")
+            .categoryOptionCombo("categoryOptionComboId")
+            .attributeOptionCombo("attributeOptionComboId")
+            .build()
         val expectedAction = HandleAction.Update
 
         // Stub

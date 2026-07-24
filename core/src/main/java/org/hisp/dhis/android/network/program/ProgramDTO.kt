@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -92,6 +91,7 @@ internal data class ProgramDTO(
     val accessLevel: String?,
     val enrollmentLabel: String?,
     val displayEnrollmentLabel: String?,
+    val displayEnrollmentsLabel: String?,
     val followUpLabel: String?,
     val displayFollowUpLabel: String?,
     val orgUnitLabel: String?,
@@ -104,10 +104,13 @@ internal data class ProgramDTO(
     val displayTrackedEntityAttributeLabel: String?,
     val programStageLabel: String?,
     val displayProgramStageLabel: String?,
+    val displayProgramStagesLabel: String?,
     val eventLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
     val attributeValues: List<AttributeValueDTO>?,
     val enrollmentCategoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
+    val categoryMappings: List<CategoryMappingDTO>?,
 ) : BaseNameableObjectDTO {
     @Suppress("ComplexMethod")
     fun toDomain(): Program {
@@ -127,33 +130,34 @@ internal data class ProgramDTO(
             useFirstStageDuringRegistration(useFirstStageDuringRegistration)
             displayFrontPageList(displayFrontPageList)
             programType(programType?.let { ProgramType.valueOf(programType) })
-            ProgramInternalAccessor.insertProgramTrackedEntityAttributes(
-                this,
-                programTrackedEntityAttributes?.map { it.toDomain() },
-            )
+            programTrackedEntityAttributes(programTrackedEntityAttributes?.map { it.toDomain() })
             relatedProgram(relatedProgram?.toDomain())
             trackedEntityType(trackedEntityType?.toDomain())
             categoryCombo(categoryCombo.toDomain())
             access?.let { access(it.toDomain()) }
-            ProgramInternalAccessor.insertProgramRuleVariables(this, programRuleVariables?.map { it.toDomain() })
+            programRuleVariables(programRuleVariables?.map { it.toDomain() })
             expiryDays(expiryDays)
             completeEventsExpiryDays(completeEventsExpiryDays)
             expiryPeriodType(expiryPeriodType?.let { PeriodType.valueOf(expiryPeriodType) })
             minAttributesRequiredToSearch(minAttributesRequiredToSearch)
             maxTeiCountToReturn(maxTeiCountToReturn)
-            ProgramInternalAccessor.insertProgramSections(this, programSections?.map { it.toDomain() })
-            featureType(featureType?.let { FeatureType.valueOf(featureType) })
+            programSections(programSections?.map { it.toDomain() })
+            featureType(featureType?.let { FeatureType.valueOf(it) })
             accessLevel(accessLevel?.let { AccessLevel.valueOf(accessLevel) })
             displayEnrollmentLabel(displayEnrollmentLabel ?: enrollmentLabel)
+            displayEnrollmentsLabel(displayEnrollmentsLabel)
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel ?: orgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel ?: relationshipLabel)
             displayNoteLabel(displayNoteLabel ?: noteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel ?: trackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)
+            displayProgramStagesLabel(displayProgramStagesLabel)
             displayEventLabel(displayEventLabel ?: eventLabel)
+            displayEventsLabel(displayEventsLabel)
             attributeValues?.let { attributeValues(it.map { it.toDomain() }) }
             enrollmentCategoryCombo(enrollmentCategoryCombo.toDomain())
+            categoryMappings(categoryMappings?.map { it.toDomain(id) })
         }.build()
     }
 }

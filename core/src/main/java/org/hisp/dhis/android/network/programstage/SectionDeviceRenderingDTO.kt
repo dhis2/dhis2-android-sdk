@@ -37,6 +37,6 @@ internal data class SectionDeviceRenderingDTO(
     val type: String?,
 ) {
     fun toDomain(): SectionDeviceRendering {
-        return SectionDeviceRendering.create(type?.let { SectionRenderingType.valueOf(it) })
+        return SectionDeviceRendering(type?.let { SectionRenderingType.valueOf(it) })
     }
 }

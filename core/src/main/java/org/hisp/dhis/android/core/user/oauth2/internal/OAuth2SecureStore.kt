@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.oauth2.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
+import org.hisp.dhis.android.core.server.OauthConfig
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -62,6 +63,24 @@ internal class OAuth2SecureStore(
         get() = secureStore.getData(KEY_TEMP_CODE_VERIFIER)
         set(value) = secureStore.setData(KEY_TEMP_CODE_VERIFIER, value)
 
+    var authorizationEndpoint: String?
+        get() = secureStore.getData(KEY_AUTHORIZATION_ENDPOINT)
+        set(value) = secureStore.setData(KEY_AUTHORIZATION_ENDPOINT, value)
+
+    var jwksUri: String?
+        get() = secureStore.getData(KEY_JWKS_URI)
+        set(value) = secureStore.setData(KEY_JWKS_URI, value)
+
+    fun setEndpoints(config: OauthConfig) {
+        authorizationEndpoint = config.authorizationEndpoint
+        jwksUri = config.jwksUri
+    }
+
+    fun clearEndpoints() {
+        authorizationEndpoint = null
+        jwksUri = null
+    }
+
     fun clearRegistration() {
         clientId = null
         keyId = null
@@ -75,6 +94,12 @@ internal class OAuth2SecureStore(
         tempCodeVerifier = null
     }
 
+    fun clearAll() {
+        clearRegistration()
+        clearTemporaryData()
+        clearEndpoints()
+    }
+
     companion object {
         private const val KEY_CLIENT_ID = "oauth2_client_id"
         private const val KEY_KEY_ID = "oauth2_key_id"
@@ -83,5 +108,7 @@ internal class OAuth2SecureStore(
         private const val KEY_REGISTRATION_DATE = "oauth2_registration_date"
         private const val KEY_TEMP_STATE = "oauth2_temp_state"
         private const val KEY_TEMP_CODE_VERIFIER = "oauth2_temp_code_verifier"
+        private const val KEY_AUTHORIZATION_ENDPOINT = "oauth2_authorization_endpoint"
+        private const val KEY_JWKS_URI = "oauth2_jwks_uri"
     }
 }

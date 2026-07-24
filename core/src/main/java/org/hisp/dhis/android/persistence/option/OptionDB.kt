@@ -11,7 +11,6 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 
 @Entity(
     tableName = "Option",
@@ -48,7 +47,7 @@ internal data class OptionDB(
     override fun toDomain(): Option {
         return Option.builder()
             .applyBaseIdentifiableFields(this@OptionDB)
-            .applyStyleFields(this@OptionDB)
+            .style(this@OptionDB.toDomainStyle())
             .optionSet(ObjectWithUid.create(optionSet))
             .sortOrder(sortOrder)
             .build()
@@ -63,7 +62,7 @@ internal fun Option.toDB(): OptionDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        optionSet = optionSet()!!.uid(),
+        optionSet = optionSet().uid(),
         sortOrder = sortOrder(),
         color = style().color(),
         icon = style().icon(),

@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -44,7 +43,6 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
@@ -444,10 +442,10 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
                     val enrollment = enrollments[0]
                     val events = d2.eventModule().events().byEnrollmentUid().eq(enrollment.uid()).blockingGet()
                     if (events.size == 1) {
-                        val enrollmentWithEvents = EnrollmentInternalAccessor
-                            .insertEvents(enrollment.toBuilder(), events).build()
-                        return TrackedEntityInstanceInternalAccessor
-                            .insertEnrollments(instance.toBuilder(), listOf(enrollmentWithEvents))
+                        val enrollmentWithEvents = enrollment.toBuilder()
+                            .events(events).build()
+                        return instance.toBuilder()
+                            .enrollments(listOf(enrollmentWithEvents))
                             .build()
                     }
                 }
@@ -462,18 +460,18 @@ abstract class TrackedEntityInstanceAPIShould internal constructor(
             for (event in getEvents(enrollment)) {
                 events.add(event!!.toBuilder().deleted(true).build())
             }
-            enrollments.add(EnrollmentInternalAccessor.insertEvents(enrollment!!.toBuilder(), events).build())
+            enrollments.add(enrollment!!.toBuilder().events(events).build())
         }
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(instance.toBuilder(), enrollments)
+        return instance.toBuilder()
+            .enrollments(enrollments)
             .build()
     }
 
     private fun getEnrollments(trackedEntityInstance: TrackedEntityInstance): List<Enrollment?> {
-        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
+        return trackedEntityInstance.enrollments.orEmpty()
     }
 
     private fun getEvents(enrollment: Enrollment?): List<Event?> {
-        return EnrollmentInternalAccessor.accessEvents(enrollment)
+        return enrollment?.events() ?: emptyList()
     }
 }

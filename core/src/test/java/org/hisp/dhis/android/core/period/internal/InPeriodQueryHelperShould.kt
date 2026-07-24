@@ -51,9 +51,9 @@ class InPeriodQueryHelperShould {
         val date6 = formatter.parse("2006-12-24T12:24:25.203")
 
         val datePeriods: List<DatePeriod> = listOf(
-            DatePeriod.create(date1, date2),
-            DatePeriod.create(date3, date4),
-            DatePeriod.create(date5, date6),
+            DatePeriod(date1, date2),
+            DatePeriod(date3, date4),
+            DatePeriod(date5, date6),
         )
 
         val inPeriodQuery = buildInPeriodsQuery("COL1", datePeriods, formatter)
@@ -75,8 +75,8 @@ class InPeriodQueryHelperShould {
         val date4 = formatter.parse("2004-12-24T12:24:25.203")
 
         val datePeriods: List<DatePeriod> = listOf(
-            DatePeriod.create(date1, date2),
-            DatePeriod.create(date3, date4),
+            DatePeriod(date1, date2),
+            DatePeriod(date3, date4),
         )
 
         val inPeriodQuery = buildInPeriodsQuery("date(COL1)", datePeriods, formatter)

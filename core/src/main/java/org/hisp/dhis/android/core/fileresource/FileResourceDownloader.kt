@@ -28,8 +28,10 @@
 package org.hisp.dhis.android.core.fileresource
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
@@ -56,12 +58,21 @@ class FileResourceDownloader internal constructor(
      *
      * @return -
      */
+    fun flowDownload(): Flow<D2Progress> {
+        return call.download(params)
+    }
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<D2Progress> {
-        return call.download(params).asObservable()
+        return flowDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<D2Progress> {
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        flowDownload().collectAndWrapException()
     }
 
     fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {

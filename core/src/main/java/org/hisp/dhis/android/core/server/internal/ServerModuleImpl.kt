@@ -40,11 +40,20 @@ import org.koin.core.annotation.Singleton
 internal class ServerModuleImpl(
     private val loginConfigCall: LoginConfigCall,
 ) : ServerModule {
+    @Deprecated(message = "Use rxCheckServerUrl instead", ReplaceWith("rxCheckServerUrl(serverUrl)"))
     override fun checkServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>> {
+        return rxSingle { loginConfigCall.checkServerUrl(serverUrl) }
+    }
+
+    override fun rxCheckServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>> {
         return rxSingle { loginConfigCall.checkServerUrl(serverUrl) }
     }
 
     override fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
         return runBlocking { loginConfigCall.checkServerUrl(serverUrl) }
+    }
+
+    override suspend fun suspendCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
+        return loginConfigCall.checkServerUrl(serverUrl)
     }
 }

@@ -35,22 +35,23 @@ import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationType
 
 @Serializable
 internal data class AnalyticsDhisVisualizationDTO(
-    val id: String?,
-    val scopeUid: String?,
-    val groupUid: String?,
-    val groupName: String?,
-    val scope: String?,
+    val id: String,
     val name: String?,
     val timestamp: String?,
     val type: String?,
 ) {
-    fun toDomain(): AnalyticsDhisVisualization {
+    fun toDomain(
+        groupUid: String,
+        groupName: String,
+        scope: AnalyticsDhisVisualizationScope,
+        scopeUid: String?,
+    ): AnalyticsDhisVisualization {
         return AnalyticsDhisVisualization.builder()
             .uid(id)
             .scopeUid(scopeUid)
             .groupUid(groupUid)
             .groupName(groupName)
-            .scope(scope?.let { AnalyticsDhisVisualizationScope.valueOf(it) })
+            .scope(scope)
             .name(name)
             .timestamp(timestamp)
             .type(

@@ -68,7 +68,7 @@ internal data class ValidationRuleDTO(
                 .applyBaseNameableFields(this)
                 .instruction(instruction)
                 .importance(ValidationRuleImportance.valueOf(importance))
-                .operator(ValidationRuleOperator.valueOf(operator))
+                .operator(ValidationRuleOperator.fromApiName(operator))
                 .periodType(PeriodType.valueOf(periodType))
                 .skipFormValidation(skipFormValidation)
                 .leftSide(leftSide.toDomain())
@@ -85,13 +85,7 @@ internal data class ValidationRuleDTO(
 internal class ValidationRulePayload(
     override val pager: PagerDTO?,
     @SerialName("validationRules") override val items: List<ValidationRuleDTO> = emptyList(),
-) : PayloadJson<ValidationRuleDTO>(pager, items) {
-    fun mapNotNullItems(
-        transform: (ValidationRuleDTO) -> ValidationRule?,
-    ): PayloadJson<ValidationRule> {
-        return PayloadJson(pager, items.mapNotNull(transform))
-    }
-}
+) : PayloadJson<ValidationRuleDTO>(pager, items)
 
 @Serializable
 internal class ValidationRuleDatasetPayload(

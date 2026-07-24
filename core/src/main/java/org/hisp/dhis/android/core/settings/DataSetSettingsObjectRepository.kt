@@ -45,11 +45,11 @@ class DataSetSettingsObjectRepository internal constructor(
             null
         } else {
             val specifics = settings
-                .filter { it.uid() != null }
-                .associateBy { it.uid() }
+                .filter { it.uid != null }
+                .associateBy { it.uid!! }
 
             DataSetSettings.builder()
-                .globalSettings(settings.find { it.uid() == null })
+                .globalSettings(settings.find { it.uid() == null } ?: DataSetSetting.builder().build())
                 .specificSettings(specifics)
                 .build()
         }

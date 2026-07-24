@@ -57,7 +57,7 @@ class TrackerSyncLastUpdatedManagerShould {
 
     @Before
     fun setUp() = runTest {
-        whenever(params.uids()).thenReturn(emptyList())
+        whenever(params.uids).thenReturn(emptyList())
         manager = TrackerSyncLastUpdatedManager(store)
     }
 

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,6 +43,7 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         secureStore.setData(SERVER_URL_KEY, credentials.serverUrl)
         secureStore.setData(PASSWORD_KEY, credentials.password)
         secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
+        secureStore.setData(OAUTH2_STATE_KEY, credentials.oauth2State?.jsonSerializeString())
     }
 
     override fun setServerUrl(serverUrl: String) {
@@ -69,7 +71,9 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
                 val password = secureStore.getData(PASSWORD_KEY)
                 val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
                 val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
-                return Credentials(username, serverUrl, password, openIDConnectState)
+                val oauth2StateStr = secureStore.getData(OAUTH2_STATE_KEY)
+                val oauth2State = oauth2StateStr?.let { OAuth2State.jsonDeserialize(it) }
+                return Credentials(username, serverUrl, password, openIDConnectState, oauth2State)
             }
         } catch (e: RuntimeException) {
             remove()
@@ -83,6 +87,7 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         secureStore.removeData(SERVER_URL_KEY)
         secureStore.removeData(PASSWORD_KEY)
         secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
+        secureStore.removeData(OAUTH2_STATE_KEY)
     }
 
     companion object {
@@ -90,5 +95,6 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         internal const val SERVER_URL_KEY = "serverUrl"
         private const val PASSWORD_KEY = "password"
         private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
+        private const val OAUTH2_STATE_KEY = "oauth2State"
     }
 }

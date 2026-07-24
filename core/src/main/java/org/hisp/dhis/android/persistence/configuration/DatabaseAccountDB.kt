@@ -30,6 +30,7 @@ package org.hisp.dhis.android.persistence.configuration
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.util.dateFormat
@@ -49,6 +50,7 @@ internal data class DatabaseAccountDB(
     val syncState: String?,
     val importDB: DatabaseAccountImportDB?,
     val loginConfig: LoginConfigDB?,
+    val authorizationType: AuthorizationType?,
 ) : EntityDB<DatabaseAccount> {
 
     override fun toDomain(): DatabaseAccount {
@@ -62,6 +64,7 @@ internal data class DatabaseAccountDB(
             syncState(syncState?.let { State.valueOf(it) })
             importDB(importDB?.toDomain())
             loginConfig(loginConfig?.toDomain())
+            authorizationType(authorizationType ?: AuthorizationType.BASIC)
         }.build()
     }
 }
@@ -77,5 +80,6 @@ internal fun DatabaseAccount.toDB(): DatabaseAccountDB {
         syncState = syncState()?.name,
         importDB = importDB()?.toDB(),
         loginConfig = loginConfig()?.toDB(),
+        authorizationType = authorizationType() ?: AuthorizationType.BASIC,
     )
 }

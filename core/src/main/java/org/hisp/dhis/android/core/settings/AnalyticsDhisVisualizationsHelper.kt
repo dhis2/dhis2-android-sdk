@@ -37,8 +37,7 @@ fun generateGroups(
 ): AnalyticsDhisVisualizationsSetting {
     val visualizationsByScope: Map<AnalyticsDhisVisualizationScope, List<AnalyticsDhisVisualization>> =
         analyticsDhisVisualizations
-            .filter { it.scope() != null }
-            .groupBy { it.scope()!! }
+            .groupBy { it.scope() }
 
     return AnalyticsDhisVisualizationsSetting
         .builder()
@@ -59,6 +58,8 @@ private fun generateGroupList(analyticsDhisVisualizations: List<AnalyticsDhisVis
     } ?: emptyList()
 
 private fun generateScopeGroups(analyticsDhisVisualizations: List<AnalyticsDhisVisualization>?) =
-    analyticsDhisVisualizations?.groupBy { it.scopeUid() }?.mapValues {
-        generateGroupList(it.value)
-    } ?: emptyMap()
+    analyticsDhisVisualizations
+        ?.filter { it.scopeUid() != null }
+        ?.groupBy { it.scopeUid()!! }
+        ?.mapValues { generateGroupList(it.value) }
+        ?: emptyMap()

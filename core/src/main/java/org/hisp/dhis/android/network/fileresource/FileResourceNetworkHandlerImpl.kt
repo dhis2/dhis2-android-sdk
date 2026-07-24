@@ -76,14 +76,14 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromTrackedEntityAttribute(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
                 dimension,
             )
         } else {
             service.getImageFromTrackedEntityAttribute41(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
                 dimension,
             )
         }
@@ -94,13 +94,13 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromTrackedEntityAttribute(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
             )
         } else {
             service.getFileFromTrackedEntityAttribute41(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
             )
         }
     }
@@ -108,14 +108,14 @@ internal class FileResourceNetworkHandlerImpl(
     override suspend fun getImageFromEventValue(v: TrackedEntityDataValue, dimension: String): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromEventValue(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 dimension,
             )
         } else {
             service.getFileFromEventValue41(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 dimension,
             )
         }
@@ -126,13 +126,13 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromEventValue(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
             )
         } else {
             service.getFileFromEventValue41(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 DimensionSize.ORIGINAL_NAME,
             )
         }
@@ -146,10 +146,10 @@ internal class FileResourceNetworkHandlerImpl(
 
     override suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray {
         return service.getFileFromDataValue(
-            v.dataElement()!!,
-            v.period()!!,
-            v.organisationUnit()!!,
-            v.attributeOptionCombo()!!,
+            v.dataElement(),
+            v.period(),
+            v.organisationUnit(),
+            v.attributeOptionCombo(),
             dimension,
         )
     }

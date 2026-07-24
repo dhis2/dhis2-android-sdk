@@ -74,6 +74,11 @@ class EventDataFilterConnector<R : BaseRepository> internal constructor(
         return repositoryFactory.updated(filter)
     }
 
+    fun isEmpty(empty: Boolean): R {
+        val filter = EventDataFilter.builder().dataItem(key).isEmpty(empty).build()
+        return repositoryFactory.updated(filter)
+    }
+
     fun inRelativePeriod(period: RelativePeriod): R {
         val dateFilter = DateFilterPeriod.builder().type(DatePeriodType.RELATIVE).period(period).build()
         val filter = EventDataFilter.builder().dataItem(key).dateFilter(dateFilter).build()

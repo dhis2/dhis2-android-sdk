@@ -30,7 +30,7 @@ import org.hisp.dhis.android.processor.ParentColumn
 internal data class ProgramIndicatorLegendSetLinkDB(
     @ParentColumn val programIndicator: String,
     val legendSet: String,
-    val sortOrder: Int?,
+    val sortOrder: Int,
 ) : EntityDB<ProgramIndicatorLegendSetLink> {
 
     override fun toDomain(): ProgramIndicatorLegendSetLink {
@@ -44,8 +44,8 @@ internal data class ProgramIndicatorLegendSetLinkDB(
 
 internal fun ProgramIndicatorLegendSetLink.toDB(): ProgramIndicatorLegendSetLinkDB {
     return ProgramIndicatorLegendSetLinkDB(
-        programIndicator = programIndicator()!!,
-        legendSet = legendSet()!!,
+        programIndicator = programIndicator(),
+        legendSet = legendSet(),
         sortOrder = sortOrder(),
     )
 }

@@ -81,6 +81,13 @@ internal class FilterOperatorHelper(
                 filterItems.add(filterBuilder.operator(FilterItemOperator.LE).value(dateValue).build())
             }
         }
+        filter.isEmpty?.let {
+            if (it) {
+                filterItems.add(filterBuilder.operator(FilterItemOperator.NULL_OR_BLANK).build())
+            } else {
+                filterItems.add(filterBuilder.operator(FilterItemOperator.NOT_NULL_AND_NOT_BLANK).build())
+            }
+        }
 
         return filterItems
     }

@@ -95,4 +95,36 @@ internal class LogInExceptions internal constructor(
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }
+
+    fun noActiveSessionError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+            .errorDescription("No active session")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun pinRequiresTokenBasedAccountError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.INVALID_CONFIGURATION)
+            .errorDescription("PIN can only be set for OAuth2 or OpenID Connect accounts")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun noAuthenticatedUserPersistedError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+            .errorDescription("No authenticated user persisted")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun incorrectPinError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.BAD_CREDENTIALS)
+            .errorDescription("Current PIN is incorrect")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
 }

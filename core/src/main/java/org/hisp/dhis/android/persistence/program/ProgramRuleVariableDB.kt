@@ -81,7 +81,7 @@ internal data class ProgramRuleVariableDB(
 
 internal fun ProgramRuleVariable.toDB(): ProgramRuleVariableDB {
     return ProgramRuleVariableDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

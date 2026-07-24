@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.ProgramStageDataElement
-import org.hisp.dhis.android.core.program.ProgramStageInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.junit.Before
 import org.junit.Test
@@ -88,10 +87,8 @@ class ProgramStageHandlerShould {
 
         whenever(programStage.uid()).thenReturn("test_program_stage_uid")
         whenever(programStage.style()).thenReturn(objectStyle)
-        whenever(ProgramStageInternalAccessor.accessProgramStageDataElements(programStage))
-            .thenReturn(programStageDataElements)
-        whenever(ProgramStageInternalAccessor.accessProgramStageSections(programStage))
-            .thenReturn(programStageSections)
+        whenever(programStage.programStageDataElements()).thenReturn(programStageDataElements)
+        whenever(programStage.programStageSections()).thenReturn(programStageSections)
         whenever(dataAccess.read()).thenReturn(true)
         whenever(access.data()).thenReturn(dataAccess)
         whenever(programStage.access()).thenReturn(access)
@@ -112,7 +109,7 @@ class ProgramStageHandlerShould {
     @Throws(Exception::class)
     fun call_program_stage_section_handler() = runTest {
         programStageHandler.handle(programStage)
-        verify(programStageSectionHandler).handleMany(eq(programStageSections), any())
+        verify(programStageSectionHandler).handleMany(eq(programStageSections))
     }
 
     @Test

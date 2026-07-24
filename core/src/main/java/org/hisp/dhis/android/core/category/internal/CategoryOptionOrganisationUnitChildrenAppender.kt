@@ -53,7 +53,7 @@ internal class CategoryOptionOrganisationUnitChildrenAppender private constructo
             links.isEmpty() -> null
             links.all { it.restriction() == NOT_RESTRICTED } -> null
             links.all { it.restriction() == NOT_ACCESSIBLE_TO_USER } -> emptyList()
-            else -> links.map { ObjectWithUid.create(it.organisationUnit()) }
+            else -> links.map { ObjectWithUid.create(it.organisationUnit()!!) }
         }
 
         builder.organisationUnits(organisationUnit)

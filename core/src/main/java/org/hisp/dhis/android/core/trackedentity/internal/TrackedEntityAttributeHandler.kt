@@ -55,7 +55,7 @@ internal class TrackedEntityAttributeHandler(
             trackedEntityAttributeLegendSetLinkHandler.handleMany(
                 o.uid(),
                 o.legendSets(),
-            ) { legendSet: ObjectWithUid, sortOrder: Int? ->
+            ) { legendSet: ObjectWithUid, sortOrder: Int ->
                 TrackedEntityAttributeLegendSetLink.builder()
                     .legendSet(legendSet.uid())
                     .sortOrder(sortOrder)

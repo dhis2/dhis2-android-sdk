@@ -41,11 +41,11 @@ internal data class AnalyticsTeiDataDTO(
     @JsonNames("programIndicators") val indicators: List<String> = emptyList(),
     val attributes: List<String> = emptyList(),
 ) {
-    fun toDomain(): AnalyticsTeiData {
+    fun toDomain(teiSetting: String): AnalyticsTeiData {
         return AnalyticsTeiData.builder()
-            .dataElements(dataElements.map { deserializeAnalyticsTeiDataElement(it) })
-            .indicators(indicators.map { deserializeAnalyticsTeiIndicator(it) })
-            .attributes(attributes.map { deserializeAnalyticsTeiAttribute(it) })
+            .dataElements(dataElements.map { deserializeAnalyticsTeiDataElement(it, teiSetting) })
+            .indicators(indicators.map { deserializeAnalyticsTeiIndicator(it, teiSetting) })
+            .attributes(attributes.map { deserializeAnalyticsTeiAttribute(it, teiSetting) })
             .build()
     }
 }

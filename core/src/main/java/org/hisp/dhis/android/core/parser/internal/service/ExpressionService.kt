@@ -88,6 +88,7 @@ internal class ExpressionService(
             .filter { it.isDataElementOrOperand }
             .map {
                 DataElementOperand.builder()
+                    .uid(listOfNotNull(it.id0, it.id1).joinToString("."))
                     .dataElement(ObjectWithUid.create(it.id0))
                     .categoryOptionCombo(it.id1?.let { id -> ObjectWithUid.create(id) })
                     .build()

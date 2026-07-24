@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ListFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.ScopedFilterConnectorFactory
@@ -68,42 +70,51 @@ class TrackedEntityInstanceDownloader internal constructor(
      * It makes use of paging with a best effort strategy: in case a page fails to be downloaded or persisted, it is
      * skipped and the rest of pages are persisted.
      *
-     * @return An Observable that notifies about the progress.
+     * @return -
      */
+    fun flowDownload(): Flow<TrackerD2Progress> {
+        return call.download(params)
+    }
+
+    @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
     fun download(): Observable<TrackerD2Progress> {
-        return call.download(params).asObservable()
+        return flowDownload().asObservable()
+    }
+
+    fun rxDownload(): Observable<TrackerD2Progress> {
+        return flowDownload().asObservable()
     }
 
     fun blockingDownload() {
-        download().blockingSubscribe()
+        flowDownload().collectAndWrapException()
     }
 
     fun byUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> =
-        connectorFactory.listConnector { uids -> params.toBuilder().uids(uids).build() }
+        connectorFactory.listConnector { uids -> params.copy(uids = uids) }
 
     fun byProgramUid(programUid: String): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<String> { programUid ->
-            params.toBuilder().program(programUid).build()
+            params.copy(program = programUid)
         }.eq(programUid)
 
     fun limitByOrgunit(limitByOrgunit: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { limitByOrgunit ->
-            params.toBuilder().limitByOrgunit(limitByOrgunit).build()
+            params.copy(limitByOrgunit = limitByOrgunit)
         }.eq(limitByOrgunit)
 
     fun limitByProgram(limitByProgram: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { limitByProgram ->
-            params.toBuilder().limitByProgram(limitByProgram).build()
+            params.copy(limitByProgram = limitByProgram)
         }.eq(limitByProgram)
 
     fun limit(limit: Int): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Int> { limit ->
-            params.toBuilder().limit(limit).build()
+            params.copy(limit = limit)
         }.eq(limit)
 
     fun byProgramStatus(status: EnrollmentScope): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<EnrollmentScope> { status ->
-            params.toBuilder().programStatus(status).build()
+            params.copy(programStatus = status)
         }.eq(status)
 
     /**
@@ -115,7 +126,7 @@ class TrackedEntityInstanceDownloader internal constructor(
      */
     fun overwrite(overwrite: Boolean): TrackedEntityInstanceDownloader =
         connectorFactory.eqConnector<Boolean> { overwrite ->
-            params.toBuilder().overwrite(overwrite).build()
+            params.copy(overwrite = overwrite ?: false)
         }.eq(overwrite)
 
     fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> {
@@ -130,11 +141,15 @@ class TrackedEntityInstanceDownloader internal constructor(
                 .withTrackedEntityInstanceEventFilters()
                 .withAttributeValueFilters()
                 .blockingGet()
-            params.toBuilder().run {
-                wl.takeIf { it.isNotEmpty() }?.let { programStageWorkingLists(it) }
-                teiFilters.takeIf { it.isNotEmpty() }?.let { trackedEntityInstanceFilters(it) }
-                build()
-            }
+            params
+                .run {
+                    wl.takeIf { it.isNotEmpty() }
+                        ?.let { copy(programStageWorkingLists = wl) } ?: this
+                }
+                .run {
+                    teiFilters.takeIf { it.isNotEmpty() }
+                        ?.let { copy(trackedEntityInstanceFilters = teiFilters) } ?: this
+                }
         }
     }
 
@@ -143,11 +158,11 @@ class TrackedEntityInstanceDownloader internal constructor(
         TrackedEntityInstanceFilter,
         > =
         connectorFactory.listConnector { teiFilters ->
-            params.toBuilder().trackedEntityInstanceFilters(teiFilters).build()
+            params.copy(trackedEntityInstanceFilters = teiFilters)
         }
 
     fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
         connectorFactory.listConnector { programStageWorkingLists ->
-            params.toBuilder().programStageWorkingLists(programStageWorkingLists).build()
+            params.copy(programStageWorkingLists = programStageWorkingLists)
         }
 }

@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
 internal interface OAuth2NetworkHandler {
@@ -48,13 +49,16 @@ internal interface OAuth2NetworkHandler {
         clientId: String,
         codeVerifier: String,
         clientAssertion: String,
+        oauthConfigPath: String = "/.well-known/oauth-authorization-server",
     ): Result<OAuth2State, D2Error>
 
     suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         refreshToken: String,
         clientId: String,
         keyId: String,
         clientAssertion: String,
     ): Result<OAuth2State, D2Error>
+
+    fun buildLogoutUrl(config: OAuth2Config): String
 }

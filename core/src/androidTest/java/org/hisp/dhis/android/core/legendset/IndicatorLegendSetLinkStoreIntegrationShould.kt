@@ -44,7 +44,7 @@ class IndicatorLegendSetLinkStoreIntegrationShould :
         TestDatabaseAdapterFactory.get(),
     ) {
     override fun addMasterUid(): String {
-        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()!!
+        return IndicatorLegendSetLinkSamples.getIndicatorLegendSetLink().indicator()
     }
 
     override fun buildObject(): IndicatorLegendSetLink {

@@ -64,7 +64,7 @@ internal class TrackerQueryFactoryCommonHelper(
             .appendKeyStringValue(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM, programUid)
             .appendInKeyStringValues(OrganisationUnitProgramLinkTableInfo.Columns.ORGANISATION_UNIT, ous)
             .build()
-        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit()!! }
+        return organisationUnitProgramLinkStore.selectWhere(whereClause).map { it.organisationUnit() }
     }
 
     private suspend fun getOrganisationUnits(
@@ -73,9 +73,9 @@ internal class TrackerQueryFactoryCommonHelper(
         byLimitExtractor: suspend () -> List<String>,
     ): Pair<OrganisationUnitMode, List<String>> {
         return when {
-            params.orgUnits().isNotEmpty() ->
-                Pair(OrganisationUnitMode.SELECTED, params.orgUnits())
-            params.uids().isNotEmpty() ->
+            params.orgUnits.isNotEmpty() ->
+                Pair(OrganisationUnitMode.SELECTED, params.orgUnits)
+            params.uids.isNotEmpty() ->
                 Pair(OrganisationUnitMode.ACCESSIBLE, emptyList())
             hasLimitByOrgUnit ->
                 Pair(OrganisationUnitMode.SELECTED, byLimitExtractor.invoke())
@@ -93,14 +93,14 @@ internal class TrackerQueryFactoryCommonHelper(
         val globalScope = programSettings?.globalSettings()?.settingDownload()
 
         return when {
-            params.limitByOrgunit() != null && isUserDefinedProgram(params, programUid) ->
-                params.limitByOrgunit()!!
+            params.limitByOrgunit != null && isUserDefinedProgram(params, programUid) ->
+                params.limitByOrgunit
 
             specificProgramScope != null ->
                 specificProgramScope == LimitScope.PER_ORG_UNIT
 
-            params.limitByOrgunit() != null ->
-                params.limitByOrgunit()!!
+            params.limitByOrgunit != null ->
+                params.limitByOrgunit
 
             globalScope != null ->
                 globalScope == LimitScope.PER_OU_AND_PROGRAM || globalScope == LimitScope.PER_ORG_UNIT
@@ -117,10 +117,10 @@ internal class TrackerQueryFactoryCommonHelper(
     ): Int {
         val configLimit = getConfigLimit(params, programSettings, programUid, downloadExtractor)
 
-        return if (params.uids().isNullOrEmpty()) {
+        return if (params.uids.isEmpty()) {
             configLimit
         } else {
-            configLimit.coerceAtMost(params.uids().size)
+            configLimit.coerceAtMost(params.uids.size)
         }
     }
 
@@ -131,17 +131,17 @@ internal class TrackerQueryFactoryCommonHelper(
         programUid: String?,
         downloadExtractor: (ProgramSetting?) -> Int?,
     ): Int {
-        if (params.limit() != null) {
+        if (params.limit != null) {
             when {
                 isGlobal(params, programUid) -> {
-                    val download = params.limit()!! - specificEvents(
+                    val download = params.limit - specificEvents(
                         params,
                         programSettings,
                         downloadExtractor,
                     )
                     return if (download > 0) download else 0
                 }
-                isUserDefinedProgram(params, programUid) -> return params.limit()!!
+                isUserDefinedProgram(params, programUid) -> return params.limit
             }
         }
         if (!isGlobal(params, programUid) && programSettings != null) {
@@ -151,8 +151,8 @@ internal class TrackerQueryFactoryCommonHelper(
                 return download
             }
         }
-        if (params.limit() != null && (params.limitByProgram() == true || params.limitByOrgunit() == true)) {
-            return params.limit()!!
+        if (params.limit != null && (params.limitByProgram == true || params.limitByOrgunit == true)) {
+            return params.limit
         }
         if (programSettings != null) {
             val globalSetting = programSettings.globalSettings()
@@ -180,20 +180,20 @@ internal class TrackerQueryFactoryCommonHelper(
     }
 
     fun isGlobal(params: ProgramDataDownloadParams, programUid: String?): Boolean {
-        return programUid == null && params.limitByOrgunit() != true && params.limitByProgram() != true
+        return programUid == null && params.limitByOrgunit != true && params.limitByProgram != true
     }
 
     fun isUserDefinedProgram(params: ProgramDataDownloadParams, programUid: String?): Boolean {
-        return programUid == params.program()
+        return programUid == params.program
     }
 
     @Suppress("ReturnCount")
     fun hasLimitByProgram(params: ProgramDataDownloadParams, programSettings: ProgramSettings?): Boolean {
-        if (params.limitByProgram() != null) {
-            return params.limitByProgram()!!
+        if (params.limitByProgram != null) {
+            return params.limitByProgram
         }
         if (programSettings?.globalSettings() != null) {
-            val scope = programSettings.globalSettings()!!.settingDownload()
+            val scope = programSettings.globalSettings().settingDownload()
             if (scope != null) {
                 return scope == LimitScope.PER_OU_AND_PROGRAM || scope == LimitScope.PER_PROGRAM
             }
@@ -201,15 +201,14 @@ internal class TrackerQueryFactoryCommonHelper(
         return false
     }
 
-    fun <O> divideByOrgUnits(
+    fun divideByOrgUnits(
         orgUnits: List<String>,
         hasLimitByOrgUnit: Boolean,
-        builder: (List<String>) -> O,
-    ): List<O> {
+    ): List<List<String>> {
         return if (hasLimitByOrgUnit && orgUnits.isNotEmpty()) {
-            orgUnits.map { builder.invoke(listOf(it)) }
+            orgUnits.map { listOf(it) }
         } else {
-            listOf(builder.invoke(orgUnits))
+            listOf(orgUnits)
         }
     }
 
@@ -231,7 +230,7 @@ internal class TrackerQueryFactoryCommonHelper(
         return if (period == null || period == DownloadPeriod.ANY) {
             null
         } else {
-            val startDate = DateUtils.addMonths(Date(), -period.months)
+            val startDate = DateUtils.addMonths(Date(), -period.months!!)
             DateUtils.DATE_FORMAT.format(startDate)
         }
     }
@@ -254,7 +253,7 @@ internal class TrackerQueryFactoryCommonHelper(
         )
 
         return TrackerQueryCommonParams(
-            params.uids(),
+            params.uids,
             programs,
             programUid,
             getStartDate(programSettings, programUid, periodExtractor),

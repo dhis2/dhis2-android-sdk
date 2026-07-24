@@ -30,7 +30,7 @@ import org.hisp.dhis.android.processor.ParentColumn
 internal data class SectionDataElementLinkDB(
     @ParentColumn val section: String,
     val dataElement: String,
-    val sortOrder: Int?,
+    val sortOrder: Int,
 ) : EntityDB<SectionDataElementLink> {
 
     override fun toDomain(): SectionDataElementLink {
@@ -44,8 +44,8 @@ internal data class SectionDataElementLinkDB(
 
 internal fun SectionDataElementLink.toDB(): SectionDataElementLinkDB {
     return SectionDataElementLinkDB(
-        section = section()!!,
-        dataElement = dataElement()!!,
+        section = section(),
+        dataElement = dataElement(),
         sortOrder = sortOrder(),
     )
 }

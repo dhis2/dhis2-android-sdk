@@ -32,8 +32,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertEnrollments
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor.insertRelationships
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
@@ -59,9 +57,9 @@ internal data class NewTrackedEntityDTO(
     val relationships: List<NewRelationshipDTO>? = null,
 ) : BaseDeletableDataObjectDTO {
     fun toDomain(): TrackedEntityInstance {
-        val teiAttributeValues = attributes.map { it.toDomain(trackedEntity) }
+        val teiAttributeValues = attributes.mapNotNull { it.toDomain(trackedEntity) }
         val enrollmentAttributeValues =
-            enrollments.flatMap { it.attributes.orEmpty().map { it.toDomain(trackedEntity) } }.orEmpty()
+            enrollments.flatMap { it.attributes.orEmpty().mapNotNull { it.toDomain(trackedEntity) } }
         val attributes = (teiAttributeValues + enrollmentAttributeValues).distinctBy { it.trackedEntityAttribute() }
 
         return TrackedEntityInstance.builder().apply {
@@ -74,10 +72,10 @@ internal data class NewTrackedEntityDTO(
             organisationUnit(orgUnit)
             trackedEntityType(trackedEntityType)
             geometry(geometry?.toDomain())
-            insertEnrollments(this, enrollments.map { it.toDomain() })
+            enrollments(enrollments.map { it.toDomain() })
             trackedEntityAttributeValues(attributes)
             programOwners(programOwners?.map { it.toDomain() })
-            insertRelationships(this, relationships?.map { it.toDomain() })
+            relationships(relationships?.map { it.toDomain() })
         }.build()
     }
 }

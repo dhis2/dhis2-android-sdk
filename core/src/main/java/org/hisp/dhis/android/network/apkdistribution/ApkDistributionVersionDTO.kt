@@ -36,8 +36,8 @@ import org.hisp.dhis.android.network.common.dto.PagerDTO
 
 @Serializable
 internal data class ApkDistributionVersionDTO(
-    val version: String?,
-    val downloadURL: String?,
+    val version: String,
+    val downloadURL: String,
     val isDefault: Boolean?,
     val userGroups: List<String>?,
 ) {

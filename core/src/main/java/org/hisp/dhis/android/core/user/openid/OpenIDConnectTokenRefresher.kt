@@ -56,4 +56,30 @@ internal class OpenIDConnectTokenRefresher(
             }
         }.blockingGet()
     }
+
+    /**
+     * Attempts to obtain a fresh idToken without side effects. Unlike [blockingGetFreshToken],
+     * it does NOT log the user out and returns null on any failure (offline or invalid refresh
+     * token). Used during relogin so that the caller can fall back to the offline flow.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    fun blockingGetFreshTokenOrNull(authState: AuthState): String? {
+        val service = AuthorizationService(context)
+        return try {
+            Single.create<String> {
+                authState.performActionWithFreshTokens(service) {
+                        _: String?, idToken: String?, ex: AuthorizationException? ->
+                    service.dispose()
+                    if (idToken != null) {
+                        it.onSuccess(idToken)
+                    } else {
+                        it.onError(RuntimeException(ex))
+                    }
+                }
+            }.blockingGet()
+        } catch (e: Exception) {
+            service.dispose()
+            null
+        }
+    }
 }

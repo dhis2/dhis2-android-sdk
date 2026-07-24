@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityDataValueSamples
 import org.hisp.dhis.android.core.data.trackedentity.TrackedEntityInstanceSamples
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -54,7 +53,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestMetadataEnqueable
 import org.junit.After
 import org.junit.BeforeClass
@@ -98,7 +96,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .trackedEntityDataValues(listOf(dataValue1))
             .build()
 
-        val enrollment1 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), listOf(event1))
+        val enrollment1 = Enrollment.builder().events(listOf(event1))
             .uid(enrollment1Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
@@ -124,7 +122,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .trackedEntityDataValues(listOf(dataValue2))
             .build()
 
-        val enrollment2 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), listOf(event2))
+        val enrollment2 = Enrollment.builder().events(listOf(event2))
             .uid(enrollment2Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
@@ -150,7 +148,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .trackedEntityDataValues(listOf(dataValue3))
             .build()
 
-        val enrollment3 = EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), listOf(event3))
+        val enrollment3 = Enrollment.builder().events(listOf(event3))
             .uid(enrollment3Id)
             .program(program.uid())
             .organisationUnit(orgUnit.uid())
@@ -165,10 +163,8 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
             .trackedEntityInstance(teiId)
             .build()
 
-        val tei = TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            TrackedEntityInstance.builder(),
-            listOf(enrollment1, enrollment2, enrollment3),
-        )
+        val tei = TrackedEntityInstance.builder()
+            .enrollments(listOf(enrollment1, enrollment2, enrollment3))
             .uid(teiId)
             .trackedEntityType(teiType.uid())
             .organisationUnit(orgUnit.uid())
@@ -263,11 +259,11 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
     }
 
     protected fun getEnrollments(trackedEntityInstance: TrackedEntityInstance): List<Enrollment> {
-        return TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance)
+        return trackedEntityInstance.enrollments.orEmpty()
     }
 
     protected fun getEvents(enrollment: Enrollment): List<Event> {
-        return EnrollmentInternalAccessor.accessEvents(enrollment)
+        return enrollment.events().orEmpty()
     }
 
     protected companion object {

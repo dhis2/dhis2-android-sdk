@@ -17,7 +17,6 @@ import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
@@ -72,7 +71,7 @@ internal data class DataSetDB(
     override fun toDomain(): DataSet {
         return DataSet.builder().apply {
             applyBaseNameableFields(this@DataSetDB)
-            applyStyleFields(this@DataSetDB)
+            style(this@DataSetDB.toDomainStyle())
             periodType?.let { periodType(PeriodType.valueOf(it)) }
             categoryCombo(ObjectWithUid.create(categoryCombo))
             mobile(mobile)

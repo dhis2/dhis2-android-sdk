@@ -47,7 +47,6 @@ internal object SectionFields : BaseFields<Section>() {
         fh.field(Columns.SHOW_COLUMN_TOTALS),
         fh.field(Columns.DISABLE_DATA_ELEMENT_AUTO_GROUP),
         fh.field(DISPLAY_OPTIONS),
-        fh.nestedFieldWithUid(Columns.DATA_SET),
         fh.nestedFieldWithUid(DATA_ELEMENTS),
         fh.nestedFieldWithUid(INDICATORS),
         fh.nestedField<DataElementOperand>(GREYED_FIELDS).with(DataElementOperandFields.allFields),

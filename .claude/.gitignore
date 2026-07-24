@@ -1,0 +1,6 @@
+# Ignore everything personal under .claude/ by default.
+# Only shared resources (skills, etc.) should be committed.
+*
+!.gitignore
+!skills/
+!skills/**

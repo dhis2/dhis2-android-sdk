@@ -33,7 +33,7 @@ internal class OAuth2Service(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
     suspend fun exchangeCodeForToken(
-        url: String,
+        endpoint: String,
         grantType: String,
         code: String,
         redirectUri: String,
@@ -42,7 +42,7 @@ internal class OAuth2Service(private val client: HttpServiceClient) {
         clientAssertion: String,
     ): TokenResponseDTO {
         return client.post {
-            absoluteUrl(url + "/oauth2/token")
+            absoluteUrl(endpoint)
             contentType("x-www-form-urlencoded")
             body(
                 buildFormUrlEncoded(
@@ -61,14 +61,14 @@ internal class OAuth2Service(private val client: HttpServiceClient) {
     }
 
     suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         grantType: String,
         refreshToken: String,
         clientId: String,
         clientAssertion: String,
     ): TokenResponseDTO {
         return client.post {
-            absoluteUrl(url + "/oauth2/token")
+            absoluteUrl(endpoint)
             contentType("x-www-form-urlencoded")
             body(
                 buildFormUrlEncoded(

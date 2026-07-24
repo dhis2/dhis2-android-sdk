@@ -34,7 +34,6 @@ import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityTypeAttribut
 
 internal object TrackedEntityTypeAttributeFields : BaseFields<TrackedEntityTypeAttribute>() {
     val allFields = Fields.from(
-        fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_TYPE),
         fh.nestedFieldWithUid(Columns.TRACKED_ENTITY_ATTRIBUTE),
         fh.field(Columns.DISPLAY_IN_LIST),
         fh.field(Columns.MANDATORY),

@@ -49,6 +49,6 @@ internal fun OptionGroup.toDB(): OptionGroupDB {
         displayName = displayName(),
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
-        optionSet = optionSet()!!.uid(),
+        optionSet = optionSet().uid(),
     )
 }

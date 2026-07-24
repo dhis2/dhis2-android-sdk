@@ -61,7 +61,7 @@ internal data class TrackedEntityInstanceFilterDTO(
             program?.let { program(program.toDomain()) }
             description(description)
             sortOrder(sortOrder)
-            entityQueryCriteria(entityQueryCriteria?.toDomain(id))
+            entityQueryCriteria?.let { entityQueryCriteria(entityQueryCriteria.toDomain(id)) }
             eventFilters(eventFilters?.map { it.toDomain(id) } ?: emptyList())
         }.build()
     }

@@ -645,17 +645,23 @@ class EventLineListIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() 
         val programIndicator = EventLineListSamples.programIndicator(expression)
         programIndicatorStore.insert(programIndicator)
         programIndicatorLegendSetLinkStore.insert(
-            ProgramIndicatorLegendSetLink.builder().programIndicator(programIndicator.uid()).legendSet(
-                legendSet1.uid(),
-            ).build(),
+            ProgramIndicatorLegendSetLink.builder()
+                .programIndicator(programIndicator.uid())
+                .legendSet(legendSet1.uid())
+                .sortOrder(0)
+                .build(),
         )
         return programIndicator
     }
 
     private suspend fun createDataElementLegendSetLinks(dataElement: String, legendSets: List<ObjectWithUid>) {
-        legendSets.forEach {
+        legendSets.forEachIndexed { i, legendSet ->
             val dataElementLegendSetLink =
-                DataElementLegendSetLink.builder().dataElement(dataElement).legendSet(it.uid()).build()
+                DataElementLegendSetLink.builder()
+                    .dataElement(dataElement)
+                    .legendSet(legendSet.uid())
+                    .sortOrder(i)
+                    .build()
             dataElementLegendSetLinkStore.insert(dataElementLegendSetLink)
         }
     }

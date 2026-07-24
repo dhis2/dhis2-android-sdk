@@ -44,10 +44,10 @@ internal class DataStoreHandler(
 
     override suspend fun handleMany(
         masterUid: String,
-        slaves: Collection<DataStoreEntry>?,
+        items: Collection<DataStoreEntry>?,
         transformer: (DataStoreEntry) -> DataStoreEntry,
     ) {
-        val entriesToHandle = filterNotSyncedEntries(masterUid, slaves)
+        val entriesToHandle = filterNotSyncedEntries(masterUid, items)
         handleMany(entriesToHandle)
         cleanOrphan(masterUid, entriesToHandle)
     }
@@ -65,9 +65,9 @@ internal class DataStoreHandler(
 
     private suspend fun filterNotSyncedEntries(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?,
+        items: Collection<DataStoreEntry>?,
     ): List<DataStoreEntry>? {
-        return slaves?.let {
+        return items?.let {
             val whereClause = WhereClauseBuilder().run {
                 appendKeyStringValue(DataStoreTableInfo.Columns.NAMESPACE, namespace)
                 appendNotInKeyStringValues(
@@ -78,7 +78,7 @@ internal class DataStoreHandler(
             }
             val entriesPendingToSync = store.selectWhere(whereClause)
 
-            slaves.filter { entry ->
+            items.filter { entry ->
                 entriesPendingToSync.none { it.key() == entry.key() }
             }
         }
@@ -86,8 +86,8 @@ internal class DataStoreHandler(
 
     private suspend fun cleanOrphan(
         namespace: String,
-        slaves: Collection<DataStoreEntry>?,
+        items: Collection<DataStoreEntry>?,
     ) {
-        store.cleanOrphan(namespace, slaves)
+        store.cleanOrphan(namespace, items)
     }
 }

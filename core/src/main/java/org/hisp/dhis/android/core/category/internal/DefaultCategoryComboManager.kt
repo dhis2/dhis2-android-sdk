@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -52,7 +51,7 @@ internal class DefaultCategoryComboManager(
 
     fun setDefaults(categoryCombo: CategoryCombo) {
         _defaultCategoryComboUid = categoryCombo.uid()
-        _defaultCategoryOptionComboUid = CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo)
+        _defaultCategoryOptionComboUid = categoryCombo.categoryOptionCombos()
             ?.firstOrNull()?.uid()
         _defaultCategoryUid = categoryCombo.categories()?.firstOrNull()?.uid()
     }

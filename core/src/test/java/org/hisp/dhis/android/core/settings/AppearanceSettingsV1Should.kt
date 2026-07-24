@@ -70,7 +70,7 @@ internal class AppearanceSettingsV1Should : CoreObjectShould<AppearanceSettingsD
         assertThat(programEventDateFilter.filter()).isEqualTo(true)
 
         val completionSpinnerSetting = appearanceSettings.completionSpinner()
-        assertThat(completionSpinnerSetting!!.globalSettings()!!.uid()).isNull()
+        assertThat(completionSpinnerSetting.globalSettings()!!.uid()).isNull()
 
         val specificCompletionSpinnerList = completionSpinnerSetting.specificSettings()
         val specificCompletionSpinner = specificCompletionSpinnerList!!["IpHINAT79UW"]!!

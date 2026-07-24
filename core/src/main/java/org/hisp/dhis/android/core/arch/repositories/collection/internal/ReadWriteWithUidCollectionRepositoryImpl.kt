@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -57,35 +54,18 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
     cf,
 ),
     ReadWriteWithUidCollectionRepository<M, P> where M : CoreObject, M : ObjectWithUidInterface {
-    /**
-     * Adds a new object to the given collection in an asynchronous way based on the provided CreateProjection.
-     * It returns a `Single<String>` with the generated UID, which is completed when the object is added to the
-     * database. It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
-     * upload.
-     * @param projection the CreateProjection of the object to add
-     * @return the Single with the UID
-     */
-    override fun add(o: P): Single<String> {
-        return rxSingle { addInternal(o) }
-    }
 
     /**
-     * Adds a new object to the given collection in a synchronous way based on the provided CreateProjection.
-     * It blocks the current thread and returns the generated UID.
+     * Adds a new object to the given collection in a suspend way based on the provided CreateProjection.
+     * It returns the generated UID when the object is added to the database.
      * It adds an object with a [State.TO_POST], which will be uploaded to the server in the next
-     * upload. Important: this is a blocking method and it should not be executed in the main thread. Consider the
-     * asynchronous version [.add].
-     * @param c the CreateProjection of the object to add
+     * upload.
+     * @param o the CreateProjection of the object to add
      * @return the UID
      */
     @Throws(D2Error::class)
-    override fun blockingAdd(o: P): String {
-        return runBlocking { addInternal(o) }
-    }
-
-    @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
-    protected open suspend fun addInternal(o: P): String {
+    override suspend fun suspendAdd(o: P): String {
         val obj = transformer.transform(o)
         return try {
             store.insert(obj)

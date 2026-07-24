@@ -55,7 +55,7 @@ internal data class AnalyticsTeiIndicatorDB(
 
 internal fun AnalyticsTeiIndicator.toDB(): AnalyticsTeiIndicatorDB {
     return AnalyticsTeiIndicatorDB(
-        teiSetting = teiSetting()!!,
+        teiSetting = teiSetting(),
         whoComponent = whoComponent()?.name,
         programStage = programStage(),
         indicator = indicator(),

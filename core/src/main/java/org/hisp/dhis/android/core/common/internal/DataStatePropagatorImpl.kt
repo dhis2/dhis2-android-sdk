@@ -95,16 +95,17 @@ internal class DataStatePropagatorImpl(
     }
 
     override suspend fun propagateTrackedEntityDataValueUpdate(dataValue: TrackedEntityDataValue?) {
-        setEventSyncState(dataValue!!.event()!!, getStateForUpdate)
+        setEventSyncState(dataValue!!.event(), getStateForUpdate)
     }
 
     override suspend fun propagateTrackedEntityAttributeUpdate(
         trackedEntityAttributeValue: TrackedEntityAttributeValue?,
     ) {
-        trackedEntityAttributeValue!!.trackedEntityInstance()?.let { trackedEntityInstanceUid ->
+        if (trackedEntityAttributeValue != null) {
+            val trackedEntityInstanceUid = trackedEntityAttributeValue.trackedEntityInstance()
             val enrollments = enrollmentStore.selectByTrackedEntityInstanceAndAttribute(
                 trackedEntityInstanceUid,
-                trackedEntityAttributeValue.trackedEntityAttribute()!!,
+                trackedEntityAttributeValue.trackedEntityAttribute(),
             )
             enrollments.forEach {
                 enrollmentStore.setSyncState(it.uid(), getStateForUpdate(it.syncState()))
@@ -146,13 +147,13 @@ internal class DataStatePropagatorImpl(
     private suspend fun propagateRelationshipUpdate(item: RelationshipItem?) {
         if (item != null) {
             if (item.hasTrackedEntityInstance()) {
-                val tei = trackedEntityInstanceStore.selectByUid(item.elementUid())
+                val tei = trackedEntityInstanceStore.selectByUid(item.elementUid()!!)
                 propagateTrackedEntityInstanceUpdate(tei)
             } else if (item.hasEnrollment()) {
-                val enrollment = enrollmentStore.selectByUid(item.elementUid())
+                val enrollment = enrollmentStore.selectByUid(item.elementUid()!!)
                 propagateEnrollmentUpdate(enrollment)
             } else if (item.hasEvent()) {
-                val event = eventStore.selectByUid(item.elementUid())
+                val event = eventStore.selectByUid(item.elementUid()!!)
                 propagateEventUpdate(event)
             }
         }
@@ -323,7 +324,7 @@ internal class DataStatePropagatorImpl(
                     true
                 } else {
                     val fromItem = relationshipItemStore
-                        .getForRelationshipUidAndConstraintType(relationship.uid()!!, RelationshipConstraintType.FROM)
+                        .getForRelationshipUidAndConstraintType(relationship.uid(), RelationshipConstraintType.FROM)
                     fromItem?.elementUid() == relationshipItem.elementUid()
                 }
             } ?: false
@@ -360,13 +361,13 @@ internal class DataStatePropagatorImpl(
 
         return DataStateUidHolder(
             events = eventUids +
-                relationshipItems.filter { it.hasEvent() }.map { it.elementUid() },
+                relationshipItems.filter { it.hasEvent() }.map { it.elementUid()!! },
             enrollments = enrollmentUids +
                 enrollmentsFromEvents +
-                relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid() },
+                relationshipItems.filter { it.hasEnrollment() }.map { it.elementUid()!! },
             trackedEntities = trackedEntityInstanceUids +
                 trackedEntitiesFromEnrollments +
-                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid() },
+                relationshipItems.filter { it.hasTrackedEntityInstance() }.map { it.elementUid()!! },
         )
     }
 

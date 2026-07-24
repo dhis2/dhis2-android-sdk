@@ -39,7 +39,7 @@ import org.hisp.dhis.android.network.common.dto.PagerDTO
 @Serializable
 internal data class RelationshipDTO(
     override val deleted: Boolean?,
-    val relationship: String?,
+    val relationship: String,
     val relationshipName: String?,
     val created: String?,
     val lastUpdated: String?,

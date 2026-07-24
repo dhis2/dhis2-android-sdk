@@ -43,6 +43,7 @@ import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 class ProgramIndicatorCollectionRepository internal constructor(
     store: ProgramIndicatorStore,
     scope: RepositoryScope,
@@ -89,6 +90,14 @@ class ProgramIndicatorCollectionRepository internal constructor(
 
     fun byProgramUid(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
         return cf.string(ProgramIndicatorTableInfo.Columns.PROGRAM)
+    }
+
+    fun byCategoryCombo(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.CATEGORY_COMBO)
+    }
+
+    fun byAttributeCombo(): StringFilterConnector<ProgramIndicatorCollectionRepository> {
+        return cf.string(ProgramIndicatorTableInfo.Columns.ATTRIBUTE_COMBO)
     }
 
     fun withLegendSets(): ProgramIndicatorCollectionRepository {

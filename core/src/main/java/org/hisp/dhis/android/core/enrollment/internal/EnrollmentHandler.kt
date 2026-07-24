@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventHandler
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteDHISVersionManager
@@ -86,7 +85,7 @@ internal class EnrollmentHandler(
         relatives: RelationshipItemRelatives?,
     ) {
         if (action !== HandleAction.Delete) {
-            val events = EnrollmentInternalAccessor.accessEvents(o)
+            val events = o.events()
             if (events != null) {
                 val thisParams = IdentifiableDataHandlerParams(
                     hasAllAttributes = false,
@@ -109,7 +108,7 @@ internal class EnrollmentHandler(
                 noteHandler.handleMany(notesToSync)
             }
 
-            val relationships = EnrollmentInternalAccessor.accessRelationships(o)
+            val relationships = o.relationships()
             if (relationships != null && !params.asRelationship) {
                 handleRelationships(relationships, o, relatives)
                 relationshipOrphanCleaner.deleteOrphan(o, relationships)

@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.program.trackerheaderengine.internal
 
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -54,11 +55,12 @@ internal class TrackerHeaderEngine(
         val programIndicator: ProgramIndicator = ProgramIndicator.builder()
             .uid("mock_program_indicator")
             .expression(expression)
+            .categoryCombo(ObjectWithUid.create("mock_category_combo"))
+            .attributeCombo(ObjectWithUid.create("mock_category_combo"))
             .build()
 
         val attributeValueMap = attributeValues
-            .filter { it.trackedEntityAttribute() != null }
-            .associateBy { it.trackedEntityAttribute()!! }
+            .associateBy { it.trackedEntityAttribute() }
 
         val context = ProgramIndicatorContext(
             programIndicator = programIndicator,

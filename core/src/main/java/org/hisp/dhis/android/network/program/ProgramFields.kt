@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.program
 import org.hisp.dhis.android.core.attribute.AttributeValue
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
+import org.hisp.dhis.android.core.program.CategoryMapping
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRuleVariable
 import org.hisp.dhis.android.core.program.ProgramSection
@@ -44,12 +45,12 @@ import org.hisp.dhis.android.persistence.program.ProgramTableInfo.Columns
 
 internal object ProgramFields : BaseFields<Program>() {
     private const val PROGRAM_TRACKED_ENTITY_ATTRIBUTES = "programTrackedEntityAttributes"
-    private const val CAPTURE_COORDINATES = "captureCoordinates"
     private const val PROGRAM_RULE_VARIABLES = "programRuleVariables"
     private const val ACCESS = "access"
     private const val STYLE = "style"
     private const val PROGRAM_SECTIONS = "programSections"
     const val ATTRIBUTE_VALUES = "attributeValues"
+    private const val CATEGORY_MAPPINGS = "categoryMappings"
 
     private const val ENROLLMENT_DATE_LABEL = "enrollmentDateLabel"
     private const val INCIDENT_DATE_LABEL = "incidentDateLabel"
@@ -66,7 +67,6 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.DATA_ENTRY_METHOD),
         fh.field(Columns.IGNORE_OVERDUE_EVENTS),
         fh.field(Columns.SELECT_INCIDENT_DATES_IN_FUTURE),
-        fh.field(CAPTURE_COORDINATES),
         fh.field(Columns.USE_FIRST_STAGE_DURING_REGISTRATION),
         fh.field(Columns.DISPLAY_FRONT_PAGE_LIST),
         fh.field(Columns.PROGRAM_TYPE),
@@ -96,6 +96,10 @@ internal object ProgramFields : BaseFields<Program>() {
         fh.field(Columns.DISPLAY_PROGRAM_STAGE_LABEL),
         fh.field(Columns.DISPLAY_EVENT_LABEL),
         fh.nestedFieldWithUid(Columns.ENROLLMENT_CATEGORY_COMBO),
+        fh.nestedField<CategoryMapping>(CATEGORY_MAPPINGS).with(CategoryMappingFields.allFields),
+        fh.field(Columns.DISPLAY_ENROLLMENTS_LABEL),
+        fh.field(Columns.DISPLAY_PROGRAM_STAGES_LABEL),
+        fh.field(Columns.DISPLAY_EVENTS_LABEL),
     )
 
     val allFields = Fields.from(

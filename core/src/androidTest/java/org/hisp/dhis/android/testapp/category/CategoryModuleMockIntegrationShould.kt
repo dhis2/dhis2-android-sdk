@@ -29,9 +29,6 @@ package org.hisp.dhis.android.testapp.category
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
-import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
 
@@ -43,7 +40,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
 
         for (combo in combos) {
             assertThat(combo.categories()).isNull()
-            assertThat(accessCategoryOptionCombos(combo)).isNull()
+            assertThat(combo.categoryOptionCombos()).isNull()
         }
     }
 
@@ -64,7 +61,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         assertThat(combo.code()).isEqualTo("BIRTHS")
         assertThat(combo.name()).isEqualTo("Births")
         assertThat(combo.categories()).isNull()
-        assertThat(accessCategoryOptionCombos(combo)).isNull()
+        assertThat(combo.categoryOptionCombos()).isNull()
     }
 
     @Test
@@ -74,7 +71,7 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         assertThat(combo.code()).isEqualTo("BIRTHS")
         assertThat(combo.name()).isEqualTo("Births")
 
-        val optionCombos = accessCategoryOptionCombos(combo)
+        val optionCombos = combo.categoryOptionCombos()
         assertThat(optionCombos).isNull()
     }
 
@@ -219,9 +216,5 @@ class CategoryModuleMockIntegrationShould : BaseMockIntegrationTestFullDispatche
         assertThat(categoryOption.uid()).isEqualTo("apsOixVZlf1")
         assertThat(categoryOption.name()).isEqualTo("Female")
         assertThat(categoryOption.code()).isEqualTo("FMLE")
-    }
-
-    private fun accessCategoryOptionCombos(categoryCombo: CategoryCombo): List<CategoryOptionCombo>? {
-        return CategoryComboInternalAccessor.accessCategoryOptionCombos(categoryCombo)
     }
 }

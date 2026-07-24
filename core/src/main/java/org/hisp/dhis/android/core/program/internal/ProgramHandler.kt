@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.attribute.ProgramAttributeValueLink
 import org.hisp.dhis.android.core.attribute.internal.ProgramAttributeValueLinkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.hisp.dhis.android.core.program.ProgramType
 import org.koin.core.annotation.Singleton
 
@@ -48,15 +47,17 @@ internal class ProgramHandler(
     private val collectionCleaner: ProgramCollectionCleaner,
     private val linkCleaner: ProgramOrganisationUnitLinkCleaner,
     private val programAttributeLinkHandler: ProgramAttributeValueLinkHandler,
+    private val categoryMappingHandler: CategoryMappingHandler,
 ) : IdentifiableHandlerImpl<Program>(programStore) {
 
     override suspend fun afterObjectHandled(o: Program, action: HandleAction) {
-        programTrackedEntityAttributeHandler.handleMany(
-            ProgramInternalAccessor
-                .accessProgramTrackedEntityAttributes(o),
+        programTrackedEntityAttributeHandler.handleMany(o.programTrackedEntityAttributes())
+        programRuleVariableHandler.handleMany(o.programRuleVariables())
+        programSectionHandler.handleMany(o.programSections())
+        categoryMappingHandler.handleMany(
+            o.uid(),
+            o.categoryMappings(),
         )
-        programRuleVariableHandler.handleMany(ProgramInternalAccessor.accessProgramRuleVariables(o))
-        programSectionHandler.handleMany(ProgramInternalAccessor.accessProgramSections(o))
 
         if (action === HandleAction.Update) {
             orphanCleaner.deleteOrphan(o)

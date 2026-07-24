@@ -49,11 +49,10 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
     private lateinit var trackedEntityDataValueStore: TrackedEntityDataValueStore
     private lateinit var eventUid1: String
     private lateinit var eventUid2: String
-
-    private var orgUnitUid: String? = null
-    private var programUid: String? = null
-    private var programStageUid: String? = null
-    private var dataElementUid: String? = null
+    private lateinit var orgUnitUid: String
+    private lateinit var programUid: String
+    private lateinit var programStageUid: String
+    private lateinit var dataElementUid: String
     private var attributeOptionCombo: String? = null
 
     @Before
@@ -131,7 +130,7 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
         assertThatEventPushedIsDownloaded(pushedEvent)
     }
 
-    private fun createDummyDataToPost(eventUid: String?) = runTest {
+    private fun createDummyDataToPost(eventUid: String) = runTest {
         eventStore.insert(
             Event.builder().uid(eventUid).created(Date()).lastUpdated(Date())
                 .status(EventStatus.ACTIVE).program(programUid)
@@ -206,8 +205,8 @@ class EventPostCallRealIntegrationShould : BaseRealIntegrationTest() {
             .uid()
         dataElementUid = d2.programModule().programStageDataElements()
             .byProgramStage().eq(programStageUid)
-            .one().blockingGet()!!.dataElement()
-            ?.uid()
+            .one().blockingGet()!!.dataElement()!!
+            .uid()
         attributeOptionCombo = d2.categoryModule().categoryOptionCombos()
             .one().blockingGet()!!
             .uid()

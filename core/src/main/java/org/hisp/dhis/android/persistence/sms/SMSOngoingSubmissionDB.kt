@@ -10,13 +10,13 @@ import org.hisp.dhis.android.persistence.common.EntityDB
 internal data class SMSOngoingSubmissionDB(
     @PrimaryKey
     val submissionId: Int,
-    val type: String?,
+    val type: String,
 ) : EntityDB<SMSOngoingSubmission> {
 
     override fun toDomain(): SMSOngoingSubmission {
         return SMSOngoingSubmission.builder()
             .submissionId(submissionId)
-            .type(type?.let { SubmissionType.valueOf(it) })
+            .type(SubmissionType.valueOf(type))
             .build()
     }
 }

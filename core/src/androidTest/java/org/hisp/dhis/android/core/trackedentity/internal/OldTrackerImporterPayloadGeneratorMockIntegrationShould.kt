@@ -32,7 +32,6 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.AccessHelper
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.relationship.RelationshipHelper
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Assert.fail
 import org.junit.Test
@@ -161,8 +160,8 @@ class OldTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
 
         payload.trackedEntityInstances.forEach {
             when (it.uid()) {
-                fromTei -> assertThat(TrackedEntityInstanceInternalAccessor.accessEnrollments(it)).isEmpty()
-                toTei -> assertThat(TrackedEntityInstanceInternalAccessor.accessEnrollments(it)).isNotEmpty()
+                fromTei -> assertThat(it.enrollments.orEmpty()).isEmpty()
+                toTei -> assertThat(it.enrollments.orEmpty()).isNotEmpty()
                 else -> fail("Unexpected trackedEntityInstance uid: " + it.uid())
             }
         }

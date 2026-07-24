@@ -147,11 +147,11 @@ internal class TrackerImportConflictParser(
         return if (auxConflict.dataElement() != null && auxConflict.event() != null) {
             trackedEntityInstanceDataValueRepository
                 .value(auxConflict.event()!!, auxConflict.dataElement()!!)
-                .getInternal()?.value()
+                .suspendGet()?.value()
         } else if (auxConflict.trackedEntityAttribute() != null && auxConflict.trackedEntityInstance() != null) {
             trackedEntityAttributeValueRepository
                 .value(auxConflict.trackedEntityAttribute()!!, auxConflict.trackedEntityInstance()!!)
-                .getInternal()?.value()
+                .suspendGet()?.value()
         } else {
             null
         }

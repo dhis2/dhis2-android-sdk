@@ -46,7 +46,7 @@ class ProgramStageSectionProgramIndicatorLinkStoreIntegrationShould :
     ) {
     override fun addMasterUid(): String {
         return ProgramStageSectionProgramIndicatorLinkSamples.programStageSectionProgramIndicatorLink
-            .programStageSection()!!
+            .programStageSection()
     }
 
     override fun buildObject(): ProgramStageSectionProgramIndicatorLink {

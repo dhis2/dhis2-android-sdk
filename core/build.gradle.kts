@@ -1,4 +1,3 @@
-import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
 
@@ -33,7 +32,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 plugins {
     id("com.android.library")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
     alias(libs.plugins.room)
@@ -41,10 +39,8 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.koin.compiler)
 }
-
-apply(from = project.file("plugins/android-checkstyle.gradle"))
-apply(from = project.file("plugins/android-pmd.gradle"))
 
 repositories {
     mavenCentral()
@@ -73,6 +69,39 @@ tasks.configureEach {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+koinCompiler {
+    // compileSafety stays on (default). strictSafety is auto-enabled because the plugin detects
+    // koinApplication in this module, but its per-module isolation checks report false positives
+    // on this 45-module graph, so it is explicitly disabled.
+    strictSafety = false
+}
+
+// The Koin checker runs once per Kotlin compilation. Test compilations analyze test sources
+// against a partial definition index and report false "missing definition" errors, so the
+// safety checks are disabled for them; the main compilation keeps them on.
+afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+        .matching { it.name.contains("UnitTest") || it.name.contains("AndroidTest") }
+        .configureEach {
+            val rewritten = pluginOptions.get().map { config ->
+                val newConfig = org.jetbrains.kotlin.gradle.plugin.CompilerPluginConfig()
+                config.allOptions().forEach { (pluginId, options) ->
+                    options.forEach { option ->
+                        val newOption =
+                            if (pluginId == "io.insert-koin.compiler.plugin" && option.key == "compileSafety") {
+                                org.jetbrains.kotlin.gradle.plugin.SubpluginOption("compileSafety", "false")
+                            } else {
+                                option
+                            }
+                        newConfig.addPluginArgument(pluginId, newOption)
+                    }
+                }
+                newConfig
+            }
+            pluginOptions.set(rewritten)
+        }
 }
 
 android {
@@ -166,16 +195,12 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
+    implementation(libs.androidx.core)
     api(libs.androidx.paging.runtime)
-
-    // Auto Value
-    api(libs.google.auto.value.annotation)
-    kapt(libs.google.auto.value)
 
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.annotations)
-    ksp(libs.koin.compiler)
 
     // Square libraries
     api(libs.okhttp)
@@ -249,17 +274,8 @@ class MigrationDirProvider(private val path: String) : CommandLineArgumentProvid
 
 val migrationDirPath: String = layout.projectDirectory.dir("src/main/assets/migrations")
     .asFile.absolutePath
-afterEvaluate {
-    tasks.named("kspDebugKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
-    tasks.named("kspReleaseKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
+ksp {
+    arg(MigrationDirProvider(migrationDirPath))
 }
 
 detekt {
@@ -297,7 +313,7 @@ tasks.withType<DokkaTask>().configureEach {
 }
 
 tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
+    dependsOn("kspReleaseKotlin")
 }
 
 // Custom task to run code quality checks, unit tests, and instrumentation tests sequentially
@@ -309,8 +325,6 @@ tasks.register("testAll") {
         "clean",
         "ktlintFormat",
         "detekt",
-        "checkstyleDebug",
-        "pmdDebug",
         "lintDebug",
         "apiDump",
         "testDebugUnitTest",
@@ -319,9 +333,7 @@ tasks.register("testAll") {
 
     tasks.findByName("ktlintFormat")?.mustRunAfter("clean")
     tasks.findByName("detekt")?.mustRunAfter("ktlintFormat")
-    tasks.findByName("checkstyleDebug")?.mustRunAfter("detekt")
-    tasks.findByName("pmdDebug")?.mustRunAfter("checkstyleDebug")
-    tasks.findByName("lintDebug")?.mustRunAfter("pmdDebug")
+    tasks.findByName("lintDebug")?.mustRunAfter("detekt")
     tasks.findByName("apiDump")?.mustRunAfter("lintDebug")
     tasks.findByName("testDebugUnitTest")?.mustRunAfter("apiDump")
     tasks.findByName("connectedDebugAndroidTest")?.mustRunAfter("testDebugUnitTest")

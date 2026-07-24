@@ -46,10 +46,12 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AccountManager
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 internal class AccountManagerImpl(
     private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
@@ -58,6 +60,8 @@ internal class AccountManagerImpl(
     private val logOutCall: LogOutCall,
     private val context: Context,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
 ) : AccountManager {
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
@@ -131,7 +135,7 @@ internal class AccountManagerImpl(
     @Throws(D2Error::class)
     private fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
         accountDeletionSubject.onNext(deletionReason)
-        logOutCall.logOut().blockingAwait()
+        runBlocking { logOutCall.logOut() }
         val configuration = databasesConfigurationStore.get()
         if (configuration != null) {
             val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
@@ -144,6 +148,8 @@ internal class AccountManagerImpl(
 
             FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
             databaseManager.deleteDatabase(loggedAccount.databaseName(), loggedAccount.encrypted())
+            oauth2StateSecureStore.remove(credentials.serverUrl, credentials.username)
+            openIDConnectStateSecureStore.remove(credentials.serverUrl, credentials.username)
         }
     }
 

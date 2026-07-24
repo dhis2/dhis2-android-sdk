@@ -35,7 +35,6 @@ import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfO
 import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.datavalue.DataValueInternalAccessor
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
@@ -74,7 +73,7 @@ internal class DataValuePostCall(
         var lastError: D2Error? = null
 
         dataValues
-            .groupBy { DataValueInternalAccessor.accessSourceDataSet(it) }
+            .groupBy { it.sourceDataSet() }
             .forEach { (dataSetUid, values) ->
                 lastError = uploadDataValueSet(DataValueSet(dataValues = values, dataSet = dataSetUid)) ?: lastError
             }

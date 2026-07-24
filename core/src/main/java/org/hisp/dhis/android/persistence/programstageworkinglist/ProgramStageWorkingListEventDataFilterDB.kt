@@ -70,6 +70,7 @@ internal data class ProgramStageWorkingListEventDataFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
+    override val isEmpty: Boolean?,
 ) : EntityDB<ProgramStageWorkingListEventDataFilter>, FilterOperatorsDB {
     override fun toDomain(): ProgramStageWorkingListEventDataFilter {
         return ProgramStageWorkingListEventDataFilter.builder()
@@ -92,5 +93,6 @@ internal fun ProgramStageWorkingListEventDataFilter.toDB(): ProgramStageWorkingL
         inProperty = `in`()?.toDB(),
         like = like(),
         dateFilter = dateFilter()?.toDB(),
+        isEmpty = isEmpty,
     )
 }

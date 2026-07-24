@@ -127,7 +127,7 @@ class TrackerDownloadCallShould {
             .doReturn(payload)
         whenever(payload.items).doReturn(listOf(orgUnit))
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler).getOrganisationUnitsByUid(setOf(missingOrgUnitUid))
@@ -139,7 +139,7 @@ class TrackerDownloadCallShould {
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(emptyList())
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler, never()).getOrganisationUnitsByUid(any())
@@ -158,7 +158,7 @@ class TrackerDownloadCallShould {
             .doReturn(payload)
         whenever(payload.items).doReturn(orgUnits)
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         call.download(params).toList()
 
         verify(organisationUnitNetworkHandler).getOrganisationUnitsByUid(missingUids.toSet())
@@ -170,7 +170,7 @@ class TrackerDownloadCallShould {
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
             .doReturn(emptyList())
 
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
         val progressList = call.download(params).toList()
 
         assertThat(progressList).isNotEmpty()
@@ -192,10 +192,13 @@ class TrackerDownloadCallShould {
             orgUnitsBeforeDivision = listOf(orgUnitUid),
             limit = ProgramDataDownloadParams.DEFAULT_LIMIT,
         )
-        val bundle = TrackerQueryBundle.builder()
-            .commonParams(commonParams)
-            .orgUnits(listOf(orgUnitUid))
-            .build()
+        val bundle = TrackerQueryBundle(
+            commonParams = commonParams,
+            orgUnits = listOf(orgUnitUid),
+            null,
+            null,
+            null,
+        )
 
         whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
@@ -210,7 +213,7 @@ class TrackerDownloadCallShould {
         whenever(payload.items).doReturn(teis)
         whenever(endpointCallFactory.getCollectionCall(any())).doReturn(payload)
 
-        call.download(ProgramDataDownloadParams.builder().build()).toList()
+        call.download(ProgramDataDownloadParams()).toList()
 
         val captor = argumentCaptor<TrackerAPIQuery>()
         verify(endpointCallFactory, times(programUids.size)).getCollectionCall(captor.capture())

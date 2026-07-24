@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.settings
 
-import org.hisp.dhis.android.core.common.ObjectWithUidInterface
-
 internal object AppearanceSettingsHelper {
 
-    @JvmStatic
-    fun <O : ObjectWithUidInterface> getGlobal(list: List<O>): O? {
-        return list.find { it.uid() == null }
+    fun <O> getGlobal(list: List<O>, getId: (O) -> String?): O? {
+        return list.find { getId(it) == null }
     }
 
-    @JvmStatic
-    fun <O : ObjectWithUidInterface> getSpecifics(list: List<O>): Map<String, O> {
+    fun <O> getSpecifics(list: List<O>, getId: (O) -> String?): Map<String, O> {
         return list
-            .filter { it.uid() != null }
-            .associateBy { it.uid()!! }
+            .filter { getId(it) != null }
+            .associateBy { getId(it)!! }
     }
 
     // Compatibility methods
@@ -52,8 +48,8 @@ internal object AppearanceSettingsHelper {
             toProgramConfiguration(it)
         }
 
-        val specificSettings = completionSpinnerSetting?.specificSettings()?.map { (key, value) ->
-            key to toProgramConfiguration(value)
+        val specificSettings = completionSpinnerSetting?.specificSettings()?.mapNotNull { (key, value) ->
+            toProgramConfiguration(value)?.let { key to it }
         }?.toMap()
 
         return ProgramConfigurationSettings.builder()
@@ -68,8 +64,8 @@ internal object AppearanceSettingsHelper {
             toCompletionSpinner(it)
         }
 
-        val specificSettings = programConfiguration?.specificSettings()?.map { (key, value) ->
-            key to toCompletionSpinner(value)
+        val specificSettings = programConfiguration?.specificSettings()?.mapNotNull { (key, value) ->
+            toCompletionSpinner(value)?.let { key to it }
         }?.toMap()
 
         return CompletionSpinnerSetting.builder()

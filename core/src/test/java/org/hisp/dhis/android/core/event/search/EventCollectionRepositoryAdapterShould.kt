@@ -67,9 +67,9 @@ class EventCollectionRepositoryAdapterShould {
             dateFilterPeriodHelper,
         )
 
-        whenever(ouRepository.getUidsInternal()) doReturn orgunitDescendants
-        whenever(ouRepository.byPath().like(orgunit).getUidsInternal()) doReturn orgunitDescendants
-        whenever(ouRepository.byParentUid().like(orgunit).getUidsInternal()) doReturn orgunitChildren
+        whenever(ouRepository.suspendGetUids()) doReturn orgunitDescendants
+        whenever(ouRepository.byPath().like(orgunit).suspendGetUids()) doReturn orgunitDescendants
+        whenever(ouRepository.byParentUid().like(orgunit).suspendGetUids()) doReturn orgunitChildren
     }
 
     @Test

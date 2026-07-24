@@ -36,7 +36,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  *
  * @author Jim Grace
  */
-abstract class FunctionGreatestOrLeast : ExpressionItem {
+internal abstract class FunctionGreatestOrLeast : ExpressionItem {
 
     /**
      * Returns the greatest or least value.

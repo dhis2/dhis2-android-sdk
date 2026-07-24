@@ -31,9 +31,21 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 import io.reactivex.Completable
 
 interface OwnershipManager {
+    @Deprecated(
+        message = "Use rxBreakGlass instead",
+        ReplaceWith("rxBreakGlass(trackedEntityInstance, program, reason)"),
+    )
     fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
+    fun rxBreakGlass(trackedEntityInstance: String, program: String, reason: String): Completable
     fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String)
+    suspend fun suspendBreakGlass(trackedEntityInstance: String, program: String, reason: String)
 
+    @Deprecated(
+        message = "Use rxTransfer instead",
+        ReplaceWith("rxTransfer(trackedEntityInstance, program, ownerOrgUnit)"),
+    )
     fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
+    fun rxTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable
     fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
+    suspend fun suspendTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String)
 }

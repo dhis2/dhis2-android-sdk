@@ -8,20 +8,22 @@
   "ignoreOverdueEvents": false,
   "skipOffline": false,
   "dataEntryMethod": false,
-  "captureCoordinates": true,
   "displayEnrollmentDateLabel": "Date of first visit",
   "onlyEnrollOnce": false,
   "version": 11,
   "selectIncidentDatesInFuture": true,
   "displayIncidentDateLabel": "Date of incident",
   "displayEnrollmentLabel": "Enrollment Label",
+  "displayEnrollmentsLabel": "Enrollments Label",
   "displayFollowUpLabel": "Follow up Label",
   "displayOrgUnitLabel": "OrgUnit Label",
   "displayRelationshipLabel": "Relationship Label",
   "displayNoteLabel": "Note Label",
   "displayTrackedEntityAttributeLabel": "TrackedEntityAttribute Label",
   "displayProgramStageLabel": "ProgramStage Label",
+  "displayProgramStagesLabel": "Program Stages Label",
   "displayEventLabel": "Event Label",
+  "displayEventsLabel": "Events Label",
   "selectEnrollmentDatesInFuture": false,
   "registration": true,
   "useFirstStageDuringRegistration": false,
@@ -100,5 +102,21 @@
   ],
   "enrollmentCategoryCombo": {
     "id": "p0KPaWEg3cf"
-  }
+  },
+  "categoryMappings": [
+    {
+      "id": "catMapping001",
+      "categoryId": "GLevLNI9wkl",
+      "mappingName": "Default mapping",
+      "optionMappings": [
+        {
+          "optionId": "xYerKDKCefk",
+          "filter": "#{condition1}"
+        },
+        {
+          "optionId": "bRowv6yZOF2"
+        }
+      ]
+    }
+  ]
 }

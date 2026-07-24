@@ -38,36 +38,87 @@ internal class CookieAuthenticatorHelper {
     companion object {
         private const val COOKIE_KEY = "Cookie"
         private const val SET_COOKIE_KEY = "set-cookie"
+        private const val PATH_ATTRIBUTE = "path"
+        private const val DEFAULT_PATH = "/"
     }
 
-    private val cookieMap = mutableMapOf<String, String>()
+    private data class StoredCookie(val nameValue: String, val path: String)
+
+    private val cookieMapByHost = mutableMapOf<String, MutableMap<String, StoredCookie>>()
 
     fun storeCookieIfSentByServer(res: HttpResponse) {
+        val host = res.call.request.url.host
         val cookies = res.headers.getAll(SET_COOKIE_KEY)
 
         if (!cookies.isNullOrEmpty()) {
+            val hostCookies = cookieMapByHost.getOrPut(host) { mutableMapOf() }
             cookies.forEach { cookie ->
                 val nameValue = cookie.substringBefore(";")
                 val name = nameValue.substringBefore("=").trim()
                 if (name.isNotEmpty()) {
-                    cookieMap[name] = nameValue
+                    val path = extractPath(cookie)
+                    hostCookies[cookieId(name, path)] = StoredCookie(nameValue, path)
                 }
             }
         }
     }
 
-    fun isCookieDefined(): Boolean {
-        return cookieMap.isNotEmpty()
+    fun isCookieDefined(requestBuilder: HttpRequestBuilder): Boolean {
+        return matchingCookies(requestBuilder).isNotEmpty()
     }
 
-    fun removeCookie() {
-        cookieMap.clear()
+    fun removeCookie(requestBuilder: HttpRequestBuilder) {
+        val host = requestBuilder.url.host
+        val requestPath = requestBuilder.url.build().encodedPath
+        cookieMapByHost[host]?.let { hostCookies ->
+            hostCookies.values.removeAll { pathMatches(it.path, requestPath) }
+            if (hostCookies.isEmpty()) {
+                cookieMapByHost.remove(host)
+            }
+        }
     }
 
     fun addCookieHeader(requestBuilder: HttpRequestBuilder) {
-        requestBuilder.apply {
-            headers.remove(COOKIE_KEY)
-            header(COOKIE_KEY, cookieMap.values.joinToString("; "))
+        val matching = matchingCookies(requestBuilder)
+        if (matching.isNotEmpty()) {
+            requestBuilder.apply {
+                headers.remove(COOKIE_KEY)
+                header(COOKIE_KEY, matching.joinToString("; ") { it.nameValue })
+            }
         }
     }
+
+    /**
+     * Cookies are stored per host, but a host can serve several DHIS2 instances under different
+     * paths (e.g. `.../stable-2-41-9` and `.../stable-2-43-0-1`). Each cookie carries its own
+     * `Path`, so a cookie is only attached to a request whose path matches that `Path`, avoiding
+     * that an instance receives another instance's cookie.
+     */
+    private fun matchingCookies(requestBuilder: HttpRequestBuilder): List<StoredCookie> {
+        val requestPath = requestBuilder.url.build().encodedPath
+        return cookieMapByHost[requestBuilder.url.host]
+            ?.values
+            ?.filter { pathMatches(it.path, requestPath) }
+            .orEmpty()
+    }
+
+    private fun extractPath(cookie: String): String {
+        return cookie.split(";")
+            .map { it.trim() }
+            .firstOrNull { it.substringBefore("=").trim().equals(PATH_ATTRIBUTE, ignoreCase = true) }
+            ?.substringAfter("=")
+            ?.trim()
+            ?.ifEmpty { DEFAULT_PATH }
+            ?: DEFAULT_PATH
+    }
+
+    private fun pathMatches(cookiePath: String, requestPath: String): Boolean {
+        return cookiePath == requestPath ||
+            (
+                requestPath.startsWith(cookiePath) &&
+                    (cookiePath.endsWith("/") || requestPath.getOrNull(cookiePath.length) == '/')
+                )
+    }
+
+    private fun cookieId(name: String, path: String): String = "$name@$path"
 }

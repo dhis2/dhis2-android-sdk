@@ -2,11 +2,14 @@
 
 ## Installation { #android_sdk_installation }
 
-Include dependency in build.gradle.
+Include dependency in build.gradle. Use the latest published version, available in Maven Central:
+
+[![Maven Central](https://img.shields.io/maven-central/v/org.hisp.dhis/android-core?label=maven%20central)](https://central.sonatype.com/artifact/org.hisp.dhis/android-core)
 
 ```gradle
 dependencies {
-    implementation "org.hisp.dhis:android-core:1.14.1"
+    // Replace 1.x.x with the latest published version (see the Maven Central badge above)
+    implementation "org.hisp.dhis:android-core:1.x.x"
     ...
 }
 ```

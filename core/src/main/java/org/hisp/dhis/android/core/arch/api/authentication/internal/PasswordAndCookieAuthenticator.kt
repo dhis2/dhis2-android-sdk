@@ -44,7 +44,7 @@ internal class PasswordAndCookieAuthenticator(
 ) {
 
     companion object {
-        private val LOGIN_KEY_LIST = listOf("login.action", "dhis-web-login")
+        private val LOGIN_KEY_LIST = listOf("login.action", "dhis-web-login", "login")
         const val LOCATION_KEY = "Location"
     }
 
@@ -54,7 +54,7 @@ internal class PasswordAndCookieAuthenticator(
         credentials: Credentials,
     ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
-        val useCookie = cookieHelper.isCookieDefined()
+        val useCookie = cookieHelper.isCookieDefined(requestBuilder)
         if (useCookie) {
             cookieHelper.addCookieHeader(requestBuilder)
         } else {
@@ -63,7 +63,7 @@ internal class PasswordAndCookieAuthenticator(
         val call = sender.proceed(requestBuilder)
 
         val finalCall = if (useCookie && hasAuthenticationFailed(call.response)) {
-            cookieHelper.removeCookie()
+            cookieHelper.removeCookie(requestBuilder)
             val originalRequest: HttpRequestBuilder = HttpRequestBuilder().apply {
                 takeFrom(call.request)
             }

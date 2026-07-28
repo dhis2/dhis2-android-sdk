@@ -33,6 +33,8 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
+import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
@@ -49,9 +51,12 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFile
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.koin.core.annotation.Singleton
 import java.io.File
@@ -64,6 +69,8 @@ class FileResourceCollectionRepository internal constructor(
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
+    private val programSettingsRepository: Lazy<ProgramSettingsObjectRepository>,
+    private val dataSetSettingsRepository: Lazy<DataSetSettingsObjectRepository>,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
@@ -77,6 +84,8 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             context,
+            programSettingsRepository,
+            dataSetSettingsRepository,
             dispatcher,
         )
     },
@@ -114,6 +123,35 @@ class FileResourceCollectionRepository internal constructor(
                 .errorDescription("Unexpected exception adding file")
                 .originalException(e)
                 .build()
+        }
+    }
+
+    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
+        val processedFile = when (resourceContext) {
+            is ResourceContext.ImageContext.ProgramImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
+            is ResourceContext.ImageContext.DatasetImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
+            is ResourceContext.FileContext -> o
+        }
+        suspendAdd(processedFile)
+    }
+
+    private fun compressImageIfNeeded(file: File, quality: UploadQuality): File {
+        return if (quality == UploadQuality.DEFAULT) {
+            FileCompressionHelper.compressFile(file)
+        } else {
+            file
+        }
+    }
+
+    private suspend fun getQuality(resourceContext: ResourceContext.ImageContext): UploadQuality {
+        return when (resourceContext) {
+            is ResourceContext.ImageContext.ProgramImageContext ->
+                programSettingsRepository.value
+                    .getImageQualityFromProgramSettings(resourceContext.programUid, resourceContext.resourceUid)
+
+            is ResourceContext.ImageContext.DatasetImageContext ->
+                dataSetSettingsRepository.value
+                    .getImageQualityFromDataSetSetting(resourceContext.datasetUid, resourceContext.resourceUid)
         }
     }
 
@@ -164,5 +202,6 @@ class FileResourceCollectionRepository internal constructor(
 
     internal companion object {
         val childrenAppenders: ChildrenAppenderGetter<FileResource> = emptyMap()
+        const val DEFAULT_QUALITY = "default"
     }
 }

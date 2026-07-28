@@ -29,8 +29,12 @@ package org.hisp.dhis.android.core.settings
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.fileresource.internal.UPLOAD_QUALITY_KEY
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.settings.internal.DataSetSettingCall
 import org.hisp.dhis.android.core.settings.internal.DataSetSettingStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.settings.DataSetSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [DataSetSettingsObjectRepository::class])
@@ -53,5 +57,17 @@ class DataSetSettingsObjectRepository internal constructor(
                 .specificSettings(specifics)
                 .build()
         }
+    }
+
+    suspend fun getImageQualityFromDataSetSetting(dataSetUid: String, resourceUid: String): UploadQuality {
+        val specificClause = WhereClauseBuilder()
+            .appendKeyStringValue(DataSetSettingTableInfo.Columns.UID, dataSetUid)
+            .build()
+
+        return store.selectOneWhere(specificClause)
+            ?.imageSettings()
+            ?.get(resourceUid)
+            ?.get(UPLOAD_QUALITY_KEY)
+            ?: UploadQuality.DEFAULT
     }
 }

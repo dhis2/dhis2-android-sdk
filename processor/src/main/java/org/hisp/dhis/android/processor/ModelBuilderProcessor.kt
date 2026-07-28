@@ -110,11 +110,8 @@ class ModelBuilderProcessor(
                 }
 
             val typeImports = fields.flatMap { field ->
-                val arguments = field.type.arguments.mapNotNull {
-                    it.type?.resolve()?.declaration?.qualifiedName?.asString()
-                }
-                arguments + field.type.declaration.qualifiedName?.asString()
-            }.filterNotNull().distinct().sorted()
+                collectTypeImports(field.type)
+            }.distinct().sorted()
 
             file += """
             package $packageName
@@ -206,6 +203,18 @@ class ModelBuilderProcessor(
      */
     private fun renderType(type: KSType): String {
         return type.toString().replace(TYPEALIAS_REGEX) { it.groupValues[1] }
+    }
+
+    /**
+     * Collects the imports required to render [type], walking type arguments recursively so that types nested
+     * more than one level deep (e.g. the enum in `Map<String, Map<String, UploadQuality>>`) are imported too.
+     */
+    private fun collectTypeImports(type: KSType): List<String> {
+        val argumentImports = type.arguments.flatMap { argument ->
+            argument.type?.resolve()?.let { collectTypeImports(it) } ?: emptyList()
+        }
+
+        return argumentImports + listOfNotNull(type.declaration.qualifiedName?.asString())
     }
 
     private fun getPropertyName(name: String): String {

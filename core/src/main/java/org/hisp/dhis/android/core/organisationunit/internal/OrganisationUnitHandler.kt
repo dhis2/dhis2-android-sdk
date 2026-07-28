@@ -31,15 +31,16 @@ import android.util.Log
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitOrganisationUnitGroupLink
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitTree
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHandler
-import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkHelper
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -142,7 +143,15 @@ internal class OrganisationUnitHandler(
     suspend fun addUserOrganisationUnitLinks(organisationUnits: Collection<OrganisationUnit>) {
         val builder = UserOrganisationUnitLink.builder()
             .organisationUnitScope(scope!!.name)
-            .user(user!!.uid())
+            .user(user!!.uid)
+
+        val scopeOrgunits = when (scope!!) {
+            OrganisationUnit.Scope.SCOPE_TEI_SEARCH -> user!!.teiSearchOrganisationUnits
+            OrganisationUnit.Scope.SCOPE_DATA_CAPTURE -> user!!.organisationUnits
+        } ?: emptyList()
+
+        val rootOrgunitUids = UidsHelper.getUids(OrganisationUnitTree.findRoots(scopeOrgunits))
+        val assignedOrgunitUids = UidsHelper.getUids(scopeOrgunits)
 
         // TODO MasterUid set to "" to avoid cleaning link table. Orgunits are paged, so the whole orguntit list is
         //  not available in the handler. Maybe the store should not be a linkStore.
@@ -151,9 +160,9 @@ internal class OrganisationUnitHandler(
             organisationUnits,
         ) { orgUnit: OrganisationUnit ->
             builder
-                .organisationUnit(orgUnit.uid())
-                .root(UserOrganisationUnitLinkHelper.isRoot(scope!!, user!!, orgUnit))
-                .userAssigned(UserOrganisationUnitLinkHelper.userIsAssigned(scope!!, user!!, orgUnit))
+                .organisationUnit(orgUnit.uid)
+                .root(rootOrgunitUids.contains(orgUnit.uid))
+                .userAssigned(assignedOrgunitUids.contains(orgUnit.uid))
                 .build()
         }
     }

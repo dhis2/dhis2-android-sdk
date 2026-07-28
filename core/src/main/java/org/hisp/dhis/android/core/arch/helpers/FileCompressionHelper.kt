@@ -47,7 +47,7 @@ import kotlin.math.sqrt
 object FileCompressionHelper {
 
     private const val JPEG_QUALITY = 80
-    private const val TARGET_SIZE_BYTES = 600 * 1024L // 600 KB
+    internal const val TARGET_SIZE_BYTES = 600 * 1024L // 600 KB
     private const val SCALE_STEP = 0.8f // reduce dimensions by 20% on each retry
     private const val MAX_ITERATIONS = 10
     private const val FULL_SIZE = 1f

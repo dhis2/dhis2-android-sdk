@@ -42,7 +42,15 @@
       "enrollmentDBTrimming": "ONLY_ACTIVE",
       "eventDateDBTrimming": "LAST_MONTH",
       "enrollmentDateDownload": "ANY",
-      "enrollmentDateDBTrimming": "LAST_MONTH"
+      "enrollmentDateDBTrimming": "LAST_MONTH",
+      "imageSettings": {
+        "aJK3Dfn45Ol": {
+          "uploadQuality": "ORIGINAL"
+        },
+        "bJK3Dfn45Ol": {
+          "uploadQuality": "DEFAULT"
+        }
+      }
     },
     "lxAQ7Zs9VYR": {
       "id": "lxAQ7Zs9VYR",

@@ -10,7 +10,15 @@
       "name": "Child Health",
       "lastUpdated": "2020-01-31T22:38:20.210Z",
       "periodDSDownload": 10,
-      "periodDSDBTrimming": 15
+      "periodDSDBTrimming": 15,
+      "imageSettings": {
+        "aJK3Dfn45Ol": {
+          "uploadQuality": "DEFAULT"
+        },
+        "bJK3Dfn45Ol": {
+          "uploadQuality": "ORIGINAL"
+        }
+      }
     },
     "EKWVBc5C0ms": {
       "id": "lyLU2wR22tC",

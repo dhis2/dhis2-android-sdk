@@ -28,22 +28,18 @@
 
 package org.hisp.dhis.android.core.arch.helpers
 
-sealed class ResourceContext(val path: String) {
-    sealed class ImageContext(val filePath: String, resourceUid: String) : ResourceContext(filePath) {
+sealed class ResourceContext {
+    sealed class ImageContext(open val resourceUid: String) : ResourceContext() {
         data class ProgramImageContext(
             val programUid: String,
-            val resourceUid: String,
-            val attribute: String,
-            val imagePath: String,
-        ) : ImageContext(imagePath, resourceUid)
+            override val resourceUid: String,
+        ) : ImageContext(resourceUid)
 
         data class DatasetImageContext(
             val datasetUid: String,
-            val resourceUid: String,
-            val attribute: String,
-            val imagePath: String,
-        ) : ImageContext(imagePath, resourceUid)
+            override val resourceUid: String,
+        ) : ImageContext(resourceUid)
     }
 
-    data class FileContext(val filePath: String) : ResourceContext(filePath)
+    data object FileContext : ResourceContext()
 }

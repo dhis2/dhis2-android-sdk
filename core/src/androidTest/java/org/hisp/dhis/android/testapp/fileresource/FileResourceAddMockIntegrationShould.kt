@@ -114,7 +114,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
     fun add_file_untouched_for_a_plain_file_context() = fileResourceTest {
         val file = storeImageFile("plain-file.png")
 
-        val fileResource = processAndAdd(file, ResourceContext.FileContext(file.absolutePath))
+        val fileResource = processAndAdd(file, ResourceContext.FileContext)
 
         assertThat(fileResource.contentLength()).isEqualTo(file.length())
     }
@@ -173,8 +173,6 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
             ResourceContext.ImageContext.ProgramImageContext(
                 programUid = "unconfiguredPr",
                 resourceUid = ITEM_A_UID,
-                attribute = ITEM_A_UID,
-                imagePath = file.absolutePath,
             ),
         )
 
@@ -200,16 +198,12 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
         ResourceContext.ImageContext.ProgramImageContext(
             programUid = PROGRAM_UID,
             resourceUid = itemUid,
-            attribute = itemUid,
-            imagePath = file.absolutePath,
         )
 
     private fun dataSetImageContext(file: File, itemUid: String) =
         ResourceContext.ImageContext.DatasetImageContext(
             datasetUid = DATA_SET_UID,
             resourceUid = itemUid,
-            attribute = itemUid,
-            imagePath = file.absolutePath,
         )
 
     private fun storeFile(): File {

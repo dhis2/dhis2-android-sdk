@@ -2026,56 +2026,42 @@ public final class org/hisp/dhis/android/core/arch/helpers/GeometryHelper {
 }
 
 public abstract class org/hisp/dhis/android/core/arch/helpers/ResourceContext {
-	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getPath ()Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/helpers/ResourceContext$FileContext : org/hisp/dhis/android/core/arch/helpers/ResourceContext {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$FileContext;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$FileContext;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$FileContext;
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$FileContext;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFilePath ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext : org/hisp/dhis/android/core/arch/helpers/ResourceContext {
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getFilePath ()Ljava/lang/String;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getResourceUid ()Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext : org/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$DatasetImageContext;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttribute ()Ljava/lang/String;
 	public final fun getDatasetUid ()Ljava/lang/String;
-	public final fun getImagePath ()Ljava/lang/String;
-	public final fun getResourceUid ()Ljava/lang/String;
+	public fun getResourceUid ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext : org/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext$ImageContext$ProgramImageContext;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttribute ()Ljava/lang/String;
-	public final fun getImagePath ()Ljava/lang/String;
 	public final fun getProgramUid ()Ljava/lang/String;
-	public final fun getResourceUid ()Ljava/lang/String;
+	public fun getResourceUid ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

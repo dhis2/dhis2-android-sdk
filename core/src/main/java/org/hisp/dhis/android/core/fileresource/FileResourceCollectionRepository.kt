@@ -128,9 +128,8 @@ class FileResourceCollectionRepository internal constructor(
 
     suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
         val processedFile = when (resourceContext) {
-            is ResourceContext.ImageContext.ProgramImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
-            is ResourceContext.ImageContext.DatasetImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
-            is ResourceContext.FileContext -> o
+            is ResourceContext.ImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
+            ResourceContext.FileContext -> o
         }
         suspendAdd(processedFile)
     }

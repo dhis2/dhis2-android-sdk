@@ -1980,6 +1980,13 @@ public final class org/hisp/dhis/android/core/arch/helpers/DateUtils {
 	public static final fun getStartDate (Ljava/util/List;)Ljava/util/Date;
 }
 
+public final class org/hisp/dhis/android/core/arch/helpers/FileCompressionHelper {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/FileCompressionHelper;
+	public static final fun compressFile (Ljava/io/File;)Ljava/io/File;
+	public static final fun compressFile (Ljava/io/File;J)Ljava/io/File;
+	public static synthetic fun compressFile$default (Ljava/io/File;JILjava/lang/Object;)Ljava/io/File;
+}
+
 public final class org/hisp/dhis/android/core/arch/helpers/FileResizerHelper {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/arch/helpers/FileResizerHelper;
 	public static final fun resizeFile (Ljava/io/File;Lorg/hisp/dhis/android/core/arch/helpers/FileResizerHelper$Dimension;)Ljava/io/File;

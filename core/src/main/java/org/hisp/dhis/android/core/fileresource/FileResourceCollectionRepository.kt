@@ -29,8 +29,11 @@ package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
 import io.reactivex.Observable
+import io.reactivex.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
@@ -133,6 +136,12 @@ class FileResourceCollectionRepository internal constructor(
         }
         suspendAdd(processedFile)
     }
+
+    fun rxProcessAndAdd(o: File, resourceContext: ResourceContext): Single<String> =
+        rxSingle { suspendProcessAndAdd(o, resourceContext) }
+
+    fun blockingProcessAndAdd(o: File, resourceContext: ResourceContext): String =
+        runBlocking { suspendProcessAndAdd(o, resourceContext) }
 
     private fun compressImageIfNeeded(file: File, quality: UploadQuality): File {
         return if (quality == UploadQuality.DEFAULT) {

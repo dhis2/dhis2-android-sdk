@@ -31,6 +31,7 @@ package org.hisp.dhis.android.core.settings
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import java.util.Date
 
 @ModelBuilder
@@ -54,6 +55,7 @@ data class ProgramSetting(
     val eventDateDBTrimming: DownloadPeriod?,
     val enrollmentDateDownload: DownloadPeriod?,
     val enrollmentDateDBTrimming: DownloadPeriod?,
+    val imageSettings: Map<String, Map<String, UploadQuality>>?,
 ) : CoreObject {
     fun uid(): String? = uid
     fun name(): String? = name
@@ -73,6 +75,7 @@ data class ProgramSetting(
     fun eventDateDBTrimming(): DownloadPeriod? = eventDateDBTrimming
     fun enrollmentDateDownload(): DownloadPeriod? = enrollmentDateDownload
     fun enrollmentDateDBTrimming(): DownloadPeriod? = enrollmentDateDBTrimming
+    fun imageSettings(): Map<String, Map<String, UploadQuality>>? = imageSettings
 
     fun toBuilder(): Builder = ProgramSettingBuilder.from(this)
 

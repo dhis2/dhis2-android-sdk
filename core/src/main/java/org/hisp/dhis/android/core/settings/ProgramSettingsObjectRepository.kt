@@ -29,8 +29,12 @@ package org.hisp.dhis.android.core.settings
 
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
+import org.hisp.dhis.android.core.fileresource.internal.UPLOAD_QUALITY_KEY
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingCall
 import org.hisp.dhis.android.core.settings.internal.ProgramSettingStore
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
+import org.hisp.dhis.android.persistence.settings.ProgramSettingTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton(binds = [ProgramSettingsObjectRepository::class])
@@ -53,5 +57,17 @@ class ProgramSettingsObjectRepository internal constructor(
                 .specificSettings(specifics)
                 .build()
         }
+    }
+
+    suspend fun getImageQualityFromProgramSettings(programUid: String, resourceUid: String): UploadQuality {
+        val specificClause = WhereClauseBuilder()
+            .appendKeyStringValue(ProgramSettingTableInfo.Columns.UID, programUid)
+            .build()
+
+        return store.selectOneWhere(specificClause)
+            ?.imageSettings()
+            ?.get(resourceUid)
+            ?.get(UPLOAD_QUALITY_KEY)
+            ?: UploadQuality.DEFAULT
     }
 }

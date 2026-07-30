@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,34 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.core.fileresource.internal
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.fileresource.internal.toUploadQualityMap
-import org.hisp.dhis.android.core.settings.DataSetSetting
+enum class UploadQuality {
+    DEFAULT,
+    ORIGINAL,
+}
 
-@Serializable
-internal data class DataSetSettingDTO(
-    val id: String?,
-    val name: String?,
-    val lastUpdated: String?,
-    val periodDSDownload: Int?,
-    val periodDSDBTrimming: Int?,
-    val imageSettings: Map<String, Map<String, String>>?,
-) {
-    fun toDomain(): DataSetSetting {
-        return DataSetSetting.builder()
-            .uid(id)
-            .name(name)
-            .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .periodDSDownload(periodDSDownload)
-            .periodDSDBTrimming(periodDSDBTrimming)
-            .imageSettings(imageSettings?.toUploadQualityMap())
-            .build()
+/**
+ * Key holding the [UploadQuality] within the per-item map of the imageSettings configuration, as sent by the
+ * Android Settings web app: `{"itemUid": {"uploadQuality": "ORIGINAL"}}`.
+ */
+internal const val UPLOAD_QUALITY_KEY = "uploadQuality"
+
+/**
+ * Parses [value] into an [UploadQuality], falling back to [UploadQuality.DEFAULT] for any value this SDK version
+ * does not know about. The Settings web app may introduce new qualities before the SDK supports them, and an
+ * unknown value must not prevent the rest of the settings from being read.
+ */
+internal fun uploadQualityOf(value: String): UploadQuality {
+    return UploadQuality.entries.find { it.name == value } ?: UploadQuality.DEFAULT
+}
+
+/**
+ * Converts a raw imageSettings map, where the quality is still the string sent by the server or stored in the
+ * database, into its domain representation. See [uploadQualityOf] for the handling of unknown qualities.
+ */
+internal fun Map<String, Map<String, String>>.toUploadQualityMap(): Map<String, Map<String, UploadQuality>> {
+    return mapValues { (_, itemSettings) ->
+        itemSettings.mapValues { (_, quality) -> uploadQualityOf(quality) }
     }
 }

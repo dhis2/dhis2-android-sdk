@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,40 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.persistence.settings
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import kotlinx.serialization.SerializationException
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.fileresource.internal.toUploadQualityMap
-import org.hisp.dhis.android.core.settings.DataSetSetting
 
-@Serializable
-internal data class DataSetSettingDTO(
-    val id: String?,
-    val name: String?,
-    val lastUpdated: String?,
-    val periodDSDownload: Int?,
-    val periodDSDBTrimming: Int?,
-    val imageSettings: Map<String, Map<String, String>>?,
+/**
+ * Persists the imageSettings map of a program or dataSet setting as a JSON string. The outer key is the item uid
+ * (dataElement or trackedEntityAttribute) and the inner map holds the settings for that item, e.g.
+ * `{"deId":{"uploadQuality":"ORIGINAL"}}`.
+ */
+@JvmInline
+internal value class ImageSettingsDB(
+    val value: String,
 ) {
-    fun toDomain(): DataSetSetting {
-        return DataSetSetting.builder()
-            .uid(id)
-            .name(name)
-            .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .periodDSDownload(periodDSDownload)
-            .periodDSDBTrimming(periodDSDBTrimming)
-            .imageSettings(imageSettings?.toUploadQualityMap())
-            .build()
+    fun toDomain(): Map<String, Map<String, UploadQuality>> {
+        return try {
+            KotlinxJsonParser.instance
+                .decodeFromString<Map<String, Map<String, String>>>(value)
+                .toUploadQualityMap()
+        } catch (e: SerializationException) {
+            emptyMap()
+        }
+    }
+}
+
+internal fun Map<String, Map<String, UploadQuality>>.toImageSettingsDB(): ImageSettingsDB {
+    return try {
+        val rawSettings = mapValues { (_, itemSettings) ->
+            itemSettings.mapValues { (_, quality) -> quality.name }
+        }
+        ImageSettingsDB(KotlinxJsonParser.instance.encodeToString(rawSettings))
+    } catch (e: SerializationException) {
+        ImageSettingsDB("{}")
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,30 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.network.settings
+package org.hisp.dhis.android.core.arch.helpers
 
-import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.fileresource.internal.toUploadQualityMap
-import org.hisp.dhis.android.core.settings.DataSetSetting
+sealed class ResourceContext {
+    sealed class ImageContext(open val resourceUid: String) : ResourceContext() {
+        data class ProgramImageContext(
+            val programUid: String,
+            override val resourceUid: String,
+        ) : ImageContext(resourceUid)
 
-@Serializable
-internal data class DataSetSettingDTO(
-    val id: String?,
-    val name: String?,
-    val lastUpdated: String?,
-    val periodDSDownload: Int?,
-    val periodDSDBTrimming: Int?,
-    val imageSettings: Map<String, Map<String, String>>?,
-) {
-    fun toDomain(): DataSetSetting {
-        return DataSetSetting.builder()
-            .uid(id)
-            .name(name)
-            .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .periodDSDownload(periodDSDownload)
-            .periodDSDBTrimming(periodDSDBTrimming)
-            .imageSettings(imageSettings?.toUploadQualityMap())
-            .build()
+        data class DatasetImageContext(
+            val datasetUid: String,
+            override val resourceUid: String,
+        ) : ImageContext(resourceUid)
     }
+
+    data object FileContext : ResourceContext()
 }

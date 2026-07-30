@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.network.settings.ProgramSettingsDTO
 import org.junit.Test
 
@@ -87,5 +88,11 @@ internal class ProgramSettingsShould : CoreObjectShould<ProgramSettingsDTO>(
         assertThat(childProgramme.enrollmentDateDownload()).isEqualTo(DownloadPeriod.ANY)
         assertThat(childProgramme.enrollmentDateDBTrimming())
             .isEqualTo(DownloadPeriod.LAST_MONTH)
+        assertThat(childProgramme.imageSettings()).isEqualTo(
+            mapOf(
+                "aJK3Dfn45Ol" to mapOf("uploadQuality" to UploadQuality.ORIGINAL),
+                "bJK3Dfn45Ol" to mapOf("uploadQuality" to UploadQuality.DEFAULT),
+            ),
+        )
     }
 }

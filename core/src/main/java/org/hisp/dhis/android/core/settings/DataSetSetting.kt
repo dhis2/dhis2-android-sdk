@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import java.util.Date
 
 @ModelBuilder
@@ -37,12 +38,14 @@ data class DataSetSetting(
     val uid: String?,
     val name: String?,
     val lastUpdated: Date?,
+    val imageSettings: Map<String, Map<String, UploadQuality>>?,
     val periodDSDownload: Int?,
     val periodDSDBTrimming: Int?,
 ) : CoreObject {
     fun uid(): String? = uid
     fun name(): String? = name
     fun lastUpdated(): Date? = lastUpdated
+    fun imageSettings(): Map<String, Map<String, UploadQuality>>? = imageSettings
     fun periodDSDownload(): Int? = periodDSDownload
     fun periodDSDBTrimming(): Int? = periodDSDBTrimming
 

@@ -49,25 +49,25 @@ class CredentialsShould {
 
     @Test
     fun return_basic_when_no_sso_state() {
-        val credentials = Credentials("user", "https://dhis2.org", "password", null, null)
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.BASIC)
     }
 
     @Test
     fun return_open_id_connect_when_open_id_connect_state() {
-        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, null)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, openIDConnectState, null)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 
     @Test
     fun return_oauth2_when_oauth2_state() {
-        val credentials = Credentials("user", "https://dhis2.org", null, null, oauth2State)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OAUTH2)
     }
 
     @Test
     fun return_open_id_connect_when_both_sso_states() {
-        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, oauth2State)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, openIDConnectState, oauth2State)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 }

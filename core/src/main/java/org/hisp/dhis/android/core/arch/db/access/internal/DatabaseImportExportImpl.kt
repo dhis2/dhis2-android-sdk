@@ -165,7 +165,7 @@ internal class DatabaseImportExportImpl(
         CipherUtil.createEncryptedZipFile(
             input = copiedDatabase,
             output = protectedDatabase,
-            password = credentials.password!!,
+            password = credentials.passwordOrPin!!,
         )
 
         val metadata = DatabaseExportMetadata(

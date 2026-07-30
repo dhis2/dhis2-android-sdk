@@ -133,7 +133,7 @@ class AccountManagerImplShould {
     }
 
     private fun activeCredentials(): Credentials =
-        Credentials(USERNAME, SERVER_URL, "pwd", null)
+        Credentials(USERNAME, SERVER_URL, "pwd", null, null)
 
     private fun mockDatabaseAccount(
         serverUrl: String,

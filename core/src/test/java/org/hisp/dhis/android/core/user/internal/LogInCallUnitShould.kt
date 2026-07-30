@@ -260,7 +260,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private fun verifySuccessOffline() {
-        verify(credentialsSecureStore).set(Credentials(USERNAME, SERVER_URL, PASSWORD, null))
+        verify(credentialsSecureStore).set(Credentials(USERNAME, SERVER_URL, PASSWORD, null, null))
         verify(userIdStore).set("test_uid")
     }
 
@@ -292,7 +292,7 @@ class LogInCallUnitShould : BaseCallShould() {
         instantiateCall(USERNAME, null, SERVER_URL)
 
         verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, state),
+            Credentials(USERNAME, SERVER_URL, null, null, null, state),
         )
     }
 
@@ -323,7 +323,7 @@ class LogInCallUnitShould : BaseCallShould() {
         instantiateCall(USERNAME, null, SERVER_URL)
 
         verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, state),
+            Credentials(USERNAME, SERVER_URL, null, null, null, state),
         )
     }
 
@@ -374,7 +374,7 @@ class LogInCallUnitShould : BaseCallShould() {
         instantiateCall(USERNAME, null, SERVER_URL)
 
         verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, openIdAuthState, null),
+            Credentials(USERNAME, SERVER_URL, null, null, openIdAuthState, null),
         )
         verify(openIDConnectStateSecureStore).set(SERVER_URL, USERNAME, openIdAuthState)
     }
@@ -409,7 +409,7 @@ class LogInCallUnitShould : BaseCallShould() {
         instantiateCall(USERNAME, null, SERVER_URL)
 
         verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, openIdAuthState, null),
+            Credentials(USERNAME, SERVER_URL, null, null, openIdAuthState, null),
         )
     }
 

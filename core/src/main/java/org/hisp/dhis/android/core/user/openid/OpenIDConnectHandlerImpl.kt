@@ -135,7 +135,7 @@ internal class OpenIDConnectHandlerImpl(
         val credentials = credentialsSecureStore.get()
         return when {
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
-            credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
+            credentials.pin != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
             else -> suspendSetPin(newPin)
         }
     }

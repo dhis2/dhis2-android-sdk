@@ -87,7 +87,7 @@ class OpenIDConnectHandlerImplShould {
     }
 
     @Test
-    fun setPin_persists_pin_as_credentials_password_and_updates_authenticated_user_hash() {
+    fun setPin_persists_pin_as_credentials_pin_and_updates_authenticated_user_hash() {
         whenever(credentialsSecureStore.get()).thenReturn(credentialsWithOpenId(authState))
         val existing = AuthenticatedUser.builder().user("uid").hash(null).build()
         authenticatedUserStore.stub {
@@ -99,12 +99,12 @@ class OpenIDConnectHandlerImplShould {
         assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
-        assertThat(credentialsCaptor.firstValue.password).isEqualTo(PIN)
+        assertThat(credentialsCaptor.firstValue.pin).isEqualTo(PIN)
         assertThat(credentialsCaptor.firstValue.openIDConnectState).isNotNull()
         val userCaptor = argumentCaptor<AuthenticatedUser>()
         verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(userCaptor.capture()) }
         assertThat(userCaptor.firstValue.hash())
-            .isEqualTo(Credentials(USERNAME, SERVER_URL, PIN, null).getHash())
+            .isEqualTo(Credentials(USERNAME, SERVER_URL, null, PIN, null).getHash())
     }
 
     @Test
@@ -141,7 +141,7 @@ class OpenIDConnectHandlerImplShould {
 
     @Test
     fun changePin_replaces_pin_when_current_matches() {
-        val current = credentialsWithOpenId(authState).copy(password = PIN)
+        val current = credentialsWithOpenId(authState).copy(pin = PIN)
         whenever(credentialsSecureStore.get()).thenReturn(current)
         val existing = AuthenticatedUser.builder().user("uid").hash(current.getHash()).build()
         authenticatedUserStore.stub {
@@ -153,12 +153,12 @@ class OpenIDConnectHandlerImplShould {
         assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
-        assertThat(credentialsCaptor.firstValue.password).isEqualTo(NEW_PIN)
+        assertThat(credentialsCaptor.firstValue.pin).isEqualTo(NEW_PIN)
     }
 
     @Test
     fun changePin_fails_when_current_pin_does_not_match() {
-        val current = credentialsWithOpenId(authState).copy(password = PIN)
+        val current = credentialsWithOpenId(authState).copy(pin = PIN)
         whenever(credentialsSecureStore.get()).thenReturn(current)
 
         val result = handler.blockingChangePin("wrong", NEW_PIN)
@@ -172,6 +172,7 @@ class OpenIDConnectHandlerImplShould {
             username = USERNAME,
             serverUrl = SERVER_URL,
             password = null,
+            pin = null,
             openIDConnectState = state,
             oauth2State = null,
         )

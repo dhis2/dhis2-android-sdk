@@ -66,7 +66,7 @@ internal class LogInCall(
     private val openIDConnectTokenRefresher: Lazy<OpenIDConnectTokenRefresher>,
 ) {
     @Throws(D2Error::class)
-    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
+    suspend fun logIn(username: String?, passwordOrPin: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
         exceptions.throwExceptionIfAlreadyAuthenticated()
 
@@ -78,12 +78,12 @@ internal class LogInCall(
         val openIdState = openIDConnectStateSecureStore.get(trimmedServerUrl, username)
         return when {
             oauth2State != null ->
-                logInWithOAuth2State(trimmedServerUrl, username, password, oauth2State)
+                logInWithOAuth2State(trimmedServerUrl, username, passwordOrPin, oauth2State)
             openIdState != null ->
-                logInWithOpenIdState(trimmedServerUrl, username, password, openIdState)
+                logInWithOpenIdState(trimmedServerUrl, username, passwordOrPin, openIdState)
             else -> {
-                exceptions.throwExceptionIfPasswordNull(password)
-                logInWithPassword(trimmedServerUrl, username, password)
+                exceptions.throwExceptionIfPasswordNull(passwordOrPin)
+                logInWithPassword(trimmedServerUrl, username, passwordOrPin)
             }
         }
     }
@@ -94,19 +94,8 @@ internal class LogInCall(
         pin: String?,
         state: OAuth2State,
     ): User {
-        val credentials = Credentials(username, serverUrl, pin, null, state)
-        return try {
-            val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
-                networkHandler.authenticate("Bearer ${state.accessToken!!}")
-            }.getOrThrow()
-            loginOnline(user, credentials)
-        } catch (d2Error: D2Error) {
-            if (d2Error.isOffline) {
-                tryLoginOffline(credentials, d2Error)
-            } else {
-                throw handleOnlineException(d2Error, credentials)
-            }
-        }
+        val credentials = Credentials(username, serverUrl, null, pin, null, state)
+        return tryLoginOffline(credentials)
     }
 
     private suspend fun logInWithOpenIdState(
@@ -115,7 +104,7 @@ internal class LogInCall(
         pin: String?,
         state: AuthState,
     ): User {
-        val credentials = Credentials(username, serverUrl, pin, state, null)
+        val credentials = Credentials(username, serverUrl, null, pin, state, null)
         // Try to refresh the idToken first; if it fails (offline or invalid refresh token) fall
         // back to the stored idToken and let the network call decide between online and offline.
         val token = openIDConnectTokenRefresher.value.blockingGetFreshTokenOrNull(state) ?: state.idToken!!
@@ -139,7 +128,7 @@ internal class LogInCall(
         username: String,
         password: String?,
     ): User {
-        val credentials = Credentials(username, serverUrl, password, null)
+        val credentials = Credentials(username, serverUrl, password, null, null, null)
         return try {
             if (loginDatabaseManager.isPendingToImportDB(serverUrl, username)) {
                 importDB(serverUrl, credentials)
@@ -223,11 +212,11 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
+    private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error? = null): User {
         val existingDatabase =
             loginDatabaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
         if (!existingDatabase) {
-            throw originalError
+            throw originalError ?: exceptions.noUserOfflineError()
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
@@ -293,6 +282,7 @@ internal class LogInCall(
                 username = user.username()!!,
                 serverUrl = trimmedServerUrl!!,
                 password = null,
+                pin = null,
                 openIDConnectState = openIDConnectState,
                 oauth2State = oauth2State,
             )

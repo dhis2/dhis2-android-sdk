@@ -207,7 +207,7 @@ object D2Manager {
         if (testingServerUrl.isNullOrEmpty()) {
             throw NoSuchFieldException("No testing Server Url")
         }
-        d2DIComponent.credentialsSecureStore.set(Credentials(username, testingServerUrl!!, password, null))
+        d2DIComponent.credentialsSecureStore.set(Credentials(username, testingServerUrl!!, password, null, null, null))
         d2DIComponent.userIdInMemoryStore.set(username)
     }
 

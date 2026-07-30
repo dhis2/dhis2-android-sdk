@@ -42,6 +42,7 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         secureStore.setData(USERNAME_KEY, credentials.username)
         secureStore.setData(SERVER_URL_KEY, credentials.serverUrl)
         secureStore.setData(PASSWORD_KEY, credentials.password)
+        secureStore.setData(PIN_KEY, credentials.pin)
         secureStore.setData(OPEN_ID_CONNECT_STATE_KEY, credentials.openIDConnectState?.jsonSerializeString())
         secureStore.setData(OAUTH2_STATE_KEY, credentials.oauth2State?.jsonSerializeString())
     }
@@ -69,11 +70,12 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
 
             if (username != null && serverUrl != null) {
                 val password = secureStore.getData(PASSWORD_KEY)
+                val pin = secureStore.getData(PIN_KEY)
                 val openIDConnectStateStr = secureStore.getData(OPEN_ID_CONNECT_STATE_KEY)
                 val openIDConnectState = openIDConnectStateStr?.let { AuthState.jsonDeserialize(it) }
                 val oauth2StateStr = secureStore.getData(OAUTH2_STATE_KEY)
                 val oauth2State = oauth2StateStr?.let { OAuth2State.jsonDeserialize(it) }
-                return Credentials(username, serverUrl, password, openIDConnectState, oauth2State)
+                return Credentials(username, serverUrl, password, pin, openIDConnectState, oauth2State)
             }
         } catch (e: RuntimeException) {
             remove()
@@ -86,6 +88,7 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         secureStore.removeData(USERNAME_KEY)
         secureStore.removeData(SERVER_URL_KEY)
         secureStore.removeData(PASSWORD_KEY)
+        secureStore.removeData(PIN_KEY)
         secureStore.removeData(OPEN_ID_CONNECT_STATE_KEY)
         secureStore.removeData(OAUTH2_STATE_KEY)
     }
@@ -94,6 +97,7 @@ internal class CredentialsSecureStoreImpl(private val secureStore: ChunkedSecure
         private const val USERNAME_KEY = "username"
         internal const val SERVER_URL_KEY = "serverUrl"
         private const val PASSWORD_KEY = "password"
+        private const val PIN_KEY = "pin"
         private const val OPEN_ID_CONNECT_STATE_KEY = "oicState"
         private const val OAUTH2_STATE_KEY = "oauth2State"
     }

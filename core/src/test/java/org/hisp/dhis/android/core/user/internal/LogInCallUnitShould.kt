@@ -267,25 +267,28 @@ class LogInCallUnitShould : BaseCallShould() {
     // OAuth2 dispatcher tests
 
     @Test
-    fun route_to_oauth2_path_with_bearer_when_state_exists_for_account() = runTest {
+    fun log_in_offline_without_contacting_server_when_oauth2_state_exists_for_account() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
         whenever(authenticatedUser.hash()).thenReturn(null)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        whenever(
-            userNetworkHandler.authenticate(credentialsCaptor.capture()),
-        ).thenReturn(apiUser)
 
         // password is null — must NOT throw because the OAuth2 path skips the null check
-        instantiateCall(USERNAME, null, SERVER_URL)
+        val user = instantiateCall(USERNAME, null, SERVER_URL)
 
-        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $ACCESS_TOKEN")
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
     }
 
     @Test
     fun persist_credentials_with_oauth2_state_and_null_password_after_oauth2_login() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        // The PIN is set right after the first login, so it is still null when re-logging in.
         whenever(authenticatedUser.hash()).thenReturn(null)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
@@ -293,6 +296,22 @@ class LogInCallUnitShould : BaseCallShould() {
 
         verify(credentialsSecureStore).set(
             Credentials(USERNAME, SERVER_URL, null, null, null, state),
+        )
+    }
+
+    @Test
+    fun persist_credentials_with_pin_when_oauth2_login_pin_matches_stored_hash() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        verify(credentialsSecureStore).set(
+            Credentials(USERNAME, SERVER_URL, null, PIN, null, state),
         )
     }
 
@@ -300,6 +319,8 @@ class LogInCallUnitShould : BaseCallShould() {
     fun reject_oauth2_login_when_pin_does_not_match_stored_hash() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
         // Stored hash corresponds to a different PIN.
         whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
@@ -307,24 +328,20 @@ class LogInCallUnitShould : BaseCallShould() {
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
             instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
         }
+        verify(credentialsSecureStore, never()).set(any())
     }
 
     @Test
-    fun fall_back_to_offline_login_for_oauth2_when_authenticate_throws_offline() = runTest {
+    fun throw_no_authenticated_user_error_for_oauth2_login_when_no_local_database_exists() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
-        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
-            .thenReturn(true)
-        // OAuth2 accounts have hash() == null because password is null on both sides.
-        whenever(authenticatedUser.hash()).thenReturn(null)
-        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+            .thenReturn(false)
 
-        instantiateCall(USERNAME, null, SERVER_URL)
-
-        verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, null, state),
-        )
+        assertD2Error(D2ErrorCode.NO_AUTHENTICATED_USER_OFFLINE) {
+            instantiateCall(USERNAME, null, SERVER_URL)
+        }
+        verify(credentialsSecureStore, never()).set(any())
     }
 
     // OpenID Connect dispatcher tests
@@ -430,6 +447,7 @@ class LogInCallUnitShould : BaseCallShould() {
         private const val PASSWORD = "test_password"
         private const val BASE_URL = "https://dhis-instance.org"
         private const val SERVER_URL = BASE_URL
+        private const val PIN = "1234"
         private const val ACCESS_TOKEN = "access-token-1"
         private const val ID_TOKEN = "id-token-1"
         private const val FRESH_ID_TOKEN = "fresh-id-token-1"

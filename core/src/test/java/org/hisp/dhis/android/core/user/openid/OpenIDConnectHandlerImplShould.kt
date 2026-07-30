@@ -31,6 +31,7 @@ import android.content.Context
 import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -103,8 +104,7 @@ class OpenIDConnectHandlerImplShould {
         assertThat(credentialsCaptor.firstValue.openIDConnectState).isNotNull()
         val userCaptor = argumentCaptor<AuthenticatedUser>()
         verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(userCaptor.capture()) }
-        assertThat(userCaptor.firstValue.hash())
-            .isEqualTo(Credentials(USERNAME, SERVER_URL, null, PIN, null).getHash())
+        assertThat(userCaptor.firstValue.hash()).isEqualTo(UserHelper.md5(USERNAME, PIN))
     }
 
     @Test

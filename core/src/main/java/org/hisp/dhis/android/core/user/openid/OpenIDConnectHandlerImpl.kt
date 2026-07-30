@@ -116,7 +116,7 @@ internal class OpenIDConnectHandlerImpl(
             credentials.openIDConnectState == null ->
                 Result.Failure(logInExceptions.pinRequiresTokenBasedAccountError())
             else -> {
-                val updated = credentials.copy(password = pin)
+                val updated = credentials.copy(pin = pin)
                 credentialsSecureStore.set(updated)
                 val existing = authenticatedUserStore.selectFirst()
                 if (existing == null) {

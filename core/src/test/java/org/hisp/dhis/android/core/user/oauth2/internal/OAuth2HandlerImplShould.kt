@@ -34,6 +34,7 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
@@ -354,8 +355,7 @@ class OAuth2HandlerImplShould {
         assertThat(credentialsCaptor.firstValue.oauth2State).isNotNull()
         val userCaptor = argumentCaptor<AuthenticatedUser>()
         verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(userCaptor.capture()) }
-        assertThat(userCaptor.firstValue.hash())
-            .isEqualTo(Credentials(USERNAME, NORMALIZED_URL, null, PIN, null).getHash())
+        assertThat(userCaptor.firstValue.hash()).isEqualTo(UserHelper.md5(USERNAME, PIN))
     }
 
     @Test

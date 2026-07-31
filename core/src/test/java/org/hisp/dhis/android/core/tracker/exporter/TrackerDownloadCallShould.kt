@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
@@ -82,6 +84,7 @@ class TrackerDownloadCallShould {
     private val databaseAdapter: DatabaseAdapter = mock()
     private val appDatabase: AppDatabase = mock()
     private val d2Dao: D2Dao = mock()
+    private val fileResourceDownloadCall: FileResourceDownloadCall = mock()
     private val queryFactory: TrackerQueryBundleFactory = mock()
     private val trackerCallFactory: TrackerParentCallFactory = mock()
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory = mock()
@@ -106,6 +109,7 @@ class TrackerDownloadCallShould {
             organisationUnitStore,
             organisationUnitNetworkHandler,
             databaseAdapter,
+            fileResourceDownloadCall,
             queryFactory,
             trackerCallFactory,
             persistenceCallFactory,
@@ -175,6 +179,58 @@ class TrackerDownloadCallShould {
 
         assertThat(progressList).isNotEmpty()
         assertThat(progressList.last().isComplete).isTrue()
+    }
+
+    @Test
+    fun download_file_resources_of_each_page_scoped_to_its_program_when_enabled() = runTest {
+        val teiUids = givenASinglePageOfTeis(program = "program1")
+
+        call.download(ProgramDataDownloadParams(downloadFileResources = true)).toList()
+
+        val captor = argumentCaptor<FileResourceDownloadParams>()
+        verify(fileResourceDownloadCall).downloadTrackerFileResources(captor.capture())
+
+        val params = captor.firstValue
+        assertThat(params.trackedEntityUids).containsExactlyElementsIn(teiUids)
+        assertThat(params.contextProgramUid).isEqualTo("program1")
+    }
+
+    @Test
+    fun not_download_file_resources_when_disabled() = runTest {
+        givenASinglePageOfTeis(program = "program1")
+
+        call.download(ProgramDataDownloadParams()).toList()
+
+        verify(fileResourceDownloadCall, never()).downloadTrackerFileResources(any())
+    }
+
+    private suspend fun givenASinglePageOfTeis(program: String): List<String> {
+        val orgUnitUid = "orgUnit1"
+        val commonParams = TrackerQueryCommonParams(
+            uids = emptyList(),
+            programs = listOf(program),
+            program = null,
+            startDate = null,
+            hasLimitByOrgUnit = false,
+            ouMode = OrganisationUnitMode.DESCENDANTS,
+            orgUnitsBeforeDivision = listOf(orgUnitUid),
+            limit = ProgramDataDownloadParams.DEFAULT_LIMIT,
+        )
+        val bundle = TrackerQueryBundle(commonParams, listOf(orgUnitUid), null, null, null)
+
+        whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+
+        val endpointCallFactory: TrackedEntityEndpointCallFactory = mock()
+        whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)
+
+        val teiUids = listOf("tei1", "tei2")
+        val teis = teiUids.map { TrackedEntityInstance.builder().uid(it).build() }
+        val payload: Payload<TrackedEntityInstance> = mock()
+        whenever(payload.items).doReturn(teis)
+        whenever(endpointCallFactory.getCollectionCall(any())).doReturn(payload)
+
+        return teiUids
     }
 
     @Test

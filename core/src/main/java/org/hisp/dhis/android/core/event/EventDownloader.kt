@@ -115,4 +115,22 @@ class EventDownloader internal constructor(
         connectorFactory.listConnector { eventFilters ->
             params.copy(eventFilters = eventFilters)
         }
+
+    /**
+     * If true, the file resources (files and images) linked to the data values of the downloaded events are
+     * downloaded as part of this call, right after each batch of events is persisted. Only the files that have not
+     * been previously downloaded are requested, and a file that fails to be downloaded is ignored.
+     *
+     * This is the recommended way of downloading tracker file resources, as it keeps data and files in sync instead
+     * of relying on a separate call once the data download has finished.
+     *
+     * The maximum file size is taken from the synchronization settings.
+     *
+     * @param downloadFileResources True to download the file resources
+     * @return the new repository
+     */
+    fun downloadFileResources(downloadFileResources: Boolean): EventDownloader =
+        connectorFactory.eqConnector<Boolean> { value ->
+            params.copy(downloadFileResources = value ?: false)
+        }.eq(downloadFileResources)
 }

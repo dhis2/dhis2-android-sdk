@@ -34,6 +34,11 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -57,6 +62,7 @@ internal class EventDownloadCall internal constructor(
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     databaseAdapter: DatabaseAdapter,
+    fileResourceDownloadCall: FileResourceDownloadCall,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
@@ -70,6 +76,7 @@ internal class EventDownloadCall internal constructor(
     organisationUnitStore,
     organisationUnitNetworkHandler,
     databaseAdapter,
+    fileResourceDownloadCall,
 ) {
 
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
@@ -94,9 +101,27 @@ internal class EventDownloadCall internal constructor(
         lastUpdatedManager.update(bundle)
     }
 
+    /**
+     * Events only carry data values, so the tracked entity attributes are left out: filtering by event uid does not
+     * restrict the attribute values and every pending attribute in the database would be downloaded.
+     */
+    override fun getFileResourceDownloadParams(
+        items: List<Event>,
+        program: String?,
+    ): FileResourceDownloadParams {
+        return FileResourceDownloadParams(
+            domainTypes = listOf(FileResourceDomainType.DATA_VALUE),
+            dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
+            elementTypes = listOf(FileResourceElementType.DATA_ELEMENT),
+            eventUids = items.map { it.uid },
+            contextProgramUid = program,
+        )
+    }
+
     override suspend fun queryByUids(
         bundle: EventQueryBundle,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
@@ -121,6 +146,12 @@ internal class EventDownloadCall internal constructor(
             )
 
             persistItems(items, params = persistParams, relatives)
+
+            downloadFileResourcesIfEnabled(
+                enabled = downloadFileResources,
+                items = items,
+                program = eventQuery.commonParams.program,
+            )
 
             result.count += items.size
         } catch (d2Error: D2Error) {

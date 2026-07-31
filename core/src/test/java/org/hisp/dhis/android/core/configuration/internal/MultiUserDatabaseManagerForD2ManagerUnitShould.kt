@@ -47,7 +47,7 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"
-    private val credentials = Credentials(username, serverUrl, "password", null)
+    private val credentials = Credentials(username, serverUrl, "password", null, null)
     private val unencryptedDbName = "un.db"
 
     private val accountUnencrypted = DatabaseAccount.builder()

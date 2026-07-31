@@ -211,7 +211,7 @@ internal class OAuth2HandlerImpl(
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
             credentials.oauth2State == null -> Result.Failure(logInExceptions.pinRequiresTokenBasedAccountError())
             else -> {
-                val updated = credentials.copy(password = pin)
+                val updated = credentials.copy(pin = pin)
                 credentialsSecureStore.set(updated)
                 val existing = authenticatedUserStore.selectFirst()
                 if (existing == null) {
@@ -230,7 +230,7 @@ internal class OAuth2HandlerImpl(
         val credentials = credentialsSecureStore.get()
         return when {
             credentials == null -> Result.Failure(logInExceptions.noActiveSessionError())
-            credentials.password != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
+            credentials.pin != currentPin -> Result.Failure(logInExceptions.incorrectPinError())
             else -> suspendSetPin(newPin)
         }
     }

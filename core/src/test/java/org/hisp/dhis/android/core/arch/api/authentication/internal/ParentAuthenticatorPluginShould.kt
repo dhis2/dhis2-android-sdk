@@ -117,7 +117,7 @@ class ParentAuthenticatorPluginShould {
 
     @Test
     fun return_test_and_user_when_server_take_request() = runTest {
-        val credentials = Credentials("test_user", "test_server", "test_password", null)
+        val credentials = Credentials("test_user", "test_server", "test_password", null, null)
         Mockito.`when`(credentialsSecureStore.get()).thenReturn(credentials)
         Mockito.`when`(userIdStore.get()).thenReturn("user-id")
 

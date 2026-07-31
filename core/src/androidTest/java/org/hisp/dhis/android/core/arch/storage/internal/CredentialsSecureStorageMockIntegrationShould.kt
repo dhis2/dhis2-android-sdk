@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,19 +45,35 @@ class CredentialsSecureStorageMockIntegrationShould {
 
     @Test
     fun credentials_are_correctly_stored_for_regular_password() {
-        setAndVerify(Credentials("username", "serverUrl", "password", null))
+        setAndVerify(Credentials("username", "serverUrl", "password", null, null))
     }
 
     @Test
     fun credentials_are_correctly_stored_for_really_log_password() {
         val pw = (0 until 1000).joinToString { it.toString() }
-        setAndVerify(Credentials("username", "serverUrl", pw, null))
+        setAndVerify(Credentials("username", "serverUrl", pw, null, null))
     }
 
     @Test
     fun credentials_are_correctly_stored_for_open_id_connect_config() {
         val authState = AuthState()
-        setAndVerify(Credentials("username", "serverUrl", null, authState))
+        setAndVerify(Credentials("username", "serverUrl", null, null, authState))
+    }
+
+    @Test
+    fun credentials_are_correctly_stored_for_open_id_connect_config_with_pin() {
+        val authState = AuthState()
+        setAndVerify(Credentials("username", "serverUrl", null, PIN, authState))
+    }
+
+    @Test
+    fun credentials_are_correctly_stored_for_oauth2_config_with_pin() {
+        setAndVerify(Credentials("username", "serverUrl", null, PIN, null, oauth2State()))
+    }
+
+    @Test
+    fun credentials_are_correctly_stored_for_password_and_pin() {
+        setAndVerify(Credentials("username", "serverUrl", "password", PIN, null))
     }
 
     private fun setAndVerify(credentials: Credentials) {
@@ -74,7 +91,7 @@ class CredentialsSecureStorageMockIntegrationShould {
     @Test
     fun credentials_are_correctly_removed() {
         val store1 = instantiateStore()
-        val credentials = Credentials("username", "serverUrl", "password", null)
+        val credentials = Credentials("username", "serverUrl", "password", null, null)
         store1.set(credentials)
         store1.remove()
 
@@ -84,5 +101,19 @@ class CredentialsSecureStorageMockIntegrationShould {
         val store2 = instantiateStore()
         val retrievedCredentials2 = store2.get()
         assertThat(retrievedCredentials2).isNull()
+    }
+
+    private fun oauth2State() = OAuth2State(
+        clientId = "client",
+        keyId = "key",
+        accessToken = "token",
+        refreshToken = "refresh",
+        expiresAt = Long.MAX_VALUE,
+        scope = null,
+        tokenEndpoint = "https://dhis2.org/oauth2/token",
+    )
+
+    companion object {
+        private const val PIN = "1234"
     }
 }

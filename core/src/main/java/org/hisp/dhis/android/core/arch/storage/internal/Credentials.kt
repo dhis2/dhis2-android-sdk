@@ -36,6 +36,7 @@ internal data class Credentials(
     val username: String,
     val serverUrl: String,
     val password: String?,
+    val pin: String?,
     val openIDConnectState: AuthState?,
     val oauth2State: OAuth2State? = null,
 ) {
@@ -46,13 +47,17 @@ internal data class Credentials(
         else -> AuthorizationType.BASIC
     }
 
+    val passwordOrPin: String?
+        get() = password ?: pin
+
     fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
+        return passwordOrPin?.let { UserHelper.md5(username, it) }
     }
 
     override fun equals(other: Any?) =
         (other is Credentials) &&
             username == other.username &&
+            pin == other.pin &&
             password == other.password &&
             serverUrl == other.serverUrl &&
             openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
@@ -62,6 +67,7 @@ internal data class Credentials(
         var result = username.hashCode()
         result = 31 * result + serverUrl.hashCode()
         result = 31 * result + (password?.hashCode() ?: 0)
+        result = 31 * result + (pin?.hashCode() ?: 0)
         result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
         result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
         return result

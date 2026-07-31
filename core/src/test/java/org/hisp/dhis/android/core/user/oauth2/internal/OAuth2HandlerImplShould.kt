@@ -34,6 +34,7 @@ import com.nimbusds.jose.crypto.RSASSASigner
 import com.nimbusds.jwt.JWTClaimsSet
 import com.nimbusds.jwt.SignedJWT
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
@@ -337,7 +338,7 @@ class OAuth2HandlerImplShould {
     // region setPin / changePin
 
     @Test
-    fun setPin_persists_pin_as_credentials_password_and_updates_authenticated_user_hash() {
+    fun setPin_persists_pin_as_credentials_pin_and_updates_authenticated_user_hash() {
         val credentials = credentialsWithOAuth2(sampleOAuth2State())
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
         val existing = AuthenticatedUser.builder().user("uid").hash(null).build()
@@ -350,12 +351,11 @@ class OAuth2HandlerImplShould {
         assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
-        assertThat(credentialsCaptor.firstValue.password).isEqualTo(PIN)
+        assertThat(credentialsCaptor.firstValue.pin).isEqualTo(PIN)
         assertThat(credentialsCaptor.firstValue.oauth2State).isNotNull()
         val userCaptor = argumentCaptor<AuthenticatedUser>()
         verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(userCaptor.capture()) }
-        assertThat(userCaptor.firstValue.hash())
-            .isEqualTo(Credentials(USERNAME, NORMALIZED_URL, PIN, null).getHash())
+        assertThat(userCaptor.firstValue.hash()).isEqualTo(UserHelper.md5(USERNAME, PIN))
     }
 
     @Test
@@ -392,7 +392,7 @@ class OAuth2HandlerImplShould {
 
     @Test
     fun changePin_replaces_pin_when_current_matches() {
-        val current = credentialsWithOAuth2(sampleOAuth2State()).copy(password = PIN)
+        val current = credentialsWithOAuth2(sampleOAuth2State()).copy(pin = PIN)
         whenever(credentialsSecureStore.get()).thenReturn(current)
         val existing = AuthenticatedUser.builder().user("uid").hash(current.getHash()).build()
         authenticatedUserStore.stub {
@@ -404,12 +404,12 @@ class OAuth2HandlerImplShould {
         assertThat(result).isInstanceOf(Result.Success::class.java)
         val credentialsCaptor = argumentCaptor<Credentials>()
         verify(credentialsSecureStore).set(credentialsCaptor.capture())
-        assertThat(credentialsCaptor.firstValue.password).isEqualTo(NEW_PIN)
+        assertThat(credentialsCaptor.firstValue.pin).isEqualTo(NEW_PIN)
     }
 
     @Test
     fun changePin_fails_when_current_pin_does_not_match() {
-        val current = credentialsWithOAuth2(sampleOAuth2State()).copy(password = PIN)
+        val current = credentialsWithOAuth2(sampleOAuth2State()).copy(pin = PIN)
         whenever(credentialsSecureStore.get()).thenReturn(current)
 
         val result = handler.blockingChangePin("wrong", NEW_PIN)
@@ -497,6 +497,7 @@ class OAuth2HandlerImplShould {
             username = USERNAME,
             serverUrl = NORMALIZED_URL,
             password = null,
+            pin = null,
             openIDConnectState = null,
             oauth2State = state,
         )

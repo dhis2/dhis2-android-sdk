@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.junit.Test
@@ -49,25 +50,89 @@ class CredentialsShould {
 
     @Test
     fun return_basic_when_no_sso_state() {
-        val credentials = Credentials("user", "https://dhis2.org", "password", null, null)
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.BASIC)
     }
 
     @Test
     fun return_open_id_connect_when_open_id_connect_state() {
-        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, null)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, openIDConnectState, null)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
     }
 
     @Test
     fun return_oauth2_when_oauth2_state() {
-        val credentials = Credentials("user", "https://dhis2.org", null, null, oauth2State)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OAUTH2)
     }
 
     @Test
     fun return_open_id_connect_when_both_sso_states() {
-        val credentials = Credentials("user", "https://dhis2.org", null, openIDConnectState, oauth2State)
+        val credentials = Credentials("user", "https://dhis2.org", null, null, openIDConnectState, oauth2State)
         assertThat(credentials.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+    }
+
+    @Test
+    fun return_password_as_password_or_pin_when_password_is_set() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", PIN, null, null)
+        assertThat(credentials.passwordOrPin).isEqualTo("password")
+    }
+
+    @Test
+    fun return_pin_as_password_or_pin_when_there_is_no_password() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        assertThat(credentials.passwordOrPin).isEqualTo(PIN)
+    }
+
+    @Test
+    fun return_null_password_or_pin_when_neither_password_nor_pin() {
+        val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
+        assertThat(credentials.passwordOrPin).isNull()
+    }
+
+    @Test
+    fun build_hash_from_pin_when_there_is_no_password() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        assertThat(credentials.getHash()).isEqualTo(UserHelper.md5("user", PIN))
+    }
+
+    @Test
+    fun build_hash_from_password_when_password_is_set() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
+        assertThat(credentials.getHash()).isEqualTo(UserHelper.md5("user", "password"))
+    }
+
+    @Test
+    fun return_null_hash_when_neither_password_nor_pin() {
+        val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
+        assertThat(credentials.getHash()).isNull()
+    }
+
+    @Test
+    fun be_equal_when_all_fields_including_pin_are_equal() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        val other = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        assertThat(credentials).isEqualTo(other)
+        assertThat(credentials.hashCode()).isEqualTo(other.hashCode())
+    }
+
+    @Test
+    fun not_be_equal_when_pin_differs() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        val other = credentials.copy(pin = "5678")
+        assertThat(credentials).isNotEqualTo(other)
+        assertThat(credentials.hashCode()).isNotEqualTo(other.hashCode())
+    }
+
+    @Test
+    fun not_be_equal_when_pin_is_removed() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        val other = credentials.copy(pin = null)
+        assertThat(credentials).isNotEqualTo(other)
+        assertThat(credentials.hashCode()).isNotEqualTo(other.hashCode())
+    }
+
+    companion object {
+        private const val PIN = "1234"
     }
 }

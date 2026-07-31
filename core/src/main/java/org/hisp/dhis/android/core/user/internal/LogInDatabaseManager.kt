@@ -70,6 +70,6 @@ internal class LogInDatabaseManager(
 
     suspend fun importDB(serverUrl: String, credentials: Credentials) {
         val existingAccount = multiUserDatabaseManager.getAccount(serverUrl, credentials.username)!!
-        multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.password!!)
+        multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.passwordOrPin!!)
     }
 }

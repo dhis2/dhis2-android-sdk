@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class LoginConfigDownloader(
@@ -45,7 +46,7 @@ internal class LoginConfigDownloader(
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : UntypedModuleDownloaderCoroutines {
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val serverUrl =
             credentialsSecureStore.getServerUrl() ?: throw IllegalArgumentException("Credentials are not set")
 

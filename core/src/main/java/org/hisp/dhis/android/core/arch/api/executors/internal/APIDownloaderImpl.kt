@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 @VisibleForTesting
@@ -152,6 +153,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
     override suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
+        syncDate: Date?,
         downloader: suspend (String?) -> Payload<P>,
     ): List<P> {
         val items = downloader(
@@ -159,7 +161,7 @@ internal class APIDownloaderImpl(private val resourceHandler: ResourceHandler) :
         ).items
 
         handler.handleMany(items)
-        resourceHandler.handleResource(resourceType)
+        resourceHandler.handleResource(resourceType, syncDate)
         return items
     }
 

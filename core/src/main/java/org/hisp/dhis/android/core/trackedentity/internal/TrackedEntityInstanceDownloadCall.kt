@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 @Suppress("LongParameterList")
@@ -94,8 +95,8 @@ internal class TrackedEntityInstanceDownloadCall(
         persistenceCallFactory.persistTEIs(items, params, relatives)
     }
 
-    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle) {
-        lastUpdatedManager.update(bundle)
+    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle, syncDate: Date) {
+        lastUpdatedManager.update(bundle, syncDate)
     }
 
     override suspend fun queryByUids(

@@ -45,20 +45,20 @@ class EventDownloadCallMockIntegrationShould : BaseMockIntegrationTestMetadataDi
 
         testObserver.assertValueAt(0) { v: TrackerD2Progress ->
             !v.isComplete &&
-                v.doneCalls().size == 1 &&
+                v.doneCalls().size == 0 &&
                 v.programs().all { (_, progress) -> !progress.isComplete && progress.syncStatus == null }
         }
         testObserver.assertValueAt(1) { v ->
-            !v.isComplete && v.doneCalls().size == 2 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 1 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(2) { v ->
-            !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 2 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(3) { v ->
-            !v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
+            !v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
         }
         testObserver.assertValueAt(4) { v ->
-            v.isComplete && v.doneCalls().size == 4 && allProgramsSucceeded(v.programs())
+            v.isComplete && v.doneCalls().size == 3 && allProgramsSucceeded(v.programs())
         }
 
         testObserver.dispose()

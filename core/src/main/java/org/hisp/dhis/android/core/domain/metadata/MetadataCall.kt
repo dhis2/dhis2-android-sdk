@@ -79,6 +79,7 @@ import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationMod
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Suppress("LongParameterList")
 @Singleton
@@ -111,7 +112,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 19
+        const val CALLS_COUNT = 18
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -122,9 +123,11 @@ internal class MetadataCall(
 
         coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             try {
-                systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
+                val systemInfo = systemInfoDownloader.downloadAndReturn()
+                val syncDate = systemInfo?.serverDate!!
+
                 executeIndependentCalls(progressManager).collect { send(it) }
-                executeUserCallAndChildren(progressManager).collect { send(it) }
+                executeUserCallAndChildren(progressManager, syncDate).collect { send(it) }
             } catch (e: Exception) {
                 if (e !is D2Error && e.cause is D2Error) {
                     throw e.cause!!
@@ -157,14 +160,17 @@ internal class MetadataCall(
         emit(progressManager.increaseProgress(SmsModule::class.java, false))
     }
 
-    private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
+    private fun executeUserCallAndChildren(
+        progressManager: D2ProgressManager,
+        syncDate: Date,
+    ): Flow<D2Progress> = flow {
         val user = userModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(User::class.java, false))
 
         organisationUnitModuleDownloader.downloadMetadata(user)
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
 
-        programDownloader.downloadMetadata()
+        programDownloader.downloadMetadata(syncDate)
         emit(progressManager.increaseProgress(Program::class.java, false))
 
         dataSetDownloader.downloadMetadata()

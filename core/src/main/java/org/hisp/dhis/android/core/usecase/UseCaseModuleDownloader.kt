@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.usecase
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.usecase.stock.internal.StockUseCaseCall
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class UseCaseModuleDownloader(
     private val stockUseCaseCall: StockUseCaseCall,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         return stockUseCaseCall.download(false)
     }
 }

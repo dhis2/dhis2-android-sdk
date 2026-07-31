@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.indicator.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 class IndicatorModuleDownloader internal constructor(
@@ -37,10 +38,10 @@ class IndicatorModuleDownloader internal constructor(
     private val indicatorUidsSeeker: IndicatorUidsSeeker,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val indicatorUids = indicatorUidsSeeker.seekUids()
 
-        if (!indicatorUids.isNullOrEmpty()) {
+        if (indicatorUids.isNotEmpty()) {
             val indicators = indicatorCallFactory.create(indicatorUids)
 
             val typeUids = indicators.mapNotNull { it.indicatorType()?.uid() }.toSet()

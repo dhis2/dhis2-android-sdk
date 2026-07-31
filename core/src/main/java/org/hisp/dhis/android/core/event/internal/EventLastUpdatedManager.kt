@@ -27,23 +27,22 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerSyncLastUpdatedManager
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class EventLastUpdatedManager(
     store: EventSyncStore,
-    private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<EventSync>(store) {
 
-    suspend fun update(bundle: EventQueryBundle) {
+    suspend fun update(bundle: EventQueryBundle, syncDate: Date) {
         val sync = EventSync.builder()
             .program(bundle.commonParams.program)
             .organisationUnitIdsHash(bundle.orgUnits.toSet().hashCode())
             .downloadLimit(bundle.commonParams.limit)
             .workingListsHash(bundle.commonParams.workingListsHash)
-            .lastUpdated(resourceHandler.serverDate!!)
+            .lastUpdated(syncDate)
             .build()
         super.update(sync)
     }

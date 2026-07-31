@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitLevel
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class OrganisationUnitLevelEndpointCall(
@@ -38,7 +39,7 @@ internal class OrganisationUnitLevelEndpointCall(
     private val handler: OrganisationUnitLevelHandler,
     private val apiDownloader: APIDownloader,
 ) : ListCallCoroutines<OrganisationUnitLevel> {
-    override suspend fun download(): List<OrganisationUnitLevel> {
+    override suspend fun download(syncDate: Date?): List<OrganisationUnitLevel> {
         return apiDownloader.downloadCoroutines(
             handler,
             networkHandler::getOrganisationUnitLevels,

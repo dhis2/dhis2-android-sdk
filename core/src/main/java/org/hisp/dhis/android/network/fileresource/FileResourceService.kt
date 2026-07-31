@@ -90,11 +90,13 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getImageFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
+        programUid: String?,
         dimension: String,
     ): ByteArray {
         return client.get {
             url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/image")
             parameters {
+                attribute(PROGRAM, programUid)
                 dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
@@ -103,9 +105,13 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getFileFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
+        programUid: String?,
     ): ByteArray {
         return client.get {
             url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/file")
+            parameters {
+                attribute(PROGRAM, programUid)
+            }
         }
     }
 
@@ -184,5 +190,6 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         const val EVENTS = "events"
         const val TRACKER = "tracker"
         const val DATA_VALUES = "dataValues"
+        const val PROGRAM = "program"
     }
 }

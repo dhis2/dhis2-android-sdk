@@ -78,6 +78,7 @@ internal class FileResourceNetworkHandlerImpl(
             service.getImageFromTrackedEntityAttribute(
                 v.value.trackedEntityInstance(),
                 v.value.trackedEntityAttribute(),
+                v.program,
                 dimension,
             )
         } else {
@@ -96,6 +97,7 @@ internal class FileResourceNetworkHandlerImpl(
             service.getFileFromTrackedEntityAttribute(
                 v.value.trackedEntityInstance(),
                 v.value.trackedEntityAttribute(),
+                v.program,
             )
         } else {
             service.getFileFromTrackedEntityAttribute41(

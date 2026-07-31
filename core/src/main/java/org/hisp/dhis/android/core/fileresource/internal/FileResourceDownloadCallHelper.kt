@@ -31,12 +31,15 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
+import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
+import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityDataValueStore
@@ -48,6 +51,7 @@ import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.icon.CustomIconTableInfo
+import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
@@ -62,6 +66,8 @@ internal class FileResourceDownloadCallHelper(
     private val trackedEntityAttributeStore: TrackedEntityAttributeStore,
     private val trackedEntityDataValueStore: TrackedEntityDataValueStore,
     private val trackedEntityInstanceStore: TrackedEntityInstanceStore,
+    private val programTrackedEntityAttributeStore: ProgramTrackedEntityAttributeStore,
+    private val enrollmentStore: EnrollmentStore,
     private val eventStore: EventStore,
     private val dataSetElementStore: DataSetElementStore,
     private val dataValueStore: DataValueStore,
@@ -96,11 +102,65 @@ internal class FileResourceDownloadCallHelper(
             }
         }
 
-        return trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClauseBuilder.build())
-            .map { av ->
-                val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
-                MissingTrackerAttributeValue(av, type)
+        val attributeValues = trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClauseBuilder.build())
+        val resolveProgram = buildAttributeProgramResolver(attributeValues, params.contextProgramUid)
+
+        return attributeValues.map { av ->
+            val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
+            MissingTrackerAttributeValue(av, type, resolveProgram(av))
+        }
+    }
+
+    /**
+     * Builds a function that resolves the program to use when downloading the file of an attribute value. The tracker
+     * API requires the program uid for attributes assigned to a program: without it the file is not resolved.
+     *
+     * When the file resources are downloaded along with the tracker data, the program is known and is preferred. In
+     * any other case it is inferred from the local metadata: the programs the attribute is assigned to, intersected
+     * with the programs the tracked entity is enrolled in. Attributes that are not assigned to any program resolve to
+     * null, as the endpoint works without the parameter for tracked entity type attributes.
+     */
+    private suspend fun buildAttributeProgramResolver(
+        attributeValues: List<TrackedEntityAttributeValue>,
+        contextProgramUid: String?,
+    ): (TrackedEntityAttributeValue) -> String? {
+        if (attributeValues.isEmpty()) {
+            return { null }
+        }
+
+        val programAttributesWhereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                attributeValues.map { it.trackedEntityAttribute() }.distinct(),
+            )
+            .build()
+
+        val programsByAttribute = programTrackedEntityAttributeStore.selectWhere(programAttributesWhereClause)
+            .groupBy({ it.trackedEntityAttribute()?.uid() }, { it.program()?.uid() })
+            .mapValues { (_, programs) -> programs.filterNotNull().distinct().sorted() }
+
+        val enrollmentsWhereClause = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
+                attributeValues.map { it.trackedEntityInstance() }.distinct(),
+            )
+            .build()
+
+        val programsByTrackedEntity = enrollmentStore.selectWhere(enrollmentsWhereClause)
+            .groupBy({ it.trackedEntityInstance() }, { it.program() })
+            .mapValues { (_, programs) -> programs.filterNotNull().toSet() }
+
+        return { value ->
+            val candidates = programsByAttribute[value.trackedEntityAttribute()].orEmpty()
+            when {
+                candidates.isEmpty() -> null
+                contextProgramUid != null && candidates.contains(contextProgramUid) -> contextProgramUid
+                else -> {
+                    val enrolledPrograms = programsByTrackedEntity[value.trackedEntityInstance()].orEmpty()
+                    candidates.firstOrNull { enrolledPrograms.contains(it) } ?: candidates.first()
+                }
             }
+        }
     }
 
     suspend fun getMissingTrackerDataValues(

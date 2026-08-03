@@ -52,6 +52,7 @@ import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
+import java.util.Date
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -74,9 +75,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             send(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
         } else {
             val relatives = RelationshipItemRelatives()
-            systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+            val systemInfo = systemInfoModuleDownloader.downloadAndReturn()
+            val syncDate = systemInfo?.serverDate!!
+
             coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
-                downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
+                downloadInternal(params, progressManager, relatives, syncDate).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
                 downloadMissingOrgUnits(progressManager).collect { v -> send(v) }
                 send(progressManager.complete())
@@ -88,6 +91,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         params: ProgramDataDownloadParams,
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives,
+        syncDate: Date,
     ): Flow<TrackerD2Progress> = flow {
         val bundles: List<Q> = getBundles(params)
         val programs = bundles.flatMap { it.commonParams.programs }
@@ -126,7 +130,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 )
 
                 if (successfulSync) {
-                    updateLastUpdated(bundle)
+                    updateLastUpdated(bundle, syncDate)
                 }
             }
             emit(progressManager.getProgress())
@@ -429,7 +433,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     )
 
-    protected abstract suspend fun updateLastUpdated(bundle: Q)
+    protected abstract suspend fun updateLastUpdated(bundle: Q, syncDate: Date)
 
     protected abstract suspend fun queryByUids(
         bundle: Q,

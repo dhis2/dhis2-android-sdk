@@ -34,10 +34,9 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.CoroutineCallFetch
 import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCallFetcher
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.call.processors.internal.CallProcessor
-import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalResourceSyncCallProcessor
+import org.hisp.dhis.android.core.arch.call.processors.internal.TransactionalNoResourceSyncCallProcessor
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.dataset.DataSet
-import org.hisp.dhis.android.core.resource.internal.Resource
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -47,7 +46,6 @@ internal class DataSetEndpointCallFactory(
     private val networkHandler: DataSetNetworkHandler,
     private val dataSetHandler: DataSetHandler,
 ) : UidsCallFactoryImpl<DataSet>(data, coroutineAPICallExecutor) {
-    private val resourceType = Resource.Type.DATA_SET
     override suspend fun fetcher(uids: Set<String>): CoroutineCallFetcher<DataSet> {
         return object : UidsNoResourceCallFetcher<DataSet>(uids, MAX_UID_LIST_SIZE, coroutineAPICallExecutor) {
             override suspend fun getCall(query: UidsQuery): Payload<DataSet> {
@@ -57,10 +55,9 @@ internal class DataSetEndpointCallFactory(
     }
 
     override suspend fun processor(): CallProcessor<DataSet> {
-        return TransactionalResourceSyncCallProcessor(
-            data,
+        return TransactionalNoResourceSyncCallProcessor(
+            data.databaseAdapter,
             dataSetHandler,
-            resourceType,
         )
     }
 

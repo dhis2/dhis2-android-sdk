@@ -128,7 +128,7 @@ class SystemInfoCallShould {
         systemInfoSyncCall.download(true)
 
         verify(systemInfoHandler).handle(systemInfo)
-        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(resourceHandler).handleResource(eq(Resource.Type.SYSTEM_INFO), any<Date>())
         verify(serverTimezoneManager).setServerTimeZone(anyOrNull())
     }
 
@@ -159,7 +159,7 @@ class SystemInfoCallShould {
         )
 
         verify(systemInfoHandler, never()).handle(systemInfo)
-        verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO))
+        verify(resourceHandler, never()).handleResource(eq(Resource.Type.SYSTEM_INFO), any<Date>())
         verify(serverTimezoneManager, never()).setServerTimeZone(anyOrNull())
     }
 

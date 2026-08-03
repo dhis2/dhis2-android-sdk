@@ -46,6 +46,7 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Suppress("LongParameterList")
 @Singleton
@@ -90,8 +91,8 @@ internal class EventDownloadCall internal constructor(
         persistenceCallFactory.persistEvents(items, relatives)
     }
 
-    override suspend fun updateLastUpdated(bundle: EventQueryBundle) {
-        lastUpdatedManager.update(bundle)
+    override suspend fun updateLastUpdated(bundle: EventQueryBundle, syncDate: Date) {
+        lastUpdatedManager.update(bundle, syncDate)
     }
 
     override suspend fun queryByUids(

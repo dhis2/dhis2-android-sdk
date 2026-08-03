@@ -45,11 +45,11 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueQuery
 import org.hisp.dhis.android.core.domain.aggregated.data.AggregatedD2Progress
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboTableInfo
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 @Suppress("LongParameterList")
@@ -62,28 +62,30 @@ internal class AggregatedDataCall(
     private val coroutineCallExecutor: CoroutineAPICallExecutor,
     private val aggregatedDataSyncStore: AggregatedDataSyncStore,
     private val aggregatedDataCallBundleFactory: AggregatedDataCallBundleFactory,
-    private val resourceHandler: ResourceHandler,
     private val hashHelper: AggregatedDataSyncHashHelper,
 ) {
     fun download(): Flow<AggregatedD2Progress> = flow {
+        val systemInfo = systemInfoModuleDownloader.downloadAndReturn()
+        val syncDate = systemInfo?.serverDate!!
+
         val progressManager = AggregatedD2ProgressManager(null)
-        systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
-        selectDataSetsAndDownload(progressManager).collect { emit(it) }
+        selectDataSetsAndDownload(progressManager, syncDate).collect { emit(it) }
     }
 
     private fun selectDataSetsAndDownload(
         progressManager: AggregatedD2ProgressManager,
+        syncDate: Date,
     ): Flow<AggregatedD2Progress> {
         return flow {
             val bundles = aggregatedDataCallBundleFactory.bundles()
-            val dataSets = bundles.flatMap { it.dataSets }.mapNotNull { it.uid() }
+            val dataSets = bundles.flatMap { it.dataSets }.map { it.uid() }
 
             progressManager.setTotalCalls(bundles.size + 2)
             progressManager.setDataSets(dataSets)
             emit(progressManager.getProgress())
 
             for (bundle in bundles) {
-                downloadBundle(bundle)
+                downloadBundle(bundle, syncDate)
 
                 bundle.dataSets.forEach {
                     progressManager.completeDataSet(it.uid(), D2ProgressSyncStatus.SUCCESS)
@@ -98,13 +100,14 @@ internal class AggregatedDataCall(
 
     private suspend fun downloadBundle(
         bundle: AggregatedDataCallBundle,
+        syncDate: Date,
     ) {
         return try {
             coroutineCallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
                 downloadDataValues(bundle)
                 downloadCompleteRegistration(bundle)
                 downloadApproval(bundle)
-                updateAggregatedDataSync(bundle)
+                updateAggregatedDataSync(bundle, syncDate)
             }
         } catch (_: D2Error) {
         }
@@ -132,6 +135,7 @@ internal class AggregatedDataCall(
 
     private suspend fun updateAggregatedDataSync(
         bundle: AggregatedDataCallBundle,
+        syncDate: Date,
     ) {
         for (dataSet in bundle.dataSets) {
             aggregatedDataSyncStore.updateOrInsertWhere(
@@ -142,7 +146,7 @@ internal class AggregatedDataCall(
                     .futurePeriods(dataSet.openFuturePeriods() ?: 0)
                     .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                     .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
-                    .lastUpdated(resourceHandler.serverDate!!)
+                    .lastUpdated(syncDate)
                     .build(),
             )
         }

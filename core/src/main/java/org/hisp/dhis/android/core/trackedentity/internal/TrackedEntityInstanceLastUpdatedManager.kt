@@ -27,22 +27,21 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class TrackedEntityInstanceLastUpdatedManager(
     store: TrackedEntityInstanceSyncStore,
-    private val resourceHandler: ResourceHandler,
 ) : TrackerSyncLastUpdatedManager<TrackedEntityInstanceSync>(store) {
 
-    suspend fun update(trackerQuery: TrackerQueryBundle) {
+    suspend fun update(trackerQuery: TrackerQueryBundle, syncDate: Date) {
         val sync = TrackedEntityInstanceSync.builder()
             .program(trackerQuery.commonParams.program)
             .organisationUnitIdsHash(trackerQuery.orgUnits.toSet().hashCode())
             .downloadLimit(trackerQuery.commonParams.limit)
             .workingListsHash(trackerQuery.commonParams.workingListsHash)
-            .lastUpdated(resourceHandler.serverDate!!)
+            .lastUpdated(syncDate)
             .build()
         super.update(sync)
     }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.modules.internal
 
-internal fun interface UntypedModuleDownloaderCoroutines {
-    suspend fun downloadMetadata()
+import java.util.Date
+
+internal interface UntypedModuleDownloaderCoroutines {
+    suspend fun downloadMetadata(syncDate: Date? = null)
 }

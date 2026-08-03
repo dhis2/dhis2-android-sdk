@@ -42,6 +42,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetw
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
@@ -68,6 +69,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
@@ -75,6 +77,7 @@ class TrackerDownloadCallShould {
 
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val systemInfoModuleDownloader: SystemInfoModuleDownloader = mock()
+    private val systemInfo: SystemInfo = mock()
     private val relationshipDownloadAndPersistCallFactory: RelationshipDownloadAndPersistCallFactory = mock()
     private val coroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val organisationUnitStore: OrganisationUnitStore = mock()
@@ -97,6 +100,8 @@ class TrackerDownloadCallShould {
         whenever(appDatabase.d2Dao()).doReturn(d2Dao)
         whenever(userOrganisationUnitLinkStore.count()).doReturn(1)
         whenever(queryFactory.getQueries(any())).doReturn(emptyList())
+        whenever(systemInfoModuleDownloader.downloadAndReturn()).doReturn(systemInfo)
+        whenever(systemInfo.serverDate).doReturn(Date())
 
         call = TrackedEntityInstanceDownloadCall(
             userOrganisationUnitLinkStore,

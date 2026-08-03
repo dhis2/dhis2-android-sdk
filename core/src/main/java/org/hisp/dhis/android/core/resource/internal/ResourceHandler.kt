@@ -32,23 +32,15 @@ import java.util.Date
 
 @Singleton
 internal class ResourceHandler(private val resourceStore: ResourceStore) {
-    internal var serverDate: Date? = null
 
-    fun setServerDate(serverDate: Date) {
-        this.serverDate = Date(serverDate.time)
-    }
-
-    fun getServerDate(): Date {
-        return Date(serverDate!!.time)
-    }
-
-    suspend fun handleResource(resourceType: Resource.Type?) {
-        if (resourceType == null || serverDate == null) {
+    suspend fun handleResource(resourceType: Resource.Type?, syncDate: Date?) {
+        if (resourceType == null || syncDate == null) {
             return
         }
+
         val resource = Resource(
             resourceType = resourceType,
-            lastSynced = serverDate,
+            lastSynced = syncDate,
         )
 
         resourceStore.updateOrInsertWhere(resource)

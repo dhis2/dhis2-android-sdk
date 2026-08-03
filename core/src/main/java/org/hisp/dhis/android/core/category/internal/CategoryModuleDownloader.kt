@@ -29,9 +29,10 @@ package org.hisp.dhis.android.core.category.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
-class CategoryModuleDownloader internal constructor(
+internal class CategoryModuleDownloader(
     private val categoryCall: CategoryCall,
     private val categoryComboCall: CategoryComboCall,
     private val categoryOptionCall: CategoryOptionCall,
@@ -41,7 +42,7 @@ class CategoryModuleDownloader internal constructor(
     private val categoryOptionComboIntegrityChecker: CategoryOptionComboIntegrityChecker,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val uids = categoryComboUidsSeeker.seekUids()
         val comboUids = categoryComboCall.download(uids)
         val categoryUids = CategoryParentUidsHelper.getCategoryUids(comboUids)

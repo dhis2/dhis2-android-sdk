@@ -1694,7 +1694,12 @@ public abstract interface class org/hisp/dhis/android/core/arch/call/factories/i
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines {
-	public abstract fun download (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun download (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun download$default (Lorg/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines;Ljava/util/Date;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines$DefaultImpls {
+	public static synthetic fun download$default (Lorg/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines;Ljava/util/Date;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/call/factories/internal/ListCoroutineCallFactory {
@@ -4278,7 +4283,7 @@ public final class org/hisp/dhis/android/core/category/OrgHispDhisAndroidCoreCat
 }
 
 public final class org/hisp/dhis/android/core/category/internal/CategoryModuleDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloaderCoroutines {
-	public fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun downloadMetadata (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/common/Access {
@@ -10840,7 +10845,7 @@ public abstract interface class org/hisp/dhis/android/core/indicator/datasetindi
 }
 
 public final class org/hisp/dhis/android/core/indicator/internal/IndicatorModuleDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloaderCoroutines {
-	public fun downloadMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun downloadMetadata (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {

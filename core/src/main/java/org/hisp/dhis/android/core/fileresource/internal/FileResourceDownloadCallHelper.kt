@@ -94,6 +94,13 @@ internal class FileResourceDownloadCallHelper(
             appendInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, attributes)
             appendNotInKeyStringValues(TrackedEntityAttributeValueTableInfo.Columns.VALUE, existingFileResources)
 
+            if (params.trackedEntityAttributeUids.isNotEmpty()) {
+                appendInKeyStringValues(
+                    TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
+                    params.trackedEntityAttributeUids,
+                )
+            }
+
             val teiParamsClause = getTrackedEntityWhereClauseFromParams(params)
 
             if (teiParamsClause.isEmpty.not()) {
@@ -103,7 +110,7 @@ internal class FileResourceDownloadCallHelper(
         }
 
         val attributeValues = trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClauseBuilder.build())
-        val resolveProgram = buildAttributeProgramResolver(attributeValues, params.contextProgram())
+        val resolveProgram = buildAttributeProgramResolver(attributeValues, params.programUids.singleOrNull())
 
         return attributeValues.map { av ->
             val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
@@ -138,17 +145,8 @@ internal class FileResourceDownloadCallHelper(
     }
 
     /**
-     * Picks the program to send for a single attribute value. [contextProgramUid] is the program the data was
-     * downloaded for, when the download happened along with the tracker data.
-     *
-     * - The attribute is not assigned to any program: no program is sent. The endpoint resolves tracked entity type
-     *   attributes without it.
-     * - The attribute is assigned to the program the data was downloaded for: that one. It is the only candidate
-     *   known to be right, so it takes precedence over any inference.
-     * - Otherwise the download context does not apply to this attribute, which happens when the value was stored by
-     *   a previous download of a different program. The program is then inferred: one the attribute is assigned to
-     *   and the tracked entity is enrolled in. Falling back to the first assigned program is a guess, kept because
-     *   sending a program the attribute belongs to still resolves more often than sending none.
+     * The program the download is scoped to when the attribute belongs to it, otherwise a program the attribute is
+     * assigned to and the tracked entity is enrolled in. Null for attributes not assigned to any program.
      */
     private fun resolveAttributeProgram(
         programsWithAttribute: List<String>,

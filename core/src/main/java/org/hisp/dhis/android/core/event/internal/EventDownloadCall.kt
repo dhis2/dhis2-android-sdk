@@ -114,7 +114,7 @@ internal class EventDownloadCall internal constructor(
             dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
             elementTypes = listOf(FileResourceElementType.DATA_ELEMENT),
             eventUids = items.map { it.uid },
-            contextProgramUid = program,
+            programUids = listOfNotNull(program),
         )
     }
 

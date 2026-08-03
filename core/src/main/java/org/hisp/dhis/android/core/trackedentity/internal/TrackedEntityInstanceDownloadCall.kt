@@ -112,7 +112,11 @@ internal class TrackedEntityInstanceDownloadCall(
             domainTypes = listOf(FileResourceDomainType.DATA_VALUE),
             dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
             trackedEntityUids = items.map { it.uid },
-            contextProgramUid = program,
+            trackedEntityAttributeUids = items
+                .flatMap { it.trackedEntityAttributeValues().orEmpty() }
+                .map { it.trackedEntityAttribute() }
+                .distinct(),
+            programUids = listOfNotNull(program),
         )
     }
 

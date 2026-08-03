@@ -102,17 +102,18 @@ internal class FileResourceDownloadCallHelperShould {
         givenProgramsForAttribute()
         givenEnrolledPrograms(PROGRAM_1)
 
-        val values = helper.getMissingTrackerAttributeValues(paramsFor(contextProgramUid = PROGRAM_1), emptyList())
+        val values = helper.getMissingTrackerAttributeValues(paramsFor(programUid = PROGRAM_1), emptyList())
 
         assertThat(values.single().program).isNull()
     }
 
     @Test
-    fun prefer_the_context_program_when_the_attribute_is_assigned_to_it() = runTest {
+    fun use_the_program_the_download_is_scoped_to_when_the_attribute_is_assigned_to_it() = runTest {
         givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
         givenEnrolledPrograms(PROGRAM_1, PROGRAM_2)
 
-        val values = helper.getMissingTrackerAttributeValues(paramsFor(contextProgramUid = PROGRAM_2), emptyList())
+        // The enrollment inference would pick PROGRAM_1, so this only passes if the single program acts as context.
+        val values = helper.getMissingTrackerAttributeValues(paramsFor(programUid = PROGRAM_2), emptyList())
 
         assertThat(values.single().program).isEqualTo(PROGRAM_2)
     }
@@ -122,7 +123,7 @@ internal class FileResourceDownloadCallHelperShould {
         givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
         givenEnrolledPrograms(PROGRAM_2)
 
-        val values = helper.getMissingTrackerAttributeValues(paramsFor(contextProgramUid = null), emptyList())
+        val values = helper.getMissingTrackerAttributeValues(paramsFor(programUid = null), emptyList())
 
         assertThat(values.single().program).isEqualTo(PROGRAM_2)
     }
@@ -132,25 +133,13 @@ internal class FileResourceDownloadCallHelperShould {
         givenProgramsForAttribute(PROGRAM_2)
         givenEnrolledPrograms(PROGRAM_1, PROGRAM_2)
 
-        val values = helper.getMissingTrackerAttributeValues(paramsFor(contextProgramUid = PROGRAM_1), emptyList())
+        val values = helper.getMissingTrackerAttributeValues(paramsFor(programUid = PROGRAM_1), emptyList())
 
         assertThat(values.single().program).isEqualTo(PROGRAM_2)
     }
 
     @Test
-    fun use_a_single_program_filter_as_the_context_program() = runTest {
-        givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
-        givenEnrolledPrograms(PROGRAM_1, PROGRAM_2)
-
-        // The enrollment inference would pick PROGRAM_1, so this only passes if the filter acts as the context.
-        val params = FileResourceDownloadParams(programUids = listOf(PROGRAM_2))
-        val values = helper.getMissingTrackerAttributeValues(params, emptyList())
-
-        assertThat(values.single().program).isEqualTo(PROGRAM_2)
-    }
-
-    @Test
-    fun not_use_the_program_filter_as_the_context_program_when_it_holds_several_programs() = runTest {
+    fun not_use_several_programs_as_the_context_program() = runTest {
         givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
         givenEnrolledPrograms(PROGRAM_2)
 
@@ -165,7 +154,7 @@ internal class FileResourceDownloadCallHelperShould {
         givenProgramsForAttribute(PROGRAM_2)
         givenEnrolledPrograms()
 
-        val values = helper.getMissingTrackerAttributeValues(paramsFor(contextProgramUid = null), emptyList())
+        val values = helper.getMissingTrackerAttributeValues(paramsFor(programUid = null), emptyList())
 
         assertThat(values.single().program).isEqualTo(PROGRAM_2)
     }
@@ -191,9 +180,9 @@ internal class FileResourceDownloadCallHelperShould {
         whenever(enrollmentStore.selectWhere(any())).doReturn(enrollments)
     }
 
-    private fun paramsFor(contextProgramUid: String?) = FileResourceDownloadParams(
+    private fun paramsFor(programUid: String?) = FileResourceDownloadParams(
         trackedEntityUids = listOf(TEI_UID),
-        contextProgramUid = contextProgramUid,
+        programUids = listOfNotNull(programUid),
     )
 
     private val imageAttribute = TrackedEntityAttribute.builder()

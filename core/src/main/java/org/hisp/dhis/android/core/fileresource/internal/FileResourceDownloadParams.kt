@@ -39,17 +39,12 @@ internal data class FileResourceDownloadParams(
     val dataDomainTypes: List<FileResourceDataDomainType> = FileResourceDataDomainType.entries,
     val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.entries,
     val trackedEntityUids: List<String> = emptyList(),
+    val trackedEntityAttributeUids: List<String> = emptyList(),
     val eventUids: List<String> = emptyList(),
     val programUids: List<String> = emptyList(),
     val dataSetUids: List<String> = emptyList(),
     val maxContentLength: Int? = null,
-    val contextProgramUid: String? = null,
 ) : BaseScope {
-
-    /**
-     * Program to send to endpoints with fallback to [programUids] if there is a single program.
-     */
-    fun contextProgram(): String? = contextProgramUid ?: programUids.singleOrNull()
 
     fun hasAnyTrackerData(): Boolean {
         return trackedEntityUids.isNotEmpty() || eventUids.isNotEmpty() || programUids.isNotEmpty()

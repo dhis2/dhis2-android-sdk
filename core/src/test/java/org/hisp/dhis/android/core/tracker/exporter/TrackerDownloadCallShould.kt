@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStor
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndPersistCallFactory
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadCall
@@ -192,7 +193,9 @@ class TrackerDownloadCallShould {
 
         val params = captor.firstValue
         assertThat(params.trackedEntityUids).containsExactlyElementsIn(teiUids)
-        assertThat(params.contextProgramUid).isEqualTo("program1")
+        assertThat(params.programUids).containsExactly("program1")
+        // Scoped to the attributes of the payload, so the files of other programs are left to their own sync.
+        assertThat(params.trackedEntityAttributeUids).containsExactly("attribute1", "attribute2")
     }
 
     @Test
@@ -225,7 +228,24 @@ class TrackerDownloadCallShould {
         whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)
 
         val teiUids = listOf("tei1", "tei2")
-        val teis = teiUids.map { TrackedEntityInstance.builder().uid(it).build() }
+        val attributesByTei = mapOf(
+            "tei1" to listOf("attribute1"),
+            "tei2" to listOf("attribute1", "attribute2"),
+        )
+        val teis = teiUids.map { teiUid ->
+            TrackedEntityInstance.builder()
+                .uid(teiUid)
+                .trackedEntityAttributeValues(
+                    attributesByTei.getValue(teiUid).map { attributeUid ->
+                        TrackedEntityAttributeValue.builder()
+                            .trackedEntityAttribute(attributeUid)
+                            .trackedEntityInstance(teiUid)
+                            .value("fileResource-$teiUid-$attributeUid")
+                            .build()
+                    },
+                )
+                .build()
+        }
         val payload: Payload<TrackedEntityInstance> = mock()
         whenever(payload.items).doReturn(teis)
         whenever(endpointCallFactory.getCollectionCall(any())).doReturn(payload)

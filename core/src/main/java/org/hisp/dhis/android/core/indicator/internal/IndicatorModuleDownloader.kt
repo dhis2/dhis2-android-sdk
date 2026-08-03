@@ -32,7 +32,7 @@ import org.koin.core.annotation.Singleton
 import java.util.Date
 
 @Singleton
-class IndicatorModuleDownloader internal constructor(
+internal class IndicatorModuleDownloader(
     private val indicatorCallFactory: IndicatorEndpointCallFactory,
     private val indicatorTypeCallFactory: IndicatorTypeEndpointCallFactory,
     private val indicatorUidsSeeker: IndicatorUidsSeeker,

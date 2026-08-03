@@ -32,7 +32,7 @@ import org.koin.core.annotation.Singleton
 import java.util.Date
 
 @Singleton
-class CategoryModuleDownloader internal constructor(
+internal class CategoryModuleDownloader(
     private val categoryCall: CategoryCall,
     private val categoryComboCall: CategoryComboCall,
     private val categoryOptionCall: CategoryOptionCall,

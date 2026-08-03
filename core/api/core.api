@@ -1693,15 +1693,6 @@ public abstract interface class org/hisp/dhis/android/core/arch/call/factories/i
 	public abstract fun download (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class org/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines {
-	public abstract fun download (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun download$default (Lorg/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines;Ljava/util/Date;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
-public final class org/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines$DefaultImpls {
-	public static synthetic fun download$default (Lorg/hisp/dhis/android/core/arch/call/factories/internal/ListCallCoroutines;Ljava/util/Date;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-}
-
 public abstract interface class org/hisp/dhis/android/core/arch/call/factories/internal/ListCoroutineCallFactory {
 	public abstract fun create (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -4280,10 +4271,6 @@ public final class org/hisp/dhis/android/core/category/CategoryOptionOrganisatio
 
 public final class org/hisp/dhis/android/core/category/OrgHispDhisAndroidCoreCategoryCategoryDIModuleModuleKt {
 	public static final fun module (Lorg/hisp/dhis/android/core/category/CategoryDIModule;)Lorg/koin/core/module/Module;
-}
-
-public final class org/hisp/dhis/android/core/category/internal/CategoryModuleDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloaderCoroutines {
-	public fun downloadMetadata (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/common/Access {
@@ -10842,10 +10829,6 @@ public final class org/hisp/dhis/android/core/indicator/OrgHispDhisAndroidCoreIn
 public abstract interface class org/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine {
 	public abstract fun blockingEvaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)D
 	public abstract fun evaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-}
-
-public final class org/hisp/dhis/android/core/indicator/internal/IndicatorModuleDownloader : org/hisp/dhis/android/core/arch/modules/internal/UntypedModuleDownloaderCoroutines {
-	public fun downloadMetadata (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {

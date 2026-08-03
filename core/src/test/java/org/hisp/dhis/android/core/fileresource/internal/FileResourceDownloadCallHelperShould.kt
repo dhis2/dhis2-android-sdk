@@ -138,6 +138,29 @@ internal class FileResourceDownloadCallHelperShould {
     }
 
     @Test
+    fun use_a_single_program_filter_as_the_context_program() = runTest {
+        givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
+        givenEnrolledPrograms(PROGRAM_1, PROGRAM_2)
+
+        // The enrollment inference would pick PROGRAM_1, so this only passes if the filter acts as the context.
+        val params = FileResourceDownloadParams(programUids = listOf(PROGRAM_2))
+        val values = helper.getMissingTrackerAttributeValues(params, emptyList())
+
+        assertThat(values.single().program).isEqualTo(PROGRAM_2)
+    }
+
+    @Test
+    fun not_use_the_program_filter_as_the_context_program_when_it_holds_several_programs() = runTest {
+        givenProgramsForAttribute(PROGRAM_1, PROGRAM_2)
+        givenEnrolledPrograms(PROGRAM_2)
+
+        val params = FileResourceDownloadParams(programUids = listOf(PROGRAM_1, PROGRAM_2))
+        val values = helper.getMissingTrackerAttributeValues(params, emptyList())
+
+        assertThat(values.single().program).isEqualTo(PROGRAM_2)
+    }
+
+    @Test
     fun fall_back_to_any_program_with_the_attribute_when_the_tracked_entity_is_not_enrolled() = runTest {
         givenProgramsForAttribute(PROGRAM_2)
         givenEnrolledPrograms()

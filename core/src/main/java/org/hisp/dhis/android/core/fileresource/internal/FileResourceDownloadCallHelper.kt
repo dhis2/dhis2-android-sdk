@@ -103,7 +103,7 @@ internal class FileResourceDownloadCallHelper(
         }
 
         val attributeValues = trackedEntityAttributeValueStore.selectWhere(attributeValuesWhereClauseBuilder.build())
-        val resolveProgram = buildAttributeProgramResolver(attributeValues, params.contextProgramUid)
+        val resolveProgram = buildAttributeProgramResolver(attributeValues, params.contextProgram())
 
         return attributeValues.map { av ->
             val type = trackedEntityAttributes.find { it.uid() == av.trackedEntityAttribute() }!!.valueType()!!
@@ -112,13 +112,10 @@ internal class FileResourceDownloadCallHelper(
     }
 
     /**
-     * Builds a function that resolves the program to use when downloading the file of an attribute value. The tracker
-     * API requires the program uid for attributes assigned to a program: without it the file is not resolved.
+     * Builds a function that resolves the program to send when downloading the file of an attribute value. The
+     * tracker API requires it for attributes assigned to a program: without it the file is not resolved.
      *
-     * When the file resources are downloaded along with the tracker data, the program is known and is preferred. In
-     * any other case it is inferred from the local metadata: the programs the attribute is assigned to, intersected
-     * with the programs the tracked entity is enrolled in. Attributes that are not assigned to any program resolve to
-     * null, as the endpoint works without the parameter for tracked entity type attributes.
+     * The metadata both decisions are based on is read once for the whole batch, not once per value.
      */
     private suspend fun buildAttributeProgramResolver(
         attributeValues: List<TrackedEntityAttributeValue>,
@@ -128,39 +125,72 @@ internal class FileResourceDownloadCallHelper(
             return { null }
         }
 
-        val programAttributesWhereClause = WhereClauseBuilder()
+        val programsByAttribute = getProgramsByAttribute(attributeValues)
+        val programsByTrackedEntity = getProgramsByTrackedEntity(attributeValues)
+
+        return { value ->
+            resolveAttributeProgram(
+                programsWithAttribute = programsByAttribute[value.trackedEntityAttribute()].orEmpty(),
+                programsOfTrackedEntity = programsByTrackedEntity[value.trackedEntityInstance()].orEmpty(),
+                contextProgramUid = contextProgramUid,
+            )
+        }
+    }
+
+    /**
+     * Picks the program to send for a single attribute value. [contextProgramUid] is the program the data was
+     * downloaded for, when the download happened along with the tracker data.
+     *
+     * - The attribute is not assigned to any program: no program is sent. The endpoint resolves tracked entity type
+     *   attributes without it.
+     * - The attribute is assigned to the program the data was downloaded for: that one. It is the only candidate
+     *   known to be right, so it takes precedence over any inference.
+     * - Otherwise the download context does not apply to this attribute, which happens when the value was stored by
+     *   a previous download of a different program. The program is then inferred: one the attribute is assigned to
+     *   and the tracked entity is enrolled in. Falling back to the first assigned program is a guess, kept because
+     *   sending a program the attribute belongs to still resolves more often than sending none.
+     */
+    private fun resolveAttributeProgram(
+        programsWithAttribute: List<String>,
+        programsOfTrackedEntity: Set<String>,
+        contextProgramUid: String?,
+    ): String? {
+        return when {
+            programsWithAttribute.isEmpty() -> null
+            contextProgramUid in programsWithAttribute -> contextProgramUid
+            else -> programsWithAttribute.firstOrNull { it in programsOfTrackedEntity }
+                ?: programsWithAttribute.first()
+        }
+    }
+
+    private suspend fun getProgramsByAttribute(
+        attributeValues: List<TrackedEntityAttributeValue>,
+    ): Map<String?, List<String>> {
+        val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 ProgramTrackedEntityAttributeTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE,
                 attributeValues.map { it.trackedEntityAttribute() }.distinct(),
             )
             .build()
 
-        val programsByAttribute = programTrackedEntityAttributeStore.selectWhere(programAttributesWhereClause)
+        return programTrackedEntityAttributeStore.selectWhere(whereClause)
             .groupBy({ it.trackedEntityAttribute()?.uid() }, { it.program()?.uid() })
             .mapValues { (_, programs) -> programs.filterNotNull().distinct().sorted() }
+    }
 
-        val enrollmentsWhereClause = WhereClauseBuilder()
+    private suspend fun getProgramsByTrackedEntity(
+        attributeValues: List<TrackedEntityAttributeValue>,
+    ): Map<String?, Set<String>> {
+        val whereClause = WhereClauseBuilder()
             .appendInKeyStringValues(
                 EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE,
                 attributeValues.map { it.trackedEntityInstance() }.distinct(),
             )
             .build()
 
-        val programsByTrackedEntity = enrollmentStore.selectWhere(enrollmentsWhereClause)
+        return enrollmentStore.selectWhere(whereClause)
             .groupBy({ it.trackedEntityInstance() }, { it.program() })
             .mapValues { (_, programs) -> programs.filterNotNull().toSet() }
-
-        return { value ->
-            val candidates = programsByAttribute[value.trackedEntityAttribute()].orEmpty()
-            when {
-                candidates.isEmpty() -> null
-                contextProgramUid != null && candidates.contains(contextProgramUid) -> contextProgramUid
-                else -> {
-                    val enrolledPrograms = programsByTrackedEntity[value.trackedEntityInstance()].orEmpty()
-                    candidates.firstOrNull { enrolledPrograms.contains(it) } ?: candidates.first()
-                }
-            }
-        }
     }
 
     suspend fun getMissingTrackerDataValues(

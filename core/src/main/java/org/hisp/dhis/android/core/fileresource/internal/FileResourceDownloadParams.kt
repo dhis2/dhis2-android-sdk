@@ -43,16 +43,13 @@ internal data class FileResourceDownloadParams(
     val programUids: List<String> = emptyList(),
     val dataSetUids: List<String> = emptyList(),
     val maxContentLength: Int? = null,
-    /**
-     * Program the file resources are being downloaded for. Unlike [programUids], it is not a filter: it is the
-     * program used to build the tracked entity attribute file / image endpoints, which the tracker API requires for
-     * attributes assigned to a program.
-     *
-     * It is only known when the file resources are downloaded as part of a tracker data download. Otherwise it is
-     * null and the program is inferred from the local metadata, which might be ambiguous.
-     */
     val contextProgramUid: String? = null,
 ) : BaseScope {
+
+    /**
+     * Program to send to endpoints with fallback to [programUids] if there is a single program.
+     */
+    fun contextProgram(): String? = contextProgramUid ?: programUids.singleOrNull()
 
     fun hasAnyTrackerData(): Boolean {
         return trackedEntityUids.isNotEmpty() || eventUids.isNotEmpty() || programUids.isNotEmpty()

@@ -33,6 +33,10 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
@@ -51,7 +55,7 @@ import org.koin.core.annotation.Singleton
 import java.util.Date
 
 @Singleton
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class TrackedEntityInstanceDownloadCall(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
@@ -60,6 +64,7 @@ internal class TrackedEntityInstanceDownloadCall(
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     databaseAdapter: DatabaseAdapter,
+    fileResourceDownloadCall: FileResourceDownloadCall,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
@@ -74,6 +79,7 @@ internal class TrackedEntityInstanceDownloadCall(
     organisationUnitStore,
     organisationUnitNetworkHandler,
     databaseAdapter,
+    fileResourceDownloadCall,
 ) {
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
@@ -99,9 +105,26 @@ internal class TrackedEntityInstanceDownloadCall(
         lastUpdatedManager.update(bundle, syncDate)
     }
 
+    override fun getFileResourceDownloadParams(
+        items: List<TrackedEntityInstance>,
+        program: String?,
+    ): FileResourceDownloadParams {
+        return FileResourceDownloadParams(
+            domainTypes = listOf(FileResourceDomainType.DATA_VALUE),
+            dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
+            trackedEntityUids = items.map { it.uid },
+            trackedEntityAttributeUids = items
+                .flatMap { it.trackedEntityAttributeValues().orEmpty() }
+                .map { it.trackedEntityAttribute() }
+                .distinct(),
+            programUids = listOfNotNull(program),
+        )
+    }
+
     override suspend fun queryByUids(
         bundle: TrackerQueryBundle,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
@@ -134,6 +157,12 @@ internal class TrackedEntityInstanceDownloadCall(
                 )
 
                 persistItems(teisList, persistParams, relatives)
+
+                downloadFileResourcesIfEnabled(
+                    enabled = downloadFileResources,
+                    items = teisList,
+                    program = teiQuery.commonParams.program,
+                )
             }
         } catch (d2Error: D2Error) {
             result.successfulSync = false

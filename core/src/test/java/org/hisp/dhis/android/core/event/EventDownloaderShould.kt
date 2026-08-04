@@ -131,4 +131,34 @@ class EventDownloaderShould {
 
         assertThat(params.eventFilters).isEqualTo(listOf(eventFilter))
     }
+
+    @Test
+    fun should_not_download_file_resources_by_default() {
+        downloader.download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.downloadFileResources).isFalse()
+    }
+
+    @Test
+    fun should_parse_download_file_resources_params() {
+        downloader.downloadFileResources(true).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.downloadFileResources).isTrue()
+    }
+
+    @Test
+    fun should_parse_download_file_resources_params_when_disabled() {
+        downloader.downloadFileResources(false).download()
+
+        verify(call).download(paramsCapture.capture())
+        val params = paramsCapture.firstValue
+
+        assertThat(params.downloadFileResources).isFalse()
+    }
 }

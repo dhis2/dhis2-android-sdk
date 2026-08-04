@@ -31,7 +31,15 @@ package org.hisp.dhis.android.core.fileresource.internal
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 
+/**
+ * A tracked entity attribute value whose file resource has not been downloaded yet.
+ *
+ * @param program program that must be used to build the file / image endpoint. The tracker API requires it for
+ * attributes assigned to a program: without it the server is not able to resolve the file. It is null when the
+ * attribute is not assigned to any program, in which case the endpoint works without it.
+ */
 internal data class MissingTrackerAttributeValue(
     val value: TrackedEntityAttributeValue,
     val valueType: ValueType,
+    val program: String? = null,
 )

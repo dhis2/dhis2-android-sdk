@@ -75,14 +75,17 @@ class FileResourceDownloader internal constructor(
         flowDownload().collectAndWrapException()
     }
 
+    @Deprecated(message = TRACKER_DEPRECATION_MESSAGE)
     fun byTrackedEntityUid(): ListFilterConnector<FileResourceDownloader, String> {
         return connectorFactory.listConnector { list -> params.copy(trackedEntityUids = list) }
     }
 
+    @Deprecated(message = TRACKER_DEPRECATION_MESSAGE)
     fun byEventUid(): ListFilterConnector<FileResourceDownloader, String> {
         return connectorFactory.listConnector { list -> params.copy(eventUids = list) }
     }
 
+    @Deprecated(message = TRACKER_DEPRECATION_MESSAGE)
     fun byProgramUid(): ListFilterConnector<FileResourceDownloader, String> {
         return connectorFactory.listConnector { list -> params.copy(programUids = list) }
     }
@@ -111,3 +114,10 @@ class FileResourceDownloader internal constructor(
         return connectorFactory.eqConnector { value -> params.copy(maxContentLength = value) }
     }
 }
+
+private const val TRACKER_DEPRECATION_MESSAGE =
+    "Download the tracker file resources along with the data, using " +
+        "TrackedEntityInstanceDownloader.downloadFileResources() or EventDownloader.downloadFileResources(). " +
+        "Downloading them separately, once the data download has already finished, loses the program each tracked " +
+        "entity was downloaded for. The server requires it to resolve the files of attributes assigned to a " +
+        "program, so the SDK has to infer it from the local metadata and might pick the wrong one, or none at all."

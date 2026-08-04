@@ -165,4 +165,23 @@ class TrackedEntityInstanceDownloader internal constructor(
         connectorFactory.listConnector { programStageWorkingLists ->
             params.copy(programStageWorkingLists = programStageWorkingLists)
         }
+
+    /**
+     * If true, the file resources (files and images) linked to the downloaded tracked entity instances are downloaded
+     * as part of this call, right after each batch of instances is persisted. Only the files that have not been
+     * previously downloaded are requested, and a file that fails to be downloaded is ignored.
+     *
+     * This is the recommended way of downloading tracker file resources. Downloading them here, instead of in a
+     * separate call once the data download has finished, is what allows the SDK to know the program each tracked
+     * entity was downloaded for, which the server requires to resolve the files of attributes assigned to a program.
+     *
+     * The maximum file size is taken from the synchronization settings.
+     *
+     * @param downloadFileResources True to download the file resources
+     * @return the new repository
+     */
+    fun downloadFileResources(downloadFileResources: Boolean): TrackedEntityInstanceDownloader =
+        connectorFactory.eqConnector<Boolean> { value ->
+            params.copy(downloadFileResources = value ?: false)
+        }.eq(downloadFileResources)
 }

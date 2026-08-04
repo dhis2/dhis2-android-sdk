@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -67,6 +69,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     private val databaseAdapter: DatabaseAdapter,
+    private val fileResourceDownloadCall: FileResourceDownloadCall,
 ) {
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
@@ -102,7 +105,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
         for (bundle in bundles) {
             if (bundle.commonParams.uids.isNotEmpty()) {
-                val result = queryByUids(bundle, params.overwrite, relatives)
+                val result = queryByUids(bundle, params.overwrite, params.downloadFileResources, relatives)
 
                 result.d2Error?.let {
                     throw it
@@ -213,6 +216,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                             limit,
                             bundleProgram.itemCount,
                             params.overwrite,
+                            params.downloadFileResources,
                             relatives,
                         )
                     } else {
@@ -276,15 +280,24 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         }
     }
 
+    @Suppress("LongParameterList")
     private suspend fun getItemsForOrgUnitProgramCombination(
         trackerQueryBuilder: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         return try {
-            getItemsWithPaging(trackerQueryBuilder, combinationLimit, downloadedCount, overwrite, relatives)
+            getItemsWithPaging(
+                trackerQueryBuilder,
+                combinationLimit,
+                downloadedCount,
+                overwrite,
+                downloadFileResources,
+                relatives,
+            )
         } catch (ignored: D2Error) {
             // TODO Build result
             ItemsWithPagingResult(0, false, null, false)
@@ -292,11 +305,13 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Throws(D2Error::class)
+    @Suppress("LongParameterList")
     private suspend fun getItemsWithPaging(
         query: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         var downloadedItemsForCombination = 0
@@ -343,6 +358,12 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
             persistItems(itemsToPersist, persistParams, relatives)
 
+            downloadFileResourcesIfEnabled(
+                enabled = downloadFileResources,
+                items = itemsToPersist,
+                program = callPage.query.commonParams.program,
+            )
+
             downloadedItemsForCombination += itemsToPersist.size
 
             if (items.size < callPage.query.pageSize) {
@@ -356,6 +377,23 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         }
 
         return ItemsWithPagingResult(downloadedItemsForCombination, true, null, exhaustedProgram)
+    }
+
+    /**
+     * Downloads the file resources linked to the items that have just been persisted, within the same download
+     * iteration. Downloading them here, and not once the whole data download has finished, is what makes the program
+     * of each item known: the tracker API needs it to resolve the files of attributes assigned to a program.
+     */
+    protected suspend fun downloadFileResourcesIfEnabled(
+        enabled: Boolean,
+        items: List<T>,
+        program: String?,
+    ) {
+        if (enabled && items.isNotEmpty()) {
+            fileResourceDownloadCall.downloadTrackerFileResources(
+                getFileResourceDownloadParams(items, program),
+            )
+        }
     }
 
     private fun getItemsToPersist(paging: Paging, pageItems: List<T>): List<T> {
@@ -438,8 +476,18 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     protected abstract suspend fun queryByUids(
         bundle: Q,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult
+
+    /**
+     * Builds the params to download the file resources of [items], scoped to them and to the [program] they have been
+     * downloaded for.
+     */
+    protected abstract fun getFileResourceDownloadParams(
+        items: List<T>,
+        program: String?,
+    ): FileResourceDownloadParams
 
     protected abstract suspend fun getQuery(
         bundle: Q,

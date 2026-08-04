@@ -52,6 +52,7 @@ internal data class ProgramDataDownloadParams(
     val trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>? = null,
     val programStageWorkingLists: List<ProgramStageWorkingList>? = null,
     val eventFilters: List<EventFilter>? = null,
+    val downloadFileResources: Boolean = false,
 ) : BaseScope {
 
     fun hasProgramOrFilters(): Boolean {

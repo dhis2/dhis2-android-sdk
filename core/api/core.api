@@ -23391,8 +23391,8 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingBuildEnrollmentUrl (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;

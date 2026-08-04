@@ -38,13 +38,13 @@ interface OAuth2Handler {
 
     fun blockingBuildEnrollmentUrl(serverUrl: String): String
 
-    fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String)
+    fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String)
 
     fun blockingBuildLogoutUrl(config: OAuth2Config): String
 
     fun blockingLogIn(config: OAuth2Config): String
 
-    fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String): User
+    fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String, state: String): User
 
     fun isDeviceRegistered(): Boolean
 

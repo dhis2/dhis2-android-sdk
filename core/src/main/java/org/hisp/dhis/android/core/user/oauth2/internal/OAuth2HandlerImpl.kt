@@ -69,9 +69,10 @@ internal class OAuth2HandlerImpl(
         return runBlocking { buildEnrollmentUrlInternal(serverUrl) }
     }
 
-    private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String) {
+    private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String, state: String) {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
-        requireNotNull(JWTHelper.validateJWT(iat)) { "Invalid or expired IAT" }
+        verifyState(state)
+        require(JWTHelper.isUnexpired(iat)) { "Invalid or expired IAT" }
 
         val keyId = keyStoreManager.generateKeyPair()
 
@@ -105,8 +106,21 @@ internal class OAuth2HandlerImpl(
         }
     }
 
-    override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String) {
-        runBlocking { handleEnrollmentResponseInternal(serverUrl, iat) }
+    override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) {
+        runBlocking { handleEnrollmentResponseInternal(serverUrl, iat, state) }
+    }
+
+    /**
+     * Checks the `state` returned by the server against the one generated when the URL the user was
+     * sent to was built. Without it the redirect could be forged by a third party.
+     */
+    private fun verifyState(state: String) {
+        val expectedState = oauth2SecureStore.tempState
+        if (expectedState == null || expectedState != state) {
+            oauth2SecureStore.clearTemporaryData()
+            throw IllegalStateException("Invalid OAuth2 state")
+        }
+        oauth2SecureStore.tempState = null
     }
 
     override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
@@ -142,8 +156,14 @@ internal class OAuth2HandlerImpl(
     }
 
     @Suppress("ThrowsCount")
-    private suspend fun handleLogInResponseInternal(serverUrl: String, authorizationCode: String): User {
+    private suspend fun handleLogInResponseInternal(
+        serverUrl: String,
+        authorizationCode: String,
+        state: String,
+    ): User {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
+        verifyState(state)
+
         val codeVerifier = oauth2SecureStore.tempCodeVerifier
             ?: throw IllegalStateException("Code verifier not found")
 
@@ -156,15 +176,19 @@ internal class OAuth2HandlerImpl(
         val privateKey = keyStoreManager.getPrivateKey(keyId)
             ?: throw IllegalStateException("Private key not found")
 
+        // Resolved before signing so that the assertion audience matches the endpoint the token
+        // request is posted to.
+        val tokenEndpoint = oauth2NetworkHandler.getTokenEndpoint(normalizedUrl)
+
         val clientAssertion = JWTHelper.createClientAssertion(
             clientId = clientId,
-            tokenEndpoint = "$normalizedUrl/oauth2/token",
+            tokenEndpoint = tokenEndpoint,
             privateKey = privateKey,
             keyId = keyId,
         )
 
         val result = oauth2NetworkHandler.exchangeCodeForToken(
-            url = normalizedUrl,
+            tokenEndpoint = tokenEndpoint,
             code = authorizationCode,
             redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
             clientId = clientId,
@@ -187,8 +211,8 @@ internal class OAuth2HandlerImpl(
         }
     }
 
-    override fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String): User {
-        return runBlocking { handleLogInResponseInternal(serverUrl, authorizationCode) }
+    override fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String, state: String): User {
+        return runBlocking { handleLogInResponseInternal(serverUrl, authorizationCode, state) }
     }
 
     override fun isDeviceRegistered(): Boolean {

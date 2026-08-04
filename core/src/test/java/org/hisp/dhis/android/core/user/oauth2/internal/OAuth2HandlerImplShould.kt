@@ -28,13 +28,11 @@
 package org.hisp.dhis.android.core.user.oauth2.internal
 
 import com.google.common.truth.Truth.assertThat
-import com.nimbusds.jose.JWSAlgorithm
-import com.nimbusds.jose.JWSHeader
-import com.nimbusds.jose.crypto.RSASSASigner
-import com.nimbusds.jwt.JWTClaimsSet
-import com.nimbusds.jwt.SignedJWT
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
@@ -48,6 +46,7 @@ import org.hisp.dhis.android.core.user.internal.LogInCall
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import org.hisp.dhis.android.core.user.oauth2.internal.jwt.TestJwtFactory
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.junit.Before
 import org.junit.Test
@@ -65,8 +64,7 @@ import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
 import java.security.KeyPair
 import java.security.KeyPairGenerator
-import java.security.PrivateKey
-import java.util.Date
+import java.util.Base64
 
 @RunWith(JUnit4::class)
 class OAuth2HandlerImplShould {
@@ -132,9 +130,9 @@ class OAuth2HandlerImplShould {
             onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Success(CLIENT_ID))
         }
-        oauth2SecureStore.tempState = "left-over"
+        oauth2SecureStore.tempState = STATE
 
-        handler.blockingHandleEnrollmentResponse("HTTPS://Server.com/", validJwt())
+        handler.blockingHandleEnrollmentResponse("HTTPS://Server.com/", validJwt(), STATE)
 
         assertThat(oauth2SecureStore.clientId).isEqualTo(CLIENT_ID)
         assertThat(oauth2SecureStore.keyId).isEqualTo(KEY_ID)
@@ -152,8 +150,9 @@ class OAuth2HandlerImplShould {
             onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Failure(serverError()))
         }
+        oauth2SecureStore.tempState = STATE
 
-        runCatching { handler.blockingHandleEnrollmentResponse("https://server.com", validJwt()) }
+        runCatching { handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE) }
             .also { assertThat(it.isFailure).isTrue() }
 
         verify(keyStoreManager).deleteKey(KEY_ID)
@@ -163,7 +162,21 @@ class OAuth2HandlerImplShould {
 
     @Test(expected = IllegalArgumentException::class)
     fun blockingHandleEnrollmentResponse_throws_on_expired_iat() {
-        handler.blockingHandleEnrollmentResponse("https://server.com", expiredJwt())
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("https://server.com", expiredJwt(), STATE)
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun blockingHandleEnrollmentResponse_throws_when_state_does_not_match() {
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), "forged-state")
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun blockingHandleEnrollmentResponse_throws_when_no_state_was_generated() {
+        handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE)
     }
 
     // endregion
@@ -186,29 +199,48 @@ class OAuth2HandlerImplShould {
     // region blockingHandleLogInResponse
 
     @Test(expected = IllegalStateException::class)
+    fun blockingHandleLogInResponse_throws_when_state_does_not_match() {
+        seedSuccessfulLogInPrerequisites()
+
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, "forged-state")
+    }
+
+    @Test(expected = IllegalStateException::class)
+    fun blockingHandleLogInResponse_throws_when_no_state_was_generated() {
+        oauth2SecureStore.tempCodeVerifier = CODE_VERIFIER
+        oauth2SecureStore.clientId = CLIENT_ID
+        oauth2SecureStore.keyId = KEY_ID
+
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+    }
+
+    @Test(expected = IllegalStateException::class)
     fun blockingHandleLogInResponse_throws_when_temp_code_verifier_missing() {
-        // store empty
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE)
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = IllegalStateException::class)
     fun blockingHandleLogInResponse_throws_when_client_id_missing() {
+        oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE)
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = IllegalStateException::class)
     fun blockingHandleLogInResponse_throws_when_key_id_missing() {
+        oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
         oauth2SecureStore.clientId = CLIENT_ID
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE)
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = IllegalStateException::class)
     fun blockingHandleLogInResponse_throws_when_private_key_missing() {
         seedSuccessfulLogInPrerequisites()
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(null)
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE)
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
     @Test
@@ -216,15 +248,48 @@ class OAuth2HandlerImplShould {
         seedSuccessfulLogInPrerequisites()
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
         oauth2NetworkHandler.stub {
-            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any(), any()) }
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Failure(serverError()))
         }
 
-        runCatching { handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE) }
+        runCatching { handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE) }
             .also { assertThat(it.isFailure).isTrue() }
 
         assertThat(oauth2SecureStore.tempCodeVerifier).isNull()
         assertThat(oauth2SecureStore.tempState).isNull()
+    }
+
+    /**
+     * The assertion audience is derived from the token endpoint advertised by the server, so it
+     * cannot diverge from the endpoint the request is actually posted to.
+     */
+    @Test
+    fun blockingHandleLogInResponse_signs_the_assertion_for_the_discovered_token_endpoint() {
+        seedSuccessfulLogInPrerequisites()
+        whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
+        oauth2NetworkHandler.stub {
+            onBlocking { getTokenEndpoint(any(), any()) }.doReturn(DISCOVERED_TOKEN_ENDPOINT)
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Failure(serverError()))
+        }
+
+        runCatching { handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE) }
+
+        val endpointCaptor = argumentCaptor<String>()
+        val assertionCaptor = argumentCaptor<String>()
+        verifyBlocking(oauth2NetworkHandler) {
+            exchangeCodeForToken(
+                endpointCaptor.capture(),
+                any(),
+                any(),
+                any(),
+                any(),
+                assertionCaptor.capture(),
+            )
+        }
+
+        assertThat(endpointCaptor.firstValue).isEqualTo(DISCOVERED_TOKEN_ENDPOINT)
+        assertThat(audienceOf(assertionCaptor.firstValue)).isEqualTo("https://auth.server.com/oidc/")
     }
 
     @Test
@@ -233,7 +298,7 @@ class OAuth2HandlerImplShould {
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
         val exchangedState = exchangedState()
         oauth2NetworkHandler.stub {
-            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any(), any()) }
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
                 .doReturn(Result.Success(exchangedState))
         }
         val expectedUser: User = mock()
@@ -242,7 +307,7 @@ class OAuth2HandlerImplShould {
             onBlocking { logInOAuth2(any(), any()) }.doReturn(expectedUser)
         }
 
-        val user = handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE)
+        val user = handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE)
 
         assertThat(user).isSameInstanceAs(expectedUser)
         // logInOAuth2 called with normalized server url and the state with our keyId
@@ -465,9 +530,12 @@ class OAuth2HandlerImplShould {
 
     private fun seedSuccessfulLogInPrerequisites() {
         oauth2SecureStore.tempCodeVerifier = CODE_VERIFIER
-        oauth2SecureStore.tempState = "state"
+        oauth2SecureStore.tempState = STATE
         oauth2SecureStore.clientId = CLIENT_ID
         oauth2SecureStore.keyId = KEY_ID
+        oauth2NetworkHandler.stub {
+            onBlocking { getTokenEndpoint(any(), any()) }.doReturn(TOKEN_ENDPOINT)
+        }
     }
 
     private fun exchangedState(): OAuth2State =
@@ -502,29 +570,20 @@ class OAuth2HandlerImplShould {
             oauth2State = state,
         )
 
-    private fun validJwt(): String = signedJwt(keyPair.private, expired = false)
-
-    private fun expiredJwt(): String = signedJwt(keyPair.private, expired = true)
-
-    private fun signedJwt(privateKey: PrivateKey, expired: Boolean): String {
-        val now = Date()
-        val expirationTime =
-            if (expired) {
-                Date(now.time - JWT_TTL_MILLIS)
-            } else {
-                Date(now.time + JWT_TTL_MILLIS)
-            }
-        val claims = JWTClaimsSet.Builder()
-            .issuer("test")
-            .subject("test")
-            .issueTime(now)
-            .expirationTime(expirationTime)
-            .build()
-        val header = JWSHeader.Builder(JWSAlgorithm.RS256).keyID("test-kid").build()
-        val jwt = SignedJWT(header, claims)
-        jwt.sign(RSASSASigner(privateKey))
-        return jwt.serialize()
+    /** Reads the `aud` claim out of a compact-serialized JWT. */
+    private fun audienceOf(jwt: String): String {
+        val payload = String(Base64.getUrlDecoder().decode(jwt.split(".")[1]), Charsets.UTF_8)
+        return KotlinxJsonParser.instance.parseToJsonElement(payload)
+            .jsonObject["aud"]!!
+            .jsonPrimitive
+            .content
     }
+
+    private fun validJwt(): String =
+        TestJwtFactory.iatJwt(keyPair.private, TestJwtFactory.nowSeconds() + JWT_TTL_SECONDS)
+
+    private fun expiredJwt(): String =
+        TestJwtFactory.iatJwt(keyPair.private, TestJwtFactory.nowSeconds() - JWT_TTL_SECONDS)
 
     private fun serverError(): D2Error =
         D2Error.builder()
@@ -556,6 +615,9 @@ class OAuth2HandlerImplShould {
         private const val PIN = "1234"
         private const val NEW_PIN = "5678"
         private const val KEY_SIZE = 2048
-        private const val JWT_TTL_MILLIS = 5L * 60L * 1000L
+        private const val JWT_TTL_SECONDS = 5L * 60L
+        private const val STATE = "state-1"
+        private const val TOKEN_ENDPOINT = "https://server.com/oauth2/token"
+        private const val DISCOVERED_TOKEN_ENDPOINT = "https://auth.server.com/oidc/oauth2/token"
     }
 }

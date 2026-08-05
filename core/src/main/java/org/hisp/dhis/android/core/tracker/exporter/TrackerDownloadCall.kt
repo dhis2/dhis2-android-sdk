@@ -167,17 +167,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val iterationResult = IterationResult()
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
 
-        for ((orgUnitUid, orgunitPrograms) in bundleResult.bundleOrgUnitPrograms.entries) {
+        for ((downloadOrgunit, orgunitPrograms) in bundleResult.bundleOrgUnitPrograms.entries) {
             val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
             val bundleLimit = min(limitPerCombo, pendingTeis)
 
             if (bundleLimit <= 0 || orgunitPrograms.isEmpty()) {
-                bundleResult.bundleOrgUnitsToDownload -= orgUnitUid
+                bundleResult.bundleOrgUnitsToDownload -= downloadOrgunit
                 continue
             }
 
             val result = iterateBundleOrgunit(
-                orgUnitUid,
+                downloadOrgunit,
                 bundle,
                 params,
                 bundleResult,
@@ -194,7 +194,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     @Suppress("LongParameterList", "NestedBlockDepth")
     private suspend fun iterateBundleOrgunit(
-        orgUnitUid: String,
+        downloadOrgunit: DownloadOrgunit,
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
@@ -204,11 +204,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     ): IterationResult {
         val iterationResult = IterationResult()
 
-        bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
+        bundleResult.bundleOrgUnitPrograms[downloadOrgunit]?.let { bundlePrograms ->
             var remainingPrograms = bundlePrograms
             for (bundleProgram in bundlePrograms) {
                 if (bundleResult.bundleCount < bundle.commonParams.limit) {
-                    val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
+                    val trackerQuery = getQuery(bundle, bundleProgram.program, downloadOrgunit, limit)
 
                     val result = if (trackerQuery != null) {
                         getItemsForOrgUnitProgramCombination(
@@ -241,7 +241,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                         remainingPrograms = remainingPrograms
                             .filter { it.program != bundleProgram.program }
                             .toMutableList()
-                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = remainingPrograms
+                        bundleResult.bundleOrgUnitPrograms[downloadOrgunit] = remainingPrograms
 
                         val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
                             list.any { it.program == bundleProgram.program }
@@ -447,8 +447,8 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected class BundleResult(
         var bundleCount: Int,
-        var bundleOrgUnitPrograms: MutableMap<String, MutableList<ItemsByProgramCount>>,
-        var bundleOrgUnitsToDownload: MutableList<String?>,
+        var bundleOrgUnitPrograms: MutableMap<DownloadOrgunit, MutableList<ItemsByProgramCount>>,
+        var bundleOrgUnitsToDownload: MutableList<DownloadOrgunit?>,
     )
 
     protected class IterationResult(
@@ -492,7 +492,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     protected abstract suspend fun getQuery(
         bundle: Q,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery?
 

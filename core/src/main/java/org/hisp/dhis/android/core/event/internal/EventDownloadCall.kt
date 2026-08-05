@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.fileresource.FileResourceElementType
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndP
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
@@ -168,11 +170,13 @@ internal class EventDownloadCall internal constructor(
     override suspend fun getQuery(
         bundle: EventQueryBundle,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
+        val ouMode = orgunit?.resolveOuMode(bundle.commonParams.ouMode) ?: bundle.commonParams.ouMode
+
         val eventUids = if (bundle.eventFilters != null) {
-            val filteredUids = getEventUidsByFilters(bundle, orgunitUid)
+            val filteredUids = getEventUidsByFilters(bundle, orgunit?.uid, ouMode)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -184,9 +188,10 @@ internal class EventDownloadCall internal constructor(
                 commonParams = bundle.commonParams.copy(
                     program = program,
                     limit = limit,
+                    ouMode = ouMode,
                 ),
                 lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams),
-                orgUnit = orgunitUid,
+                orgUnit = orgunit?.uid,
                 uids = eventUids.distinct(),
             )
         }
@@ -195,11 +200,12 @@ internal class EventDownloadCall internal constructor(
     private suspend fun getEventUidsByFilters(
         bundle: EventQueryBundle,
         orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
     ): List<String> {
         return bundle.eventFilters?.flatMap {
             eventQueryCollectionRepository
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams.ouMode)
+                .byOrgUnitMode().eq(ouMode)
                 .byEventFilterObject().eq(it)
                 .onlineOnly().getDataFetcher().getUids()
         } ?: emptyList()

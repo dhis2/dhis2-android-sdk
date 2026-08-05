@@ -90,6 +90,12 @@ class OAuth2HandlerImplShould {
         whenever(logInExceptions.pinRequiresTokenBasedAccountError()).thenReturn(sdkError("not oauth2"))
         whenever(logInExceptions.noAuthenticatedUserPersistedError()).thenReturn(sdkError("no user"))
         whenever(logInExceptions.incorrectPinError()).thenReturn(sdkError("bad pin"))
+        whenever(logInExceptions.invalidOAuth2StateError()).thenReturn(sdkError("invalid state"))
+        whenever(logInExceptions.invalidOAuth2IatError()).thenReturn(sdkError("invalid iat"))
+        whenever(logInExceptions.oauth2DeviceNotRegisteredError()).thenReturn(sdkError("not registered"))
+        whenever(logInExceptions.incompleteOAuth2RegistrationError(any()))
+            .thenReturn(sdkError("incomplete registration"))
+        whenever(logInExceptions.oauth2ResponseWithoutUsernameError()).thenReturn(sdkError("no username"))
         handler = OAuth2HandlerImpl(
             logInCall,
             logoutHandler,
@@ -160,21 +166,21 @@ class OAuth2HandlerImplShould {
         assertThat(oauth2SecureStore.isRegistered).isFalse()
     }
 
-    @Test(expected = IllegalArgumentException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleEnrollmentResponse_throws_on_expired_iat() {
         oauth2SecureStore.tempState = STATE
 
         handler.blockingHandleEnrollmentResponse("https://server.com", expiredJwt(), STATE)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleEnrollmentResponse_throws_when_state_does_not_match() {
         oauth2SecureStore.tempState = STATE
 
         handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), "forged-state")
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleEnrollmentResponse_throws_when_no_state_was_generated() {
         handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE)
     }
@@ -198,14 +204,14 @@ class OAuth2HandlerImplShould {
 
     // region blockingHandleLogInResponse
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_state_does_not_match() {
         seedSuccessfulLogInPrerequisites()
 
         handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, "forged-state")
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_no_state_was_generated() {
         oauth2SecureStore.tempCodeVerifier = CODE_VERIFIER
         oauth2SecureStore.clientId = CLIENT_ID
@@ -214,21 +220,21 @@ class OAuth2HandlerImplShould {
         handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_temp_code_verifier_missing() {
         oauth2SecureStore.tempState = STATE
 
         handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_client_id_missing() {
         oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
         handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_key_id_missing() {
         oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
@@ -236,7 +242,7 @@ class OAuth2HandlerImplShould {
         handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
     }
 
-    @Test(expected = IllegalStateException::class)
+    @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_private_key_missing() {
         seedSuccessfulLogInPrerequisites()
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(null)
@@ -320,6 +326,32 @@ class OAuth2HandlerImplShould {
         // Temp data cleared after success.
         assertThat(oauth2SecureStore.tempCodeVerifier).isNull()
         assertThat(oauth2SecureStore.tempState).isNull()
+    }
+
+    @Test(expected = D2Error::class)
+    fun blockingHandleLogInResponse_throws_when_the_authenticated_user_has_no_username() {
+        seedSuccessfulLogInPrerequisites()
+        whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
+        oauth2NetworkHandler.stub {
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Success(exchangedState()))
+        }
+        val userWithoutUsername: User = mock()
+        whenever(userWithoutUsername.username()).thenReturn(null)
+        logInCall.stub {
+            onBlocking { logInOAuth2(any(), any()) }.doReturn(userWithoutUsername)
+        }
+
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+    }
+
+    // endregion
+
+    // region blockingLogIn
+
+    @Test(expected = D2Error::class)
+    fun blockingLogIn_throws_when_the_device_is_not_registered() {
+        handler.blockingLogIn(OAuth2Config(serverUrl = NORMALIZED_URL))
     }
 
     // endregion

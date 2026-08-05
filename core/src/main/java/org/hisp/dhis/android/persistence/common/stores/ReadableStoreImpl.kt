@@ -129,4 +129,10 @@ internal open class ReadableStoreImpl<D, P : EntityDB<D>>(
         val groupCountList = readableDao.groupCountListRawQuery(query)
         return groupCountList.associate { it.key to it.count }
     }
+
+    override suspend fun exists(whereClause: String): Boolean {
+        val readableDao = daoProvider()
+        val query = builder.existsWhere(whereClause)
+        return readableDao.intRawQuery(query) == 1
+    }
 }

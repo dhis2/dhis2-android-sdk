@@ -72,19 +72,21 @@ internal class OAuth2NetworkHandlerImpl(
             .toString()
     }
 
+    override suspend fun getTokenEndpoint(url: String, oauthConfigPath: String): String {
+        return configService.getOauthTokenConfigFor(url, oauthConfigPath).tokenEndpoint
+    }
+
     override suspend fun exchangeCodeForToken(
-        url: String,
+        tokenEndpoint: String,
         code: String,
         redirectUri: String,
         clientId: String,
         codeVerifier: String,
         clientAssertion: String,
-        oauthConfigPath: String,
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
-            val oauthConfig = configService.getOauthTokenConfigFor(url, oauthConfigPath)
             val response = service.exchangeCodeForToken(
-                endpoint = oauthConfig.tokenEndpoint,
+                endpoint = tokenEndpoint,
                 grantType = "authorization_code",
                 code = code,
                 redirectUri = redirectUri,
@@ -100,7 +102,7 @@ internal class OAuth2NetworkHandlerImpl(
                 refreshToken = response.refreshToken,
                 expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
                 scope = response.scope,
-                tokenEndpoint = oauthConfig.tokenEndpoint,
+                tokenEndpoint = tokenEndpoint,
             )
         }
     }

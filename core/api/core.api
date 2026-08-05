@@ -11323,6 +11323,10 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field NO_AUTHENTICATED_USER_OFFLINE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NO_DHIS2_SERVER Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field NO_RESERVED_VALUES Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OAUTH2_DEVICE_NOT_REGISTERED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OAUTH2_INCOMPLETE_REGISTRATION Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OAUTH2_INVALID_IAT Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OAUTH2_INVALID_STATE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_INSERTED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_UPDATED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field ORGUNIT_NOT_IN_SEARCH_SCOPE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -23381,8 +23385,8 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingBuildEnrollmentUrl (Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;

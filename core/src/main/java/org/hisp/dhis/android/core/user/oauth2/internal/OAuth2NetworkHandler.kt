@@ -41,15 +41,24 @@ internal interface OAuth2NetworkHandler {
         scope: String,
     ): String
 
+    /**
+     * Reads the `token_endpoint` advertised by the server discovery document. It must be resolved
+     * before the client assertion is signed, so that the assertion audience and the endpoint the
+     * request is actually posted to cannot diverge.
+     */
+    suspend fun getTokenEndpoint(
+        url: String,
+        oauthConfigPath: String = DEFAULT_OAUTH_CONFIG_PATH,
+    ): String
+
     @Suppress("LongParameterList")
     suspend fun exchangeCodeForToken(
-        url: String,
+        tokenEndpoint: String,
         code: String,
         redirectUri: String,
         clientId: String,
         codeVerifier: String,
         clientAssertion: String,
-        oauthConfigPath: String = "/.well-known/oauth-authorization-server",
     ): Result<OAuth2State, D2Error>
 
     suspend fun refreshToken(
@@ -61,4 +70,8 @@ internal interface OAuth2NetworkHandler {
     ): Result<OAuth2State, D2Error>
 
     fun buildLogoutUrl(config: OAuth2Config): String
+
+    companion object {
+        const val DEFAULT_OAUTH_CONFIG_PATH = "/.well-known/oauth-authorization-server"
+    }
 }

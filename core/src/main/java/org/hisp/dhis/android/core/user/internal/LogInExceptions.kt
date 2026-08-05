@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 internal class LogInExceptions internal constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
@@ -124,6 +125,46 @@ internal class LogInExceptions internal constructor(
         return D2Error.builder()
             .errorCode(D2ErrorCode.BAD_CREDENTIALS)
             .errorDescription("Current PIN is incorrect")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun invalidOAuth2StateError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INVALID_STATE)
+            .errorDescription("OAuth2 state does not match the one issued for this request")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun invalidOAuth2IatError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INVALID_IAT)
+            .errorDescription("The initial access token is malformed or has expired")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun oauth2DeviceNotRegisteredError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_DEVICE_NOT_REGISTERED)
+            .errorDescription("Device not registered. Handle the enrollment response first.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun incompleteOAuth2RegistrationError(missingItem: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INCOMPLETE_REGISTRATION)
+            .errorDescription("$missingItem not found. The device must be enrolled again.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun oauth2ResponseWithoutUsernameError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorDescription("The authenticated user returned by the server has no username")
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }

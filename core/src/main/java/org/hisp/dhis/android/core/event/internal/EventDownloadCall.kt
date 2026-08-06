@@ -190,7 +190,7 @@ internal class EventDownloadCall internal constructor(
                     limit = limit,
                     ouMode = ouMode,
                 ),
-                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams),
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle),
                 orgUnit = orgunit?.uid,
                 uids = eventUids.distinct(),
             )

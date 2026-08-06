@@ -39,7 +39,7 @@ internal class EventLastUpdatedManager(
     suspend fun update(bundle: EventQueryBundle, syncDate: Date) {
         val sync = EventSync.builder()
             .program(bundle.commonParams.program)
-            .organisationUnitIdsHash(bundle.orgUnits.toSet().hashCode())
+            .organisationUnitIdsHash(bundle.orgUnitUids.toSet().hashCode())
             .downloadLimit(bundle.commonParams.limit)
             .workingListsHash(bundle.commonParams.workingListsHash)
             .lastUpdated(syncDate)

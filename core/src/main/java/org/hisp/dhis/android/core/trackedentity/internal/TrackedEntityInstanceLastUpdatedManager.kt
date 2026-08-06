@@ -38,7 +38,7 @@ internal class TrackedEntityInstanceLastUpdatedManager(
     suspend fun update(trackerQuery: TrackerQueryBundle, syncDate: Date) {
         val sync = TrackedEntityInstanceSync.builder()
             .program(trackerQuery.commonParams.program)
-            .organisationUnitIdsHash(trackerQuery.orgUnits.toSet().hashCode())
+            .organisationUnitIdsHash(trackerQuery.orgUnitUids.toSet().hashCode())
             .downloadLimit(trackerQuery.commonParams.limit)
             .workingListsHash(trackerQuery.commonParams.workingListsHash)
             .lastUpdated(syncDate)

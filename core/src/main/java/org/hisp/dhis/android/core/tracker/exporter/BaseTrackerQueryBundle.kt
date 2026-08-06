@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParam
 internal interface BaseTrackerQueryBundle {
     val commonParams: TrackerQueryCommonParams
     val orgUnits: List<DownloadOrgunit>
+    val orgUnitUids: List<String>
+        get() = orgUnits.map { it.uid }
 }
 
 internal data class DownloadOrgunit(

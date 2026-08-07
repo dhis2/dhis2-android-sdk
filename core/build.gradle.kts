@@ -1,5 +1,6 @@
 import org.gradle.api.tasks.Sync
 import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -33,10 +34,10 @@ plugins {
     id("com.android.library")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    id("io.github.tjokinen.android-bcv-bridge") version "0.2.0"
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.koin.compiler)
 }
@@ -179,6 +180,11 @@ kotlin {
         freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
         freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
     }
+
+    // In order to make it work, it requires the bridge plugin because of this issue
+    // https://youtrack.jetbrains.com/issue/KT-78025
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation()
 }
 
 // AGP's built-in Kotlin support no longer syncs `android.sourceSets` with the Kotlin compilation

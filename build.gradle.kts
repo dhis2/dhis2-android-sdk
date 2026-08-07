@@ -67,8 +67,8 @@ subprojects {
         }
     }
 
-    // Kotlin Android
-    plugins.withId("org.jetbrains.kotlin.android") {
+    // Kotlin Android (AGP 9 built-in Kotlin support — see https://kotl.in/gradle/agp-built-in-kotlin)
+    plugins.withId("com.android.built-in-kotlin") {
         extensions.configure<KotlinAndroidProjectExtension> {
             jvmToolchain(jvmVersion)
             compilerOptions {

@@ -31,7 +31,6 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
     id("maven-publish-conventions")
     id("jacoco-conventions")
     alias(libs.plugins.room)
@@ -136,7 +135,7 @@ android {
     }
 
     sourceSets {
-        sourceSets.getByName("main") {
+        getByName("main") {
             java.srcDirs("build/generated/ksp/main/kotlin")
         }
         getByName("test") {
@@ -146,7 +145,7 @@ android {
             java.srcDirs("src/sharedTest/java")
             resources.srcDirs(
                 "src/sharedAndroidTest/resources",
-                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources").get().asFile,
             )
         }
     }

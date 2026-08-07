@@ -2,10 +2,10 @@
 dhis2AndroidSdkVersion = "1.15.0-SNAPSHOT"
 dhis2AndroidSdkCode = "306"
 
-gradle = "8.13.2"
-kotlin = "2.3.20"
+gradle = "9.3.1"
+kotlin = "2.4.10"
 java = "17"
-ksp = "2.3.9"
+ksp = "2.3.11"
 ktlint = "12.1.1"
 sonarqube = "7.2.2.6593"
 detekt = "1.23.8"
@@ -17,7 +17,7 @@ cyclonedx = "2.1.0"
 targetSdkVersion = "36"
 minSdkVersion = "23"
 
-libraryDesugaring = "2.1.4"
+libraryDesugaring = "2.1.5"
 
 # android
 annotation = "1.9.1"

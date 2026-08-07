@@ -14,7 +14,7 @@ nexusPublish = "2.0.0"
 apiCompatibility = "0.17.0"
 cyclonedx = "2.1.0"
 
-targetSdkVersion = "36"
+targetSdkVersion = "37"
 minSdkVersion = "23"
 
 libraryDesugaring = "2.1.5"

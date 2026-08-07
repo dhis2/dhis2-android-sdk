@@ -142,7 +142,6 @@ android {
             resources.srcDirs("src/sharedTest/resources")
         }
         getByName("androidTest") {
-            java.srcDirs("src/sharedTest/java")
             resources.srcDirs(
                 "src/sharedAndroidTest/resources",
                 layout.buildDirectory.dir("generated/sharedAndroidTest/resources").get().asFile,
@@ -165,6 +164,7 @@ android {
     namespace = "org.hisp.dhis.android"
     buildFeatures {
         buildConfig = true
+        resValues = true
     }
 
     publishing {
@@ -178,6 +178,15 @@ kotlin {
     compilerOptions {
         freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
         freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
+    }
+}
+
+// AGP's built-in Kotlin support no longer syncs `android.sourceSets` with the Kotlin compilation
+// (see https://kotl.in/gradle/agp-built-in-kotlin), so the shared test sources shared between unit
+// and instrumented tests must be registered through the variant Sources API instead.
+androidComponents {
+    onVariants { variant ->
+        variant.androidTest?.sources?.kotlin?.addStaticSourceDirectory("src/sharedTest/java")
     }
 }
 

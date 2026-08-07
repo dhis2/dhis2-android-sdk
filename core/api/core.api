@@ -11291,6 +11291,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field APP_NAME_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field APP_VERSION_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field BAD_CREDENTIALS Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field BAD_CREDENTIALS_OFFLINE_CODE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field CANT_ACCESS_KEYSTORE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field CANT_CREATE_EXISTING_OBJECT Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field CANT_DELETE_NON_EXISTING_OBJECT Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;

@@ -168,4 +168,12 @@ internal class LogInExceptions internal constructor(
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }
+
+    fun incorrectOfflineCodeError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE)
+            .errorDescription("Offline code do not match authenticated user. Cannot login offline.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
 }

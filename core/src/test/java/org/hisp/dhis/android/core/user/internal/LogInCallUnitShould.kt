@@ -49,6 +49,7 @@ import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -155,8 +156,8 @@ class LogInCallUnitShould : BaseCallShould() {
     ) {
         try {
             block.invoke()
+            fail("Expected a D2Error${errorCode?.let { " with code $it" }.orEmpty()}, but none was thrown")
         } catch (responseError: D2Error) {
-            assertThat(responseError).isInstanceOf(D2Error::class.java)
             if (errorCode != null) assertThat(responseError.errorCode()).isEqualTo(errorCode)
         }
     }
@@ -316,7 +317,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     @Test
-    fun reject_oauth2_login_when_pin_does_not_match_stored_hash() = runTest {
+    fun reject_oauth2_login_with_offline_code_error_when_pin_does_not_match_stored_hash() = runTest {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
         whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
@@ -325,8 +326,24 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
             instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
+        verify(credentialsSecureStore, never()).set(any())
+    }
+
+    @Test
+    fun reject_oauth2_login_with_offline_code_error_when_account_has_no_stored_hash_but_pin_is_given() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        // The account has no PIN configured, so any offline code supplied by the user must be rejected.
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
+            instantiateCall(USERNAME, PIN, SERVER_URL)
         }
         verify(credentialsSecureStore, never()).set(any())
     }
@@ -428,6 +445,25 @@ class LogInCallUnitShould : BaseCallShould() {
         verify(credentialsSecureStore).set(
             Credentials(USERNAME, SERVER_URL, null, null, openIdAuthState, null),
         )
+    }
+
+    @Test
+    fun reject_openid_offline_login_with_bad_credentials_when_pin_does_not_match_stored_hash() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
+        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
+        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        // Stored hash corresponds to a different PIN.
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        // OpenID accounts keep the generic bad-credentials error; only OAuth2 reports an offline-code error.
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
+        verify(credentialsSecureStore, never()).set(any())
     }
 
     private fun oauth2State(accessToken: String): OAuth2State =

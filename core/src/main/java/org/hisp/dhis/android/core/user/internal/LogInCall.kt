@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -221,7 +222,11 @@ internal class LogInCall(
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
         if (credentials.getHash() != existingUser.hash()) {
-            throw exceptions.badCredentialsError()
+            throw when (credentials.authorizationType) {
+                AuthorizationType.BASIC -> exceptions.badCredentialsError()
+                AuthorizationType.OPEN_ID_CONNECT -> exceptions.badCredentialsError()
+                AuthorizationType.OAUTH2 -> exceptions.incorrectOfflineCodeError()
+            }
         }
         credentialsSecureStore.set(credentials)
         userIdStore.set(existingUser.user()!!)

@@ -169,6 +169,14 @@ internal class LogInExceptions internal constructor(
             .build()
     }
 
+    fun oauth2NoValidTokenError(detail: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_NO_VALID_TOKEN)
+            .errorDescription("$detail. The user must authorize again to reach the server.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
     fun incorrectOfflineCodeError(): D2Error {
         return D2Error.builder()
             .errorCode(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE)

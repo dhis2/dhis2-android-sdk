@@ -34,6 +34,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.AuthorizationType
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -65,6 +67,7 @@ internal class LogInCall(
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
     private val openIDConnectTokenRefresher: Lazy<OpenIDConnectTokenRefresher>,
+    private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
     @Throws(D2Error::class)
     suspend fun logIn(username: String?, passwordOrPin: String?, serverUrl: String?): User {
@@ -82,11 +85,22 @@ internal class LogInCall(
                 logInWithOAuth2State(trimmedServerUrl, username, passwordOrPin, oauth2State)
             openIdState != null ->
                 logInWithOpenIdState(trimmedServerUrl, username, passwordOrPin, openIdState)
+            isOAuth2AccountWithoutState(trimmedServerUrl, username) ->
+                throw exceptions.oauth2NoValidTokenError("This account has no OAuth2 tokens on this device")
             else -> {
                 exceptions.throwExceptionIfPasswordNull(passwordOrPin)
                 logInWithPassword(trimmedServerUrl, username, passwordOrPin)
             }
         }
+    }
+
+    private fun isOAuth2AccountWithoutState(serverUrl: String, username: String): Boolean {
+        val account = DatabaseConfigurationHelper.getAccount(
+            databasesConfigurationStore.get(),
+            serverUrl,
+            username,
+        )
+        return account?.authorizationType() == AuthorizationType.OAUTH2
     }
 
     private suspend fun logInWithOAuth2State(
@@ -260,7 +274,8 @@ internal class LogInCall(
     suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
         return logInWithToken(
             serverUrl = serverUrl,
-            token = oauth2State.accessToken!!,
+            token = oauth2State.accessToken
+                ?: throw exceptions.oauth2NoValidTokenError("The OAuth2 response has no access token"),
             openIDConnectState = null,
             oauth2State = oauth2State,
         )

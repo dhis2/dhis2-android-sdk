@@ -25,26 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.oauth2
+package org.hisp.dhis.android.core.user.oauth2.internal
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-@Serializable
-data class OAuth2State(
-    @SerialName("client_id") val clientId: String,
-    @SerialName("key_id") val keyId: String,
-    @SerialName("access_token") val accessToken: String?,
-    @SerialName("refresh_token") val refreshToken: String?,
-    @SerialName("expires_at") val expiresAt: Long,
-    @SerialName("scope") val scope: String?,
-    @SerialName("token_endpoint") val tokenEndpoint: String,
-) {
-    fun jsonSerializeString(): String = Json.encodeToString(serializer(), this)
+/**
+ * Outcome of [OAuth2TokenRefresher.rotate]. The distinction between [Retryable] and [Invalid] is
+ * what keeps a network outage from closing the session: only [Invalid] means the session is
+ * unrecoverable.
+ */
+internal sealed class RefreshResult {
+    /**
+     * A usable state is available, either freshly rotated or already rotated by a concurrent call.
+     */
+    data class Success(val state: OAuth2State) : RefreshResult()
 
-    companion object {
-        fun jsonDeserialize(json: String): OAuth2State =
-            Json.decodeFromString(serializer(), json)
-    }
+    /**
+     * The refresh could not be completed for a transient reason (offline, timeout, server error).
+     * The stored credentials are left untouched and the caller may keep using the current token.
+     */
+    data class Retryable(val error: D2Error?) : RefreshResult()
+
+    /**
+     * There is no usable token and there will not be one without authorizing again. The session has
+     * already been closed and [error] is meant to be propagated to the app as-is.
+     */
+    data class Invalid(val error: D2Error) : RefreshResult()
 }

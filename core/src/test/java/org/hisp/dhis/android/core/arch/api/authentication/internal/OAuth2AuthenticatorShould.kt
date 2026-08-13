@@ -159,8 +159,8 @@ class OAuth2AuthenticatorShould {
     }
 
     private fun credentials(accessToken: String? = "access-1") = Credentials(
-        username = "android",
-        serverUrl = "https://play.dhis2.org",
+        username = "test_username",
+        serverUrl = "https://dhis-instance.org",
         password = null,
         pin = null,
         openIDConnectState = null,
@@ -174,7 +174,7 @@ class OAuth2AuthenticatorShould {
         refreshToken = "refresh-1",
         expiresAt = 1_700_000_000L,
         scope = "openid",
-        tokenEndpoint = "https://play.dhis2.org/oauth2/token",
+        tokenEndpoint = "https://dhis-instance.org/oauth/token",
     )
 
     private fun noValidTokenError() = D2Error.builder()

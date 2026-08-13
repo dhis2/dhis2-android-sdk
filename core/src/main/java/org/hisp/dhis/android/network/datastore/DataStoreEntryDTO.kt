@@ -44,7 +44,10 @@ internal data class DataStoreEntryDTO(
         return DataStoreEntry.builder()
             .namespace(namespace)
             .key(key)
-            .value(value.toString())
+            // `value` is a JsonWrapper value class, so `toString()` on it renders
+            // "JsonWrapper(json=...)" rather than the payload, and renders a null wrapper as the
+            // literal string "null". Serialize the wrapped JsonElement instead, and preserve null.
+            .value(value?.json?.toString())
             .syncState(State.SYNCED)
             .deleted(false)
             .build()

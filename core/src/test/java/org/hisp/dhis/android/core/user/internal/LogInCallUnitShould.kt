@@ -36,7 +36,11 @@ import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -57,6 +61,7 @@ import org.junit.runners.JUnit4
 import org.mockito.*
 import org.mockito.kotlin.*
 import org.mockito.stubbing.Answer
+import java.util.Date
 
 @RunWith(JUnit4::class)
 class LogInCallUnitShould : BaseCallShould() {
@@ -84,6 +89,7 @@ class LogInCallUnitShould : BaseCallShould() {
     private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore = mock()
     private val openIDConnectTokenRefresher: OpenIDConnectTokenRefresher = mock()
+    private val databasesConfigurationStore: DatabaseConfigurationInsecureStore = mock()
     private val openIdAuthState: AuthState = mock()
 
     @Before
@@ -121,6 +127,7 @@ class LogInCallUnitShould : BaseCallShould() {
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
             oauth2StateSecureStore, openIDConnectStateSecureStore, lazyOf(openIDConnectTokenRefresher),
+            databasesConfigurationStore,
         ).logIn(username, password, serverUrl)
     }
 
@@ -266,6 +273,29 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     // OAuth2 dispatcher tests
+
+    @Test
+    fun throw_no_valid_token_when_the_oauth2_account_has_no_stored_state() = runTest {
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+
+        assertD2Error(D2ErrorCode.OAUTH2_NO_VALID_TOKEN) { instantiateCall(USERNAME, PIN, SERVER_URL) }
+    }
+
+    @Test
+    fun log_in_offline_when_the_stored_oauth2_tokens_are_already_discarded() = runTest {
+        val state = oauth2State(accessToken = ACCESS_TOKEN).copy(accessToken = null, refreshToken = null)
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
+            .thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val user = instantiateCall(USERNAME, null, SERVER_URL)
+
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
+    }
 
     @Test
     fun log_in_offline_without_contacting_server_when_oauth2_state_exists_for_account() = runTest {
@@ -476,6 +506,22 @@ class LogInCallUnitShould : BaseCallShould() {
             scope = null,
             tokenEndpoint = "https://dhis-instance.org/oauth/token",
         )
+
+    private fun oauth2Configuration(): DatabasesConfiguration =
+        DatabasesConfiguration.builder()
+            .accounts(
+                listOf(
+                    DatabaseAccount.builder()
+                        .username(USERNAME)
+                        .serverUrl(SERVER_URL)
+                        .databaseName("$USERNAME.db")
+                        .encrypted(false)
+                        .databaseCreationDate(Date())
+                        .authorizationType(AuthorizationType.OAUTH2)
+                        .build(),
+                ),
+            )
+            .build()
 
     companion object {
         private const val USERNAME = "test_username"

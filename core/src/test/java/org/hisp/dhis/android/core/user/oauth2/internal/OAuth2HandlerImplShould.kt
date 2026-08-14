@@ -200,6 +200,18 @@ class OAuth2HandlerImplShould {
         verify(oauth2NetworkHandler).buildLogoutUrl(config)
     }
 
+    @Test
+    fun blockingBuildLogoutUrl_normalizes_the_server_url_before_delegating() {
+        val config = OAuth2Config(serverUrl = "HTTPS://Server.com/")
+        val normalizedConfig = config.copy(serverUrl = NORMALIZED_URL)
+        whenever(oauth2NetworkHandler.buildLogoutUrl(normalizedConfig)).thenReturn(LOGOUT_URL)
+
+        val result = handler.blockingBuildLogoutUrl(config)
+
+        assertThat(result).isEqualTo(LOGOUT_URL)
+        verify(oauth2NetworkHandler).buildLogoutUrl(normalizedConfig)
+    }
+
     // endregion
 
     // region blockingHandleLogInResponse

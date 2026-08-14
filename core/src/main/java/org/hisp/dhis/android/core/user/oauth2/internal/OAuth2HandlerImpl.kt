@@ -133,7 +133,8 @@ internal class OAuth2HandlerImpl(
     }
 
     private fun buildLogoutUrlInternal(config: OAuth2Config): String {
-        return oauth2NetworkHandler.buildLogoutUrl(config)
+        val normalizedUrl = ServerUrlNormalizer.normalize(config.serverUrl)
+        return oauth2NetworkHandler.buildLogoutUrl(config.copy(serverUrl = normalizedUrl))
     }
 
     private suspend fun logInInternal(config: OAuth2Config): String {

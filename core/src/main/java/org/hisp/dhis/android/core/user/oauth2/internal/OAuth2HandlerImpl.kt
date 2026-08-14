@@ -152,7 +152,6 @@ internal class OAuth2HandlerImpl(
         val clientId = oauth2SecureStore.clientId
             ?: throw logInExceptions.incompleteOAuth2RegistrationError("Client ID")
         return oauth2NetworkHandler.buildAuthorizationUrl(
-            serverUrl = config.serverUrl,
             clientId = clientId,
             state = state,
             codeChallenge = codeChallenge,

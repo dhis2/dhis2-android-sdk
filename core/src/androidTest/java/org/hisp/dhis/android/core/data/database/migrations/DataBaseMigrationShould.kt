@@ -160,4 +160,62 @@ class DataBaseMigrationShould {
         val db = initDatabaseToVersion(2)
         assertThat(ifTableExists(TrackedEntityAttributeReservedValueTableInfo.TABLE_INFO.name(), db)).isTrue()
     }
+
+    /**
+     * ANDROSDK-2376: downloaded dataStore entries were persisted as the `toString()` of the
+     * internal `JsonWrapper` value class. Migration 181 unwraps them in place so existing
+     * installations are repaired without waiting for the app to trigger a dataStore download.
+     */
+    @Test
+    fun repair_data_store_values_wrapped_by_json_wrapper_to_string_in_migration_181() = runTest {
+        val db = initDatabaseToVersion(180)
+
+        insertDataStoreEntry(db, "settings", """JsonWrapper(json={"skipMigration":true})""", "SYNCED")
+        insertDataStoreEntry(db, "summary", """JsonWrapper(json=[{"id":"fKHBpN5v8Sj"}])""", "SYNCED")
+        insertDataStoreEntry(db, "explicitNull", "JsonWrapper(json=null)", "SYNCED")
+        insertDataStoreEntry(db, "absentValue", "null", "SYNCED")
+        // Only the download produces the corrupted values, so anything written locally and still
+        // pending upload must be left exactly as the app wrote it.
+        insertDataStoreEntry(db, "locallyEdited", "null", "TO_UPDATE")
+
+        applyMigrationEndingAt(db, 181)
+
+        assertThat(dataStoreValue(db, "settings")).isEqualTo("""{"skipMigration":true}""")
+        assertThat(dataStoreValue(db, "summary")).isEqualTo("""[{"id":"fKHBpN5v8Sj"}]""")
+        // A genuine JSON null keeps its JSON representation, an absent value becomes SQL NULL.
+        assertThat(dataStoreValue(db, "explicitNull")).isEqualTo("null")
+        assertThat(dataStoreValue(db, "absentValue")).isNull()
+        assertThat(dataStoreValue(db, "locallyEdited")).isEqualTo("null")
+    }
+
+    private fun applyMigrationEndingAt(db: SupportSQLiteDatabase, endVersion: Int) {
+        val migration = ALL_MIGRATIONS.first { it.endVersion == endVersion }
+        db.beginTransaction()
+        try {
+            migration.migrate(db)
+            db.execSQL("PRAGMA user_version = ${migration.endVersion};")
+            db.setTransactionSuccessful()
+        } finally {
+            db.endTransaction()
+        }
+    }
+
+    private fun insertDataStoreEntry(
+        db: SupportSQLiteDatabase,
+        key: String,
+        value: String,
+        syncState: String,
+    ) {
+        db.execSQL(
+            "INSERT INTO DataStore (namespace, key, value, syncState, deleted) VALUES (?, ?, ?, ?, 0)",
+            arrayOf("capture", key, value, syncState),
+        )
+    }
+
+    private fun dataStoreValue(db: SupportSQLiteDatabase, key: String): String? {
+        val cursor = db.query("SELECT value FROM DataStore WHERE namespace = ? AND key = ?", arrayOf("capture", key))
+        val value = if (cursor.moveToFirst() && !cursor.isNull(0)) cursor.getString(0) else null
+        cursor.close()
+        return value
+    }
 }

@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.network.datastore
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.serialization.json.Json
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.State
+import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.network.common.JsonWrapper
 import org.junit.Test
 
@@ -43,8 +45,12 @@ import org.junit.Test
  */
 class DataStoreEntryDTOMappingShould {
 
+    // The same parser the network layer decodes responses with, so these tests exercise the
+    // production configuration (lenient, coerced input values, implicit nulls).
+    private val parser = KotlinxJsonParser.instance
+
     private fun dtoOf(json: String) =
-        DataStoreEntryDTO(key = "config", value = JsonWrapper(Json.parseToJsonElement(json)))
+        DataStoreEntryDTO(key = "config", value = JsonWrapper(parser.parseToJsonElement(json)))
 
     @Test
     fun store_the_json_payload_and_not_the_wrapper_to_string() {
@@ -104,7 +110,40 @@ class DataStoreEntryDTOMappingShould {
 
         val stored = dtoOf(json).toDomain("ns").value()
 
-        // Would throw if the stored text were not valid JSON.
-        Json.parseToJsonElement(stored!!)
+        // Parsing would throw if the stored text were not valid JSON, and the parsed tree must be
+        // the one the server sent rather than merely something well formed.
+        assertThat(parser.parseToJsonElement(stored!!)).isEqualTo(parser.parseToJsonElement(json))
+    }
+
+    @Test
+    fun round_trip_an_entry_through_to_dto_and_back() {
+        // A value that cannot be mapped back to a DTO cannot be posted either: `toDto` runs it
+        // through `JsonWrapper.fromString`, which swallows a parse failure and yields a null body.
+        val json = """{"plugins":[{"id":"org.a","version":"1"}],"enabled":true}"""
+        val entry = DataStoreEntry.builder()
+            .namespace("dhis2AndroidPlugins")
+            .key("config")
+            .value(json)
+            .syncState(State.SYNCED)
+            .deleted(false)
+            .build()
+
+        val roundTripped = entry.toDto().toDomain("dhis2AndroidPlugins")
+
+        assertThat(entry.toDto().value).isNotNull()
+        assertThat(roundTripped.value()).isEqualTo(json)
+    }
+
+    @Test
+    fun map_a_null_value_back_to_a_null_dto_value() {
+        val entry = DataStoreEntry.builder()
+            .namespace("ns")
+            .key("config")
+            .value(null)
+            .syncState(State.SYNCED)
+            .deleted(false)
+            .build()
+
+        assertThat(entry.toDto().value).isNull()
     }
 }

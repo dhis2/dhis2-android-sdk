@@ -166,6 +166,26 @@ class OAuth2HandlerImplShould {
         assertThat(oauth2SecureStore.isRegistered).isFalse()
     }
 
+    @Test
+    fun blockingHandleEnrollmentResponse_deletes_the_previous_key_when_enrolling_again() {
+        seedRegistrationFlowMocks()
+        dcrNetworkHandler.stub {
+            onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Success(CLIENT_ID))
+        }
+        // The device was already enrolled with an older key pair.
+        oauth2SecureStore.clientId = "client-0"
+        oauth2SecureStore.keyId = PREVIOUS_KEY_ID
+        oauth2SecureStore.isRegistered = true
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("HTTPS://Server.com/", validJwt(), STATE)
+
+        // Otherwise the superseded key is orphaned in the keystore forever.
+        verify(keyStoreManager).deleteKey(PREVIOUS_KEY_ID)
+        assertThat(oauth2SecureStore.keyId).isEqualTo(KEY_ID)
+    }
+
     @Test(expected = D2Error::class)
     fun blockingHandleEnrollmentResponse_throws_on_expired_iat() {
         oauth2SecureStore.tempState = STATE
@@ -338,6 +358,35 @@ class OAuth2HandlerImplShould {
         // Temp data cleared after success.
         assertThat(oauth2SecureStore.tempCodeVerifier).isNull()
         assertThat(oauth2SecureStore.tempState).isNull()
+    }
+
+    @Test
+    fun blockingHandleLogInResponse_keeps_the_registration_so_the_user_can_authorize_again() {
+        seedSuccessfulLogInPrerequisites()
+        oauth2SecureStore.isRegistered = true
+        whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
+        oauth2NetworkHandler.stub {
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Success(exchangedState()))
+        }
+        val expectedUser: User = mock()
+        whenever(expectedUser.username()).thenReturn(USERNAME)
+        logInCall.stub {
+            onBlocking { logInOAuth2(any(), any()) }.doReturn(expectedUser)
+        }
+
+        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+
+        // Tokens expire; the DCR registration must not. Otherwise the user cannot start a new
+        // authorization round after the refresh token is rejected without enrolling from scratch.
+        assertThat(oauth2SecureStore.clientId).isEqualTo(CLIENT_ID)
+        assertThat(oauth2SecureStore.keyId).isEqualTo(KEY_ID)
+        assertThat(handler.isDeviceRegistered()).isTrue()
+
+        whenever(oauth2NetworkHandler.buildAuthorizationUrl(any(), any(), any(), any()))
+            .thenReturn(AUTHORIZATION_URL)
+        assertThat(handler.blockingLogIn(OAuth2Config(serverUrl = NORMALIZED_URL)))
+            .isEqualTo(AUTHORIZATION_URL)
     }
 
     @Test(expected = D2Error::class)
@@ -649,8 +698,10 @@ class OAuth2HandlerImplShould {
         private const val ENROLL_URL = "https://server.com/oauth2/dcr/enroll"
         private const val LOGOUT_URL = "https://server.com/dhis-web-commons-security/logout.action"
         private const val NORMALIZED_URL = "https://server.com"
+        private const val AUTHORIZATION_URL = "https://server.com/oauth2/authorize"
         private const val CLIENT_ID = "client-1"
         private const val KEY_ID = "key-1"
+        private const val PREVIOUS_KEY_ID = "key-0"
         private const val DEVICE_ID = "device-1"
         private const val JWKS = "{\"keys\":[]}"
         private const val CODE_VERIFIER = "verifier"

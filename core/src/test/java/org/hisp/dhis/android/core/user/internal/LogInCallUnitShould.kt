@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport
+import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
@@ -121,6 +123,10 @@ class LogInCallUnitShould : BaseCallShould() {
     private suspend fun login() = instantiateCall(USERNAME, PASSWORD, SERVER_URL)
 
     private suspend fun instantiateCall(username: String?, password: String?, serverUrl: String?): User {
+        return logInCall().logIn(username, password, serverUrl)
+    }
+
+    private fun logInCall(): LogInCall {
         return LogInCall(
             coroutineAPICallExecutor, userNetworkHandler, credentialsSecureStore,
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
@@ -128,7 +134,7 @@ class LogInCallUnitShould : BaseCallShould() {
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
             oauth2StateSecureStore, openIDConnectStateSecureStore, lazyOf(openIDConnectTokenRefresher),
             databasesConfigurationStore,
-        ).logIn(username, password, serverUrl)
+        )
     }
 
     private fun whenAPICall(answer: Answer<User>) {
@@ -275,11 +281,112 @@ class LogInCallUnitShould : BaseCallShould() {
     // OAuth2 dispatcher tests
 
     @Test
-    fun throw_no_valid_token_when_the_oauth2_account_has_no_stored_state() = runTest {
+    fun log_in_offline_when_the_oauth2_account_has_no_stored_state() = runTest {
+        // An imported database, or a state that was wiped: there are no tokens, but the account must
+        // still open for offline work.
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
         whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        assertD2Error(D2ErrorCode.OAUTH2_NO_VALID_TOKEN) { instantiateCall(USERNAME, PIN, SERVER_URL) }
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
+    }
+
+    @Test
+    fun keep_the_oauth2_authorization_type_when_the_account_has_no_stored_state() = runTest {
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        // Without an explicit type these credentials would look like a password session and their
+        // requests would go out unauthenticated instead of reporting that authorization is required.
+        val captor = argumentCaptor<Credentials>()
+        verify(credentialsSecureStore).set(captor.capture())
+        assertThat(captor.firstValue.authorizationType).isEqualTo(AuthorizationType.OAUTH2)
+    }
+
+    @Test
+    fun reject_a_wrong_offline_code_when_the_oauth2_account_has_no_stored_state() = runTest {
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
+    }
+
+    @Test
+    fun import_the_database_of_an_oauth2_account_pending_to_import() = runTest {
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+        whenever(multiUserDatabaseManager.getAccount(SERVER_URL, USERNAME))
+            .thenReturn(pendingToImportAccount())
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        assertThat(user).isEqualTo(dbUser)
+        // The offline code doubles as the password of the exported file.
+        verifyBlocking(multiUserDatabaseManager) { importAndLoadDb(any(), eq(PIN)) }
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
+    }
+
+    @Test
+    fun report_a_wrong_offline_code_when_the_oauth2_import_fails() = runTest {
+        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
+        whenever(multiUserDatabaseManager.getAccount(SERVER_URL, USERNAME))
+            .thenReturn(pendingToImportAccount())
+        multiUserDatabaseManager.stub {
+            onBlocking { importAndLoadDb(any(), any()) }.doThrow(RuntimeException("wrong zip password"))
+        }
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
+    }
+
+    @Test
+    fun log_in_offline_when_the_openid_account_has_no_stored_state() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
+        whenever(databasesConfigurationStore.get())
+            .thenReturn(configurationWith(AuthorizationType.OPEN_ID_CONNECT))
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
+    }
+
+    @Test
+    fun route_to_the_token_flow_when_a_state_exists_but_the_account_type_is_stale() = runTest {
+        // Accounts created before the account type existed have it null and it is never backfilled.
+        // The stored state must win, or these users would be pushed to the password flow.
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(databasesConfigurationStore.get()).thenReturn(configurationWith(null))
+        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
+            .thenReturn(FRESH_ID_TOKEN)
+        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+        whenever(userNetworkHandler.authenticate(credentialsCaptor.capture())).thenReturn(apiUser)
+
+        instantiateCall(USERNAME, null, SERVER_URL)
+
+        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $FRESH_ID_TOKEN")
     }
 
     @Test
@@ -496,6 +603,58 @@ class LogInCallUnitShould : BaseCallShould() {
         verify(credentialsSecureStore, never()).set(any())
     }
 
+    // OAuth2 online re-login: the access and refresh tokens expired, the user authorized again and
+    // the SDK is handed a brand new state for an account whose database already exists.
+
+    @Test
+    fun succeed_on_oauth2_online_relogin_when_the_account_has_a_pin() = runTest {
+        whenever(apiUser.username()).thenReturn(USERNAME)
+        // The account configured a PIN after the first login, so the stored hash is not null.
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val user = reLogInWithOAuth2Token(oauth2State(accessToken = ACCESS_TOKEN))
+
+        assertThat(user).isEqualTo(apiUser)
+        // The session must survive: a failed re-login also wipes the credentials.
+        verify(credentialsSecureStore, never()).remove()
+    }
+
+    @Test
+    fun preserve_the_stored_pin_hash_on_oauth2_online_relogin() = runTest {
+        whenever(apiUser.username()).thenReturn(USERNAME)
+        val storedHash = UserHelper.md5(USERNAME, PIN)
+        whenever(authenticatedUser.hash()).thenReturn(storedHash)
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        reLogInWithOAuth2Token(oauth2State(accessToken = ACCESS_TOKEN))
+
+        // The token flow cannot ask for the PIN, so it must not overwrite the hash with null:
+        // otherwise the user could no longer log in offline with the PIN they configured.
+        verify(authenticatedUserStore).updateOrInsertWhere(
+            AuthenticatedUser.builder().user(UID).hash(storedHash).build(),
+        )
+    }
+
+    @Test
+    fun keep_the_pin_in_the_credentials_on_oauth2_online_relogin() = runTest {
+        whenever(apiUser.username()).thenReturn(USERNAME)
+        val discardedState = oauth2State(accessToken = ACCESS_TOKEN)
+            .copy(accessToken = null, refreshToken = null)
+        whenever(credentialsSecureStore.get())
+            .thenReturn(Credentials(USERNAME, SERVER_URL, null, PIN, null, discardedState))
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val freshState = oauth2State(accessToken = "access-token-2")
+        reLogInWithOAuth2Token(freshState)
+
+        verify(credentialsSecureStore).set(Credentials(USERNAME, SERVER_URL, null, PIN, null, freshState))
+    }
+
+    private suspend fun reLogInWithOAuth2Token(state: OAuth2State): User =
+        logInCall().logInOAuth2(SERVER_URL, state)
+
     private fun oauth2State(accessToken: String): OAuth2State =
         OAuth2State(
             clientId = "client",
@@ -508,20 +667,35 @@ class LogInCallUnitShould : BaseCallShould() {
         )
 
     private fun oauth2Configuration(): DatabasesConfiguration =
+        configurationWith(AuthorizationType.OAUTH2)
+
+    private fun configurationWith(authorizationType: AuthorizationType?): DatabasesConfiguration =
         DatabasesConfiguration.builder()
-            .accounts(
-                listOf(
-                    DatabaseAccount.builder()
-                        .username(USERNAME)
-                        .serverUrl(SERVER_URL)
-                        .databaseName("$USERNAME.db")
-                        .encrypted(false)
-                        .databaseCreationDate(Date())
-                        .authorizationType(AuthorizationType.OAUTH2)
-                        .build(),
-                ),
-            )
+            .accounts(listOf(account(authorizationType)))
             .build()
+
+    private fun account(
+        authorizationType: AuthorizationType?,
+        importDB: DatabaseAccountImport? = null,
+    ): DatabaseAccount =
+        DatabaseAccount.builder()
+            .username(USERNAME)
+            .serverUrl(SERVER_URL)
+            .databaseName("$USERNAME.db")
+            .encrypted(false)
+            .databaseCreationDate(Date())
+            .authorizationType(authorizationType)
+            .importDB(importDB)
+            .build()
+
+    private fun pendingToImportAccount(): DatabaseAccount =
+        account(
+            AuthorizationType.OAUTH2,
+            DatabaseAccountImport.builder()
+                .status(DatabaseAccountImportStatus.PENDING_TO_IMPORT)
+                .protectedDbName("$USERNAME-protected.db.zip")
+                .build(),
+        )
 
     companion object {
         private const val USERNAME = "test_username"

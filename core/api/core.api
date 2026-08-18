@@ -29424,3 +29424,60 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_persis
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/visualization/VisualizationStoreImpl;Lorg/hisp/dhis/android/core/visualization/internal/VisualizationStore;)V
 }
 
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreAnalyticsAnalyticsDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_analytics_AnalyticsDIModule__emptyAnalyticsParams (Lorg/hisp/dhis/android/core/analytics/aggregated/internal/AnalyticsRepositoryParams;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_analytics_AnalyticsDIModule__emptyAnalyticsVisualizationsParam (Lorg/hisp/dhis/android/core/analytics/aggregated/internal/AnalyticsVisualizationsRepositoryParams;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_analytics_AnalyticsDIModule__emptyTrackerLineListParams (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/internal/TrackerLineListParams;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_analytics_AnalyticsDIModule__eventLineListParams (Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListParams;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreArchApiInternalAPIClientDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_arch_api_internal_APIClientDIModule__ktor (Lio/ktor/client/HttpClient;Lkotlinx/coroutines/CoroutineScope;Ljava/io/Closeable;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_arch_api_internal_APIClientDIModule__okHttpClient (Lokhttp3/OkHttpClient;Lokhttp3/Call$Factory;Lokhttp3/WebSocket$Factory;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreArchRepositoriesDiInternalRepositoriesDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_arch_repositories_di_internal_RepositoriesDIModule__emptyScope (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreCommonCommonDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_common_CommonDIModule__genericCallData (Lorg/hisp/dhis/android/core/arch/call/internal/GenericCallData;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreConfigurationInternalConfigurationDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_configuration_internal_ConfigurationDIModule__dateProvider (Lorg/hisp/dhis/android/core/configuration/internal/DateProvider;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreDatastoreDataStoreDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_datastore_DataStoreDIModule__downloaderParams (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreDownloadParams;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreEventEventDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_event_EventDIModule__empty (Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreFileresourceFileResourceDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_fileresource_FileResourceDIModule__downloadParams (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceDownloadParams;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCorePeriodPeriodDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_period_PeriodDIModule__clockProvider (Lorg/hisp/dhis/android/core/period/clock/internal/ClockProvider;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_period_PeriodDIModule__parentPeriodGenerator (Lorg/hisp/dhis/android/core/period/internal/ParentPeriodGenerator;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreProgramProgramDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_program_ProgramDIModule__programDataDownloadParams (Lorg/hisp/dhis/android/core/program/internal/ProgramDataDownloadParams;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreSmsSmsDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_sms_SmsDIModule__deviceStateRepository (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/DeviceStateRepository;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_sms_SmsDIModule__localDbRepository (Lorg/hisp/dhis/android/core/sms/domain/repository/internal/LocalDbRepository;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_sms_SmsDIModule__smsRepository (Lorg/hisp/dhis/android/core/sms/domain/repository/SmsRepository;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_sms_SmsDIModule__webApiRepository (Lorg/hisp/dhis/android/core/sms/domain/repository/WebApiRepository;)V
+}
+
+public final class org/koin/plugin/hints/OrgHispDhisAndroidCoreTrackedentityTrackedEntityDIModuleModuleKt {
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule__empty (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/BaseScope;)V
+	public static final synthetic fun moduledef_org_hisp_dhis_android_core_trackedentity_TrackedEntityDIModule__onlineCache (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceOnlineCache;)V
+}
+

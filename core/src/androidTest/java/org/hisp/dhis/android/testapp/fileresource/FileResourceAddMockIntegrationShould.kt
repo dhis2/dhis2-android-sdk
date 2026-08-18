@@ -33,6 +33,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
+import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileCacheResourceDirectory
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
@@ -79,10 +80,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
         }
         addedFileResources.clear()
 
-        addedSourceFiles.forEach { sourceFile ->
-            File(sourceFile.parent, "compressed-${sourceFile.name}").delete()
-            sourceFile.delete()
-        }
+        addedSourceFiles.forEach { sourceFile -> sourceFile.delete() }
         addedSourceFiles.clear()
     }
 
@@ -182,6 +180,24 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
     private fun assertCompressed(fileResource: FileResource, sourceFile: File) {
         assertThat(fileResource.contentLength()).isLessThan(sourceFile.length())
         assertThat(fileResource.contentLength()).isAtMost(FileCompressionHelper.TARGET_SIZE_BYTES)
+
+        // The stored images are opaque, so they are converted to jpeg. The name exposed to the server keeps the
+        // original one, with the extension of the format actually uploaded, and the content type must agree with it.
+        assertThat(fileResource.name()).isEqualTo("${sourceFile.nameWithoutExtension}.jpg")
+        assertThat(fileResource.contentType()).isEqualTo("image/jpeg")
+        assertThat(File(fileResource.path()!!).extension).isEqualTo("jpg")
+
+        assertNoLeftOverTemporaryFiles()
+    }
+
+    /**
+     * The compressed image is a temporary file that must not survive the add: only the copy in the file resource
+     * directory is kept.
+     */
+    private fun assertNoLeftOverTemporaryFiles() {
+        val cacheDirectory = getFileCacheResourceDirectory(d2.context())
+        val temporaryFiles = cacheDirectory.listFiles()?.filter { it.name.startsWith("compressed-") }
+        assertThat(temporaryFiles ?: emptyList<File>()).isEmpty()
     }
 
     private suspend fun processAndAdd(file: File, resourceContext: ResourceContext): FileResource {

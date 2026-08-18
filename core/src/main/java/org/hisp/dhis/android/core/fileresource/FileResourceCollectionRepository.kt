@@ -112,10 +112,28 @@ class FileResourceCollectionRepository internal constructor(
     fun blockingUpload() = Unit
 
     override suspend fun suspendAdd(o: File): String = withContext(dispatcher) {
+        addFile(o, o.name)
+    }
+
+    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
+        val processedFile = when (resourceContext) {
+            is ResourceContext.ImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
+            ResourceContext.FileContext -> o
+        }
         try {
+            addFile(processedFile, resourceName(o, processedFile))
+        } finally {
+            if (processedFile != o) {
+                processedFile.delete()
+            }
+        }
+    }
+
+    private suspend fun addFile(file: File, name: String): String {
+        return try {
             val generatedUid = UidGeneratorImpl().generate()
-            val dstFile = saveFile(o, generatedUid, context)
-            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()
+            val dstFile = saveFile(file, generatedUid, context)
+            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
             store.insert(fileResource)
             fileResource.uid()
         } catch (e: Exception) {
@@ -129,12 +147,17 @@ class FileResourceCollectionRepository internal constructor(
         }
     }
 
-    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
-        val processedFile = when (resourceContext) {
-            is ResourceContext.ImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
-            ResourceContext.FileContext -> o
+    /**
+     * The name is taken from the original file, so that the temporary name of the processed one is not exposed to the
+     * server. The extension is taken from the processed file, because the compression may have changed the image
+     * format: the content type is derived from the name, so both must agree with the actual bytes.
+     */
+    private fun resourceName(originalFile: File, processedFile: File): String {
+        return if (processedFile.extension.equals(originalFile.extension, ignoreCase = true)) {
+            originalFile.name
+        } else {
+            "${originalFile.nameWithoutExtension}.${processedFile.extension}"
         }
-        suspendAdd(processedFile)
     }
 
     fun rxProcessAndAdd(o: File, resourceContext: ResourceContext): Single<String> =

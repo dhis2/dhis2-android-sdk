@@ -44,7 +44,7 @@ internal data class DataStoreEntryDTO(
         return DataStoreEntry.builder()
             .namespace(namespace)
             .key(key)
-            .value(value.toString())
+            .value(value?.json?.toString())
             .syncState(State.SYNCED)
             .deleted(false)
             .build()

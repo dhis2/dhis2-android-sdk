@@ -60,6 +60,7 @@ appauth = "0.11.1"
 
 # listenablefuture empty
 listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
+exifinterface = "1.4.2"
 
 
 [libraries]
@@ -124,6 +125,7 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 livedata-testing-ktx = { group = "com.jraska.livedata", name = "testing-ktx", version.ref = "liveDataTesting" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
 [plugins]
 cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }

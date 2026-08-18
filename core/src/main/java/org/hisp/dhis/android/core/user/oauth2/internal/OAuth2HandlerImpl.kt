@@ -76,6 +76,7 @@ internal class OAuth2HandlerImpl(
             throw logInExceptions.invalidOAuth2IatError()
         }
 
+        val previousKeyId = oauth2SecureStore.keyId
         val keyId = keyStoreManager.generateKeyPair()
 
         val jwks = keyStoreManager.createJWKS(keyId)
@@ -100,12 +101,19 @@ internal class OAuth2HandlerImpl(
                 oauth2SecureStore.isRegistered = true
                 oauth2SecureStore.registrationDate = System.currentTimeMillis()
                 oauth2SecureStore.clearTemporaryData()
+                deleteSupersededKey(previousKeyId, keyId)
             }
             is Result.Failure -> {
                 keyStoreManager.deleteKey(keyId)
                 throw result.failure
             }
         }
+    }
+
+    private fun deleteSupersededKey(previousKeyId: String?, newKeyId: String) {
+        if (previousKeyId == null || previousKeyId == newKeyId) return
+        if (credentialsSecureStore.get()?.oauth2State?.keyId == previousKeyId) return
+        keyStoreManager.deleteKey(previousKeyId)
     }
 
     override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) {
@@ -211,7 +219,7 @@ internal class OAuth2HandlerImpl(
                 val username = user.username()
                     ?: throw logInExceptions.oauth2ResponseWithoutUsernameError()
                 oauth2StateSecureStore.set(normalizedUrl, username, oauth2State)
-                oauth2SecureStore.clearAll()
+                oauth2SecureStore.clearTemporaryData()
                 user
             }
             is Result.Failure -> {

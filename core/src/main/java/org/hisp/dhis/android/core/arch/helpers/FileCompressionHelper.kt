@@ -240,7 +240,11 @@ object FileCompressionHelper {
             outputFile
         } catch (e: IOException) {
             Log.w(TAG, "Could not write the compressed image, ${sourceFile.name} will be uploaded as it is", e)
-            outputFile?.delete()
+            outputFile?.let {
+                if (!it.delete()) {
+                    Log.w(TAG, "Could not delete the partially written ${it.name}")
+                }
+            }
             null
         }
     }

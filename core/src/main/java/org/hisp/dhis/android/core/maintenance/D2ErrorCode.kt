@@ -109,4 +109,12 @@ enum class D2ErrorCode {
     SSL_ERROR,
     SMS_NOT_SUPPORTED,
     INVALID_CHARACTERS,
+
+    /**
+     * A read or write was attempted outside the bounds of the
+     * [D2DataScope][org.hisp.dhis.android.core.scopedaccess.D2DataScope] the repository was
+     * obtained with. Raised only by repositories reached through
+     * [ScopedD2][org.hisp.dhis.android.core.scopedaccess.ScopedD2].
+     */
+    SCOPE_VIOLATION,
 }

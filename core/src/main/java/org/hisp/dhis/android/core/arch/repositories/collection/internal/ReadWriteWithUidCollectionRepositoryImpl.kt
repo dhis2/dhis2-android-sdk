@@ -67,6 +67,10 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
     @Suppress("TooGenericExceptionCaught")
     override suspend fun suspendAdd(o: P): String {
         val obj = transformer.transform(o)
+        // Deliberately outside the try: a scope violation must surface as SCOPE_VIOLATION rather
+        // than be rewritten as OBJECT_CANT_BE_INSERTED. The projection carries its own org unit and
+        // program, so the transformed object — not the query — is what has to be checked.
+        scope.accessGuard()?.checkWrite(obj)
         return try {
             store.insert(obj)
             propagateState(obj, HandleAction.Insert)

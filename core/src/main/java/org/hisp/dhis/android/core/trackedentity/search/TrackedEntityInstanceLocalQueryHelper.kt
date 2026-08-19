@@ -169,6 +169,8 @@ internal class TrackedEntityInstanceLocalQueryHelper(
             )
         }
 
+        appendGrantWhere(where, scope)
+
         scope.states()?.let {
             where.appendInKeyEnumValues(dot(teiAlias, DataColumns.AGGREGATED_SYNC_STATE), it)
         } ?: run {
@@ -196,6 +198,25 @@ internal class TrackedEntityInstanceLocalQueryHelper(
         }
 
         return queryStr
+    }
+
+    /**
+     * Applies the program half of a [TrackedEntityQueryGrant].
+     *
+     * The scope carries a single `program` value and so cannot express "one of these", which is the
+     * normal shape of a grant. A sub-select on the tracked entity UID says the same thing, needs no
+     * join — the enrollment join only exists when the caller picked a program — and ANDs with
+     * whatever else the caller filtered on.
+     */
+    private fun appendGrantWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
+        val grantedPrograms = scope.mandatory?.programs ?: return
+        val programList = grantedPrograms.joinToString(",") { "'${escapeQuotes(it)}'" }
+        where.appendInSubQuery(
+            dot(teiAlias, IdentifiableColumns.UID),
+            "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                "WHERE $program IN ($programList)",
+        )
     }
 
     private fun hasProgram(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {

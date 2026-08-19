@@ -73,6 +73,7 @@ internal constructor(
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
     protected open suspend fun suspendDelete(m: M) {
+        scope.accessGuard()?.checkWrite(m)
         try {
             store.deleteWhere(m)
             propagateState(m)
@@ -90,6 +91,7 @@ internal constructor(
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
     protected suspend fun setObject(m: M) {
+        scope.accessGuard()?.checkWrite(m)
         try {
             store.updateOrInsertWhere(m)
             propagateState(m)

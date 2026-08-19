@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositorySco
 import org.hisp.dhis.android.core.common.DateFilterPeriodHelper
 import org.hisp.dhis.android.core.common.FilterOperatorsHelper
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.koin.core.annotation.Singleton
 import java.util.Date
@@ -44,6 +47,19 @@ internal class TrackedEntityInstanceQueryOnlineHelper(
 
     @Suppress("ComplexMethod")
     fun fromScope(scope: TrackedEntityInstanceQueryRepositoryScope): List<TrackedEntityInstanceQueryOnline> {
+        // Defence in depth. `applyGrant` already forces a granted scope to OFFLINE_ONLY, so reaching
+        // here with a grant would mean that invariant was bypassed rather than that the caller asked
+        // for something unreasonable — and an online query is answered by the server, where none of
+        // the local restrictions apply.
+        if (scope.mandatory != null) {
+            throw D2Error
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.SCOPE_VIOLATION)
+                .errorDescription("A scoped tracked entity search cannot be answered by the server")
+                .build()
+        }
+
         val queries = if (scope.eventFilters().isEmpty()) {
             listOf(getBaseQuery(scope))
         } else {

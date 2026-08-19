@@ -87,6 +87,14 @@ class FilterConnectorFactory<R : BaseRepository> internal constructor(
         return SubQueryFilterConnector(repositoryFactory, scope, key)
     }
 
+    /**
+     * Rebuilds the repository with [updatedScope]. Backs
+     * [BaseRepositoryImpl.withScope][
+     * org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryImpl.withScope];
+     * every other caller should go through a filter connector instead.
+     */
+    internal fun updated(updatedScope: RepositoryScope): R = repositoryFactory.updated(updatedScope)
+
     @SuppressWarnings("LongParameterList")
     fun valueSubQuery(
         key: String,

@@ -36,6 +36,7 @@ public final class org/hisp/dhis/android/core/D2 {
 	public final fun periodModule ()Lorg/hisp/dhis/android/core/period/PeriodModule;
 	public final fun programModule ()Lorg/hisp/dhis/android/core/program/ProgramModule;
 	public final fun relationshipModule ()Lorg/hisp/dhis/android/core/relationship/RelationshipModule;
+	public final fun scopedTo (Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;)Lorg/hisp/dhis/android/core/scopedaccess/ScopedD2;
 	public final fun serverModule ()Lorg/hisp/dhis/android/core/server/ServerModule;
 	public final fun settingModule ()Lorg/hisp/dhis/android/core/settings/SettingModule;
 	public final fun smsModule ()Lorg/hisp/dhis/android/core/sms/SmsModule;
@@ -11338,6 +11339,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field OWNERSHIP_ACCESS_DENIED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field PROGRAM_ACCESS_CLOSED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field RELATIONSHIPS_CANT_BE_UPDATED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field SCOPE_VIOLATION Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field SEARCH_GRID_PARSE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field SERVER_CONNECTION_ERROR Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field SERVER_URL_MALFORMED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -16725,6 +16727,218 @@ public final class org/hisp/dhis/android/core/resource/internal/OrgHispDhisAndro
 	public static final fun module (Lorg/hisp/dhis/android/core/resource/internal/ResourceDIModule;)Lorg/koin/core/module/Module;
 }
 
+public final class org/hisp/dhis/android/core/scopedaccess/D2Capability : java/lang/Enum {
+	public static final field READ_DATA_VALUE Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_ENROLLMENT Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_EVENT Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_FILE_RESOURCE Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_METADATA Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_RELATIONSHIP Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field READ_TRACKED_ENTITY Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field SEARCH_TRACKED_ENTITY Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field WRITE_DATA_VALUE Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field WRITE_ENROLLMENT Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field WRITE_EVENT Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static final field WRITE_TRACKED_ENTITY Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isWrite ()Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+	public static fun values ()[Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/D2DataScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope$Companion;
+	public static final field NONE Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;
+	public fun <init> ()V
+	public fun <init> (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;Ljava/util/Set;)V
+	public synthetic fun <init> (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component4 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component5 ()Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public final fun component6 ()Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;
+	public final fun component7 ()Ljava/util/Set;
+	public final fun copy (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;Ljava/util/Set;)Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;Ljava/util/Set;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCapabilities ()Ljava/util/Set;
+	public final fun getDataElements ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun getDataSets ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun getOrgUnits ()Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public final fun getPrograms ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun getTrackedEntityTypes ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun getWritable ()Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;
+	public final fun has (Lorg/hisp/dhis/android/core/scopedaccess/D2Capability;)Z
+	public final fun hasAnyWrite ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun writableDataSets ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun writablePrograms ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/D2DataScope$Companion {
+}
+
+public abstract interface class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Companion;
+	public fun isEmpty ()Z
+	public static fun of (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public static fun of (Ljava/util/Collection;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$All : org/hisp/dhis/android/core/scopedaccess/OrgUnitScope {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$All;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Capture : org/hisp/dhis/android/core/scopedaccess/OrgUnitScope {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Capture;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Companion {
+	public final fun of (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public final fun of (Ljava/util/Collection;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public static synthetic fun of$default (Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Companion;Ljava/util/Collection;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$DefaultImpls {
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;)Z
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$None : org/hisp/dhis/android/core/scopedaccess/OrgUnitScope {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$None;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Only : org/hisp/dhis/android/core/scopedaccess/OrgUnitScope {
+	public fun <init> (Ljava/util/Set;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)V
+	public synthetic fun <init> (Ljava/util/Set;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/Set;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun copy (Ljava/util/Set;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Only;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Only;Ljava/util/Set;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope$Only;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMode ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;
+	public final fun getUids ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/ScopedD2 {
+	public final fun categoryCombos ()Lorg/hisp/dhis/android/core/category/CategoryComboCollectionRepository;
+	public final fun categoryOptionCombos ()Lorg/hisp/dhis/android/core/category/CategoryOptionComboCollectionRepository;
+	public final fun dataElements ()Lorg/hisp/dhis/android/core/dataelement/DataElementCollectionRepository;
+	public final fun dataSets ()Lorg/hisp/dhis/android/core/dataset/DataSetCollectionRepository;
+	public final fun dataValues ()Lorg/hisp/dhis/android/core/datavalue/DataValueCollectionRepository;
+	public final fun enrollments ()Lorg/hisp/dhis/android/core/enrollment/EnrollmentCollectionRepository;
+	public final fun events ()Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
+	public final fun getScope ()Lorg/hisp/dhis/android/core/scopedaccess/D2DataScope;
+	public final fun optionSets ()Lorg/hisp/dhis/android/core/option/OptionSetCollectionRepository;
+	public final fun options ()Lorg/hisp/dhis/android/core/option/OptionCollectionRepository;
+	public final fun organisationUnits ()Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitCollectionRepository;
+	public final fun programStages ()Lorg/hisp/dhis/android/core/program/ProgramStageCollectionRepository;
+	public final fun programs ()Lorg/hisp/dhis/android/core/program/ProgramCollectionRepository;
+	public final fun trackedEntityAttributeValues ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueCollectionRepository;
+	public final fun trackedEntityAttributes ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository;
+	public final fun trackedEntityDataValues ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityDataValueCollectionRepository;
+	public final fun trackedEntityInstances ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceCollectionRepository;
+	public final fun trackedEntitySearch ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchCollectionRepository;
+	public final fun trackedEntityTypes ()Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityTypeCollectionRepository;
+}
+
+public abstract interface class org/hisp/dhis/android/core/scopedaccess/UidScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/scopedaccess/UidScope$Companion;
+	public fun allows (Ljava/lang/String;)Z
+	public fun intersect (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun isEmpty ()Z
+	public static fun of (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public static fun of ([Ljava/lang/String;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun uidsOrNull ()Ljava/util/Set;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/UidScope$All : org/hisp/dhis/android/core/scopedaccess/UidScope {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/scopedaccess/UidScope$All;
+	public fun allows (Ljava/lang/String;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun intersect (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun uidsOrNull ()Ljava/util/Set;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/UidScope$Companion {
+	public final fun of (Ljava/util/Collection;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun of ([Ljava/lang/String;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/UidScope$DefaultImpls {
+	public static fun allows (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Ljava/lang/String;)Z
+	public static fun intersect (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public static fun isEmpty (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Z
+	public static fun uidsOrNull (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Ljava/util/Set;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/UidScope$None : org/hisp/dhis/android/core/scopedaccess/UidScope {
+	public static final field INSTANCE Lorg/hisp/dhis/android/core/scopedaccess/UidScope$None;
+	public fun allows (Ljava/lang/String;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun intersect (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun uidsOrNull ()Ljava/util/Set;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/UidScope$Only : org/hisp/dhis/android/core/scopedaccess/UidScope {
+	public fun <init> (Ljava/util/Set;)V
+	public fun allows (Ljava/lang/String;)Z
+	public final fun component1 ()Ljava/util/Set;
+	public final fun copy (Ljava/util/Set;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope$Only;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/scopedaccess/UidScope$Only;Ljava/util/Set;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope$Only;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getUids ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun intersect (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;)Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun isEmpty ()Z
+	public fun toString ()Ljava/lang/String;
+	public fun uidsOrNull ()Ljava/util/Set;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/WritableScope {
+	public static final field Companion Lorg/hisp/dhis/android/core/scopedaccess/WritableScope$Companion;
+	public static final field NONE Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;
+	public fun <init> ()V
+	public fun <init> (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;)V
+	public synthetic fun <init> (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component2 ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun component3 ()Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public final fun copy (Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;)Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/UidScope;Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/scopedaccess/WritableScope;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataSets ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public final fun getOrgUnits ()Lorg/hisp/dhis/android/core/scopedaccess/OrgUnitScope;
+	public final fun getPrograms ()Lorg/hisp/dhis/android/core/scopedaccess/UidScope;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/core/scopedaccess/WritableScope$Companion {
+}
+
 public final class org/hisp/dhis/android/core/server/LoginConfig {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/server/LoginPageLayout;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;ZZZZZLjava/util/List;)V
@@ -22019,7 +22233,8 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope : org/hisp/dhis/android/core/arch/repositories/scope/BaseScope {
 	public static final field Companion Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope$Companion;
-	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)V
+	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityQueryGrant;)V
+	public synthetic fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityQueryGrant;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun allowOnlineCache ()Z
 	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public final fun attribute ()Ljava/util/List;
@@ -22050,8 +22265,8 @@ public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntity
 	public final fun component7 ()Ljava/util/List;
 	public final fun component8 ()Ljava/util/List;
 	public final fun component9 ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
-	public final fun copy (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public final fun copy (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityQueryGrant;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Ljava/lang/String;Ljava/lang/String;Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryScopeFilterItem;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/lang/String;ZLjava/util/List;Ljava/lang/Boolean;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Ljava/util/List;ZLjava/util/Set;Ljava/util/List;Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityQueryGrant;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
 	public final fun dataValue ()Ljava/util/List;
 	public final fun dueDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public static final fun empty ()Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryRepositoryScope;
@@ -22351,6 +22566,10 @@ public class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstan
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumnBuilder$Companion {
 	public final fun from (Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn;)Lorg/hisp/dhis/android/core/trackedentity/search/TrackedEntityInstanceQueryScopeOrderColumn$Builder;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntityQueryGrant {
+	public static final field NO_MATCH Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchCollectionRepository : org/hisp/dhis/android/core/trackedentity/search/TrackedEntitySearchOperators, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUidCollectionRepository {

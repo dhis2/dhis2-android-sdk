@@ -68,6 +68,14 @@ data class TrackedEntityInstanceQueryRepositoryScope(
     val allowOnlineCache: Boolean,
     val excludedUids: Set<String>?,
     val uids: List<String>?,
+    /**
+     * A restriction that survives every `by*()` call, or null for an unrestricted scope.
+     *
+     * Set only by [ScopedD2][org.hisp.dhis.android.core.scopedaccess.ScopedD2]. The generated
+     * builder setter is `internal`, and [applyGrant] re-applies it on every repository
+     * construction, so restricted code can neither install nor drop one.
+     */
+    internal val mandatory: TrackedEntityQueryGrant? = null,
 ) : BaseScope {
 
     fun mode(): RepositoryMode = mode

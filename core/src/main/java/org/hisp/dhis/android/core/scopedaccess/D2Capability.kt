@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,26 +25,54 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.repositories.collection.internal
+package org.hisp.dhis.android.core.scopedaccess
 
-import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
-import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
-import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+/**
+ * A feature area a [D2DataScope] may unlock.
+ *
+ * Capabilities are opt-in: a scope with an empty capability set exposes nothing, no matter which
+ * UIDs it grants. This keeps the default surface closed, so widening it is always an explicit act by
+ * whoever authors the scope.
+ */
+enum class D2Capability {
 
-open class BaseRepositoryImpl<R : BaseRepository>(
-    @JvmField protected val scope: RepositoryScope,
-    @JvmField protected val cf: FilterConnectorFactory<R>,
-) : BaseRepository {
+    /** Read metadata: programs, data sets, org units, data elements, attributes, option sets. */
+    READ_METADATA,
 
-    /**
-     * Rebuilds this repository with a transformed scope.
-     *
-     * The public `by*()` filters cover almost everything a caller needs, but two things are only
-     * reachable from inside the SDK: installing an
-     * [AccessGuard][org.hisp.dhis.android.core.arch.repositories.scope.internal.AccessGuard], and
-     * adding a complex (sub-select) filter for a table with no column to filter on. Both are needed
-     * by [ScopedD2][org.hisp.dhis.android.core.scopedaccess.ScopedD2], which sits outside the
-     * repository classes and so cannot reach the `protected` [cf].
-     */
-    internal fun withScope(transform: (RepositoryScope) -> RepositoryScope): R = cf.updated(transform(scope))
+    /** Read tracked entity instances and their attribute values. */
+    READ_TRACKED_ENTITY,
+
+    /** Read enrollments. */
+    READ_ENROLLMENT,
+
+    /** Read events and their data values. */
+    READ_EVENT,
+
+    /** Read aggregated data values and complete registrations. */
+    READ_DATA_VALUE,
+
+    /** Use the tracked entity search API. Always resolved against the local database. */
+    SEARCH_TRACKED_ENTITY,
+
+    /** Read relationships between tracked entities and events. */
+    READ_RELATIONSHIP,
+
+    /** Read file resources. */
+    READ_FILE_RESOURCE,
+
+    /** Create and update tracked entity instances. */
+    WRITE_TRACKED_ENTITY,
+
+    /** Create and update enrollments. */
+    WRITE_ENROLLMENT,
+
+    /** Create and update events and their data values. */
+    WRITE_EVENT,
+
+    /** Create, update and delete aggregated data values. */
+    WRITE_DATA_VALUE,
+    ;
+
+    /** True if this capability grants write access of any kind. */
+    fun isWrite(): Boolean = name.startsWith("WRITE_")
 }

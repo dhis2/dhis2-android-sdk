@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.arch.repositories.scope
 
 import org.hisp.dhis.android.annotations.ModelBuilder
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenSelection
+import org.hisp.dhis.android.core.arch.repositories.scope.internal.AccessGuard
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeComplexFilterItem
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeFilterItem
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
@@ -40,6 +41,15 @@ data class RepositoryScope internal constructor(
     val complexFilters: List<RepositoryScopeComplexFilterItem>,
     internal val orderBy: List<RepositoryScopeOrderByItem>,
     internal val children: ChildrenSelection,
+    /**
+     * Vetoes out-of-scope writes, or null for an unrestricted scope (the default, and the case for
+     * every repository obtained straight from [D2][org.hisp.dhis.android.core.D2]).
+     *
+     * Set only by [ScopedD2][org.hisp.dhis.android.core.scopedaccess.ScopedD2]. The generated
+     * builder setter is `internal` and copy-on-write carries the guard through every filter call,
+     * so restricted code can neither install nor remove one.
+     */
+    internal val accessGuard: AccessGuard? = null,
 ) {
     enum class OrderByDirection(val api: String) {
         ASC("asc"),
@@ -50,6 +60,7 @@ data class RepositoryScope internal constructor(
     fun complexFilters(): List<RepositoryScopeComplexFilterItem> = complexFilters
     internal fun orderBy(): List<RepositoryScopeOrderByItem> = orderBy
     internal fun children(): ChildrenSelection = children
+    internal fun accessGuard(): AccessGuard? = accessGuard
 
     fun hasFilters(): Boolean = filters.isNotEmpty() || complexFilters.isNotEmpty()
 

@@ -53,6 +53,7 @@ open class ReadWriteWithUidObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<
     @Throws(D2Error::class)
     @Suppress("TooGenericExceptionCaught")
     protected open suspend fun updateObject(m: M): Unit {
+        scope.accessGuard()?.checkWrite(m)
         return try {
             store.update(m)
             Unit()

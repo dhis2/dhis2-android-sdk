@@ -66,6 +66,7 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
                 .errorDescription("Tried to delete non existing object")
                 .build()
         } else {
+            scope.accessGuard()?.checkWrite(obj)
             deleteObject(obj)
         }
     }

@@ -60,6 +60,8 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitModule
 import org.hisp.dhis.android.core.period.PeriodModule
 import org.hisp.dhis.android.core.program.ProgramModule
 import org.hisp.dhis.android.core.relationship.RelationshipModule
+import org.hisp.dhis.android.core.scopedaccess.D2DataScope
+import org.hisp.dhis.android.core.scopedaccess.ScopedD2
 import org.hisp.dhis.android.core.server.ServerModule
 import org.hisp.dhis.android.core.settings.SettingModule
 import org.hisp.dhis.android.core.sms.SmsModule
@@ -240,6 +242,22 @@ class D2 internal constructor(internal val d2DIComponent: D2DIComponent) {
 
     fun smsModule(): SmsModule {
         return modules.sms
+    }
+
+    /**
+     * Returns a view of this [D2] restricted to [scope].
+     *
+     * Use it wherever code should not reach the whole database — a third-party extension, an
+     * embedded feature, a component that must be provably confined to a few programs. The returned
+     * [ScopedD2] hands out ordinary SDK repositories that already carry the grant's filters, so
+     * callers keep the full fluent API and can only ever narrow further. See [ScopedD2] for what is
+     * exposed, what is withheld, and why the grant cannot be widened.
+     *
+     * This is an API boundary, not a sandbox: it constrains code that goes through it, and says
+     * nothing about code that can reach [D2Manager] or the database directly.
+     */
+    fun scopedTo(scope: D2DataScope): ScopedD2 {
+        return ScopedD2(this, scope)
     }
 
     internal fun context(): Context {

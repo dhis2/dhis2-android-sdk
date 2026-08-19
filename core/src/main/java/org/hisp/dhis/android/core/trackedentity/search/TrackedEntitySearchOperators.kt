@@ -54,13 +54,27 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterColle
 
 @Suppress("TooManyFunctions")
 abstract class TrackedEntitySearchOperators<R : BaseRepository> internal constructor(
-    val scope: TrackedEntityInstanceQueryRepositoryScope,
+    requestedScope: TrackedEntityInstanceQueryRepositoryScope,
     private val scopeHelper: TrackedEntityInstanceQueryRepositoryScopeHelper,
     private val versionManager: DHISVersionManager,
     private val filtersRepository: TrackedEntityInstanceFilterCollectionRepository,
     private val workingListRepository: ProgramStageWorkingListCollectionRepository,
 ) {
+    /**
+     * The scope this repository will actually run.
+     *
+     * Any [TrackedEntityQueryGrant] on [requestedScope] is re-applied here rather than trusted from
+     * the caller. This is the single place that has to happen: every `by*()` rebuilds the repository
+     * through this constructor, so a narrowing the caller asked for can never survive past the grant
+     * — including `onlineOnly()`, which would otherwise reach the server unfiltered.
+     */
+    val scope: TrackedEntityInstanceQueryRepositoryScope = requestedScope.applyGrant()
+
     internal abstract val connectorFactory: ScopedFilterConnectorFactory<R, TrackedEntityInstanceQueryRepositoryScope>
+
+    /** Installs [grant] on this repository. Only [ScopedD2] calls this. */
+    internal fun withGrant(grant: TrackedEntityQueryGrant): R =
+        connectorFactory.eqConnector<Any> { scope.toBuilder().mandatory(grant).build() }.eq(null)
 
     /**
      * Only TrackedEntityInstances coming from the server are shown in the list.

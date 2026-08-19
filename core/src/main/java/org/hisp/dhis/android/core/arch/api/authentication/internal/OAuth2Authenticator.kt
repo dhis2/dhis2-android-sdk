@@ -31,20 +31,19 @@ import io.ktor.client.call.HttpClientCall
 import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
+import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
-import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2LogoutHandler
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2TokenRefresher
+import org.hisp.dhis.android.core.user.oauth2.internal.RefreshResult
 import org.koin.core.annotation.Singleton
-
-private const val UNAUTHORIZED = 401
 
 @Singleton
 internal class OAuth2Authenticator(
-    private val credentialsSecureStore: CredentialsSecureStore,
     private val tokenRefresher: Lazy<OAuth2TokenRefresher>,
     private val userIdHelper: UserIdAuthenticatorHelper,
-    private val logoutHandler: OAuth2LogoutHandler,
+    private val logInExceptions: LogInExceptions,
 ) {
 
     suspend fun handleTokenCall(
@@ -53,39 +52,32 @@ internal class OAuth2Authenticator(
         credentials: Credentials,
     ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
-        addTokenHeader(requestBuilder, getUpdatedToken(credentials))
+
+        val state = credentials.oauth2State
+            ?: throw logInExceptions.oauth2NoValidTokenError("There is no OAuth2 session")
+        addTokenHeader(requestBuilder, accessTokenOf(state))
 
         val call = sender.proceed(requestBuilder)
-
-        if (call.response.status.value == UNAUTHORIZED) {
-            val state = credentials.oauth2State
-            if (state != null) {
-                val refreshedState = tokenRefresher.value.refreshToken(state, credentials.oauth2State.tokenEndpoint)
-                if (refreshedState != null) {
-                    val updatedCredentials = credentials.copy(oauth2State = refreshedState)
-                    credentialsSecureStore.set(updatedCredentials)
-                    addTokenHeader(requestBuilder, refreshedState.accessToken!!)
-                    return sender.proceed(requestBuilder)
-                }
-            }
-            logoutHandler.logOut()
+        if (call.response.status.value != HttpStatusCode.Unauthorized.value) {
+            return call
         }
-        return call
+
+        return when (val rotation = tokenRefresher.value.rotate(state.refreshToken)) {
+            is RefreshResult.Success -> {
+                addTokenHeader(requestBuilder, accessTokenOf(rotation.state))
+                sender.proceed(requestBuilder)
+            }
+
+            is RefreshResult.Invalid -> throw rotation.error
+
+            // Offline or a server error: the session stays open and the caller sees the 401.
+            is RefreshResult.Retryable -> call
+        }
     }
 
-    private suspend fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.oauth2State!!
-        return if (state.needsTokenRefresh()) {
-            val newState = tokenRefresher.value.refreshToken(state, credentials.oauth2State.tokenEndpoint)
-            if (newState != null) {
-                credentialsSecureStore.set(credentials.copy(oauth2State = newState))
-                newState.accessToken!!
-            } else {
-                state.accessToken!!
-            }
-        } else {
-            state.accessToken!!
-        }
+    private fun accessTokenOf(state: OAuth2State): String {
+        return state.accessToken
+            ?: throw logInExceptions.oauth2NoValidTokenError("There is no access token")
     }
 
     private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {

@@ -52,7 +52,6 @@ internal class OAuth2NetworkHandlerImpl(
     private val configService = LoginConfigService(httpClient)
 
     override fun buildAuthorizationUrl(
-        serverUrl: String,
         clientId: String,
         state: String,
         codeChallenge: String,

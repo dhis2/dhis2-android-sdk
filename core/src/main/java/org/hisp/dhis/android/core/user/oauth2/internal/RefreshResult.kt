@@ -27,50 +27,29 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
-import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-internal interface OAuth2NetworkHandler {
-    fun buildAuthorizationUrl(
-        clientId: String,
-        state: String,
-        codeChallenge: String,
-        scope: String,
-    ): String
+/**
+ * Outcome of [OAuth2TokenRefresher.rotate]. The distinction between [Retryable] and [Invalid] is
+ * what keeps a network outage from closing the session: only [Invalid] means the session is
+ * unrecoverable.
+ */
+internal sealed class RefreshResult {
+    /**
+     * A usable state is available, either freshly rotated or already rotated by a concurrent call.
+     */
+    data class Success(val state: OAuth2State) : RefreshResult()
 
     /**
-     * Reads the `token_endpoint` advertised by the server discovery document. It must be resolved
-     * before the client assertion is signed, so that the assertion audience and the endpoint the
-     * request is actually posted to cannot diverge.
+     * The refresh could not be completed for a transient reason (offline, timeout, server error).
+     * The stored credentials are left untouched and the caller may keep using the current token.
      */
-    suspend fun getTokenEndpoint(
-        url: String,
-        oauthConfigPath: String = DEFAULT_OAUTH_CONFIG_PATH,
-    ): String
+    data class Retryable(val error: D2Error?) : RefreshResult()
 
-    @Suppress("LongParameterList")
-    suspend fun exchangeCodeForToken(
-        tokenEndpoint: String,
-        code: String,
-        redirectUri: String,
-        clientId: String,
-        codeVerifier: String,
-        clientAssertion: String,
-    ): Result<OAuth2State, D2Error>
-
-    suspend fun refreshToken(
-        endpoint: String,
-        refreshToken: String,
-        clientId: String,
-        keyId: String,
-        clientAssertion: String,
-    ): Result<OAuth2State, D2Error>
-
-    fun buildLogoutUrl(config: OAuth2Config): String
-
-    companion object {
-        const val DEFAULT_OAUTH_CONFIG_PATH = "/.well-known/oauth-authorization-server"
-    }
+    /**
+     * There is no usable token and there will not be one without authorizing again. The session has
+     * already been closed and [error] is meant to be propagated to the app as-is.
+     */
+    data class Invalid(val error: D2Error) : RefreshResult()
 }

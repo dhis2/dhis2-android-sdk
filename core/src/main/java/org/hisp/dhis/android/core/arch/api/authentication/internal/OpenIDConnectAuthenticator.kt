@@ -31,11 +31,13 @@ import io.ktor.client.call.HttpClientCall
 import io.ktor.client.plugins.api.Send.Sender
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
+import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
-import org.hisp.dhis.android.core.user.openid.OpenIDConnectLogoutHandler
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectTokenRefresher
+import org.hisp.dhis.android.core.user.openid.OpenIdRefreshResult
 import org.koin.core.annotation.Singleton
 
 private const val UNAUTHORIZED = 401
@@ -45,8 +47,8 @@ internal class OpenIDConnectAuthenticator(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val tokenRefresher: OpenIDConnectTokenRefresher,
     private val userIdHelper: UserIdAuthenticatorHelper,
-    private val logoutHandler: OpenIDConnectLogoutHandler,
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
+    private val logInExceptions: LogInExceptions,
 ) {
 
     suspend fun handleTokenCall(
@@ -55,28 +57,49 @@ internal class OpenIDConnectAuthenticator(
         credentials: Credentials,
     ): HttpClientCall {
         userIdHelper.builderWithUserId(requestBuilder)
-        addTokenHeader(requestBuilder, getUpdatedToken(credentials))
+
+        val state = credentials.openIDConnectState
+            ?: throw logInExceptions.openIdConnectNoValidTokenError("There is no OpenID Connect session")
+        addTokenHeader(requestBuilder, idTokenOf(state))
 
         val call = sender.proceed(requestBuilder)
-
-        if (call.response.status.value == UNAUTHORIZED) {
-            logoutHandler.logOut()
+        if (call.response.status.value != UNAUTHORIZED) {
+            return call
         }
-        return call
-    }
 
-    private fun getUpdatedToken(credentials: Credentials): String {
-        val state = credentials.openIDConnectState!!
-        return if (state.needsTokenRefresh) {
-            val token = tokenRefresher.blockingGetFreshToken(state)
-            credentialsSecureStore.set(credentials) // Auth state internally updated
-            // Keep the per-account persisted state fresh so relogin uses the latest refresh token.
-            openIDConnectStateSecureStore.set(credentials.serverUrl, credentials.username, state)
-            token
-        } else {
-            state.idToken!!
+        return when (val refresh = tokenRefresher.refresh(state)) {
+            is OpenIdRefreshResult.Success -> {
+                persist(credentials, state)
+                addTokenHeader(requestBuilder, refresh.idToken)
+                sender.proceed(requestBuilder)
+            }
+
+            is OpenIdRefreshResult.Invalid -> throw discardState(credentials)
+
+            // Offline or a provider error: the session stays open and the caller sees the 401.
+            is OpenIdRefreshResult.Retryable -> call
         }
     }
+
+    private fun idTokenOf(state: AuthState): String {
+        return state.idToken
+            ?: throw logInExceptions.openIdConnectNoValidTokenError("There is no idToken")
+    }
+
+    private fun persist(credentials: Credentials, state: AuthState) {
+        credentialsSecureStore.set(credentials) // The auth state was updated in place.
+        // Keep the per-account persisted state fresh so relogin uses the latest refresh token.
+        openIDConnectStateSecureStore.set(credentials.serverUrl, credentials.username, state)
+    }
+
+    /**
+     * The refresh token is dead, so the stored state can only lead to the same failure. Removing it
+     * keeps the next login deterministic: it opens the account offline and reports that a new
+     * authorization is required, instead of retrying a refresh that can never succeed.
+     */
+    private fun discardState(credentials: Credentials) = logInExceptions
+        .openIdConnectNoValidTokenError("The refresh token was rejected by the provider")
+        .also { openIDConnectStateSecureStore.remove(credentials.serverUrl, credentials.username) }
 
     private fun addTokenHeader(requestBuilder: HttpRequestBuilder, token: String) {
         requestBuilder.apply {

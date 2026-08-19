@@ -25,52 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.user.oauth2.internal
+package org.hisp.dhis.android.core.user.openid
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
-import org.hisp.dhis.android.core.user.oauth2.OAuth2State
-
-internal interface OAuth2NetworkHandler {
-    fun buildAuthorizationUrl(
-        clientId: String,
-        state: String,
-        codeChallenge: String,
-        scope: String,
-    ): String
+/**
+ * Outcome of refreshing an OpenID Connect session, mirroring the OAuth2 counterpart: the caller
+ * needs to tell a token the provider rejected from a refresh that merely could not be completed.
+ */
+internal sealed class OpenIdRefreshResult {
 
     /**
-     * Reads the `token_endpoint` advertised by the server discovery document. It must be resolved
-     * before the client assertion is signed, so that the assertion audience and the endpoint the
-     * request is actually posted to cannot diverge.
+     * A fresh idToken is available. The [net.openid.appauth.AuthState] passed to the refresher has
+     * been updated in place, so the caller must persist it.
      */
-    suspend fun getTokenEndpoint(
-        url: String,
-        oauthConfigPath: String = DEFAULT_OAUTH_CONFIG_PATH,
-    ): String
+    data class Success(val idToken: String) : OpenIdRefreshResult()
 
-    @Suppress("LongParameterList")
-    suspend fun exchangeCodeForToken(
-        tokenEndpoint: String,
-        code: String,
-        redirectUri: String,
-        clientId: String,
-        codeVerifier: String,
-        clientAssertion: String,
-    ): Result<OAuth2State, D2Error>
+    /**
+     * The refresh could not be completed for a transient reason (offline, timeout, provider error).
+     * The stored state is left untouched and the caller may keep using the current token.
+     */
+    object Retryable : OpenIdRefreshResult()
 
-    suspend fun refreshToken(
-        endpoint: String,
-        refreshToken: String,
-        clientId: String,
-        keyId: String,
-        clientAssertion: String,
-    ): Result<OAuth2State, D2Error>
-
-    fun buildLogoutUrl(config: OAuth2Config): String
-
-    companion object {
-        const val DEFAULT_OAUTH_CONFIG_PATH = "/.well-known/oauth-authorization-server"
-    }
+    /**
+     * The provider rejected the refresh token. It will never work again, so the session cannot be
+     * renewed without the user going through the OpenID Connect flow.
+     */
+    object Invalid : OpenIdRefreshResult()
 }

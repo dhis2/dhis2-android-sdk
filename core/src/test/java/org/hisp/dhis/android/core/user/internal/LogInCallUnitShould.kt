@@ -132,7 +132,7 @@ class LogInCallUnitShould : BaseCallShould() {
             userIdStore, userHandler, authenticatedUserStore, systemInfoCall, userStore,
             LogInDatabaseManager(multiUserDatabaseManager, generalSettingCall),
             LogInExceptions(credentialsSecureStore), accountManager, apiErrorCatcher,
-            oauth2StateSecureStore, openIDConnectStateSecureStore, lazyOf(openIDConnectTokenRefresher),
+            oauth2StateSecureStore, openIDConnectStateSecureStore,
             databasesConfigurationStore,
         )
     }
@@ -378,15 +378,16 @@ class LogInCallUnitShould : BaseCallShould() {
         // The stored state must win, or these users would be pushed to the password flow.
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         whenever(databasesConfigurationStore.get()).thenReturn(configurationWith(null))
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
-            .thenReturn(FRESH_ID_TOKEN)
-        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        whenever(userNetworkHandler.authenticate(credentialsCaptor.capture())).thenReturn(apiUser)
 
-        instantiateCall(USERNAME, null, SERVER_URL)
+        instantiateCall(USERNAME, PIN, SERVER_URL)
 
-        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $FRESH_ID_TOKEN")
+        val captor = argumentCaptor<Credentials>()
+        verify(credentialsSecureStore).set(captor.capture())
+        assertThat(captor.firstValue.authorizationType).isEqualTo(AuthorizationType.OPEN_ID_CONNECT)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
     }
 
     @Test
@@ -498,109 +499,85 @@ class LogInCallUnitShould : BaseCallShould() {
         verify(credentialsSecureStore, never()).set(any())
     }
 
-    // OpenID Connect dispatcher tests
+    // OpenID Connect dispatcher tests. A second login is local: the tokens can only be renewed by
+    // authorizing again in the browser, so it behaves exactly like the OAuth2 one.
 
     @Test
-    fun route_to_openid_path_with_refreshed_bearer_when_state_exists_for_account() = runTest {
+    fun log_in_offline_without_contacting_server_when_openid_state_exists_for_account() = runTest {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
-            .thenReturn(FRESH_ID_TOKEN)
-        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        whenever(
-            userNetworkHandler.authenticate(credentialsCaptor.capture()),
-        ).thenReturn(apiUser)
 
-        // password is null — must NOT throw because the OpenID path skips the null check
-        instantiateCall(USERNAME, null, SERVER_URL)
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
 
-        verify(openIDConnectTokenRefresher).blockingGetFreshTokenOrNull(openIdAuthState)
-        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $FRESH_ID_TOKEN")
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
     }
 
     @Test
-    fun fall_back_to_stored_id_token_when_refresh_returns_null() = runTest {
+    fun persist_credentials_with_openid_state_and_pin_after_openid_login() = runTest {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
-        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
-        whenever(authenticatedUser.hash()).thenReturn(null)
-        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-        whenever(
-            userNetworkHandler.authenticate(credentialsCaptor.capture()),
-        ).thenReturn(apiUser)
-
-        instantiateCall(USERNAME, null, SERVER_URL)
-
-        assertThat(credentialsCaptor.firstValue).isEqualTo("Bearer $ID_TOKEN")
-    }
-
-    @Test
-    fun persist_credentials_with_openid_state_and_null_password_after_openid_login() = runTest {
-        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
-            .thenReturn(FRESH_ID_TOKEN)
-        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
+        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        instantiateCall(USERNAME, null, SERVER_URL)
+        instantiateCall(USERNAME, PIN, SERVER_URL)
 
         verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, openIdAuthState, null),
-        )
-        verify(openIDConnectStateSecureStore).set(SERVER_URL, USERNAME, openIdAuthState)
-    }
-
-    @Test
-    fun reject_openid_login_when_pin_does_not_match_stored_hash() = runTest {
-        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState))
-            .thenReturn(FRESH_ID_TOKEN)
-        // Stored hash corresponds to a different PIN.
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
-        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-
-        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
-            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
-        }
-    }
-
-    @Test
-    fun fall_back_to_offline_login_for_openid_when_authenticate_throws_offline() = runTest {
-        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        // Offline: refresh returns null and we fall back to the stored idToken.
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
-        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
-        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
-            .thenReturn(true)
-        // OpenID accounts without PIN have hash() == null because password is null on both sides.
-        whenever(authenticatedUser.hash()).thenReturn(null)
-        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-
-        instantiateCall(USERNAME, null, SERVER_URL)
-
-        verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, openIdAuthState, null),
+            Credentials(
+                USERNAME,
+                SERVER_URL,
+                null,
+                PIN,
+                openIdAuthState,
+                null,
+                AuthorizationType.OPEN_ID_CONNECT,
+            ),
         )
     }
 
     @Test
-    fun reject_openid_offline_login_with_bad_credentials_when_pin_does_not_match_stored_hash() = runTest {
+    fun reject_openid_login_with_offline_code_error_when_pin_does_not_match_stored_hash() = runTest {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
-        whenever(openIDConnectTokenRefresher.blockingGetFreshTokenOrNull(openIdAuthState)).thenReturn(null)
-        whenever(openIdAuthState.idToken).thenReturn(ID_TOKEN)
-        whenAPICall { throw d2Error } // d2Error.isOffline = true (set in setUp)
-        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME))
-            .thenReturn(true)
+        whenever(multiUserDatabaseManager.loadExistingKeepingEncryption(SERVER_URL, USERNAME)).thenReturn(true)
         // Stored hash corresponds to a different PIN.
         whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        // OpenID accounts keep the generic bad-credentials error; only OAuth2 reports an offline-code error.
-        assertD2Error(D2ErrorCode.BAD_CREDENTIALS) {
+        // The PIN is the offline code for both token-based types, so both report the same error.
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
             instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
         }
         verify(credentialsSecureStore, never()).set(any())
+    }
+
+    @Test
+    fun import_the_database_of_an_openid_account_pending_to_import() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(multiUserDatabaseManager.getAccount(SERVER_URL, USERNAME))
+            .thenReturn(pendingToImportAccount(AuthorizationType.OPEN_ID_CONNECT))
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
+
+        assertThat(user).isEqualTo(dbUser)
+        verifyBlocking(multiUserDatabaseManager) { importAndLoadDb(any(), eq(PIN)) }
+        verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
+    }
+
+    @Test
+    fun report_a_wrong_offline_code_when_the_openid_import_fails() = runTest {
+        whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
+        whenever(multiUserDatabaseManager.getAccount(SERVER_URL, USERNAME))
+            .thenReturn(pendingToImportAccount(AuthorizationType.OPEN_ID_CONNECT))
+        multiUserDatabaseManager.stub {
+            onBlocking { importAndLoadDb(any(), any()) }.doThrow(RuntimeException("wrong zip password"))
+        }
+
+        assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
+            instantiateCall(USERNAME, "wrong-pin", SERVER_URL)
+        }
     }
 
     // OAuth2 online re-login: the access and refresh tokens expired, the user authorized again and
@@ -688,9 +665,11 @@ class LogInCallUnitShould : BaseCallShould() {
             .importDB(importDB)
             .build()
 
-    private fun pendingToImportAccount(): DatabaseAccount =
+    private fun pendingToImportAccount(
+        authorizationType: AuthorizationType = AuthorizationType.OAUTH2,
+    ): DatabaseAccount =
         account(
-            AuthorizationType.OAUTH2,
+            authorizationType,
             DatabaseAccountImport.builder()
                 .status(DatabaseAccountImportStatus.PENDING_TO_IMPORT)
                 .protectedDbName("$USERNAME-protected.db.zip")

@@ -177,6 +177,14 @@ internal class LogInExceptions internal constructor(
             .build()
     }
 
+    fun openIdConnectNoValidTokenError(detail: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OPEN_ID_CONNECT_NO_VALID_TOKEN)
+            .errorDescription("$detail. The user must log in again through OpenID Connect.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
     fun incorrectOfflineCodeError(): D2Error {
         return D2Error.builder()
             .errorCode(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE)

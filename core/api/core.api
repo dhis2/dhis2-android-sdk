@@ -11331,6 +11331,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field OAUTH2_NO_VALID_TOKEN Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_INSERTED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_UPDATED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OPEN_ID_CONNECT_NO_VALID_TOKEN Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field ORGUNIT_NOT_IN_SEARCH_SCOPE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OWNERSHIP_ACCESS_DENIED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field PROGRAM_ACCESS_CLOSED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;

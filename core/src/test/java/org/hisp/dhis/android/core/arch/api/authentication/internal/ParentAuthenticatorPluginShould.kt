@@ -98,8 +98,8 @@ class ParentAuthenticatorPluginShould {
                 credentialsSecureStore,
                 tokenRefresher,
                 userIdHelper,
-                logoutHandler,
                 openIDConnectStateSecureStore,
+                logInExceptions,
             ),
             OAuth2Authenticator(
                 lazy { oauth2TokenRefresher },

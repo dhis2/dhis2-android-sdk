@@ -173,7 +173,7 @@ class TrackerSyncLastUpdatedManagerShould {
             override val commonParams: TrackerQueryCommonParams
                 get() = commonParams
             override val orgUnits: List<DownloadOrgunit>
-                get() = ouUids.map { DownloadOrgunit(it, false) }
+                get() = ouUids.map { DownloadOrgunit(it, OrganisationUnitMode.SELECTED) }
         }
     }
 }

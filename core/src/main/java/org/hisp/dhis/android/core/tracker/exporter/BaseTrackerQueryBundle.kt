@@ -39,21 +39,20 @@ internal interface BaseTrackerQueryBundle {
 
 internal data class DownloadOrgunit(
     val uid: String,
-    val isLeaf: Boolean,
+    val resolvedOuMode: OrganisationUnitMode,
 ) {
-    /**
-     * A leaf org unit has no children, so requesting its descendants/children returns exactly
-     * itself: querying by SELECTED is equivalent but cheaper for the server to resolve.
-     */
-    fun resolveOuMode(baseMode: OrganisationUnitMode): OrganisationUnitMode {
-        return if (isLeaf && baseMode in LEAF_OVERRIDABLE_MODES) {
-            OrganisationUnitMode.SELECTED
-        } else {
-            baseMode
-        }
-    }
-
     companion object {
         private val LEAF_OVERRIDABLE_MODES = setOf(OrganisationUnitMode.DESCENDANTS, OrganisationUnitMode.CHILDREN)
+
+        fun isOverridable(mode: OrganisationUnitMode) = mode in LEAF_OVERRIDABLE_MODES
+
+        /**
+         * A leaf org unit has no children, so requesting its descendants/children returns exactly
+         * itself: querying by SELECTED is equivalent but cheaper for the server to resolve.
+         */
+        fun resolve(uid: String, baseMode: OrganisationUnitMode, isLeaf: Boolean): DownloadOrgunit {
+            val mode = if (isLeaf && isOverridable(baseMode)) OrganisationUnitMode.SELECTED else baseMode
+            return DownloadOrgunit(uid, mode)
+        }
     }
 }

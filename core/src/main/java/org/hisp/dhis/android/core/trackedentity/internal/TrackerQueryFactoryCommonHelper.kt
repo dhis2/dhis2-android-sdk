@@ -207,10 +207,16 @@ internal class TrackerQueryFactoryCommonHelper(
     suspend fun divideByOrgUnits(
         orgUnits: List<String>,
         hasLimitByOrgUnit: Boolean,
+        ouMode: OrganisationUnitMode,
+        leafCache: MutableMap<String, Boolean>,
     ): List<List<DownloadOrgunit>> {
         val downloadOrgunits = orgUnits.map { uid ->
-            val isLeaf = organisationUnitStore.isLeaf(uid)
-            DownloadOrgunit(uid, isLeaf)
+            val isLeaf = if (DownloadOrgunit.isOverridable(ouMode)) {
+                leafCache.getOrPut(uid) { organisationUnitStore.isLeaf(uid) }
+            } else {
+                false
+            }
+            DownloadOrgunit.resolve(uid, ouMode, isLeaf)
         }
 
         return if (hasLimitByOrgUnit && downloadOrgunits.isNotEmpty()) {

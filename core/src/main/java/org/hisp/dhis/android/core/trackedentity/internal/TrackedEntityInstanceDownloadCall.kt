@@ -244,7 +244,7 @@ internal class TrackedEntityInstanceDownloadCall(
         orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
-        val ouMode = orgunit?.resolveOuMode(bundle.commonParams.ouMode) ?: bundle.commonParams.ouMode
+        val ouMode = orgunit?.resolvedOuMode ?: bundle.commonParams.ouMode
 
         val teiUids = if (
             bundle.trackedEntityInstanceFilters != null ||

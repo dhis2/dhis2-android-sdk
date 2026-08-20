@@ -173,7 +173,7 @@ internal class EventDownloadCall internal constructor(
         orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
-        val ouMode = orgunit?.resolveOuMode(bundle.commonParams.ouMode) ?: bundle.commonParams.ouMode
+        val ouMode = orgunit?.resolvedOuMode ?: bundle.commonParams.ouMode
 
         val eventUids = if (bundle.eventFilters != null) {
             val filteredUids = getEventUidsByFilters(bundle, orgunit?.uid, ouMode)

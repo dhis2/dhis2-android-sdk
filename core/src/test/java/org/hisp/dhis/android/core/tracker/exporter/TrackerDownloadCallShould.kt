@@ -226,7 +226,7 @@ class TrackerDownloadCallShould {
         )
         val bundle = TrackerQueryBundle(
             commonParams,
-            listOf(DownloadOrgunit(orgUnitUid, isLeaf = false)),
+            listOf(DownloadOrgunit(orgUnitUid, resolvedOuMode = OrganisationUnitMode.DESCENDANTS)),
             null,
             null,
             null,
@@ -281,7 +281,7 @@ class TrackerDownloadCallShould {
         )
         val bundle = TrackerQueryBundle(
             commonParams = commonParams,
-            orgUnits = listOf(DownloadOrgunit(orgUnitUid, isLeaf = false)),
+            orgUnits = listOf(DownloadOrgunit(orgUnitUid, resolvedOuMode = OrganisationUnitMode.DESCENDANTS)),
             null,
             null,
             null,

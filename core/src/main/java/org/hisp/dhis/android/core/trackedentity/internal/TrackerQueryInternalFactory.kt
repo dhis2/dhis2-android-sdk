@@ -35,6 +35,11 @@ internal abstract class TrackerQueryInternalFactory<T>(
     protected val params: ProgramDataDownloadParams,
     protected val programSettings: ProgramSettings?,
 ) {
+    /**
+     * Shared across all programs queried through this factory instance so that an org unit's
+     * leaf status is only looked up once per sync pass, instead of once per program.
+     */
+    protected val leafCache = mutableMapOf<String, Boolean>()
 
     suspend fun queryGlobal(
         programs: List<String>,

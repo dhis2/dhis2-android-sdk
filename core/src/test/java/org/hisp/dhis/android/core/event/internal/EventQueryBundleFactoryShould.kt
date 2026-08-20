@@ -125,7 +125,8 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        assertThat(bundle.orgUnits).isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, isLeaf = false) })
+        assertThat(bundle.orgUnits)
+            .isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, resolvedOuMode = OrganisationUnitMode.DESCENDANTS) })
         assertThat(bundle.commonParams.programs).isEqualTo(programList)
         assertThat(bundle.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }

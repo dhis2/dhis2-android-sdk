@@ -143,7 +143,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
-        assertThat(query.orgUnits).isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, isLeaf = false) })
+        assertThat(query.orgUnits)
+            .isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, resolvedOuMode = OrganisationUnitMode.DESCENDANTS) })
         assertThat(query.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
         assertThat(query.commonParams.program).isNull()
     }

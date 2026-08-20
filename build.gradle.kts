@@ -98,7 +98,13 @@ subprojects {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "org.jetbrains.dokka")
+
+    // core applies Dokka itself, after its own Android/Kotlin plugins: DGP v2 needs those
+    // already applied to detect source sets, and this subprojects block runs before a
+    // subproject's own plugins {} block is evaluated.
+    if (name != "core") {
+        apply(plugin = "org.jetbrains.dokka")
+    }
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("0.50.0")

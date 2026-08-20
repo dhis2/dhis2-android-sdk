@@ -41,8 +41,8 @@ val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
 val androidJavadocsJar = tasks.register("androidJavadocsJar", Jar::class) {
     archiveClassifier.set("javadoc")
 
-    val dokkaHtml = tasks.findByName("dokkaJavadoc")!!
-    from(dokkaHtml.outputs)
+    val dokkaJavadoc = tasks.findByName("dokkaGeneratePublicationJavadoc")!!
+    from(dokkaJavadoc.outputs)
 }
 
 afterEvaluate {

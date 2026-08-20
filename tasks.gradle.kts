@@ -25,7 +25,9 @@ tasks.register("installGitHooks") {
     }
 }
 
-tasks.register("clean", Delete::class) {
+// Dokka Gradle plugin (v2) applies Gradle's base plugin, which registers "clean" itself,
+// so reconfigure the existing task instead of registering a new one.
+tasks.maybeCreate("clean", Delete::class.java).apply {
     delete(rootProject.layout.buildDirectory)
 }
 

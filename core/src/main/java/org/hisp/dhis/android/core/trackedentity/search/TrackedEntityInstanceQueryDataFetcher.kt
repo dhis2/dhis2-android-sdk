@@ -47,22 +47,34 @@ internal class TrackedEntityInstanceQueryDataFetcher(
     private val scope: TrackedEntityInstanceQueryRepositoryScope,
     private val childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     private val onlineCache: TrackedEntityInstanceOnlineCache,
-    onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
+    private val onlineHelper: TrackedEntityInstanceQueryOnlineHelper,
     private val localQueryHelper: TrackedEntityInstanceLocalQueryHelper,
 ) {
-    private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> = onlineHelper.fromScope(scope)
-    private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> = HashMap()
+    /**
+     * The server-side queries this scope translates to, resolved on first use.
+     *
+     * Lazy rather than eager, and that is load-bearing. [TrackedEntityInstanceQueryOnlineHelper
+     * .fromScope] refuses outright a scope carrying a
+     * [TrackedEntityQueryGrant][org.hisp.dhis.android.core.trackedentity.search.TrackedEntityQueryGrant],
+     * because an online search is answered by the server where none of the grant's local
+     * restrictions apply. Computing it in the constructor made that refusal fire for *every* scoped
+     * search including offline ones — so a granted caller could not search at all, which is the
+     * opposite of what the guard is for. Nothing on the offline path reads this or
+     * [onlineQueryStatusMap], so a scoped offline search now never reaches the guard, while an
+     * online one still does.
+     */
+    private val baseOnlineQueries: List<TrackedEntityInstanceQueryOnline> by lazy {
+        onlineHelper.fromScope(scope)
+    }
+
+    private val onlineQueryStatusMap: MutableMap<TrackedEntityInstanceQueryOnline, OnlineQueryStatus> by lazy {
+        baseOnlineQueries.associateWithTo(HashMap()) { OnlineQueryStatus() }
+    }
 
     private var returnedUidsOffline: MutableSet<String> = scope.excludedUids()?.toMutableSet() ?: HashSet()
     private var returnedUidsOnline: MutableSet<String> = HashSet()
     private var returnedErrorCodes: MutableSet<D2ErrorCode> = HashSet()
     private var isExhaustedOffline = false
-
-    init {
-        for (onlineQuery in baseOnlineQueries) {
-            onlineQueryStatusMap[onlineQuery] = OnlineQueryStatus()
-        }
-    }
 
     fun refresh() {
         returnedUidsOffline = scope.excludedUids()?.toMutableSet() ?: HashSet()

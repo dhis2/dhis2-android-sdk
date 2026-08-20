@@ -209,8 +209,7 @@ internal class LogInCall(
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
     private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error? = null): User {
-        val existingDatabase =
-            loginDatabaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
+        val existingDatabase = loginDatabaseManager.loadExistingKeepingEncryption(credentials)
         if (!existingDatabase) {
             throw originalError ?: exceptions.noUserOfflineError()
         }

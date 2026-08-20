@@ -97,9 +97,15 @@ internal interface MultiUserDatabaseManager {
      *
      * @param serverUrl The server URL associated with the database
      * @param username The username associated with the database
+     * @param authorizationType The type the caller has established for the account, which replaces
+     * the recorded one. Pass null to keep whatever the account already holds.
      * @return True if the database was loaded, false otherwise
      */
-    suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean
+    suspend fun loadExistingKeepingEncryption(
+        serverUrl: String,
+        username: String,
+        authorizationType: AuthorizationType?,
+    ): Boolean
 
     /**
      * Sets the maximum number of accounts that can be stored.

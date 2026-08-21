@@ -209,8 +209,7 @@ internal class LogInCall(
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
     private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error? = null): User {
-        val existingDatabase =
-            loginDatabaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
+        val existingDatabase = loginDatabaseManager.loadExistingKeepingEncryption(credentials)
         if (!existingDatabase) {
             throw originalError ?: exceptions.noUserOfflineError()
         }
@@ -248,6 +247,7 @@ internal class LogInCall(
     @Throws(D2Error::class)
     suspend fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
         return logInWithToken(
+            existingUsername = null,
             serverUrl = serverUrl,
             token = openIDConnectState.idToken!!,
             openIDConnectState = openIDConnectState,
@@ -256,8 +256,9 @@ internal class LogInCall(
     }
 
     @Throws(D2Error::class)
-    suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
+    suspend fun logInOAuth2(existingUsername: String?, serverUrl: String, oauth2State: OAuth2State): User {
         return logInWithToken(
+            existingUsername = existingUsername,
             serverUrl = serverUrl,
             token = oauth2State.accessToken
                 ?: throw exceptions.oauth2NoValidTokenError("The OAuth2 response has no access token"),
@@ -268,6 +269,7 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     private suspend fun logInWithToken(
+        existingUsername: String?,
         serverUrl: String,
         token: String,
         openIDConnectState: AuthState?,
@@ -284,6 +286,9 @@ internal class LogInCall(
                 networkHandler.authenticate("Bearer $token")
             }.getOrThrow()
             val username = user.username()!!
+            if (existingUsername != null && username != existingUsername) {
+                throw exceptions.authenticatedUserMismatchError()
+            }
             credentials = Credentials(
                 username = username,
                 serverUrl = trimmedServerUrl!!,

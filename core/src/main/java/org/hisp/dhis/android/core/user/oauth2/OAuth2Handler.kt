@@ -44,7 +44,12 @@ interface OAuth2Handler {
 
     fun blockingLogIn(config: OAuth2Config): String
 
-    fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String, state: String): User
+    fun blockingHandleLogInResponse(
+        existingUsername: String?,
+        serverUrl: String,
+        authorizationCode: String,
+        state: String,
+    ): User
 
     fun isDeviceRegistered(): Boolean
 

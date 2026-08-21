@@ -173,6 +173,7 @@ internal class OAuth2HandlerImpl(
 
     @Suppress("ThrowsCount")
     private suspend fun handleLogInResponseInternal(
+        existingUsername: String?,
         serverUrl: String,
         authorizationCode: String,
         state: String,
@@ -215,7 +216,7 @@ internal class OAuth2HandlerImpl(
         return when (result) {
             is Result.Success -> {
                 val oauth2State = result.value.copy(keyId = keyId)
-                val user = logInCall.logInOAuth2(normalizedUrl, oauth2State)
+                val user = logInCall.logInOAuth2(existingUsername, normalizedUrl, oauth2State)
                 val username = user.username()
                     ?: throw logInExceptions.oauth2ResponseWithoutUsernameError()
                 oauth2StateSecureStore.set(normalizedUrl, username, oauth2State)
@@ -229,8 +230,15 @@ internal class OAuth2HandlerImpl(
         }
     }
 
-    override fun blockingHandleLogInResponse(serverUrl: String, authorizationCode: String, state: String): User {
-        return runBlocking { handleLogInResponseInternal(serverUrl, authorizationCode, state) }
+    override fun blockingHandleLogInResponse(
+        existingUsername: String?,
+        serverUrl: String,
+        authorizationCode: String,
+        state: String,
+    ): User {
+        return runBlocking {
+            handleLogInResponseInternal(existingUsername, serverUrl, authorizationCode, state)
+        }
     }
 
     override fun isDeviceRegistered(): Boolean {

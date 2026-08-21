@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.maintenance
 
 enum class D2ErrorCode {
     ALREADY_AUTHENTICATED,
+    AUTHENTICATED_USER_MISMATCH,
 
     @Deprecated("")
     ALREADY_EXECUTED,

@@ -1,6 +1,4 @@
 import org.gradle.api.tasks.Sync
-import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.dokka.gradle.engine.plugins.DokkaHtmlPluginParameters
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 /*
@@ -36,19 +34,14 @@ plugins {
     id("maven-publish-conventions")
     id("jacoco-conventions")
     id("io.github.tjokinen.android-bcv-bridge") version "0.2.0"
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.javadoc)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.koin.compiler)
 }
-
-// Applied here (unversioned, using the version already resolved via the root project's own
-// "org.jetbrains.dokka" plugin application) rather than from the root's blanket subprojects
-// block, so it runs after com.android.library above: DGP v2 needs the Android plugin already
-// applied to detect this module's source sets.
-apply(plugin = "org.jetbrains.dokka")
-apply(plugin = "org.jetbrains.dokka-javadoc")
 
 repositories {
     mavenCentral()
@@ -306,20 +299,10 @@ detekt {
     buildUponDefaultConfig = false
 }
 
-// Configured via the typed extension directly (rather than the `dokka { }` accessor) because
-// Dokka is applied imperatively above instead of from the `plugins { }` block, so no type-safe
-// Kotlin DSL accessor is generated for it.
-configure<DokkaExtension> {
+dokka {
     moduleName.set("DHIS2 Android SDK")
 
-    dokkaSourceSets.configureEach {
-        perPackageOption {
-            matchingRegex.set(".*.internal.*")
-            suppress.set(true)
-        }
-    }
-
-    pluginsConfiguration.named<DokkaHtmlPluginParameters>(DokkaHtmlPluginParameters.DOKKA_HTML_PARAMETERS_NAME) {
+    pluginsConfiguration.html {
         customAssets.from(file("../assets/logo-icon.svg"))
     }
 }

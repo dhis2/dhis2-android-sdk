@@ -82,7 +82,7 @@ internal object ProgramParentUidsHelper {
         }
         for (type in types) {
             type.trackedEntityTypeAttributes()?.forEach { attribute ->
-                attribute.trackedEntityAttribute()?.uid()?.let { attributeUids.add(it) }
+                attributeUids.add(attribute.trackedEntityAttribute().uid())
             }
         }
         return attributeUids

@@ -154,12 +154,12 @@ internal abstract class IdentifiableDataHandlerImpl<O>(
             relationship.toBuilder()
                 .syncState(State.SYNCED)
                 .deleted(false)
-                .build()!!
+                .build()
         }
     }
 
     private suspend fun deleteLinkedRelationships(o: O) {
-        o.uid()?.let { relationshipHandler.deleteLinkedRelationships(it) }
+        relationshipHandler.deleteLinkedRelationships(o.uid())
     }
 
     protected abstract fun addRelationshipState(o: O): O

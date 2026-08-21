@@ -63,19 +63,19 @@ internal class RelationshipType30Should : CoreObjectShould<RelationshipTypeDTO>(
             relationshipType.fromConstraint()!!.trackedEntityType()!!.uid(),
         ).isEqualTo("nEenWmSyUEp")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![0],
+            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()[0],
         ).isEqualTo("b0vcadVrn08")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()!![1],
+            relationshipType.fromConstraint()!!.trackerDataView()!!.attributes()[1],
         ).isEqualTo("qXS2NDUEAOS")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![0],
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()[0],
         ).isEqualTo("ciWE5jde1ax")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![1],
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()[1],
         ).isEqualTo("hB9F8vKFmlk")
         assertThat(
-            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()!![2],
+            relationshipType.fromConstraint()!!.trackerDataView()!!.dataElements()[2],
         ).isEqualTo("uFAQYm3UgBL")
         assertThat(relationshipType.toConstraint()).isNotNull()
         assertThat(
@@ -84,10 +84,10 @@ internal class RelationshipType30Should : CoreObjectShould<RelationshipTypeDTO>(
         assertThat(relationshipType.toConstraint()!!.program()!!.uid())
             .isEqualTo("WSGAb5XwJ3Y")
         assertThat(
-            relationshipType.toConstraint()!!.trackerDataView()!!.attributes()!![0],
+            relationshipType.toConstraint()!!.trackerDataView()!!.attributes()[0],
         ).isEqualTo("b0vcadVrn08")
         assertThat(
-            relationshipType.toConstraint()!!.trackerDataView()!!.dataElements()!!.isEmpty(),
+            relationshipType.toConstraint()!!.trackerDataView()!!.dataElements().isEmpty(),
         ).isTrue()
         assertThat(relationshipType.bidirectional()).isFalse()
         assertThat(relationshipType.access().data().read()).isTrue()

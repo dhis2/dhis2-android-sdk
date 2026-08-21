@@ -96,7 +96,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             val response = postTrackedEntities(tei)
             assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-            for (importSummary in response.response!!.importSummaries!!) {
+            for (importSummary in response.response.importSummaries!!) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -112,7 +112,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -120,7 +120,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -134,7 +134,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val tei = teiWithEnrollmentInSearchScope()
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -145,7 +145,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -161,7 +161,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val tei = teiWithEnrollmentInSearchScope()
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -181,7 +181,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)

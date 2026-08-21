@@ -48,7 +48,7 @@ abstract class BaseMockIntegrationTestLocalAnalyticsSuperLargeDispatcher : BaseM
             freshLogin(
                 RealServerMother.username,
                 RealServerMother.password,
-                dhis2MockServer.baseEndpoint!!,
+                dhis2MockServer.baseEndpoint,
             )
 
             objects.d2.let {

@@ -107,7 +107,7 @@ internal class EnrollmentServiceImpl(
         val program = programRepository.uid(programUid).suspendGet() ?: return EnrollmentAccess.NO_ACCESS
 
         val dataAccess =
-            if (program.access().data()?.write() == true) {
+            if (program.access().data().write()) {
                 EnrollmentAccess.WRITE_ACCESS
             } else {
                 EnrollmentAccess.READ_ACCESS

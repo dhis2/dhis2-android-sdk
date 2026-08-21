@@ -415,7 +415,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
             val body = fileReader.getStringFromFile(fileName)
             val response = MockResponse()
             response.setResponseCode(code)
-            response.setBody(body!!)
+            response.setBody(body)
             response.setHeader(CONTENT_TYPE, CONTENT_TYPE_JSON)
             return response
         } catch (_: IOException) {

@@ -51,6 +51,6 @@ internal class ImportConflictShould : CoreObjectShould<ImportConflictDTO>(
         assertThat(importConflict.errorCode).isEqualTo("E7619")
         assertThat(importConflict.property).isEqualTo("value")
         assertThat(importConflict.indexes!![0]).isEqualTo(2)
-        assertThat(importConflict.indexes!![1]).isEqualTo(7)
+        assertThat(importConflict.indexes[1]).isEqualTo(7)
     }
 }

@@ -45,7 +45,7 @@ internal class ProgramSettingsShould : CoreObjectShould<ProgramSettingsDTO>(
         val programSettings = programSettingsDTO.toDomain()
 
         val global = programSettings.globalSettings()
-        assertThat(global!!.uid()).isNull()
+        assertThat(global.uid()).isNull()
         assertThat(global.name()).isNull()
         assertThat(global.lastUpdated())
             .isEqualTo(BaseIdentifiableObject.parseDate("2020-02-01T20:02:46.145Z"))

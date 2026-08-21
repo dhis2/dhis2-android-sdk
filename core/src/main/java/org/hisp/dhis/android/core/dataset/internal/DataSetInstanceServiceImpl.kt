@@ -163,7 +163,7 @@ internal class DataSetInstanceServiceImpl(
 
     override suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet() ?: return false
-        return dataSet.access().write() ?: false
+        return dataSet.access().write()
     }
 
     @Deprecated(

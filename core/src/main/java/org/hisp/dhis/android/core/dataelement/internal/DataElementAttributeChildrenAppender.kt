@@ -43,7 +43,7 @@ internal class DataElementAttributeChildrenAppender private constructor(
         val attributeValues = linkStore.getLinksForDataElement(m.uid())
             .map {
                 AttributeValue.builder()
-                    .attribute(ObjectWithUid.create(it.attribute()!!))
+                    .attribute(ObjectWithUid.create(it.attribute()))
                     .value(it.value()!!)
                     .build()
             }

@@ -57,7 +57,7 @@ internal class EnrollmentImportEnrollmentShould : CoreObjectShould<EnrollmentImp
 
         assertThat(importEnrollment.importSummaries!!.size).isEqualTo(1)
 
-        val importSummary = importEnrollment.importSummaries!![0]
+        val importSummary = importEnrollment.importSummaries[0]
 
         assertThat(importSummary).isNotNull()
         assertThat(importSummary.events).isNotNull()

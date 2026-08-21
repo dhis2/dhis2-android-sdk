@@ -43,7 +43,7 @@ class DataElementLegendSetLinkStoreIntegrationShould :
         TestDatabaseAdapterFactory.get(),
     ) {
     override fun addMasterUid(): String {
-        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement()!!
+        return DataElementLegendSetLinkSamples.getDataElementLegendSetLink().dataElement()
     }
 
     override fun buildObject(): DataElementLegendSetLink {

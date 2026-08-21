@@ -72,7 +72,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent1.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (validEvent2.uid() == importSummary.reference) {
@@ -105,7 +105,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (invalidEvent.uid() == importSummary.reference) {
@@ -142,7 +142,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (invalidEvent.uid() == importSummary.reference) {
@@ -179,7 +179,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent1.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (validEvent2.uid() == importSummary.reference) {
@@ -212,7 +212,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.ERROR)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (invalidEvent.uid() == importSummary.reference) {
@@ -249,7 +249,7 @@ abstract class EventAPIRealShould internal constructor(
 
         assertThat(response.response!!.status).isEqualTo(ImportStatus.WARNING)
 
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             if (validEvent.uid() == importSummary.reference) {
                 EventUtils.assertEvent(importSummary, ImportStatus.SUCCESS)
             } else if (invalidEvent.uid() == importSummary.reference) {

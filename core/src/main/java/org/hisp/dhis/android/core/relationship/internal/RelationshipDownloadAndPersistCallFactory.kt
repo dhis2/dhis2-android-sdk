@@ -169,7 +169,7 @@ internal class RelationshipDownloadAndPersistCallFactory(
             corruptedRelationships.addAll(relationshipStore.getRelationshipsByItem(builder.build()))
         }
         for (r in corruptedRelationships) {
-            r.uid()?.let { relationshipStore.deleteIfExists(it) }
+            relationshipStore.deleteIfExists(r.uid())
         }
     }
 

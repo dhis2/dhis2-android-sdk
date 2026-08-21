@@ -52,7 +52,7 @@ class MapLayerHandlerShould {
 
     private lateinit var mapLayerHandler: Handler<MapLayer>
 
-    private var mapLayers = listOf(mapLayer)
+    private val mapLayers = listOf(mapLayer)
 
     @Before
     fun setUp() = runTest {

@@ -646,7 +646,7 @@ class LogInCallUnitShould : BaseCallShould() {
     }
 
     private suspend fun reLogInWithOAuth2Token(state: OAuth2State): User =
-        logInCall().logInOAuth2(SERVER_URL, state)
+        logInCall().logInOAuth2(null, SERVER_URL, state)
 
     private fun oauth2State(accessToken: String): OAuth2State =
         OAuth2State(

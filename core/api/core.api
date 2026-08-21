@@ -11290,6 +11290,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field API_UNSUCCESSFUL_RESPONSE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field APP_NAME_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field APP_VERSION_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field AUTHENTICATED_USER_MISMATCH Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field BAD_CREDENTIALS Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field BAD_CREDENTIALS_OFFLINE_CODE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field CANT_ACCESS_KEYSTORE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -23389,7 +23390,7 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;

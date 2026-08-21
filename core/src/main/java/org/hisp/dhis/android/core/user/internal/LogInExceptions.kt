@@ -177,6 +177,17 @@ internal class LogInExceptions internal constructor(
             .build()
     }
 
+    fun authenticatedUserMismatchError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.AUTHENTICATED_USER_MISMATCH)
+            .errorDescription(
+                "The authorized user does not match the account being restored. " +
+                    "The user must authorize again with the expected account.",
+            )
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
     fun openIdConnectNoValidTokenError(detail: String): D2Error {
         return D2Error.builder()
             .errorCode(D2ErrorCode.OPEN_ID_CONNECT_NO_VALID_TOKEN)

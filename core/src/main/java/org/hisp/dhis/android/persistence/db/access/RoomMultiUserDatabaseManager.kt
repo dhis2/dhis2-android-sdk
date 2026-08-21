@@ -137,7 +137,7 @@ internal class RoomMultiUserDatabaseManager(
     override suspend fun loadExistingKeepingEncryption(
         serverUrl: String,
         username: String,
-        authorizationType: AuthorizationType?,
+        authorizationType: AuthorizationType,
     ): Boolean {
         return loadExistingChangingEncryptionIfRequired(
             serverUrl,
@@ -198,7 +198,7 @@ internal class RoomMultiUserDatabaseManager(
         username: String,
         encryptionExtractor: (config: DatabaseAccount) -> Boolean,
         alsoOpenWhenEncryptionDoesntChange: Boolean,
-        authorizationType: AuthorizationType?,
+        authorizationType: AuthorizationType,
     ): Boolean {
         val existingAccount = getAccount(serverUrl, username) ?: return false
         val encrypt = encryptionExtractor(existingAccount)
@@ -209,9 +209,7 @@ internal class RoomMultiUserDatabaseManager(
                 username,
                 encrypt,
                 loginConfig = existingAccount.loginConfig(),
-                authorizationType = authorizationType
-                    ?: existingAccount.authorizationType
-                    ?: AuthorizationType.BASIC,
+                authorizationType = authorizationType,
             )
             openDatabase(updatedAccount)
         }

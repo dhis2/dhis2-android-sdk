@@ -161,7 +161,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
     @Test
     fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() = runTest {
-        manager.loadExistingKeepingEncryption(serverUrl, username, null)
+        manager.loadExistingKeepingEncryption(serverUrl, username, AuthorizationType.BASIC)
         verifyNoMoreInteractions(databaseManager)
     }
 
@@ -180,7 +180,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             ),
         ).doReturn(unencryptedConfiguration)
 
-        manager.loadExistingKeepingEncryption(serverUrl, username, null)
+        manager.loadExistingKeepingEncryption(serverUrl, username, AuthorizationType.BASIC)
 
         verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
     }

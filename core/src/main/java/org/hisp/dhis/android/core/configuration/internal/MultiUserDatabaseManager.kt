@@ -98,13 +98,13 @@ internal interface MultiUserDatabaseManager {
      * @param serverUrl The server URL associated with the database
      * @param username The username associated with the database
      * @param authorizationType The type the caller has established for the account, which replaces
-     * the recorded one. Pass null to keep whatever the account already holds.
+     * the recorded one
      * @return True if the database was loaded, false otherwise
      */
     suspend fun loadExistingKeepingEncryption(
         serverUrl: String,
         username: String,
-        authorizationType: AuthorizationType?,
+        authorizationType: AuthorizationType,
     ): Boolean
 
     /**

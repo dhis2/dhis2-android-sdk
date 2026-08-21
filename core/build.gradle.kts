@@ -184,6 +184,7 @@ kotlin {
 
 dependencies {
 
+    implementation(libs.androidx.exifinterface)
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))

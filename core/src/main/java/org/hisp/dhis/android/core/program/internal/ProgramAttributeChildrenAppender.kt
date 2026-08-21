@@ -43,7 +43,7 @@ internal class ProgramAttributeChildrenAppender private constructor(
         val attributeValues = linkStore.getLinksForProgram(m.uid())
             .map {
                 AttributeValue.builder()
-                    .attribute(ObjectWithUid.create(it.attribute()!!))
+                    .attribute(ObjectWithUid.create(it.attribute()))
                     .value(it.value()!!)
                     .build()
             }

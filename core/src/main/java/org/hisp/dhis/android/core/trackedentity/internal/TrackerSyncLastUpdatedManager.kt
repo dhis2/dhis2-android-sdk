@@ -98,7 +98,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             if (hasUpdateDownload(specificSetting)) {
                 period = specificSetting!!.updateDownload()
             } else if (hasUpdateDownload(globalSetting)) {
-                period = globalSetting!!.updateDownload()
+                period = globalSetting.updateDownload()
             }
         }
         return if (period == null || period == DownloadPeriod.ANY) {

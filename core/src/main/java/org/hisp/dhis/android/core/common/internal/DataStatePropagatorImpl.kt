@@ -139,9 +139,7 @@ internal class DataStatePropagatorImpl(
     }
 
     override suspend fun propagateOwnershipUpdate(programOwner: ProgramOwner) {
-        programOwner.trackedEntityInstance()?.let {
-            setTeiSyncState(it, getStateForUpdate)
-        }
+        setTeiSyncState(programOwner.trackedEntityInstance(), getStateForUpdate)
     }
 
     private suspend fun propagateRelationshipUpdate(item: RelationshipItem?) {

@@ -42,16 +42,14 @@ internal data class TrackedEntityTypeAttributeDTO(
 
 ) {
     fun toDomain(trackedEntityType: String): TrackedEntityTypeAttribute? {
-        return if (trackedEntityAttribute != null) {
+        return trackedEntityAttribute?.let {
             TrackedEntityTypeAttribute.builder()
                 .trackedEntityType(ObjectWithUid.create(trackedEntityType))
-                .trackedEntityAttribute(trackedEntityAttribute.toDomain())
+                .trackedEntityAttribute(it.toDomain())
                 .displayInList(displayInList)
                 .mandatory(mandatory)
                 .searchable(searchable)
                 .build()
-        } else {
-            null
         }
     }
 }

@@ -31,10 +31,11 @@ import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 
 internal data class TrackerQueryBundle(
     override val commonParams: TrackerQueryCommonParams,
-    override val orgUnits: List<String>,
+    override val orgUnits: List<DownloadOrgunit>,
     val programStatus: EnrollmentStatus?,
     val trackedEntityInstanceFilters: List<TrackedEntityInstanceFilter>?,
     val programStageWorkingLists: List<ProgramStageWorkingList>?,

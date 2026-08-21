@@ -27,9 +27,32 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 
 internal interface BaseTrackerQueryBundle {
     val commonParams: TrackerQueryCommonParams
-    val orgUnits: List<String>
+    val orgUnits: List<DownloadOrgunit>
+    val orgUnitUids: List<String>
+        get() = orgUnits.map { it.uid }
+}
+
+internal data class DownloadOrgunit(
+    val uid: String,
+    val resolvedOuMode: OrganisationUnitMode,
+) {
+    companion object {
+        private val LEAF_OVERRIDABLE_MODES = setOf(OrganisationUnitMode.DESCENDANTS, OrganisationUnitMode.CHILDREN)
+
+        fun isOverridable(mode: OrganisationUnitMode) = mode in LEAF_OVERRIDABLE_MODES
+
+        /**
+         * A leaf org unit has no children, so requesting its descendants/children returns exactly
+         * itself: querying by SELECTED is equivalent but cheaper for the server to resolve.
+         */
+        fun resolve(uid: String, baseMode: OrganisationUnitMode, isLeaf: Boolean): DownloadOrgunit {
+            val mode = if (isLeaf && isOverridable(baseMode)) OrganisationUnitMode.SELECTED else baseMode
+            return DownloadOrgunit(uid, mode)
+        }
+    }
 }

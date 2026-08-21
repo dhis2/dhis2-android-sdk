@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
 import org.koin.core.annotation.Singleton
 
@@ -42,4 +43,14 @@ internal class OrganisationUnitStoreImpl(
     { databaseAdapter.getCurrentDatabase().organisationUnitDao() },
     OrganisationUnit::toDB,
     SQLStatementBuilderImpl(OrganisationUnitTableInfo.TABLE_INFO),
-)
+) {
+    override suspend fun isLeaf(organisationUnitId: String): Boolean {
+        val whereClause = WhereClauseBuilder()
+            .appendKeyStringValue(
+                OrganisationUnitTableInfo.Columns.PARENT,
+                organisationUnitId,
+            )
+            .build()
+        return !exists(whereClause)
+    }
+}

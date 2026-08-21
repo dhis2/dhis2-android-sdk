@@ -1861,6 +1861,7 @@ public final class org/hisp/dhis/android/core/arch/db/stores/OrgHispDhisAndroidC
 public abstract interface class org/hisp/dhis/android/core/arch/db/stores/internal/ReadableStore {
 	public abstract fun count (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun countWhere (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun exists (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun groupAndGetCountBy (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun selectAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun selectFirst (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

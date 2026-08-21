@@ -39,6 +39,7 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -47,6 +48,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
@@ -239,15 +241,17 @@ internal class TrackedEntityInstanceDownloadCall(
     override suspend fun getQuery(
         bundle: TrackerQueryBundle,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
+        val ouMode = orgunit?.resolvedOuMode ?: bundle.commonParams.ouMode
+
         val teiUids = if (
             bundle.trackedEntityInstanceFilters != null ||
             bundle.programStageWorkingLists != null
         ) {
-            val filteredUids = getTeiUidsByFilter(bundle, orgunitUid) +
-                getTeiUidsByWorkingList(bundle, orgunitUid)
+            val filteredUids = getTeiUidsByFilter(bundle, orgunit?.uid, ouMode) +
+                getTeiUidsByWorkingList(bundle, orgunit?.uid, ouMode)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -259,31 +263,40 @@ internal class TrackedEntityInstanceDownloadCall(
                 commonParams = bundle.commonParams.copy(
                     program = program,
                     limit = limit,
+                    ouMode = ouMode,
                 ),
                 programStatus = bundle.programStatus,
-                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams),
-                orgUnit = orgunitUid,
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle),
+                orgUnit = orgunit?.uid,
                 uids = teiUids.distinct(),
             )
         }
     }
 
-    private suspend fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+    private suspend fun getTeiUidsByFilter(
+        bundle: TrackerQueryBundle,
+        orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
+    ): List<String> {
         return bundle.trackedEntityInstanceFilters?.flatMap {
             teiQueryCollectionRepository
                 .byTrackedEntityInstanceFilterObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams.ouMode)
+                .byOrgUnitMode().eq(ouMode)
                 .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }
 
-    private suspend fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
+    private suspend fun getTeiUidsByWorkingList(
+        bundle: TrackerQueryBundle,
+        orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
+    ): List<String> {
         return bundle.programStageWorkingLists?.flatMap {
             teiQueryCollectionRepository
                 .byProgramStageWorkingListObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams.ouMode)
+                .byOrgUnitMode().eq(ouMode)
                 .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }

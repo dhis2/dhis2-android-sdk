@@ -31,11 +31,13 @@ import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.LimitScope
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
@@ -45,6 +47,7 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 @Singleton
 internal class TrackerQueryFactoryCommonHelper(
+    private val organisationUnitStore: OrganisationUnitStore,
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     private val organisationUnitProgramLinkStore: OrganisationUnitProgramLinkStore,
 ) {
@@ -201,14 +204,25 @@ internal class TrackerQueryFactoryCommonHelper(
         return false
     }
 
-    fun divideByOrgUnits(
+    suspend fun divideByOrgUnits(
         orgUnits: List<String>,
         hasLimitByOrgUnit: Boolean,
-    ): List<List<String>> {
-        return if (hasLimitByOrgUnit && orgUnits.isNotEmpty()) {
-            orgUnits.map { listOf(it) }
+        ouMode: OrganisationUnitMode,
+        leafCache: MutableMap<String, Boolean>,
+    ): List<List<DownloadOrgunit>> {
+        val downloadOrgunits = orgUnits.map { uid ->
+            val isLeaf = if (DownloadOrgunit.isOverridable(ouMode)) {
+                leafCache.getOrPut(uid) { organisationUnitStore.isLeaf(uid) }
+            } else {
+                false
+            }
+            DownloadOrgunit.resolve(uid, ouMode, isLeaf)
+        }
+
+        return if (hasLimitByOrgUnit && downloadOrgunits.isNotEmpty()) {
+            downloadOrgunits.map { listOf(it) }
         } else {
-            listOf(orgUnits)
+            listOf(downloadOrgunits)
         }
     }
 

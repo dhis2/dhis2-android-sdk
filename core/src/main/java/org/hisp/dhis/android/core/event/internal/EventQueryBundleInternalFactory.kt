@@ -83,6 +83,8 @@ internal class EventQueryBundleInternalFactory(
         val orgUnitBundles = commonHelper.divideByOrgUnits(
             commonParams.orgUnitsBeforeDivision,
             commonParams.hasLimitByOrgUnit,
+            commonParams.ouMode,
+            leafCache,
         )
 
         return orgUnitBundles.map { orgUnits ->

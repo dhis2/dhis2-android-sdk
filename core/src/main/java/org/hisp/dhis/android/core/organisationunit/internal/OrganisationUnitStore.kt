@@ -31,4 +31,6 @@ package org.hisp.dhis.android.core.organisationunit.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 
-internal interface OrganisationUnitStore : IdentifiableObjectStore<OrganisationUnit>
+internal interface OrganisationUnitStore : IdentifiableObjectStore<OrganisationUnit> {
+    suspend fun isLeaf(organisationUnitId: String): Boolean
+}

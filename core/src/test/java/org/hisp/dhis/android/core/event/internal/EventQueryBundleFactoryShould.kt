@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
 import org.junit.Before
@@ -64,6 +66,7 @@ class EventQueryBundleFactoryShould {
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
     private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
     private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
 
@@ -95,6 +98,7 @@ class EventQueryBundleFactoryShould {
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
+        whenever(organisationUnitStore.isLeaf(any())).thenReturn(false)
 
         whenever(programSettingsObjectRepository.getInternal()).thenReturn(programSettings)
 
@@ -103,6 +107,7 @@ class EventQueryBundleFactoryShould {
         whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
+            organisationUnitStore,
             userOrganisationUnitLinkStore,
             organisationUnitProgramLinkLinkStore,
         )
@@ -120,7 +125,8 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        assertThat(bundle.orgUnits).isEqualTo(rootOrgUnits)
+        assertThat(bundle.orgUnits)
+            .isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, resolvedOuMode = OrganisationUnitMode.DESCENDANTS) })
         assertThat(bundle.commonParams.programs).isEqualTo(programList)
         assertThat(bundle.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }

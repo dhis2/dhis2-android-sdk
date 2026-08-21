@@ -224,7 +224,13 @@ class TrackerDownloadCallShould {
             orgUnitsBeforeDivision = listOf(orgUnitUid),
             limit = ProgramDataDownloadParams.DEFAULT_LIMIT,
         )
-        val bundle = TrackerQueryBundle(commonParams, listOf(orgUnitUid), null, null, null)
+        val bundle = TrackerQueryBundle(
+            commonParams,
+            listOf(DownloadOrgunit(orgUnitUid, resolvedOuMode = OrganisationUnitMode.DESCENDANTS)),
+            null,
+            null,
+            null,
+        )
 
         whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
         whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
@@ -275,7 +281,7 @@ class TrackerDownloadCallShould {
         )
         val bundle = TrackerQueryBundle(
             commonParams = commonParams,
-            orgUnits = listOf(orgUnitUid),
+            orgUnits = listOf(DownloadOrgunit(orgUnitUid, resolvedOuMode = OrganisationUnitMode.DESCENDANTS)),
             null,
             null,
             null,

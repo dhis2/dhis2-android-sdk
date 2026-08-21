@@ -122,9 +122,9 @@ internal open class BaseFileResourceRoutineIntegrationShould : BaseMockIntegrati
             trackedEntityTypeStore.delete(FileResourceRoutineSamples.trackedEntityType.uid())
             dataElementStore.delete(FileResourceRoutineSamples.dataElement1.uid())
             categoryComboStore.delete(FileResourceRoutineSamples.categoryCombo.uid())
-            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource3.uid()!!)
-            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource2.uid()!!)
-            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource1.uid()!!)
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource3.uid())
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource2.uid())
+            fileResourceStore.deleteIfExists(FileResourceRoutineSamples.fileResource1.uid())
             organisationUnitStore.delete(FileResourceRoutineSamples.orgUnit1.uid())
         }
     }

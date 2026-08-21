@@ -99,12 +99,12 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         // Get type attributes
         val typeAttributes = trackedEntityTypeAttributeStore
             .getForTrackedEntityType(trackedEntity.trackedEntityType()!!)
-            .mapNotNull { it.trackedEntityAttribute()?.uid() }
+            .mapNotNull { it.trackedEntityAttribute().uid() }
 
         // Get initial attribute values before sync
         val attributeValuesBefore = teiAttributeValueStore.queryByTrackedEntityInstance(teiId)
         val initialStates = attributeValuesBefore.associate {
-            it.trackedEntityAttribute()!! to it.syncState()
+            it.trackedEntityAttribute() to it.syncState()
         }
 
         // Simulate TE success: mark only type attributes as SYNCED
@@ -115,7 +115,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         val allAttributeValues = teiAttributeValueStore.queryByTrackedEntityInstance(teiId)
 
         allAttributeValues.forEach { attrValue ->
-            val attrUid = attrValue.trackedEntityAttribute()!!
+            val attrUid = attrValue.trackedEntityAttribute()
             if (typeAttributes.contains(attrUid)) {
                 // Type attributes should be SYNCED
                 assertThat(attrValue.syncState()).isEqualTo(State.SYNCED)
@@ -150,7 +150,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         // Get initial attribute values before sync
         val attributeValuesBefore = teiAttributeValueStore.queryByTrackedEntityInstance(teiUid)
         val initialStates = attributeValuesBefore.associate {
-            it.trackedEntityAttribute()!! to it.syncState()
+            it.trackedEntityAttribute() to it.syncState()
         }
 
         // Simulate enrollment success: mark only program attributes as SYNCED
@@ -161,7 +161,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         val allAttributeValues = teiAttributeValueStore.queryByTrackedEntityInstance(teiUid)
 
         allAttributeValues.forEach { attrValue ->
-            val attrUid = attrValue.trackedEntityAttribute()!!
+            val attrUid = attrValue.trackedEntityAttribute()
             if (programAttributes.contains(attrUid)) {
                 assertThat(attrValue.syncState()).isEqualTo(State.SYNCED)
             } else {
@@ -180,7 +180,7 @@ class NewTrackerImporterPayloadGeneratorMockIntegrationShould : BasePayloadGener
         val trackedEntityTypeAttributeStore: TrackedEntityTypeAttributeStore = koin.get()
         val typeAttributeUids = trackedEntityTypeAttributeStore
             .getForTrackedEntityType(trackedEntity.trackedEntityType()!!)
-            .mapNotNull { it.trackedEntityAttribute()?.uid() }
+            .mapNotNull { it.trackedEntityAttribute().uid() }
 
         // Create a program-only attribute (not in type attributes)
         val programOnlyAttrUid = "programOnlyAttr123"

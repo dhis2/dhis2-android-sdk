@@ -252,7 +252,7 @@ internal class OAuth2HandlerImpl(
                     Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
                 } else {
                     authenticatedUserStore.updateOrInsertWhere(
-                        existing.toBuilder().hash(updated.getHash()).build(),
+                        existing.toBuilder().hash(updated.newPasswordHash()).build(),
                     )
                     Result.Success(Unit)
                 }

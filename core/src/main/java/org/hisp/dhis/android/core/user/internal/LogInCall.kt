@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.HashVerification
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
@@ -188,7 +189,7 @@ internal class LogInCall(
                 }
                 val authenticatedUser = AuthenticatedUser.builder()
                     .user(user.uid())
-                    .hash(credentials.getHash())
+                    .hash(credentials.newPasswordHash())
                     .build()
 
                 authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
@@ -206,7 +207,8 @@ internal class LogInCall(
 
     private suspend fun verifyPinAgainstStoredHash(credentials: Credentials) {
         val existing = authenticatedUserStore.selectFirst() ?: return
-        if (existing.hash() != credentials.getHash()) {
+        // No rehash is needed here: the caller overwrites the hash right after this check.
+        if (credentials.matches(existing.hash()) is HashVerification.Mismatch) {
             throw exceptions.badCredentialsError()
         }
     }
@@ -221,16 +223,33 @@ internal class LogInCall(
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
-        if (credentials.getHash() != existingUser.hash()) {
-            throw when (credentials.authorizationType) {
-                AuthorizationType.BASIC -> exceptions.badCredentialsError()
-                AuthorizationType.OPEN_ID_CONNECT -> exceptions.badCredentialsError()
-                AuthorizationType.OAUTH2 -> exceptions.incorrectOfflineCodeError()
-            }
+        when (val verification = credentials.matches(existingUser.hash())) {
+            is HashVerification.Mismatch ->
+                throw when (credentials.authorizationType) {
+                    AuthorizationType.BASIC -> exceptions.badCredentialsError()
+                    AuthorizationType.OPEN_ID_CONNECT -> exceptions.badCredentialsError()
+                    AuthorizationType.OAUTH2 -> exceptions.incorrectOfflineCodeError()
+                }
+
+            is HashVerification.Match ->
+                if (verification.needsUpgrade) {
+                    upgradeStoredHash(existingUser, credentials)
+                }
         }
         credentialsSecureStore.set(credentials)
         userIdStore.set(existingUser.user()!!)
         return userStore.selectByUid(existingUser.user()!!)!!
+    }
+
+    /**
+     * Rewrites a hash that was verified successfully but is stored in an outdated format, typically
+     * the legacy MD5 one. It happens transparently while the plaintext secret is still at hand, so
+     * the user is never asked to authenticate again.
+     */
+    private suspend fun upgradeStoredHash(existingUser: AuthenticatedUser, credentials: Credentials) {
+        authenticatedUserStore.updateOrInsertWhere(
+            existingUser.toBuilder().hash(credentials.newPasswordHash()).build(),
+        )
     }
 
     @Suppress("TooGenericExceptionCaught")

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,29 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.user.openid
 
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
-import org.junit.Before
-import org.junit.Test
-import org.mockito.kotlin.*
+/**
+ * Outcome of refreshing an OpenID Connect session, mirroring the OAuth2 counterpart: the caller
+ * needs to tell a token the provider rejected from a refresh that merely could not be completed.
+ */
+internal sealed class OpenIdRefreshResult {
 
-class AnalyticsTeiWHONutritionDataHandlerShould {
+    /**
+     * A fresh idToken is available. The [net.openid.appauth.AuthState] passed to the refresher has
+     * been updated in place, so the caller must persist it.
+     */
+    data class Success(val idToken: String) : OpenIdRefreshResult()
 
-    private val store: AnalyticsTeiWHONutritionDataStore = mock()
+    /**
+     * The refresh could not be completed for a transient reason (offline, timeout, provider error).
+     * The stored state is left untouched and the caller may keep using the current token.
+     */
+    object Retryable : OpenIdRefreshResult()
 
-    private val teiDataElementHandler: AnalyticsTeiDataElementHandler = mock()
-    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler = mock()
-
-    private val whoData: AnalyticsTeiWHONutritionData = mock()
-
-    private lateinit var analyticsTeiSettingHandler:
-        ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>
-
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        whenever(whoData.teiSetting()) doReturn "tei_setting"
-
-        analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
-            store,
-            teiDataElementHandler,
-            teiIndicatorHandler,
-        )
-    }
-
-    @Test
-    fun call_data_handlers() = runTest {
-        analyticsTeiSettingHandler.handleMany(whoData.teiSetting(), listOf(whoData))
-
-        verify(teiDataElementHandler).handleMany(any(), any())
-        verify(teiIndicatorHandler).handleMany(any(), any())
-    }
+    /**
+     * The provider rejected the refresh token. It will never work again, so the session cannot be
+     * renewed without the user going through the OpenID Connect flow.
+     */
+    object Invalid : OpenIdRefreshResult()
 }

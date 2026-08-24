@@ -1861,6 +1861,7 @@ public final class org/hisp/dhis/android/core/arch/db/stores/OrgHispDhisAndroidC
 public abstract interface class org/hisp/dhis/android/core/arch/db/stores/internal/ReadableStore {
 	public abstract fun count (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun countWhere (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun exists (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun groupAndGetCountBy (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun selectAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun selectFirst (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -9601,7 +9602,7 @@ public final class org/hisp/dhis/android/core/event/search/EventQueryRepositoryS
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;ZLjava/util/List;Ljava/util/List;)V
 	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public final fun attributeOptionCombos ()Ljava/util/List;
-	public static final fun builder$core_release ()Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope$Builder;
+	public static final fun builder$core ()Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope$Builder;
 	public final fun completedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public final fun component1 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
 	public final fun component10 ()Ljava/util/List;
@@ -11290,6 +11291,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field API_UNSUCCESSFUL_RESPONSE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field APP_NAME_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field APP_VERSION_NOT_SET Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field AUTHENTICATED_USER_MISMATCH Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field BAD_CREDENTIALS Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field BAD_CREDENTIALS_OFFLINE_CODE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field CANT_ACCESS_KEYSTORE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -11328,8 +11330,10 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field OAUTH2_INCOMPLETE_REGISTRATION Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OAUTH2_INVALID_IAT Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OAUTH2_INVALID_STATE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OAUTH2_NO_VALID_TOKEN Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_INSERTED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OBJECT_CANT_BE_UPDATED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field OPEN_ID_CONNECT_NO_VALID_TOKEN Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field ORGUNIT_NOT_IN_SEARCH_SCOPE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field OWNERSHIP_ACCESS_DENIED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field PROGRAM_ACCESS_CLOSED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
@@ -23387,7 +23391,7 @@ public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Han
 	public abstract fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
 	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
 	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
@@ -23429,7 +23433,6 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
 	public final fun getTokenEndpoint ()Ljava/lang/String;
 	public fun hashCode ()I
 	public final fun jsonSerializeString ()Ljava/lang/String;
-	public final fun needsTokenRefresh ()Z
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -28447,7 +28450,7 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns$Companion {
 }
 
-public final class org/koin/plugin/hints/Core_core_release__orgHispDhisAndroidCoreArchDbStoresInternalObjectStore_callsiteKt {
+public final class org/koin/plugin/hints/Core_core__orgHispDhisAndroidCoreArchDbStoresInternalObjectStore_callsiteKt {
 	public static final synthetic fun callsite (Lorg/hisp/dhis/android/core/arch/db/stores/internal/ObjectStore;)V
 }
 

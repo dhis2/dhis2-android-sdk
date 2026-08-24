@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import net.openid.appauth.AuthState
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -37,10 +38,10 @@ import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
 class CredentialsSecureStorageMockIntegrationShould {
-    private fun instantiateStore(): CredentialsSecureStoreImpl = CredentialsSecureStoreImpl(
-        ChunkedSecureStore(
-            AndroidSecureStore(InstrumentationRegistry.getInstrumentation().context),
-        ),
+    private fun instantiateStore(): CredentialsSecureStoreImpl = CredentialsSecureStoreImpl(chunkedStore())
+
+    private fun chunkedStore(): ChunkedSecureStore = ChunkedSecureStore(
+        AndroidSecureStore(InstrumentationRegistry.getInstrumentation().context),
     )
 
     @Test
@@ -69,6 +70,29 @@ class CredentialsSecureStorageMockIntegrationShould {
     @Test
     fun credentials_are_correctly_stored_for_oauth2_config_with_pin() {
         setAndVerify(Credentials("username", "serverUrl", null, PIN, null, oauth2State()))
+    }
+
+    @Test
+    fun credentials_are_correctly_stored_for_oauth2_config_without_tokens() {
+        // An imported database brings no tokens, so the authorization type cannot be implied from
+        // them and has to be stored. Reading it back as BASIC would send requests unauthenticated.
+        setAndVerify(
+            Credentials("username", "serverUrl", null, PIN, null, null, AuthorizationType.OAUTH2),
+        )
+    }
+
+    @Test
+    fun credentials_stored_before_the_authorization_type_existed_fall_back_to_the_implied_type() {
+        val store = chunkedStore()
+        CredentialsSecureStoreImpl(store).set(
+            Credentials("username", "serverUrl", null, PIN, null, oauth2State()),
+        )
+        // A session written by a previous version has no authorization type stored.
+        store.removeData(CredentialsSecureStoreImpl.AUTHORIZATION_TYPE_KEY)
+
+        val credentials = instantiateStore().get()
+
+        assertThat(credentials?.authorizationType).isEqualTo(AuthorizationType.OAUTH2)
     }
 
     @Test

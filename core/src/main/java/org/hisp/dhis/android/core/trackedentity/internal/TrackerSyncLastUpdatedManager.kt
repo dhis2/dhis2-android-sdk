@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
 import java.util.Date
 
 internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private val store: TrackerBaseSyncStore<S>) {
@@ -49,16 +50,16 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
         }
     }
 
-    fun getLastUpdatedStr(commonParams: TrackerQueryCommonParams): String? {
-        return getLastUpdated(commonParams)?.let { BaseIdentifiableObject.dateToDateStr(it) }
+    fun getLastUpdatedStr(bundle: BaseTrackerQueryBundle): String? {
+        return getLastUpdated(bundle)?.let { BaseIdentifiableObject.dateToDateStr(it) }
     }
 
-    private fun getLastUpdated(commonParams: TrackerQueryCommonParams): Date? {
+    private fun getLastUpdated(bundle: BaseTrackerQueryBundle): Date? {
         return getLastUpdated(
-            commonParams.program,
-            commonParams.orgUnitsBeforeDivision.toSet(),
-            commonParams.limit,
-            commonParams.workingListsHash,
+            bundle.commonParams.program,
+            bundle.orgUnitUids.toSet(),
+            bundle.commonParams.limit,
+            bundle.commonParams.workingListsHash,
         )
     }
 
@@ -97,7 +98,7 @@ internal open class TrackerSyncLastUpdatedManager<S : TrackerBaseSync>(private v
             if (hasUpdateDownload(specificSetting)) {
                 period = specificSetting!!.updateDownload()
             } else if (hasUpdateDownload(globalSetting)) {
-                period = globalSetting!!.updateDownload()
+                period = globalSetting.updateDownload()
             }
         }
         return if (period == null || period == DownloadPeriod.ANY) {

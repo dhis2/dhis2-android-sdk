@@ -33,6 +33,8 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.TrackerBaseSyncStore
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
+import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -47,9 +49,10 @@ class TrackerSyncLastUpdatedManagerShould {
     private val params: ProgramDataDownloadParams = mock()
 
     private val program = "program_uid"
-    private val orgUnits = listOf("org_unit_1", "org_unit_2")
-    private val orgUnitsHash = orgUnits.toSet().hashCode()
-    private val limit = 500
+    private val orgUnitsBeforeDivision = listOf("org_unit_1", "org_unit_2", "org_unit_3")
+    private val ouUids = listOf("org_unit_1", "org_unit_2")
+    private val orgUnitsHash = ouUids.toSet().hashCode()
+    private val defaultLimit = 500
     private val workingListsHash = 12345
     private val lastUpdated = DateUtils.DATE_FORMAT.parse("2017-11-29T11:27:46.935")
 
@@ -65,7 +68,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_last_updated_when_working_lists_hash_matches() = runTest {
         prepareWithSync(storedHash = workingListsHash)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(workingListsHash))
+        val result = manager.getLastUpdatedStr(createBundle(workingListsHash))
 
         assertThat(result).isNotNull()
     }
@@ -74,7 +77,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_null_when_working_lists_hash_changes() = runTest {
         prepareWithSync(storedHash = workingListsHash)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(99999))
+        val result = manager.getLastUpdatedStr(createBundle(99999))
 
         assertThat(result).isNull()
     }
@@ -83,7 +86,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_null_when_stored_hash_is_null_but_current_is_not() = runTest {
         prepareWithSync(storedHash = null)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(workingListsHash))
+        val result = manager.getLastUpdatedStr(createBundle(workingListsHash))
 
         assertThat(result).isNull()
     }
@@ -92,7 +95,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_null_when_current_hash_is_null_but_stored_is_not() = runTest {
         prepareWithSync(storedHash = workingListsHash)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(null))
+        val result = manager.getLastUpdatedStr(createBundle(null))
 
         assertThat(result).isNull()
     }
@@ -101,7 +104,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_last_updated_when_both_hashes_are_null() = runTest {
         prepareWithSync(storedHash = null)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(null))
+        val result = manager.getLastUpdatedStr(createBundle(null))
 
         assertThat(result).isNotNull()
     }
@@ -110,7 +113,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_null_when_no_sync_record_exists() = runTest {
         prepareWithSync(sync = null)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(workingListsHash))
+        val result = manager.getLastUpdatedStr(createBundle(workingListsHash))
 
         assertThat(result).isNull()
     }
@@ -119,7 +122,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_null_when_download_limit_increased() = runTest {
         prepareWithSync(storedHash = workingListsHash)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(workingListsHash).copy(limit = limit + 100))
+        val result = manager.getLastUpdatedStr(createBundle(workingListsHash, limit = defaultLimit + 100))
 
         assertThat(result).isNull()
     }
@@ -128,7 +131,7 @@ class TrackerSyncLastUpdatedManagerShould {
     fun return_last_updated_when_download_limit_decreased() = runTest {
         prepareWithSync(storedHash = workingListsHash)
 
-        val result = manager.getLastUpdatedStr(createCommonParams(workingListsHash).copy(limit = limit - 100))
+        val result = manager.getLastUpdatedStr(createBundle(workingListsHash, limit = defaultLimit - 100))
 
         assertThat(result).isNotNull()
     }
@@ -147,23 +150,30 @@ class TrackerSyncLastUpdatedManagerShould {
         return TrackedEntityInstanceSync.builder()
             .program(program)
             .organisationUnitIdsHash(orgUnitsHash)
-            .downloadLimit(limit)
+            .downloadLimit(defaultLimit)
             .workingListsHash(hash)
             .lastUpdated(lastUpdated)
             .build()
     }
 
-    private fun createCommonParams(hash: Int?): TrackerQueryCommonParams {
-        return TrackerQueryCommonParams(
+    private fun createBundle(hash: Int? = null, limit: Int? = null): BaseTrackerQueryBundle {
+        val commonParams = TrackerQueryCommonParams(
             uids = emptyList(),
             programs = listOf(program),
             program = program,
             startDate = null,
             hasLimitByOrgUnit = false,
             ouMode = OrganisationUnitMode.SELECTED,
-            orgUnitsBeforeDivision = orgUnits,
-            limit = limit,
+            orgUnitsBeforeDivision = orgUnitsBeforeDivision,
+            limit = limit ?: defaultLimit,
             workingListsHash = hash,
         )
+
+        return object : BaseTrackerQueryBundle {
+            override val commonParams: TrackerQueryCommonParams
+                get() = commonParams
+            override val orgUnits: List<DownloadOrgunit>
+                get() = ouUids.map { DownloadOrgunit(it, OrganisationUnitMode.SELECTED) }
+        }
     }
 }

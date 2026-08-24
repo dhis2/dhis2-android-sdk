@@ -53,6 +53,6 @@ internal class DataSetOrganisationUnitLinkStoreImpl(
             .appendKeyStringValue(DataSetOrganisationUnitLinkTableInfo.Columns.ORGANISATION_UNIT, orgUnitUid)
             .build()
         val selectStatement = builder.selectWhere(whereClause)
-        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.dataSet()!!) }
+        return selectRawQuery(selectStatement).map { ObjectWithUid.create(it.dataSet()) }
     }
 }

@@ -30,9 +30,10 @@ package org.hisp.dhis.android.core.event.internal
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryCommonParams
 import org.hisp.dhis.android.core.tracker.exporter.BaseTrackerQueryBundle
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 
 internal data class EventQueryBundle(
     override val commonParams: TrackerQueryCommonParams,
-    override val orgUnits: List<String>,
+    override val orgUnits: List<DownloadOrgunit>,
     val eventFilters: List<EventFilter>?,
 ) : BaseTrackerQueryBundle

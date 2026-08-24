@@ -40,13 +40,13 @@ class ApiPagingEngineShould {
     @Test
     @Throws(IllegalArgumentException::class, IllegalStateException::class)
     fun calculate_a_paging_list() {
-        var calculatedPagingList: List<Paging?> = getPaginationList(50, 179, 0)
-        var paging1 = Paging(1, 50, 0, 0, false)
-        var paging2 = Paging(2, 50, 0, 0, false)
-        var paging3 = Paging(3, 50, 0, 0, false)
-        var lastPaging = Paging(6, 30, 0, 1, true)
+        val calculatedPagingList: List<Paging?> = getPaginationList(50, 179, 0)
+        val paging1 = Paging(1, 50, 0, 0, false)
+        val paging2 = Paging(2, 50, 0, 0, false)
+        val paging3 = Paging(3, 50, 0, 0, false)
+        val lastPaging = Paging(6, 30, 0, 1, true)
 
-        var expectedPagingList: List<Paging?> =
+        val expectedPagingList: List<Paging?> =
             listOf(paging1, paging2, paging3, lastPaging)
 
         Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
@@ -55,9 +55,9 @@ class ApiPagingEngineShould {
     @Test
     @Throws(IllegalArgumentException::class, IllegalStateException::class)
     fun calculate_a_paging_list_if_only_one_page() {
-        var calculatedPagingList: List<Paging?> = getPaginationList(50, 33, 0)
-        var paging = Paging(1, 33, 0, 0, true)
-        var expectedPagingList: List<Paging?> = ArrayList(listOf(paging))
+        val calculatedPagingList: List<Paging?> = getPaginationList(50, 33, 0)
+        val paging = Paging(1, 33, 0, 0, true)
+        val expectedPagingList: List<Paging?> = ArrayList(listOf(paging))
 
         Truth.assertThat(expectedPagingList).isEqualTo(calculatedPagingList)
     }
@@ -67,8 +67,8 @@ class ApiPagingEngineShould {
     fun calculate_a_paging_list_with_previously_downloaded() {
         var calculatedPagingList: List<Paging?> = getPaginationList(50, 85, 94)
         var paging1 = Paging(10, 10, 4, 0, false)
-        var paging2 = Paging(3, 50, 0, 0, false)
-        var lastPaging = Paging(6, 30, 0, 1, true)
+        val paging2 = Paging(3, 50, 0, 0, false)
+        val lastPaging = Paging(6, 30, 0, 1, true)
 
         var expectedPagingList: List<Paging?> =
             listOf(paging1, paging2, lastPaging)

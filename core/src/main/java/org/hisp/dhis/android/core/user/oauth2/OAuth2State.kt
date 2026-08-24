@@ -41,17 +41,9 @@ data class OAuth2State(
     @SerialName("scope") val scope: String?,
     @SerialName("token_endpoint") val tokenEndpoint: String,
 ) {
-    @Suppress("MagicNumber")
-    fun needsTokenRefresh(): Boolean {
-        val currentTime = System.currentTimeMillis().div(1000)
-        return (currentTime + BUFFER) >= expiresAt
-    }
-
     fun jsonSerializeString(): String = Json.encodeToString(serializer(), this)
 
     companion object {
-        private const val BUFFER = 60
-
         fun jsonDeserialize(json: String): OAuth2State =
             Json.decodeFromString(serializer(), json)
     }

@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilterCollectionRepository
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Before
 import org.junit.Test
@@ -58,6 +60,7 @@ class TrackedEntityInstanceQueryFactoryShould {
 
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
     private val programStore: ProgramStore = mock()
     private val programSettingsObjectRepository: ProgramSettingsObjectRepository = mock()
     private val programSettings: ProgramSettings = mock()
@@ -103,6 +106,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
+        whenever(organisationUnitStore.isLeaf(any())).thenReturn(false)
         whenever(organisationUnitProgramLinkLinkStore.selectWhere(any()))
             .thenReturn(links)
         whenever(programStore.getUidsByProgramType(any())).thenReturn(
@@ -119,6 +123,7 @@ class TrackedEntityInstanceQueryFactoryShould {
         whenever(teiFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
+            organisationUnitStore,
             userOrganisationUnitLinkStore,
             organisationUnitProgramLinkLinkStore,
         )
@@ -138,7 +143,8 @@ class TrackedEntityInstanceQueryFactoryShould {
         val queries = queryFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries[0]
-        assertThat(query.orgUnits).isEqualTo(rootOrgUnits)
+        assertThat(query.orgUnits)
+            .isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, resolvedOuMode = OrganisationUnitMode.DESCENDANTS) })
         assertThat(query.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
         assertThat(query.commonParams.program).isNull()
     }

@@ -27,52 +27,127 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.jwt.JWTHelper
 import org.hisp.dhis.android.core.user.oauth2.internal.keystore.KeyStoreManager
 import org.koin.core.annotation.Singleton
+import java.security.PrivateKey
+
+private const val BAD_REQUEST = 400
+private const val UNAUTHORIZED = 401
 
 @Singleton
 internal class OAuth2TokenRefresher(
     private val oauth2NetworkHandler: OAuth2NetworkHandler,
     private val keyStoreManager: KeyStoreManager,
-    private val logoutHandler: OAuth2LogoutHandler,
+    private val credentialsSecureStore: CredentialsSecureStore,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val logInExceptions: LogInExceptions,
 ) {
-    @Suppress("ReturnCount")
-    suspend fun refreshToken(state: OAuth2State, tokenEndpoint: String): OAuth2State? {
-        return try {
-            if (state.refreshToken == null) {
-                logoutHandler.logOut()
-                return null
+    private val mutex = Mutex()
+
+    @Suppress("ReturnCount", "TooGenericExceptionCaught")
+    suspend fun rotate(consumedRefreshToken: String?): RefreshResult {
+        mutex.withLock {
+            val credentials = credentialsSecureStore.get()
+            val state = credentials?.oauth2State
+                ?: return RefreshResult.Invalid(
+                    logInExceptions.oauth2NoValidTokenError("There is no OAuth2 session"),
+                )
+
+            val currentRefreshToken = state.refreshToken
+                ?: return RefreshResult.Invalid(
+                    logInExceptions.oauth2NoValidTokenError("There is no refresh token"),
+                )
+
+            if (currentRefreshToken != consumedRefreshToken) {
+                return RefreshResult.Success(state)
             }
 
-            val privateKey = keyStoreManager.getPrivateKey(state.keyId) ?: return null
+            val privateKey = keyStoreManager.getPrivateKey(state.keyId)
+                ?: return discardTokens(
+                    credentials,
+                    state,
+                    logInExceptions.incompleteOAuth2RegistrationError("Private key"),
+                )
 
-            val clientAssertion = JWTHelper.createClientAssertion(
-                clientId = state.clientId,
-                tokenEndpoint = tokenEndpoint,
-                privateKey = privateKey,
-                keyId = state.keyId,
-            )
+            return try {
+                when (val result = callTokenEndpoint(state, currentRefreshToken, privateKey)) {
+                    is Result.Success -> {
+                        persist(credentials, result.value)
+                        RefreshResult.Success(result.value)
+                    }
 
-            val result = oauth2NetworkHandler.refreshToken(
-                endpoint = tokenEndpoint,
-                refreshToken = state.refreshToken,
-                clientId = state.clientId,
-                keyId = state.keyId,
-                clientAssertion = clientAssertion,
-            )
-
-            when (result) {
-                is org.hisp.dhis.android.core.arch.helpers.Result.Success -> result.value
-                is org.hisp.dhis.android.core.arch.helpers.Result.Failure -> {
-                    logoutHandler.logOut()
-                    null
+                    is Result.Failure -> classifyFailure(credentials, state, result.failure)
                 }
+            } catch (_: Exception) {
+                RefreshResult.Retryable(null)
             }
-        } catch (_: Exception) {
-            logoutHandler.logOut()
-            null
         }
+    }
+
+    private suspend fun callTokenEndpoint(
+        state: OAuth2State,
+        refreshToken: String,
+        privateKey: PrivateKey,
+    ): Result<OAuth2State, D2Error> {
+        val clientAssertion = JWTHelper.createClientAssertion(
+            clientId = state.clientId,
+            tokenEndpoint = state.tokenEndpoint,
+            privateKey = privateKey,
+            keyId = state.keyId,
+        )
+
+        return oauth2NetworkHandler.refreshToken(
+            endpoint = state.tokenEndpoint,
+            refreshToken = refreshToken,
+            clientId = state.clientId,
+            keyId = state.keyId,
+            clientAssertion = clientAssertion,
+        )
+    }
+
+    /**
+     * Only a token the server explicitly rejects is unrecoverable. Anything else — offline, server
+     * error — is transient and must leave the stored tokens alone so a later call can retry.
+     */
+    private fun classifyFailure(
+        credentials: Credentials,
+        state: OAuth2State,
+        error: D2Error,
+    ): RefreshResult {
+        val httpCode = error.httpErrorCode()
+        val isRejected = httpCode == BAD_REQUEST || httpCode == UNAUTHORIZED
+
+        return if (!error.isOffline && isRejected) {
+            discardTokens(
+                credentials,
+                state,
+                logInExceptions.oauth2NoValidTokenError("The refresh token was rejected by the server"),
+            )
+        } else {
+            RefreshResult.Retryable(error)
+        }
+    }
+
+    private fun discardTokens(
+        credentials: Credentials,
+        state: OAuth2State,
+        error: D2Error,
+    ): RefreshResult.Invalid {
+        persist(credentials, state.copy(accessToken = null, refreshToken = null))
+        return RefreshResult.Invalid(error)
+    }
+
+    private fun persist(credentials: Credentials, state: OAuth2State) {
+        credentialsSecureStore.set(credentials.copy(oauth2State = state))
+        oauth2StateSecureStore.set(credentials.serverUrl, credentials.username, state)
     }
 }

@@ -74,7 +74,7 @@ class ProgramHandlerShould {
 
     private val attributeValues: MutableList<AttributeValue> = ArrayList()
     private var programRuleVariables: List<ProgramRuleVariable> = mock()
-    private var attributeValue: ObjectWithUid = ObjectWithUid.create("Att_Uid")
+    private val attributeValue: ObjectWithUid = ObjectWithUid.create("Att_Uid")
 
     // object to test
     private lateinit var programHandler: ProgramHandler

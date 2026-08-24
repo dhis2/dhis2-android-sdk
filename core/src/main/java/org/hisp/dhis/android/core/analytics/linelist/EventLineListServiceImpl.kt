@@ -190,7 +190,7 @@ internal class EventLineListServiceImpl(
             dataElementRepository
                 .byUid().`in`(dataElements.map { it.uid })
                 .suspendGet()
-                .map { it.uid()!! to it.displayName()!! }.toMap()
+                .map { it.uid() to it.displayName()!! }.toMap()
         } else {
             mapOf()
         }
@@ -199,7 +199,7 @@ internal class EventLineListServiceImpl(
             programIndicatorRepository
                 .byUid().`in`(programIndicators.map { it.uid })
                 .suspendGet()
-                .map { it.uid()!! to it.displayName()!! }.toMap()
+                .map { it.uid() to it.displayName()!! }.toMap()
         } else {
             mapOf()
         }
@@ -207,7 +207,7 @@ internal class EventLineListServiceImpl(
         val organisationUnitNameMap = organisationUnitRepository
             .byUid().`in`(organisationUnitUids)
             .suspendGet()
-            .map { it.uid()!! to it.displayName()!! }.toMap()
+            .map { it.uid() to it.displayName()!! }.toMap()
 
         return dataElementNameMap + programIndicatorNameMap + organisationUnitNameMap
     }

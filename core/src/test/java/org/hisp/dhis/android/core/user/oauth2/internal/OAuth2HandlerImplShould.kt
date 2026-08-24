@@ -54,6 +54,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
@@ -167,6 +168,26 @@ class OAuth2HandlerImplShould {
         assertThat(oauth2SecureStore.isRegistered).isFalse()
     }
 
+    @Test
+    fun blockingHandleEnrollmentResponse_deletes_the_previous_key_when_enrolling_again() {
+        seedRegistrationFlowMocks()
+        dcrNetworkHandler.stub {
+            onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Success(CLIENT_ID))
+        }
+        // The device was already enrolled with an older key pair.
+        oauth2SecureStore.clientId = "client-0"
+        oauth2SecureStore.keyId = PREVIOUS_KEY_ID
+        oauth2SecureStore.isRegistered = true
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("HTTPS://Server.com/", validJwt(), STATE)
+
+        // Otherwise the superseded key is orphaned in the keystore forever.
+        verify(keyStoreManager).deleteKey(PREVIOUS_KEY_ID)
+        assertThat(oauth2SecureStore.keyId).isEqualTo(KEY_ID)
+    }
+
     @Test(expected = D2Error::class)
     fun blockingHandleEnrollmentResponse_throws_on_expired_iat() {
         oauth2SecureStore.tempState = STATE
@@ -201,6 +222,18 @@ class OAuth2HandlerImplShould {
         verify(oauth2NetworkHandler).buildLogoutUrl(config)
     }
 
+    @Test
+    fun blockingBuildLogoutUrl_normalizes_the_server_url_before_delegating() {
+        val config = OAuth2Config(serverUrl = "HTTPS://Server.com/")
+        val normalizedConfig = config.copy(serverUrl = NORMALIZED_URL)
+        whenever(oauth2NetworkHandler.buildLogoutUrl(normalizedConfig)).thenReturn(LOGOUT_URL)
+
+        val result = handler.blockingBuildLogoutUrl(config)
+
+        assertThat(result).isEqualTo(LOGOUT_URL)
+        verify(oauth2NetworkHandler).buildLogoutUrl(normalizedConfig)
+    }
+
     // endregion
 
     // region blockingHandleLogInResponse
@@ -209,7 +242,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleLogInResponse_throws_when_state_does_not_match() {
         seedSuccessfulLogInPrerequisites()
 
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, "forged-state")
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, "forged-state")
     }
 
     @Test(expected = D2Error::class)
@@ -218,21 +251,21 @@ class OAuth2HandlerImplShould {
         oauth2SecureStore.clientId = CLIENT_ID
         oauth2SecureStore.keyId = KEY_ID
 
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_temp_code_verifier_missing() {
         oauth2SecureStore.tempState = STATE
 
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_client_id_missing() {
         oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = D2Error::class)
@@ -240,14 +273,14 @@ class OAuth2HandlerImplShould {
         oauth2SecureStore.tempState = STATE
         oauth2SecureStore.tempCodeVerifier = "verifier"
         oauth2SecureStore.clientId = CLIENT_ID
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     @Test(expected = D2Error::class)
     fun blockingHandleLogInResponse_throws_when_private_key_missing() {
         seedSuccessfulLogInPrerequisites()
         whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(null)
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     @Test
@@ -259,7 +292,7 @@ class OAuth2HandlerImplShould {
                 .doReturn(Result.Failure(serverError()))
         }
 
-        runCatching { handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE) }
+        runCatching { handler.blockingHandleLogInResponse(null, "HTTPS://Server.com/", AUTH_CODE, STATE) }
             .also { assertThat(it.isFailure).isTrue() }
 
         assertThat(oauth2SecureStore.tempCodeVerifier).isNull()
@@ -280,7 +313,7 @@ class OAuth2HandlerImplShould {
                 .doReturn(Result.Failure(serverError()))
         }
 
-        runCatching { handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE) }
+        runCatching { handler.blockingHandleLogInResponse(null, "HTTPS://Server.com/", AUTH_CODE, STATE) }
 
         val endpointCaptor = argumentCaptor<String>()
         val assertionCaptor = argumentCaptor<String>()
@@ -311,22 +344,51 @@ class OAuth2HandlerImplShould {
         val expectedUser: User = mock()
         whenever(expectedUser.username()).thenReturn(USERNAME)
         logInCall.stub {
-            onBlocking { logInOAuth2(any(), any()) }.doReturn(expectedUser)
+            onBlocking { logInOAuth2(anyOrNull(), any(), any()) }.doReturn(expectedUser)
         }
 
-        val user = handler.blockingHandleLogInResponse("HTTPS://Server.com/", AUTH_CODE, STATE)
+        val user = handler.blockingHandleLogInResponse(null, "HTTPS://Server.com/", AUTH_CODE, STATE)
 
         assertThat(user).isSameInstanceAs(expectedUser)
         // logInOAuth2 called with normalized server url and the state with our keyId
         val urlCaptor = argumentCaptor<String>()
         val stateCaptor = argumentCaptor<OAuth2State>()
-        verifyBlocking(logInCall) { logInOAuth2(urlCaptor.capture(), stateCaptor.capture()) }
+        verifyBlocking(logInCall) { logInOAuth2(anyOrNull(), urlCaptor.capture(), stateCaptor.capture()) }
         assertThat(urlCaptor.firstValue).isEqualTo(NORMALIZED_URL)
         assertThat(stateCaptor.firstValue.keyId).isEqualTo(KEY_ID)
         assertThat(stateCaptor.firstValue.accessToken).isEqualTo(exchangedState.accessToken)
         // Temp data cleared after success.
         assertThat(oauth2SecureStore.tempCodeVerifier).isNull()
         assertThat(oauth2SecureStore.tempState).isNull()
+    }
+
+    @Test
+    fun blockingHandleLogInResponse_keeps_the_registration_so_the_user_can_authorize_again() {
+        seedSuccessfulLogInPrerequisites()
+        oauth2SecureStore.isRegistered = true
+        whenever(keyStoreManager.getPrivateKey(KEY_ID)).thenReturn(keyPair.private)
+        oauth2NetworkHandler.stub {
+            onBlocking { exchangeCodeForToken(any(), any(), any(), any(), any(), any()) }
+                .doReturn(Result.Success(exchangedState()))
+        }
+        val expectedUser: User = mock()
+        whenever(expectedUser.username()).thenReturn(USERNAME)
+        logInCall.stub {
+            onBlocking { logInOAuth2(anyOrNull(), any(), any()) }.doReturn(expectedUser)
+        }
+
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
+
+        // Tokens expire; the DCR registration must not. Otherwise the user cannot start a new
+        // authorization round after the refresh token is rejected without enrolling from scratch.
+        assertThat(oauth2SecureStore.clientId).isEqualTo(CLIENT_ID)
+        assertThat(oauth2SecureStore.keyId).isEqualTo(KEY_ID)
+        assertThat(handler.isDeviceRegistered()).isTrue()
+
+        whenever(oauth2NetworkHandler.buildAuthorizationUrl(any(), any(), any(), any()))
+            .thenReturn(AUTHORIZATION_URL)
+        assertThat(handler.blockingLogIn(OAuth2Config(serverUrl = NORMALIZED_URL)))
+            .isEqualTo(AUTHORIZATION_URL)
     }
 
     @Test(expected = D2Error::class)
@@ -340,10 +402,10 @@ class OAuth2HandlerImplShould {
         val userWithoutUsername: User = mock()
         whenever(userWithoutUsername.username()).thenReturn(null)
         logInCall.stub {
-            onBlocking { logInOAuth2(any(), any()) }.doReturn(userWithoutUsername)
+            onBlocking { logInOAuth2(anyOrNull(), any(), any()) }.doReturn(userWithoutUsername)
         }
 
-        handler.blockingHandleLogInResponse("https://server.com", AUTH_CODE, STATE)
+        handler.blockingHandleLogInResponse(null, "https://server.com", AUTH_CODE, STATE)
     }
 
     // endregion
@@ -639,8 +701,10 @@ class OAuth2HandlerImplShould {
         private const val ENROLL_URL = "https://server.com/oauth2/dcr/enroll"
         private const val LOGOUT_URL = "https://server.com/dhis-web-commons-security/logout.action"
         private const val NORMALIZED_URL = "https://server.com"
+        private const val AUTHORIZATION_URL = "https://server.com/oauth2/authorize"
         private const val CLIENT_ID = "client-1"
         private const val KEY_ID = "key-1"
+        private const val PREVIOUS_KEY_ID = "key-0"
         private const val DEVICE_ID = "device-1"
         private const val JWKS = "{\"keys\":[]}"
         private const val CODE_VERIFIER = "verifier"

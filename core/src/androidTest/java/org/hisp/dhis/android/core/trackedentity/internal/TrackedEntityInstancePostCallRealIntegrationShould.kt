@@ -167,8 +167,8 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         // Enrollment module -> enroll the tracked entity instance to the program
         d2.enrollmentModule().enrollments().blockingAdd(
             EnrollmentCreateProjection.builder()
-                .organisationUnit(organisationUnit!!.uid())
-                .program(program!!.uid())
+                .organisationUnit(organisationUnit.uid())
+                .program(program.uid())
                 .trackedEntityInstance(teiUid)
                 .attributeOptionCombo(null)
                 .build(),

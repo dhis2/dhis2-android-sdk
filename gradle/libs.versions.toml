@@ -2,22 +2,21 @@
 dhis2AndroidSdkVersion = "1.15.0-SNAPSHOT"
 dhis2AndroidSdkCode = "306"
 
-gradle = "8.13.2"
-kotlin = "2.3.20"
+gradle = "9.3.1"
+kotlin = "2.4.10"
 java = "17"
-ksp = "2.3.9"
+ksp = "2.3.11"
 ktlint = "12.1.1"
-sonarqube = "7.2.2.6593"
+sonarqube = "7.4.0.8496"
 detekt = "1.23.8"
-dokka = "1.9.20"
+dokka = "2.2.0"
 nexusPublish = "2.0.0"
-apiCompatibility = "0.17.0"
 cyclonedx = "2.1.0"
 
-targetSdkVersion = "36"
+targetSdkVersion = "37"
 minSdkVersion = "23"
 
-libraryDesugaring = "2.1.4"
+libraryDesugaring = "2.1.5"
 
 # android
 annotation = "1.9.1"
@@ -60,6 +59,7 @@ appauth = "0.11.1"
 
 # listenablefuture empty
 listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
+exifinterface = "1.4.2"
 
 
 [libraries]
@@ -124,13 +124,14 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 livedata-testing-ktx = { group = "com.jraska.livedata", name = "testing-ktx", version.ref = "liveDataTesting" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
 [plugins]
 cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "androidx-room" }

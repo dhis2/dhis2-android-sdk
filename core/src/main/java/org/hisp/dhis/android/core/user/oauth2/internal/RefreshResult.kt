@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,44 +25,31 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.settings.internal
+package org.hisp.dhis.android.core.user.oauth2.internal
 
-import kotlinx.coroutines.test.runTest
-import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
-import org.junit.Before
-import org.junit.Test
-import org.mockito.kotlin.*
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-class AnalyticsTeiWHONutritionDataHandlerShould {
+/**
+ * Outcome of [OAuth2TokenRefresher.rotate]. The distinction between [Retryable] and [Invalid] is
+ * what keeps a network outage from closing the session: only [Invalid] means the session is
+ * unrecoverable.
+ */
+internal sealed class RefreshResult {
+    /**
+     * A usable state is available, either freshly rotated or already rotated by a concurrent call.
+     */
+    data class Success(val state: OAuth2State) : RefreshResult()
 
-    private val store: AnalyticsTeiWHONutritionDataStore = mock()
+    /**
+     * The refresh could not be completed for a transient reason (offline, timeout, server error).
+     * The stored credentials are left untouched and the caller may keep using the current token.
+     */
+    data class Retryable(val error: D2Error?) : RefreshResult()
 
-    private val teiDataElementHandler: AnalyticsTeiDataElementHandler = mock()
-    private val teiIndicatorHandler: AnalyticsTeiIndicatorHandler = mock()
-
-    private val whoData: AnalyticsTeiWHONutritionData = mock()
-
-    private lateinit var analyticsTeiSettingHandler:
-        ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>
-
-    @Before
-    @Throws(Exception::class)
-    fun setUp() {
-        whenever(whoData.teiSetting()) doReturn "tei_setting"
-
-        analyticsTeiSettingHandler = AnalyticsTeiWHONutritionDataHandler(
-            store,
-            teiDataElementHandler,
-            teiIndicatorHandler,
-        )
-    }
-
-    @Test
-    fun call_data_handlers() = runTest {
-        analyticsTeiSettingHandler.handleMany(whoData.teiSetting(), listOf(whoData))
-
-        verify(teiDataElementHandler).handleMany(any(), any())
-        verify(teiIndicatorHandler).handleMany(any(), any())
-    }
+    /**
+     * There is no usable token and there will not be one without authorizing again. The session has
+     * already been closed and [error] is meant to be propagated to the app as-is.
+     */
+    data class Invalid(val error: D2Error) : RefreshResult()
 }

@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-import android.graphics.BitmapFactory
-import org.hisp.dhis.android.core.D2Manager
+import androidx.core.graphics.scale
+import org.hisp.dhis.android.core.arch.helpers.internal.ImageFileHelper
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -42,10 +42,21 @@ import java.io.IOException
 object FileResizerHelper {
 
     /**
+     * The image is decoded with some room above the requested dimension, so that the final downscaling is a filtered
+     * pass over a bitmap that still holds more detail than the result, instead of relying only on the power of two
+     * subsampling of the decoder, which can only land on the requested dimension by chance.
+     */
+    private const val DECODE_HEADROOM_FACTOR = 2
+
+    private const val LOSSLESS_QUALITY = 100
+
+    /**
      * Resize an image file to a given dimension. The possible dimensions are small (256px), medium (512px) and
      * large (1024px). The method will scale the largest between height and width to the given dimension
      * without change the relation between them. In case both height and width are smaller than the given dimension
      * the method will return the given file without modifications.
+     *
+     * The EXIF orientation is baked into the pixels of the resized image, since re-encoding it drops the metadata.
      *
      * @param fileToResize  Image file to resize.
      * @param dimension     The dimension to resize.
@@ -54,53 +65,61 @@ object FileResizerHelper {
     @JvmStatic
     @Throws(D2Error::class)
     fun resizeFile(fileToResize: File, dimension: Dimension): File {
-        val bitmap = BitmapFactory.decodeFile(fileToResize.absolutePath)
+        val bitmap = ImageFileHelper.decodeBitmap(fileToResize, dimension.dimension * DECODE_HEADROOM_FACTOR)
+            ?: throw buildD2Error("${fileToResize.name} could not be decoded as an image")
         val width = bitmap.width.toFloat()
         val height = bitmap.height.toFloat()
         val scaleFactor = width / height
-        return if (scaleFactor > 1) {
-            if (width < dimension.dimension) {
-                fileToResize
+        try {
+            return if (scaleFactor > 1) {
+                if (width < dimension.dimension) {
+                    fileToResize
+                } else {
+                    resize(
+                        fileToResize,
+                        bitmap,
+                        dimension.dimension,
+                        (dimension.dimension / scaleFactor).toInt(),
+                        dimension,
+                    )
+                }
             } else {
-                resize(
-                    fileToResize,
-                    bitmap,
-                    dimension.dimension,
-                    (dimension.dimension / scaleFactor).toInt(),
-                    dimension,
-                )
+                if (height < dimension.dimension) {
+                    fileToResize
+                } else {
+                    resize(
+                        fileToResize,
+                        bitmap,
+                        (scaleFactor * dimension.dimension).toInt(),
+                        dimension.dimension,
+                        dimension,
+                    )
+                }
             }
-        } else {
-            if (height < dimension.dimension) {
-                fileToResize
-            } else {
-                resize(
-                    fileToResize,
-                    bitmap,
-                    (scaleFactor * dimension.dimension).toInt(),
-                    dimension.dimension,
-                    dimension,
-                )
-            }
+        } finally {
+            bitmap.recycle()
         }
     }
 
     @Throws(D2Error::class)
-    @Suppress("MagicNumber")
     private fun resize(fileToResize: File, bitmap: Bitmap, dstWidth: Int, dstHeight: Int, dimension: Dimension): File {
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap, dstWidth, dstHeight, false)
-        val parentFile = getCacheDir() ?: fileToResize.parentFile
+        val scaledBitmap = bitmap.scale(dstWidth, dstHeight)
+        val parentFile = ImageFileHelper.getCacheDirectory() ?: fileToResize.absoluteFile.parentFile
         val resizedFile = File(parentFile.path, "resized-${dimension.name}-${fileToResize.name}")
         try {
-            FileOutputStream(resizedFile).use { fileOutputStream ->
-                scaledBitmap.compress(getCompressFormat(resizedFile), 100, fileOutputStream)
-                fileOutputStream.flush()
-                fileOutputStream.close()
-                bitmap.recycle()
-                scaledBitmap.recycle()
+            val format = getCompressFormat(resizedFile)
+            val encoded = FileOutputStream(resizedFile).use { fileOutputStream ->
+                scaledBitmap.compress(format, LOSSLESS_QUALITY, fileOutputStream)
+            }
+            if (!encoded) {
+                throw buildD2Error("${fileToResize.name} could not be encoded as $format")
             }
         } catch (e: IOException) {
-            throw buildD2Error(e)
+            throw buildD2Error(e.message)
+        } finally {
+            if (scaledBitmap !== bitmap) {
+                scaledBitmap.recycle()
+            }
         }
         return resizedFile
     }
@@ -111,27 +130,12 @@ object FileResizerHelper {
         return if (isJpeg) CompressFormat.JPEG else CompressFormat.PNG
     }
 
-    private fun buildD2Error(e: Exception): D2Error {
+    private fun buildD2Error(description: String?): D2Error {
         return D2Error.builder()
             .errorComponent(D2ErrorComponent.SDK)
             .errorCode(D2ErrorCode.FAIL_RESIZING_IMAGE)
-            .errorDescription(e.message ?: "Failed to resize image")
+            .errorDescription(description ?: "Failed to resize image")
             .build()
-    }
-
-    @Suppress("TooGenericExceptionCaught")
-    private fun getCacheDir(): File? {
-        return if (D2Manager.isD2Instantiated()) {
-            D2Manager.getD2().context().let {
-                try {
-                    FileResourceDirectoryHelper.getFileCacheResourceDirectory(it)
-                } catch (e: RuntimeException) {
-                    FileResourceDirectoryHelper.getRootFileCacheResourceDirectory(it)
-                }
-            }
-        } else {
-            null
-        }
     }
 
     @Suppress("MagicNumber")

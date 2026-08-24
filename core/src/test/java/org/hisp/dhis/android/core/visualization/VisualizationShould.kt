@@ -59,8 +59,8 @@ internal class VisualizationShould : CoreObjectShould<VisualizationDTO>(
         assertThat(visualization.rows()!!.size).isEqualTo(1)
         assertThat(visualization.rows()!![0].id()).isEqualTo("pe")
         assertThat(visualization.rows()!![0].items()?.size).isEqualTo(4)
-        assertThat(visualization.rows()!![0].items()!![0]?.dimensionItem()).isEqualTo("202102")
-        assertThat(visualization.rows()!![0].items()!![0]?.dimensionItemType()).isEqualTo("PERIOD")
+        assertThat(visualization.rows()!![0].items()!![0].dimensionItem()).isEqualTo("202102")
+        assertThat(visualization.rows()!![0].items()!![0].dimensionItemType()).isEqualTo("PERIOD")
 
         assertThat(visualization.filters()!!.size).isEqualTo(1)
         assertThat(visualization.filters()!![0].id()).isEqualTo("ou")

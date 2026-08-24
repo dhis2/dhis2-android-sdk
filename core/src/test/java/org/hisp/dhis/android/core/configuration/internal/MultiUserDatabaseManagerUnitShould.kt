@@ -161,7 +161,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
     @Test
     fun not_create_database_when_non_existing_when_calling_loadExistingKeepingEncryption() = runTest {
-        manager.loadExistingKeepingEncryption(serverUrl, username)
+        manager.loadExistingKeepingEncryption(serverUrl, username, AuthorizationType.BASIC)
         verifyNoMoreInteractions(databaseManager)
     }
 
@@ -180,9 +180,41 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             ),
         ).doReturn(unencryptedConfiguration)
 
-        manager.loadExistingKeepingEncryption(serverUrl, username)
+        manager.loadExistingKeepingEncryption(serverUrl, username, AuthorizationType.BASIC)
 
         verify(databaseManager).createOrOpenUnencryptedDatabase(unencryptedDbName)
+    }
+
+    @Test
+    fun replace_the_recorded_authorization_type_with_the_one_the_caller_established() = runTest {
+        // The stored account says BASIC, either because it predates the type or because an earlier
+        // login defaulted it. Opening it as OPEN_ID_CONNECT must correct the record: otherwise the
+        // account stays labelled as a password one and, once its tokens are gone, logging in would
+        // be routed to the password flow with no way out.
+        whenever(databaseConfigurationSecureStore.get()).doReturn(unencryptedConfiguration)
+        whenever(
+            configurationHelper.addOrUpdateAccount(
+                unencryptedConfiguration,
+                serverUrl,
+                username,
+                false,
+                null,
+                null,
+                AuthorizationType.OPEN_ID_CONNECT,
+            ),
+        ).doReturn(unencryptedConfiguration)
+
+        manager.loadExistingKeepingEncryption(serverUrl, username, AuthorizationType.OPEN_ID_CONNECT)
+
+        verify(configurationHelper).addOrUpdateAccount(
+            unencryptedConfiguration,
+            serverUrl,
+            username,
+            false,
+            null,
+            null,
+            AuthorizationType.OPEN_ID_CONNECT,
+        )
     }
 
     @Test

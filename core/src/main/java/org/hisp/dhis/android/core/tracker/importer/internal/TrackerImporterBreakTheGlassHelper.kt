@@ -138,8 +138,8 @@ internal class TrackerImporterBreakTheGlassHelper(
     suspend fun fakeBreakGlass(instances: List<TrackedEntityInstance>) {
         instances.forEach { instance ->
             instance.enrollments.orEmpty().forEach { enrollment ->
-                if (instance.uid() != null && enrollment.program() != null) {
-                    ownershipManagerImpl.fakeBreakGlass(instance.uid()!!, enrollment.program()!!)
+                if (enrollment.program() != null) {
+                    ownershipManagerImpl.fakeBreakGlass(instance.uid(), enrollment.program()!!)
                 }
             }
         }

@@ -44,11 +44,11 @@ internal data class TrackerVisualizationDimensionDTO(
     val repetition: TrackerVisualizationDimensionRepetitionDTO?,
 ) {
     fun toDomain(visualization: String, position: LayoutPosition): TrackerVisualizationDimension? {
-        return if (dimension != null) {
+        return dimension?.let {
             TrackerVisualizationDimension.builder()
                 .trackerVisualization(visualization)
                 .position(position)
-                .dimension(dimension)
+                .dimension(it)
                 .dimensionType(dimensionType)
                 .program(program?.toDomain())
                 .programStage(programStage?.toDomain())
@@ -56,8 +56,6 @@ internal data class TrackerVisualizationDimensionDTO(
                 .filter(filter)
                 .repetition(repetition?.toDomain())
                 .build()
-        } else {
-            null
         }
     }
 }

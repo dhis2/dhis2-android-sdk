@@ -1,5 +1,5 @@
 import org.gradle.api.tasks.Sync
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -31,13 +31,14 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    id("io.github.tjokinen.android-bcv-bridge") version "0.2.0"
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.javadoc)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.koin.compiler)
 }
@@ -136,17 +137,16 @@ android {
     }
 
     sourceSets {
-        sourceSets.getByName("main") {
+        getByName("main") {
             java.srcDirs("build/generated/ksp/main/kotlin")
         }
         getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
         getByName("androidTest") {
-            java.srcDirs("src/sharedTest/java")
             resources.srcDirs(
                 "src/sharedAndroidTest/resources",
-                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources").get().asFile,
             )
         }
     }
@@ -166,6 +166,7 @@ android {
     namespace = "org.hisp.dhis.android"
     buildFeatures {
         buildConfig = true
+        resValues = true
     }
 
     publishing {
@@ -180,10 +181,25 @@ kotlin {
         freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
         freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
     }
+
+    // In order to make it work, it requires the bridge plugin because of this issue
+    // https://youtrack.jetbrains.com/issue/KT-78025
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation()
+}
+
+// AGP's built-in Kotlin support no longer syncs `android.sourceSets` with the Kotlin compilation
+// (see https://kotl.in/gradle/agp-built-in-kotlin), so the shared test sources shared between unit
+// and instrumented tests must be registered through the variant Sources API instead.
+androidComponents {
+    onVariants { variant ->
+        variant.androidTest?.sources?.kotlin?.addStaticSourceDirectory("src/sharedTest/java")
+    }
 }
 
 dependencies {
 
+    implementation(libs.androidx.exifinterface)
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
@@ -284,34 +300,15 @@ detekt {
     buildUponDefaultConfig = false
 }
 
-tasks.withType<DokkaTask>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            perPackageOption {
-                matchingRegex.set(".*.internal.*")
-                suppress.set(true)
-            }
-        }
-    }
-    dokkaSourceSets {
-        configureEach {
-            moduleName.set("DHIS2 Android SDK")
-        }
-    }
+dokka {
+    moduleName.set("DHIS2 Android SDK")
 
-    val dokkaBaseConfiguration = """
-    {
-      "customAssets": ["${file("../assets/logo-icon.svg")}"]
+    pluginsConfiguration.html {
+        customAssets.from(file("../assets/logo-icon.svg"))
     }
-    """
-    pluginsMapConfiguration.set(
-        mapOf(
-            "org.jetbrains.dokka.base.DokkaBase" to dokkaBaseConfiguration,
-        ),
-    )
 }
 
-tasks.dokkaJavadoc.configure {
+tasks.named("dokkaGeneratePublicationJavadoc").configure {
     dependsOn("kspReleaseKotlin")
 }
 

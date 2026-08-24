@@ -40,10 +40,10 @@ All commands should be run from the project root. The `core` module is the prima
 ./gradlew runChecks
 
 # Update the public API dump file (required after intentional public API changes)
-./gradlew :core:apiDump
+./gradlew :core:releaseApiDump
 
 # Verify no unintentional breaking changes to public API
-./gradlew :core:apiCheck
+./gradlew :core:releaseApiCheck
 
 # Coverage report (run in order)
 ./gradlew :core:testDebugUnitTest

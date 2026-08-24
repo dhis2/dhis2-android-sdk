@@ -174,7 +174,7 @@ internal class TrackerLineListRepositoryEvaluatorShould : BaseEvaluatorIntegrati
             .withEventOutput(programStage1.uid())
             .withColumn(TrackerLineListItem.OrganisationUnitItem())
             .withColumn(
-                TrackerLineListItem.Category(attribute.uid(), listOf(DataFilter.In(listOf(attributeOption.uid()!!)))),
+                TrackerLineListItem.Category(attribute.uid(), listOf(DataFilter.In(listOf(attributeOption.uid())))),
             )
             .blockingEvaluate()
 

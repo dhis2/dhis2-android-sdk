@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -32,16 +32,6 @@ package org.hisp.dhis.android.core.arch.storage.internal
  */
 internal sealed interface HashVerification {
 
-    /**
-     * The secret matches the stored hash. [needsUpgrade] is true when the stored hash was produced
-     * with an algorithm or a set of parameters that are no longer the current ones, so the caller
-     * should rewrite it with [PasswordHasher.hash] while it still holds the plaintext secret.
-     */
     data class Match(val needsUpgrade: Boolean) : HashVerification
-
-    /**
-     * The secret does not match the stored hash, or the stored hash cannot be verified on this
-     * device.
-     */
     data object Mismatch : HashVerification
 }

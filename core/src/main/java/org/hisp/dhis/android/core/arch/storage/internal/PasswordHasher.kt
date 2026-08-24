@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -61,9 +61,7 @@ internal object PasswordHasher {
     private const val KEY_LENGTH_BITS = 256
 
     /**
-     * Cost factor applied to newly derived hashes. It is embedded in every stored value, so it can
-     * be raised in a future release without invalidating the hashes already written: they will
-     * simply report [HashVerification.Match.needsUpgrade] the next time they are verified.
+     * Cost factor applied to newly derived hashes.
      */
     private const val ITERATIONS = 210_000
 

@@ -142,7 +142,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
 
       - name: Run API validation
-        run: ./gradlew :core:apiCheck
+        run: ./gradlew :core:releaseApiCheck
 
       - name: Upload API dump
         if: failure()

@@ -9602,7 +9602,7 @@ public final class org/hisp/dhis/android/core/event/search/EventQueryRepositoryS
 	public fun <init> (Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/organisationunit/OrganisationUnitMode;Lorg/hisp/dhis/android/core/common/AssignedUserMode;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;Lorg/hisp/dhis/android/core/common/DateFilterPeriod;ZLjava/util/List;Ljava/util/List;)V
 	public final fun assignedUserMode ()Lorg/hisp/dhis/android/core/common/AssignedUserMode;
 	public final fun attributeOptionCombos ()Ljava/util/List;
-	public static final fun builder$core_release ()Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope$Builder;
+	public static final fun builder$core ()Lorg/hisp/dhis/android/core/event/search/EventQueryRepositoryScope$Builder;
 	public final fun completedDate ()Lorg/hisp/dhis/android/core/common/DateFilterPeriod;
 	public final fun component1 ()Lorg/hisp/dhis/android/core/arch/repositories/scope/internal/RepositoryMode;
 	public final fun component10 ()Ljava/util/List;
@@ -28450,7 +28450,7 @@ public final class org/hisp/dhis/android/persistence/visualization/Visualization
 public final class org/hisp/dhis/android/persistence/visualization/VisualizationTableInfo$Columns$Companion {
 }
 
-public final class org/koin/plugin/hints/Core_core_release__orgHispDhisAndroidCoreArchDbStoresInternalObjectStore_callsiteKt {
+public final class org/koin/plugin/hints/Core_core__orgHispDhisAndroidCoreArchDbStoresInternalObjectStore_callsiteKt {
 	public static final synthetic fun callsite (Lorg/hisp/dhis/android/core/arch/db/stores/internal/ObjectStore;)V
 }
 

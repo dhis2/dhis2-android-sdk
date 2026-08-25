@@ -322,7 +322,7 @@ tasks.register("testAll") {
         "ktlintFormat",
         "detekt",
         "lintDebug",
-        "apiDump",
+        "releaseApiDump",
         "testDebugUnitTest",
         "connectedDebugAndroidTest",
     )
@@ -330,7 +330,7 @@ tasks.register("testAll") {
     tasks.findByName("ktlintFormat")?.mustRunAfter("clean")
     tasks.findByName("detekt")?.mustRunAfter("ktlintFormat")
     tasks.findByName("lintDebug")?.mustRunAfter("detekt")
-    tasks.findByName("apiDump")?.mustRunAfter("lintDebug")
-    tasks.findByName("testDebugUnitTest")?.mustRunAfter("apiDump")
+    tasks.findByName("releaseApiDump")?.mustRunAfter("lintDebug")
+    tasks.findByName("testDebugUnitTest")?.mustRunAfter("releaseApiDump")
     tasks.findByName("connectedDebugAndroidTest")?.mustRunAfter("testDebugUnitTest")
 }

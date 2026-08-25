@@ -106,7 +106,7 @@ Uses **Koin** with KSP code generation (Koin Annotations). Each feature has a `*
 
 `core/api/core.api` is the binary API dump. The `api-compatibility` plugin checks for breaking changes on every build.
 
-**Never edit `core/api/core.api` by hand.** It is an auto-generated artifact and the only supported way to update it is by running `./gradlew :core:apiDump` after intentional public API changes. Manual edits will drift from what the plugin actually generates and break the build. Commit the regenerated dump alongside the API change.
+**Never edit `core/api/core.api` by hand.** It is an auto-generated artifact and the only supported way to update it is by running `./gradlew :core:releaseApiDump` after intentional public API changes. Manual edits will drift from what the plugin actually generates and break the build. Commit the regenerated dump alongside the API change.
 
 ### DHIS2 Version Compatibility
 

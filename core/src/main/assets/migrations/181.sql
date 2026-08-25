@@ -191,6 +191,9 @@ ALTER TABLE Program ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE ProgramStage ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE TrackedEntityType ADD COLUMN displayTrackedEntityTypesLabel TEXT;
 
+# Add tracker custom terminology plurals label (ANDROSDK-2377)
+ALTER TABLE Program ADD COLUMN displayRelationshipsLabel TEXT;
+
 # Add image upload quality settings to program and dataSet settings (ANDROSDK-2348)
 ALTER TABLE ProgramSetting ADD COLUMN imageSettings TEXT;
 ALTER TABLE DataSetSetting ADD COLUMN imageSettings TEXT;

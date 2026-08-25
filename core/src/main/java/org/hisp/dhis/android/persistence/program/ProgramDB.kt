@@ -88,6 +88,7 @@ internal data class ProgramDB(
     val displayFollowUpLabel: String?,
     val displayOrgUnitLabel: String?,
     val displayRelationshipLabel: String?,
+    val displayRelationshipsLabel: String?,
     val displayNoteLabel: String?,
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
@@ -130,6 +131,7 @@ internal data class ProgramDB(
             displayFollowUpLabel(displayFollowUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel)
+            displayRelationshipsLabel(displayRelationshipsLabel)
             displayNoteLabel(displayNoteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel)
@@ -191,6 +193,7 @@ internal fun Program.toDB(): ProgramDB {
         displayProgramStagesLabel = displayProgramStagesLabel(),
         displayEventLabel = displayEventLabel(),
         displayEventsLabel = displayEventsLabel(),
+        displayRelationshipsLabel = displayRelationshipsLabel(),
         enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
     )
 }

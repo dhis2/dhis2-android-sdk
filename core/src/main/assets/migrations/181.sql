@@ -198,3 +198,6 @@ ALTER TABLE DataSetSetting ADD COLUMN imageSettings TEXT;
 # Repair dataStore values persisted as JsonWrapper.toString() (ANDROSDK-2376)
 UPDATE DataStore SET value = NULL WHERE syncState = 'SYNCED' AND value = 'null';
 UPDATE DataStore SET value = substr(value, 18, length(value) - 18) WHERE syncState = 'SYNCED' AND value LIKE 'JsonWrapper(json=%)';
+
+# Add tracker custom terminology plurals label (ANDROSDK-2377)
+ALTER TABLE Program ADD COLUMN displayRelationshipsLabel TEXT;

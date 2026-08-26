@@ -96,7 +96,8 @@ internal data class ProgramDB(
     val displayEnrollmentsLabel: String?,
     val displayProgramStagesLabel: String?,
     val displayEventsLabel: String?,
-) : EntityDB<Program>, BaseNameableObjectDB {
+    val displayRelationshipsLabel: String?,
+    ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
         return Program.builder().apply {
@@ -138,6 +139,7 @@ internal data class ProgramDB(
             displayEnrollmentsLabel(displayEnrollmentsLabel)
             displayProgramStagesLabel(displayProgramStagesLabel)
             displayEventsLabel(displayEventsLabel)
+            displayRelationshipsLabel(displayRelationshipsLabel)
         }.build()
     }
 }
@@ -192,5 +194,6 @@ internal fun Program.toDB(): ProgramDB {
         displayEventLabel = displayEventLabel(),
         displayEventsLabel = displayEventsLabel(),
         enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
-    )
+        displayRelationshipsLabel = displayRelationshipsLabel(),
+        )
 }

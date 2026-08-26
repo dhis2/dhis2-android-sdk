@@ -191,9 +191,6 @@ ALTER TABLE Program ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE ProgramStage ADD COLUMN displayEventsLabel TEXT;
 ALTER TABLE TrackedEntityType ADD COLUMN displayTrackedEntityTypesLabel TEXT;
 
-# Add tracker custom terminology plurals label (ANDROSDK-2377)
-ALTER TABLE Program ADD COLUMN displayRelationshipsLabel TEXT;
-
 # Add image upload quality settings to program and dataSet settings (ANDROSDK-2348)
 ALTER TABLE ProgramSetting ADD COLUMN imageSettings TEXT;
 ALTER TABLE DataSetSetting ADD COLUMN imageSettings TEXT;
@@ -201,3 +198,6 @@ ALTER TABLE DataSetSetting ADD COLUMN imageSettings TEXT;
 # Repair dataStore values persisted as JsonWrapper.toString() (ANDROSDK-2376)
 UPDATE DataStore SET value = NULL WHERE syncState = 'SYNCED' AND value = 'null';
 UPDATE DataStore SET value = substr(value, 18, length(value) - 18) WHERE syncState = 'SYNCED' AND value LIKE 'JsonWrapper(json=%)';
+
+# Add tracker custom terminology plurals label (ANDROSDK-2377)
+ALTER TABLE Program ADD COLUMN displayRelationshipsLabel TEXT;

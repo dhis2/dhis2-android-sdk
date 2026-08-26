@@ -88,7 +88,6 @@ internal data class ProgramDB(
     val displayFollowUpLabel: String?,
     val displayOrgUnitLabel: String?,
     val displayRelationshipLabel: String?,
-    val displayRelationshipsLabel: String?,
     val displayNoteLabel: String?,
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
@@ -97,7 +96,8 @@ internal data class ProgramDB(
     val displayEnrollmentsLabel: String?,
     val displayProgramStagesLabel: String?,
     val displayEventsLabel: String?,
-) : EntityDB<Program>, BaseNameableObjectDB {
+    val displayRelationshipsLabel: String?,
+    ) : EntityDB<Program>, BaseNameableObjectDB {
 
     override fun toDomain(): Program {
         return Program.builder().apply {
@@ -131,7 +131,6 @@ internal data class ProgramDB(
             displayFollowUpLabel(displayFollowUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel)
-            displayRelationshipsLabel(displayRelationshipsLabel)
             displayNoteLabel(displayNoteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel)
@@ -140,6 +139,7 @@ internal data class ProgramDB(
             displayEnrollmentsLabel(displayEnrollmentsLabel)
             displayProgramStagesLabel(displayProgramStagesLabel)
             displayEventsLabel(displayEventsLabel)
+            displayRelationshipsLabel(displayRelationshipsLabel)
         }.build()
     }
 }
@@ -193,7 +193,7 @@ internal fun Program.toDB(): ProgramDB {
         displayProgramStagesLabel = displayProgramStagesLabel(),
         displayEventLabel = displayEventLabel(),
         displayEventsLabel = displayEventsLabel(),
-        displayRelationshipsLabel = displayRelationshipsLabel(),
         enrollmentCategoryCombo = enrollmentCategoryCombo().uid(),
-    )
+        displayRelationshipsLabel = displayRelationshipsLabel(),
+        )
 }

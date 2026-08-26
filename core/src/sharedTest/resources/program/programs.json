@@ -24,6 +24,7 @@
       "followUpLabel": "Follow up Label",
       "orgUnitLabel": "OrgUnit Label",
       "relationshipLabel": "Relationship Label",
+      "displayRelationshipsLabel": "Relationships Label",
       "noteLabel": "Note Label",
       "trackedEntityAttributeLabel": "TrackedEntityAttribute Label",
       "programStageLabel": "ProgramStage Label",

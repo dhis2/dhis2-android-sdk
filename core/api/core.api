@@ -13394,7 +13394,7 @@ public final class org/hisp/dhis/android/core/program/OrgHispDhisAndroidCoreProg
 
 public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/android/core/common/BaseNameableObject, org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithStyleKt {
 	public static final field Companion Lorg/hisp/dhis/android/core/program/Program$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)V
 	public final fun access ()Lorg/hisp/dhis/android/core/common/Access;
 	public final fun accessLevel ()Lorg/hisp/dhis/android/core/program/AccessLevel;
 	public final fun attributeValues ()Ljava/util/List;
@@ -13444,15 +13444,16 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun component48 ()Ljava/lang/String;
 	public final fun component49 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/util/Date;
-	public final fun component50 ()Ljava/util/List;
-	public final fun component51 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
-	public final fun component53 ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
+	public final fun component50 ()Ljava/lang/String;
+	public final fun component51 ()Ljava/util/List;
+	public final fun component52 ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
+	public final fun component54 ()Lorg/hisp/dhis/android/core/common/ObjectStyle;
 	public final fun component6 ()Ljava/util/Date;
 	public final fun component7 ()Ljava/lang/Boolean;
 	public final fun component8 ()Ljava/lang/String;
 	public final fun component9 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/program/Program;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/program/Program;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/program/Program;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;)Lorg/hisp/dhis/android/core/program/Program;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/program/Program;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/util/Date;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lorg/hisp/dhis/android/core/program/ProgramType;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityType;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Lorg/hisp/dhis/android/core/common/Access;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Integer;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/List;Lorg/hisp/dhis/android/core/common/FeatureType;Lorg/hisp/dhis/android/core/program/AccessLevel;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectWithUid;Ljava/util/List;Lorg/hisp/dhis/android/core/common/ObjectStyle;IILjava/lang/Object;)Lorg/hisp/dhis/android/core/program/Program;
 	public fun created ()Ljava/util/Date;
 	public final fun dataEntryMethod ()Ljava/lang/Boolean;
 	public fun deleted ()Ljava/lang/Boolean;
@@ -13473,6 +13474,7 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun displayProgramStageLabel ()Ljava/lang/String;
 	public final fun displayProgramStagesLabel ()Ljava/lang/String;
 	public final fun displayRelationshipLabel ()Ljava/lang/String;
+	public final fun displayRelationshipsLabel ()Ljava/lang/String;
 	public fun displayShortName ()Ljava/lang/String;
 	public final fun displayTrackedEntityAttributeLabel ()Ljava/lang/String;
 	public final fun enrollmentCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -13510,6 +13512,7 @@ public final class org/hisp/dhis/android/core/program/Program : org/hisp/dhis/an
 	public final fun getDisplayProgramStageLabel ()Ljava/lang/String;
 	public final fun getDisplayProgramStagesLabel ()Ljava/lang/String;
 	public final fun getDisplayRelationshipLabel ()Ljava/lang/String;
+	public final fun getDisplayRelationshipsLabel ()Ljava/lang/String;
 	public fun getDisplayShortName ()Ljava/lang/String;
 	public final fun getDisplayTrackedEntityAttributeLabel ()Ljava/lang/String;
 	public final fun getEnrollmentCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -13622,6 +13625,7 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	public final fun displayProgramStageLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun displayProgramStagesLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun displayRelationshipLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
+	public final fun displayRelationshipsLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public synthetic fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/BaseNameableObject$Builder;
 	public fun displayShortName (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
 	public final fun displayTrackedEntityAttributeLabel (Ljava/lang/String;)Lorg/hisp/dhis/android/core/program/Program$Builder;
@@ -13655,6 +13659,7 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun getDisplayProgramStageLabel ()Ljava/lang/String;
 	protected final fun getDisplayProgramStagesLabel ()Ljava/lang/String;
 	protected final fun getDisplayRelationshipLabel ()Ljava/lang/String;
+	protected final fun getDisplayRelationshipsLabel ()Ljava/lang/String;
 	protected final fun getDisplayShortName ()Ljava/lang/String;
 	protected final fun getDisplayTrackedEntityAttributeLabel ()Ljava/lang/String;
 	protected final fun getEnrollmentCategoryCombo ()Lorg/hisp/dhis/android/core/common/ObjectWithUid;
@@ -13719,6 +13724,7 @@ public class org/hisp/dhis/android/core/program/ProgramBuilder : org/hisp/dhis/a
 	protected final fun setDisplayProgramStageLabel (Ljava/lang/String;)V
 	protected final fun setDisplayProgramStagesLabel (Ljava/lang/String;)V
 	protected final fun setDisplayRelationshipLabel (Ljava/lang/String;)V
+	protected final fun setDisplayRelationshipsLabel (Ljava/lang/String;)V
 	protected final fun setDisplayShortName (Ljava/lang/String;)V
 	protected final fun setDisplayTrackedEntityAttributeLabel (Ljava/lang/String;)V
 	protected final fun setEnrollmentCategoryCombo (Lorg/hisp/dhis/android/core/common/ObjectWithUid;)V
@@ -26933,6 +26939,7 @@ public final class org/hisp/dhis/android/persistence/program/ProgramTableInfo$Co
 	public static final field DISPLAY_ORG_UNIT_LABEL Ljava/lang/String;
 	public static final field DISPLAY_PROGRAM_STAGES_LABEL Ljava/lang/String;
 	public static final field DISPLAY_PROGRAM_STAGE_LABEL Ljava/lang/String;
+	public static final field DISPLAY_RELATIONSHIPS_LABEL Ljava/lang/String;
 	public static final field DISPLAY_RELATIONSHIP_LABEL Ljava/lang/String;
 	public static final field DISPLAY_SHORT_NAME Ljava/lang/String;
 	public static final field DISPLAY_TRACKED_ENTITY_ATTRIBUTE_LABEL Ljava/lang/String;

@@ -37,6 +37,8 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.server.OauthConfig
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
@@ -51,6 +53,7 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class LoginConfigCallShould {
@@ -59,18 +62,22 @@ class LoginConfigCallShould {
     private val loginExceptions: LogInExceptions = mock()
     private val networkHandler: LoginConfigNetworkHandler = mock()
     private val oauth2SecureStore = OAuth2SecureStore(InMemorySecureStore())
+    private val dhisVersionManager: DHISVersionManagerImpl = mock()
     private val executor = CoroutineAPICallExecutorMock()
 
     private lateinit var call: LoginConfigCall
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
+        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_43)).doReturn(true)
+
         call = LoginConfigCall(
             pingNetworkHandler,
             loginExceptions,
             executor,
             networkHandler,
             oauth2SecureStore,
+            dhisVersionManager,
         )
     }
 
@@ -148,6 +155,27 @@ class LoginConfigCallShould {
         // along the loginConfig-success branch.
         assertThat(oauth2SecureStore.authorizationEndpoint).isEqualTo("kept-auth")
         assertThat(oauth2SecureStore.jwksUri).isEqualTo("kept-jwks")
+    }
+
+    @Test
+    fun marks_oauth_disabled_without_fetching_config_when_server_version_is_lower_than_2_43() = runTest {
+        oauth2SecureStore.authorizationEndpoint = "stale-auth"
+        oauth2SecureStore.jwksUri = "stale-jwks"
+
+        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_43)).doReturn(false)
+        networkHandler.stub {
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample()
+            onBlocking { oauthConfigFor(any(), any()) } doReturn oauthConfigSample()
+        }
+
+        val result = call.checkServerUrl(NORMALIZED_URL)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        val loginConfig = (result as Result.Success<LoginConfig, D2Error>).value
+        assertThat(loginConfig.isOauthEnabled).isFalse()
+        verifyBlocking(networkHandler, never()) { oauthConfigFor(any(), any()) }
+        assertThat(oauth2SecureStore.authorizationEndpoint).isNull()
+        assertThat(oauth2SecureStore.jwksUri).isNull()
     }
 
     private fun loginConfigSample(): LoginConfig =

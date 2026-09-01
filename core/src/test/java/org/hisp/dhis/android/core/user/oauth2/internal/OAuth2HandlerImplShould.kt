@@ -134,7 +134,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleEnrollmentResponse_persists_registration_and_clears_temp_on_success() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), any()) }
                 .doReturn(Result.Success(CLIENT_ID))
         }
         oauth2SecureStore.tempState = STATE
@@ -154,7 +154,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleEnrollmentResponse_deletes_keypair_and_throws_on_failure() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), any()) }
                 .doReturn(Result.Failure(serverError()))
         }
         oauth2SecureStore.tempState = STATE
@@ -171,7 +171,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleEnrollmentResponse_deletes_the_previous_key_when_enrolling_again() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), any()) }
                 .doReturn(Result.Success(CLIENT_ID))
         }
         // The device was already enrolled with an older key pair.

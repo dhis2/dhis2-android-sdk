@@ -41,7 +41,6 @@ internal interface DCRNetworkHandler {
         iat: String,
         clientName: String,
         redirectUri: String,
-        scope: String,
         jwks: String,
     ): Result<String, D2Error>
 }

@@ -51,9 +51,6 @@ internal data class ClientRegistrationRequestDTO(
     @SerialName("token_endpoint_auth_signing_alg")
     val tokenEndpointAuthSigningAlg: String,
 
-    @SerialName("scope")
-    val scope: String,
-
     @SerialName("jwks_uri")
     val jwksUri: String,
 

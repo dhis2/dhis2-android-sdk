@@ -89,7 +89,6 @@ internal class OAuth2HandlerImpl(
             iat = iat,
             clientName = clientName,
             redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
-            scope = OAuth2Config.DEFAULT_SCOPE,
             jwks = jwks,
         )
 

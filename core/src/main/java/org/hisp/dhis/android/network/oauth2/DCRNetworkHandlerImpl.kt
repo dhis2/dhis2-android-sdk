@@ -70,7 +70,6 @@ internal class DCRNetworkHandlerImpl(
         iat: String,
         clientName: String,
         redirectUri: String,
-        scope: String,
         jwks: String,
     ): Result<String, D2Error> {
         val jwksUri = oAuth2SecureStore.jwksUri
@@ -83,7 +82,6 @@ internal class DCRNetworkHandlerImpl(
                 responseTypes = listOf("code"),
                 tokenEndpointAuthMethod = "private_key_jwt",
                 tokenEndpointAuthSigningAlg = "RS256",
-                scope = scope,
                 jwksUri = jwksUri,
                 jwks = json.parseToJsonElement(jwks),
             )

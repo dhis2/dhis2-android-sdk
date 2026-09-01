@@ -201,23 +201,49 @@ internal class TrackedEntityInstanceLocalQueryHelper(
     }
 
     /**
-     * Applies the program half of a [TrackedEntityQueryGrant].
+     * Applies the dimensions of a [TrackedEntityQueryGrant] that the scope's own fields cannot.
      *
-     * The scope carries a single `program` value and so cannot express "one of these", which is the
-     * normal shape of a grant. A sub-select on the tracked entity UID says the same thing, needs no
-     * join — the enrollment join only exists when the caller picked a program — and ANDs with
-     * whatever else the caller filtered on.
+     * `program` and `trackedEntityType` are single-valued on the scope, so neither can express "one
+     * of these" — the normal shape of a grant — and
+     * [applyGrant][TrackedEntityQueryGrant.applyGrant] can only correct a value the *caller* named.
+     * A caller who names nothing would otherwise be unrestricted, so these clauses are what bound an
+     * unfiltered search. They AND with whatever else the caller filtered on.
+     *
+     * Org units are not here: the scope holds a list, so `applyGrant` can substitute the granted set
+     * directly.
      */
     private fun appendGrantWhere(where: WhereClauseBuilder, scope: TrackedEntityInstanceQueryRepositoryScope) {
-        val grantedPrograms = scope.mandatory?.programs ?: return
-        val programList = grantedPrograms.joinToString(",") { "'${escapeQuotes(it)}'" }
-        where.appendInSubQuery(
-            dot(teiAlias, IdentifiableColumns.UID),
-            "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
-                "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
-                "WHERE $program IN ($programList)",
-        )
+        val grant = scope.mandatory ?: return
+
+        // A sub-select on the tracked entity UID rather than a join: the enrollment join only exists
+        // when the caller picked a program.
+        grant.programs?.let { granted ->
+            val programList = granted.orNoMatch().joinToString(",") { "'${escapeQuotes(it)}'" }
+            where.appendInSubQuery(
+                dot(teiAlias, IdentifiableColumns.UID),
+                "SELECT ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} " +
+                    "FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                    "WHERE $program IN ($programList)",
+            )
+        }
+
+        grant.trackedEntityTypes?.let { granted ->
+            where.appendInKeyStringValues(
+                dot(teiAlias, TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE),
+                granted.orNoMatch(),
+            )
+        }
     }
+
+    /**
+     * A grant of nothing has to match nothing.
+     *
+     * An empty set would render as `IN ()`, which is not valid SQL — so a scope that grants none of a
+     * dimension is expressed with the same sentinel [applyGrant][TrackedEntityQueryGrant.applyGrant]
+     * uses, which no UID can equal.
+     */
+    private fun Set<String>.orNoMatch(): List<String> =
+        if (isEmpty()) listOf(TrackedEntityQueryGrant.NO_MATCH) else toList()
 
     private fun hasProgram(scope: TrackedEntityInstanceQueryRepositoryScope): Boolean {
         return scope.program() != null

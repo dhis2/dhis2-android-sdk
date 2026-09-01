@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGeneratorImpl.Companion.create
 import org.hisp.dhis.android.core.period.internal.RelativePeriodHelperMock
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,6 +58,41 @@ class TrackedEntityInstanceLocalQueryHelperShould {
         val relativePeriodHelper = RelativePeriodHelperMock()
         val periodHelper = DateFilterPeriodHelper(clockProvider, create(clockProvider, relativePeriodHelper))
         localQueryHelper = TrackedEntityInstanceLocalQueryHelper(periodHelper)
+    }
+
+    @Test
+    fun bound_tracked_entity_types_to_the_grant_when_the_caller_named_none() {
+        // Reproduces a leak found on a device: a grant of Person only returned 32 Malaria Entity
+        // records through trackedEntitySearch(). applyGrant only corrects a type the *caller* asked
+        // for, and this clause is the only thing that can bound the caller-asked-for-nothing case —
+        // exactly as the program half already does. The sibling accessor
+        // ScopedD2.trackedEntityInstances() has always applied this restriction, so without it the
+        // same grant meant two different things depending on which accessor you used.
+        val scope = queryBuilder
+            .mandatory(
+                TrackedEntityQueryGrant(
+                    programs = null,
+                    orgUnits = null,
+                    trackedEntityTypes = setOf("nEenWmSyUEp", "We9I19a3vO1"),
+                ),
+            )
+            .build()
+
+        val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)
+
+        assertThat(sqlQuery).contains("nEenWmSyUEp")
+        assertThat(sqlQuery).contains("We9I19a3vO1")
+    }
+
+    @Test
+    fun leave_tracked_entity_types_alone_when_the_grant_does_not_restrict_them() {
+        val scope = queryBuilder
+            .mandatory(TrackedEntityQueryGrant(programs = null, orgUnits = null, trackedEntityTypes = null))
+            .build()
+
+        val sqlQuery = localQueryHelper.getSqlQuery(scope, emptySet(), 50)
+
+        assertThat(sqlQuery).doesNotContain(TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE + " IN")
     }
 
     @Test

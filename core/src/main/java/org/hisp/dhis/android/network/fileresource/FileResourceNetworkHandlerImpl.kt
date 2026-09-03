@@ -32,7 +32,10 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
+import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
+import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceNetworkHandler
@@ -47,6 +50,7 @@ import org.koin.core.annotation.Singleton
 internal class FileResourceNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
     private val dhis2VersionManager: DHISVersionManager,
+    private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository,
 ) : FileResourceNetworkHandler {
     private val service = FileResourceService(httpServiceClient)
     override suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResource {
@@ -147,11 +151,21 @@ internal class FileResourceNetworkHandlerImpl(
     }
 
     override suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray {
+        val attributeOptionCombo = categoryOptionComboCollectionRepository
+            .withCategoryOptions()
+            .uid(v.attributeOptionCombo())
+            .suspendGet()
+
         return service.getFileFromDataValue(
+            v.sourceDataSet(),
             v.dataElement(),
             v.period(),
             v.organisationUnit(),
-            v.attributeOptionCombo(),
+            v.categoryOptionCombo(),
+            attributeOptionCombo?.categoryCombo()?.uid(),
+            attributeOptionCombo?.categoryOptions()?.let {
+                CollectionsHelper.semicolonSeparatedCollectionValues(getUids(it))
+            },
             dimension,
         )
     }

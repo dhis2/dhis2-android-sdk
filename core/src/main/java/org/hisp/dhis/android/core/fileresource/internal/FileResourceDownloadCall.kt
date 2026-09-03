@@ -126,7 +126,7 @@ internal class FileResourceDownloadCall(
                 values = dataValues,
                 maxContentLength = params.maxContentLength,
                 download = fileResourceNetworkHandlder::getFileFromDataValue,
-                getUid = { v -> v.value() },
+                getUid = { v -> v.value.value() },
             )
         }
     }

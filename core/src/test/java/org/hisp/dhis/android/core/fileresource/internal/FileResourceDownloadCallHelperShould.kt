@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
@@ -70,6 +72,8 @@ internal class FileResourceDownloadCallHelperShould {
     private val dataSetElementStore: DataSetElementStore = mock()
     private val dataValueStore: DataValueStore = mock()
     private val customIconStore: CustomIconStore = mock()
+    private val categoryOptionComboStore: CategoryOptionComboStore = mock()
+    private val categoryOptionComboCategoryOptionLinkStore: CategoryOptionComboCategoryOptionLinkStore = mock()
     private val dhisVersionManager: DHISVersionManagerImpl = mock()
 
     private lateinit var helper: FileResourceDownloadCallHelper
@@ -93,6 +97,8 @@ internal class FileResourceDownloadCallHelperShould {
             dataSetElementStore,
             dataValueStore,
             customIconStore,
+            categoryOptionComboStore,
+            categoryOptionComboCategoryOptionLinkStore,
             dhisVersionManager,
         )
     }

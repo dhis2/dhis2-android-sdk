@@ -1,6 +1,6 @@
 [versions]
-dhis2AndroidSdkVersion = "1.15.0-SNAPSHOT"
-dhis2AndroidSdkCode = "306"
+dhis2AndroidSdkVersion = "1.15.1-SNAPSHOT"
+dhis2AndroidSdkCode = "307"
 
 gradle = "9.3.1"
 kotlin = "2.4.10"

@@ -35,6 +35,8 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.HashVerification
+import org.hisp.dhis.android.core.arch.storage.internal.PasswordHasher
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -102,7 +104,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(credentials.username).thenReturn(USERNAME)
         whenever(credentials.password).thenReturn(PASSWORD)
         whenever(authenticatedUser.user()).thenReturn(UID)
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PASSWORD))
+        whenever(authenticatedUser.hash()).thenReturn(PASSWORD_HASH)
         whenever(systemInfoFromAPI.contextPath()).thenReturn(BASE_URL)
         whenever(systemInfoFromDb.contextPath()).thenReturn(BASE_URL)
         systemInfoCall.stub {
@@ -269,13 +271,56 @@ class LogInCallUnitShould : BaseCallShould() {
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS) { login() }
     }
 
+    @Test
+    fun succeed_for_login_offline_when_the_stored_hash_is_a_legacy_md5_one() = runTest {
+        whenAPICall { throw d2Error }
+        givenExistingDatabase()
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(legacyAuthenticatedUser())
+
+        login()
+
+        verifySuccessOffline()
+    }
+
+    @Test
+    fun replace_a_legacy_md5_hash_after_a_successful_offline_login() = runTest {
+        whenAPICall { throw d2Error }
+        givenExistingDatabase()
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(legacyAuthenticatedUser())
+
+        login()
+
+        val captor = argumentCaptor<AuthenticatedUser>()
+        verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(captor.capture()) }
+        assertThat(captor.firstValue.user()).isEqualTo(UID)
+        assertHashMatchesPassword(captor.firstValue.hash())
+    }
+
+    private fun legacyAuthenticatedUser() =
+        AuthenticatedUser.builder().user(UID).hash(LEGACY_PASSWORD_HASH).build()
+
+    @Test
+    fun not_rewrite_the_stored_hash_after_an_offline_login_with_a_current_hash() = runTest {
+        whenAPICall { throw d2Error }
+        givenExistingDatabase()
+        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
+
+        login()
+
+        verify(authenticatedUserStore, never()).updateOrInsertWhere(any())
+    }
+
     private fun verifySuccess() = runTest {
-        val authenticatedUserModel = AuthenticatedUser.builder()
-            .user(UID)
-            .hash(UserHelper.md5(USERNAME, PASSWORD))
-            .build()
-        verify(authenticatedUserStore).updateOrInsertWhere(authenticatedUserModel)
+        val captor = argumentCaptor<AuthenticatedUser>()
+        verify(authenticatedUserStore).updateOrInsertWhere(captor.capture())
+        assertThat(captor.firstValue.user()).isEqualTo(UID)
+        assertHashMatchesPassword(captor.firstValue.hash())
         verify(userHandler).handle(eq(apiUser))
+    }
+
+    private fun assertHashMatchesPassword(hash: String?) {
+        assertThat(PasswordHasher.verify(USERNAME, PASSWORD, hash!!))
+            .isEqualTo(HashVerification.Match(needsUpgrade = false))
     }
 
     private fun verifySuccessOffline() {
@@ -292,7 +337,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
         whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         val user = instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -306,7 +351,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
         whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -323,7 +368,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(null)
         whenever(databasesConfigurationStore.get()).thenReturn(oauth2Configuration())
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
@@ -368,7 +413,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(databasesConfigurationStore.get())
             .thenReturn(configurationWith(AuthorizationType.OPEN_ID_CONNECT))
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         val user = instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -384,7 +429,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         whenever(databasesConfigurationStore.get()).thenReturn(configurationWith(null))
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -445,7 +490,7 @@ class LogInCallUnitShould : BaseCallShould() {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -461,7 +506,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
         givenExistingDatabase()
         // Stored hash corresponds to a different PIN.
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         assertD2Error(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE) {
@@ -508,7 +553,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         whenever(databasesConfigurationStore.get()).thenReturn(configurationWith(null))
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -522,7 +567,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun log_in_offline_without_contacting_server_when_openid_state_exists_for_account() = runTest {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         val user = instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -535,7 +580,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun persist_credentials_with_openid_state_and_pin_after_openid_login() = runTest {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         instantiateCall(USERNAME, PIN, SERVER_URL)
@@ -558,7 +603,7 @@ class LogInCallUnitShould : BaseCallShould() {
         whenever(openIDConnectStateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(openIdAuthState)
         givenExistingDatabase()
         // Stored hash corresponds to a different PIN.
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, "correct"))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         // The PIN is the offline code for both token-based types, so both report the same error.
@@ -603,7 +648,7 @@ class LogInCallUnitShould : BaseCallShould() {
     fun succeed_on_oauth2_online_relogin_when_the_account_has_a_pin() = runTest {
         whenever(apiUser.username()).thenReturn(USERNAME)
         // The account configured a PIN after the first login, so the stored hash is not null.
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         val user = reLogInWithOAuth2Token(oauth2State(accessToken = ACCESS_TOKEN))
@@ -616,7 +661,7 @@ class LogInCallUnitShould : BaseCallShould() {
     @Test
     fun preserve_the_stored_pin_hash_on_oauth2_online_relogin() = runTest {
         whenever(apiUser.username()).thenReturn(USERNAME)
-        val storedHash = UserHelper.md5(USERNAME, PIN)
+        val storedHash = PIN_HASH
         whenever(authenticatedUser.hash()).thenReturn(storedHash)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
@@ -636,7 +681,7 @@ class LogInCallUnitShould : BaseCallShould() {
             .copy(accessToken = null, refreshToken = null)
         whenever(credentialsSecureStore.get())
             .thenReturn(Credentials(USERNAME, SERVER_URL, null, PIN, null, discardedState))
-        whenever(authenticatedUser.hash()).thenReturn(UserHelper.md5(USERNAME, PIN))
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
         val freshState = oauth2State(accessToken = "access-token-2")
@@ -702,5 +747,12 @@ class LogInCallUnitShould : BaseCallShould() {
         private const val ACCESS_TOKEN = "access-token-1"
         private const val ID_TOKEN = "id-token-1"
         private const val FRESH_ID_TOKEN = "fresh-id-token-1"
+
+        // Deriving a PBKDF2 hash is deliberately expensive, so it is done once for the whole class.
+        private val PASSWORD_HASH: String by lazy { PasswordHasher.hash(PASSWORD) }
+        private val PIN_HASH: String by lazy { PasswordHasher.hash(PIN) }
+
+        @Suppress("DEPRECATION")
+        private val LEGACY_PASSWORD_HASH: String by lazy { UserHelper.md5(USERNAME, PASSWORD) }
     }
 }

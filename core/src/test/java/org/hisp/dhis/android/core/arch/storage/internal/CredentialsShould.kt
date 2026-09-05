@@ -93,19 +93,67 @@ class CredentialsShould {
     @Test
     fun build_hash_from_pin_when_there_is_no_password() {
         val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
-        assertThat(credentials.getHash()).isEqualTo(UserHelper.md5("user", PIN))
+        assertThat(credentials.matches(credentials.newPasswordHash()))
+            .isEqualTo(HashVerification.Match(needsUpgrade = false))
     }
 
     @Test
     fun build_hash_from_password_when_password_is_set() {
         val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
-        assertThat(credentials.getHash()).isEqualTo(UserHelper.md5("user", "password"))
+        assertThat(credentials.matches(credentials.newPasswordHash()))
+            .isEqualTo(HashVerification.Match(needsUpgrade = false))
+    }
+
+    @Test
+    fun build_a_different_hash_on_every_call() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
+        assertThat(credentials.newPasswordHash()).isNotEqualTo(credentials.newPasswordHash())
     }
 
     @Test
     fun return_null_hash_when_neither_password_nor_pin() {
         val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
-        assertThat(credentials.getHash()).isNull()
+        assertThat(credentials.newPasswordHash()).isNull()
+    }
+
+    @Test
+    fun match_a_legacy_md5_hash_and_ask_for_an_upgrade() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
+
+        @Suppress("DEPRECATION")
+        val legacyHash = UserHelper.md5("user", "password")
+
+        assertThat(credentials.matches(legacyHash)).isEqualTo(HashVerification.Match(needsUpgrade = true))
+    }
+
+    @Test
+    fun not_match_a_hash_that_belongs_to_a_different_secret() {
+        val credentials = Credentials("user", "https://dhis2.org", "password", null, null, null)
+        val other = Credentials("user", "https://dhis2.org", "another-password", null, null, null)
+
+        assertThat(credentials.matches(other.newPasswordHash())).isEqualTo(HashVerification.Mismatch)
+    }
+
+    @Test
+    fun match_when_neither_the_credentials_nor_the_stored_hash_have_a_secret() {
+        val credentials = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
+
+        assertThat(credentials.matches(null)).isEqualTo(HashVerification.Match(needsUpgrade = false))
+    }
+
+    @Test
+    fun not_match_when_a_secret_is_given_but_nothing_is_stored() {
+        val credentials = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+
+        assertThat(credentials.matches(null)).isEqualTo(HashVerification.Mismatch)
+    }
+
+    @Test
+    fun not_match_when_a_hash_is_stored_but_no_secret_is_given() {
+        val withPin = Credentials("user", "https://dhis2.org", null, PIN, null, oauth2State)
+        val withoutPin = Credentials("user", "https://dhis2.org", null, null, null, oauth2State)
+
+        assertThat(withoutPin.matches(withPin.newPasswordHash())).isEqualTo(HashVerification.Mismatch)
     }
 
     @Test

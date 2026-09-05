@@ -59,10 +59,15 @@ object UserHelper {
     /**
      * Encode the given username and password to a MD5 [String].
      *
+     * MD5 is not suitable for hashing secrets. The SDK no longer uses it to store password hashes,
+     * it only reads the values written by previous versions. It will be removed in a future major
+     * release.
+     *
      * @param username The username of the user account.
      * @param password The password of the user account.
      * @return An encoded MD5 [String].
      */
+    @Deprecated("MD5 is cryptographically weak and must not be used to hash secrets.")
     fun md5(username: String, password: String): String {
         return try {
             val credentials = usernameAndPassword(username, password)

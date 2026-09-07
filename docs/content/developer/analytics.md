@@ -12,17 +12,17 @@ This module follows similar concepts to analytics endpoint in the web API. They 
 
 For example, a basic query that get the number of "ANC 1st visit" (DataElement "fbfJHSPpUQD") in the last 3 months (RelativePeriod) and filtered by a the orgunit "Ngelehun CHC" (Absolute OrganisationUnit "DiszpKrYNg8") would be like this:
 
-```java
+```kotlin
 d2.analyticsModule().analytics()
-        .withDimension(new DimensionItem.DataItem.DataElementItem("fbfJHSPpUQD"))
-        .withDimension(new DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
-        .withFilter(new DimensionItem.OrganisationUnitItem.Absolute("DiszpKrYNg8"))
-        .evaluate();
+        .withDimension(DimensionItem.DataItem.DataElementItem("fbfJHSPpUQD"))
+        .withDimension(DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
+        .withFilter(DimensionItem.OrganisationUnitItem.Absolute("DiszpKrYNg8"))
+        .suspendEvaluate()
 ```
 
-The engine will return a `Result` object containing either a `DimensionalResponse` or an `AnalyticsException`. Let's take a look at the structure of the `DimensionalResponse`. We use the Kotlin representation for convenience, but the Java representation would be very similar:
+The engine will return a `Result` object containing either a `DimensionalResponse` or an `AnalyticsException`. Let's take a look at the structure of the `DimensionalResponse`:
 
-```kt
+```kotlin
 DimensionalResponse(
         metadata = mapOf(
             "fbfJHSPpUQD" to MetadataItem.DataElementItem,
@@ -76,21 +76,21 @@ Properties included in the `DimensionalResponse` object:
 
 DimensionItems can be used either as dimensions or as filters. And multiple items of the same dimension can be combined in the same query. For example, this query gets "ANC 1st visit" (DataElement "fbfJHSPpUQD") and "ANC 1-3 Dropout Rate" (Indicator "ReUHfIn0pTQ") disaggregated by the category "Location: Fixed/Outreach" (Category "fMZEcRHuamy") using the options "Fixed" (CategoryOption "qkPbeWaFsnU") and "Outreach" (CategoryOption "wbrDrL2aYEc") within the last 3 months (Relative Period) in the UserOrganisationUnit (Relative OrganisationUnit), classifying the values by data item legendSet and overriding the aggregation type:
 
-```java
+```kotlin
 d2.analyticsModule().analytics()
-        .withDimension(new DimensionItem.DataItem.DataElementItem("fbfJHSPpUQD"))
-        .withDimension(new DimensionItem.DataItem.IndicatorItem("ReUHfIn0pTQ"))
-        .withDimension(new DimensionItem.CategoryItem("fMZEcRHuamy", "qkPbeWaFsnU"))
-        .withDimension(new DimensionItem.CategoryItem("fMZEcRHuamy", "wbrDrL2aYEc"))
+        .withDimension(DimensionItem.DataItem.DataElementItem("fbfJHSPpUQD"))
+        .withDimension(DimensionItem.DataItem.IndicatorItem("ReUHfIn0pTQ"))
+        .withDimension(DimensionItem.CategoryItem("fMZEcRHuamy", "qkPbeWaFsnU"))
+        .withDimension(DimensionItem.CategoryItem("fMZEcRHuamy", "wbrDrL2aYEc"))
         
-        .withFilter(new DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
-        .withFilter(new DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
+        .withFilter(DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
+        .withFilter(DimensionItem.OrganisationUnitItem.Relative(RelativeOrganisationUnit.USER_ORGUNIT))
 
-        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem.INSTANCE)
+        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)
         
         .withAggregationType(AggregationType.LAST)
         
-        .evaluate();
+        .suspendEvaluate()
 ```
 
 The evaluator imposes some restrictions to the parameters passed as dimensions or filters (they are similar to those imposed by the analtyics web api):
@@ -103,13 +103,37 @@ Additionally, the query is evaluated against the local metadata and data, which 
 1. DimensionItems (DataElement, Indicator, OrganisationUnit, ...) must be downloaded in the device. By default, the SDK downloads all the dataSets and programs accessible to the user and the related metadata.
 2. Data must be downloaded in the device. The evaluation only takes into account the data stored in the local database.
 
-There are three options to define the legendSet strategy. The class `AnalyticsLegendStrategy` is a sealed class in Kotlin, so the keyword `INSTANCE` must be appended at the end of the object values when coding in Java. Code examples:
+#### Program indicator disaggregations { #android_sdk_program_indicator_disaggregations }
 
-```java
+A program indicator can declare a category combination and a set of *category mappings*: each mapping assigns, for one category, a filter expression to every category option. When a query includes a program indicator as a data item together with category dimensions, the engine resolves those mappings and applies the corresponding expressions as additional conditions.
+
+The relevant metadata is downloaded with the programs and exposed through:
+
+- `ProgramIndicator.categoryCombo()` and `ProgramIndicator.attributeCombo()`: the category combinations the indicator
+  is disaggregated by. The new filters `byCategoryCombo()` and `byAttributeCombo()` are available in
+  `ProgramIndicatorCollectionRepository`.
+- `ProgramIndicator.categoryMappingIds()`: the uids of the `CategoryMapping` objects that apply to the indicator.
+- `CategoryMapping` (`uid`, `program`, `categoryId`, `mappingName`, `optionMappings`) and `CategoryOptionMapping`
+  (`categoryMapping`, `optionId`, `filter`).
+
+Querying a disaggregated indicator is no different from any other query: just add the category dimensions.
+
+```kotlin
 d2.analyticsModule().analytics()
-        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem.INSTANCE)       // Data items use their own LegendSet
-        .withLegendStrategy(AnalyticsLegendStrategy.None.INSTANCE)             // LegendSets are not used
-        .withLegendStrategy(new AnalyticsLegendStrategy.Fixed("fqs276KXCXi"))  // The provided LegendSet will be used for all data items
+        .withDimension(DimensionItem.DataItem.ProgramIndicatorItem("programIndicatorUid"))
+        .withDimension(DimensionItem.CategoryItem("categoryUid", "categoryOptionUid1"))
+        .withDimension(DimensionItem.CategoryItem("categoryUid", "categoryOptionUid2"))
+        .withFilter(DimensionItem.PeriodItem.Relative(RelativePeriod.LAST_3_MONTHS))
+        .suspendEvaluate()
+```
+
+There are three options to define the legendSet strategy. `AnalyticsLegendStrategy` is a sealed class; from Java, the object values require the `INSTANCE` suffix (`AnalyticsLegendStrategy.ByDataItem.INSTANCE`). Code examples:
+
+```kotlin
+d2.analyticsModule().analytics()
+        .withLegendStrategy(AnalyticsLegendStrategy.ByDataItem)       // Data items use their own LegendSet
+        .withLegendStrategy(AnalyticsLegendStrategy.None)             // LegendSets are not used
+        .withLegendStrategy(AnalyticsLegendStrategy.Fixed("fqs276KXCXi"))  // The provided LegendSet will be used for all data items
 ```
 
 ### Visualization analytics { #android_sdk_visualization_analytics }
@@ -138,17 +162,17 @@ The expected representation of the visualization would be something like this:
 
 We can get the result of the visualization by calling the "visualizations" repository within the analtyics module. Optionally, we can override the values for Period and OrganisationUnit. This is useful to expose filters in the UI to allow easy modifications of the results.
 
-```java
+```kotlin
 d2.analyticsModule().visualizations()
         .withVisualization("SwtkWZFhrFQ")
         [.withPeriods()]
         [.withOrganisationUnits()]
-        .evaluate();
+        .suspendEvaluate()
 ```
 
 The method will return a `Result` with two possible values: a `GridAnalyticsResponse` and an `AnalyticsResponse`. Let's take a look at the structure of the `GridAnalyticsResponse`. We use the Kotlin representation for convenience:
 
-```kt
+```kotlin
 GridAnalyticsResponse(
         metadata = mapOf(
             "fbfJHSPpUQD" to MetadataItem.DataElementItem,
@@ -517,7 +541,7 @@ A common use-case is to generate a list of event or enrollments that meet a cert
 
 For example, a query that contains all the ACTIVE enrollments in the program "fbfJHSPpUQD" whose attribute "p4mRWMtCxtB" has a value between 40 and 50 would look like this. Note that the status is included as a filter, so there is not an explicit column for it.
 
-```kt
+```kotlin
 d2.analyticsModule().trackerLineList()
             .withEnrollmentOutput("fbfJHSPpUQD")
             .withFilter(
@@ -537,12 +561,12 @@ d2.analyticsModule().trackerLineList()
                     ),
                 ),
             )
-            .evaluate()
+            .suspendEvaluate()
 ```
 
 The response is a Result object of TrackerLineListResponse, which has the following structure:
 
-```kt
+```kotlin
 TrackerLineListResponse(
   metadata = mapOf(
       "p4mRWMtCxtB" to MetadataItem.TrackedEntityAttributeItem
@@ -575,7 +599,7 @@ Optionally, it is possible to use a TrackerVisualization object (called EventVis
 
 For example, this query uses the configuration in the TrackerVisualization "s85urBIkN0z" and adds or overrides the column ProgramStatusItem filtering by ACTIVE.
 
-```kt
+```kotlin
 d2.analyticsModule().trackerLineList()
   .withTrackerVisualization("s85urBIkN0z")
   .withColumn(
@@ -585,7 +609,7 @@ d2.analyticsModule().trackerLineList()
       )
     )
   )
-  .evaluate()
+  .suspendEvaluate()
 ```
 
 In order to use the TrackerVisualization objects, they must be set in the "Analytics" section of the Android Settings webapp. Currently, it is not possible to download on-demand visualizations from the server, just to downloaded through the Android Settings webapp.
@@ -598,14 +622,14 @@ A common use-case is to generate an event line list of a repeatable stage in the
 
 For example, let's suppose we have a repeatable stage with two dataElements (height and weight) and one indicator based on those values (BMI, Body Mass Index). We would like to show the evolution of those values across the events
 
-```java
+```kotlin
 d2.analyticsModule().eventLineList()
         .byProgramStage().eq("stage_id")
         .byTrackedEntityInstance().eq("tei_id")
         .withDataElement("height_id")
         .withDataElement("weight_id")
         .withProgramIndicator("BMI_id")
-        .evaluate();
+        .suspendEvaluate()
 ```
 
 The result would be a list of events with the evaluated values (dataelement and indicators) as well as some handy `displayName` properties to display the result in a table or chart.

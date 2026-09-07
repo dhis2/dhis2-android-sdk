@@ -18,46 +18,48 @@ The first step is to validate the server url in order to know if it is a valid D
 
 This method is not bullet-proof and might return false positives: it is difficult to tell if the url is valid or not in old DHIS2 versions. In such cases, the SDK returns it as valid to continue with the login.
 
-````java
-d2.serverModule().checkServerUrl(serverUrl)
+````kotlin
+d2.serverModule().suspendCheckServerUrl(serverUrl)
 ````
 
-If successful, this method will return a `LoginConfig` object, which includes useful information about the login, such as the application title, the country flag, the list of OidcProviders,... .
+If successful, this method will return a `LoginConfig` object, which includes useful information about the login, such as the application title, the country flag, the list of OidcProviders, and the `isOauthEnabled` flag that tells whether the server supports the [OAuth2 login](#android_sdk_login_oauth2).
 
 ## Login/Logout { #android_sdk_login_logout }
 
 Before interacting with the server it is required to login into the DHIS 2 instance.
 
-```java
-d2.userModule().logIn(username, password, serverUrl)
+```kotlin
+d2.userModule().suspendLogIn(username, password, serverUrl)
 
-d2.userModule().logOut()
+d2.userModule().suspendLogOut()
 ```
+
+RxJava (`rxLogIn`, `rxLogOut`) and blocking (`blockingLogIn`, `blockingLogOut`) variants are available as well.
 
 As of version 1.6.0, the SDK supports the storage of information for multiple accounts, which means keeping a separate database for each pair user-server. Despite of that, only one account can active (or logged in) simultaneously. That means that only one user can be authenticated in only one server at the same time. 
 
 The number of maximum allowed accounts can be configured by the app (it defaults to one). A new account is automatically created after a successful login for a new pair user-server. If the number of accounts exceeds the maximum configured, the oldest account and its related database are automatically removed.
 
-```java
+```kotlin
 // Get the account list
-d2.userModule().accountManager().getAccounts();
+d2.userModule().accountManager().getAccounts()
 
 // Get the account for current user, or null if the user is not authenticated yet
-d2.userModule().accountManager().getCurrentAccount();
+d2.userModule().accountManager().getCurrentAccount()
 
 // Delete account for current user
-d2.userModule().accountManager().deleteCurrentAccount();
+d2.userModule().accountManager().deleteCurrentAccount()
 
 // Get/set the maximum number of accounts
-d2.userModule().accountManager().getMaxAccounts();
-d2.userModule().accountManager().setMaxAccounts();
+d2.userModule().accountManager().getMaxAccounts()
+d2.userModule().accountManager().setMaxAccounts(maxAccounts)
 ```
 
 The accountManager exposes an observable that emits an event when the current account is deleted. It includes the reason why the account was deleted.
 
-```java
+```kotlin
 // Emits an event when the current account is deleted
-d2.userModule().accountManager().accountDeletionObservable();
+d2.userModule().accountManager().accountDeletionObservable()
 ```
 
 After a logout, the SDK keeps track of the last logged user so that it is able to differentiate recurring and new users. It also keeps a hash of the user credentials in order to authenticate the user even when there is no connectivity. Given that said, the login method will:
@@ -82,8 +84,8 @@ Logout method removes user credentials, so a new login is required before any in
 
 The SDK includes support for OpenID. To perform a login using OpenID an OpenIDConnectConfig is required:
 
-```java
-OpenIDConnectConfig openIdConfig = new OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl, prompt);
+```kotlin
+val openIdConfig = OpenIDConnectConfig(clientId, redirectUri, discoveryUri, authorizationUrl, tokenUrl, prompt)
 ```
 
 It is mandatory to either provide a discoveryUri or both authorizationUrl and tokenUrl.
@@ -92,20 +94,20 @@ The `prompt` parameter is optional and, when provided, is forwarded to the OpenI
 
 This configuration can be used to perform a login.
 
-```java
-d2.userModule().openIdHandler().logIn(openIdConfig)
+```kotlin
+val intentWithRequestCode = d2.userModule().openIdHandler().blockingLogIn(openIdConfig)
 ```
 
 This call returns an IntentWithRequestCode which in an android app allows starting the OpenID login screen from the configuration provider.
 
-```java
-startActivityForResult(intentWithRequestCode.getIntent(), intentWithRequestCode.getRequestCode());
+```kotlin
+startActivityForResult(intentWithRequestCode.intent, intentWithRequestCode.requestCode)
 ```
 
 Upon a successful login, the returned intent data can be used alongside the server url to start the sync.
 
-```java
-d2.userModule().openIdHandler().handleLogInResponse(serverUrl, data, requestCode);
+```kotlin
+d2.userModule().openIdHandler().blockingHandleLogInResponse(serverUrl, data, requestCode)
 ```
 
 It is mandatory to include the following activity in the application Manifest file:
@@ -134,6 +136,143 @@ In order to configure all parameters check the following OpenID providers guidel
 |[KeyCloak](https://www.keycloak.org/docs/latest/authorization_services/index.html#_service_authorization_api)        |
 |[Azure AD](https://docs.microsoft.com/es-es/azure/active-directory-b2c/signin-appauth-android?tabs=app-reg-ga)        |
 |[WS02](https://medium.com/@maduranga.siriwardena/configuring-appauth-android-with-wso2-identity-server-8d378835c10a)            |
+
+Like OAuth2, an OpenID Connect account can define a PIN that acts as its offline code, so that later logins open the account without a browser. Set it right after the first login with `d2.userModule().openIdHandler().suspendSetPin(pin)`; from then on the account is handled exactly like an OAuth2 one — see [Offline login and PIN](#android_sdk_login_token_offline) and [Reacting to token expiry](#android_sdk_login_token_expiry), where the relevant error code is `OPEN_ID_CONNECT_NO_VALID_TOKEN`.
+
+## Login with OAuth2 { #android_sdk_login_oauth2 }
+
+The SDK supports logging in against DHIS2 servers that expose an OAuth2 authorization server, using the authorization code flow with PKCE and a client registered per device through Dynamic Client Registration (DCR). It is available for **DHIS2 2.43 and above**, and `LoginConfig.isOauthEnabled` (returned by `suspendCheckServerUrl`) tells whether a given server supports it. Tokens are stored per account and refreshed transparently by the SDK.
+
+Everything is exposed through a single handler:
+
+```kotlin
+val oauth2 = d2.userModule().oauth2Handler()
+```
+
+The flow is made of **two independent ceremonies**, and most logins only need the second one:
+
+|   | Ceremony | Produces | How often |
+|---|---|---|---|
+| **A** | **Device enrollment** (DCR) | a `client_id` and a device key pair | once per device and server |
+| **B** | **Authorization** (code + PKCE) | an access token and a refresh token | every time tokens are needed |
+
+They expire on completely different schedules: the tokens from B last minutes or hours, while the registration from A survives for the lifetime of the installation. That is what makes re-login cheap — when the tokens expire the app only repeats ceremony B, and the local database is untouched. `oauth2.isDeviceRegistered()` discriminates between the two.
+
+Unlike the OpenID Connect flow, this one does not use AppAuth: the app opens the URL itself (a Custom Tab is recommended) and receives the redirect in its own activity. The redirect URI is fixed to `dhis2oauth://oauth` (`OAuth2Config.DEFAULT_REDIRECT_URI`); the `redirectUri` field of `OAuth2Config` is only honoured when building the logout URL. The filter is usually declared on the login activity that started the flow, with `launchMode="singleTask"` so that the browser reuses the existing instance and the pending authorization state is still there when the redirect arrives:
+
+```xml
+<activity
+    android:name=".usescases.login.LoginActivity"
+    android:configChanges="orientation|screenSize"
+    android:exported="true"
+    android:launchMode="singleTask">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="dhis2oauth"
+            android:host="oauth" />
+    </intent-filter>
+</activity>
+```
+
+A single entry point covers first login, re-login and retries. `suspendCheckServerUrl` is what discovers and stores the server OAuth2 endpoints, so it is **required before every authorization**, on re-login too: without a stored authorization endpoint `blockingLogIn` fails with an `IllegalStateException` rather than a `D2Error`.
+
+```kotlin
+private val config = OAuth2Config(serverUrl = serverUrl)
+
+fun startOAuth2Login() {
+    d2.serverModule().suspendCheckServerUrl(serverUrl).getOrThrow()
+
+    val url = if (oauth2.isDeviceRegistered()) {
+        oauth2.blockingLogIn(config)                    // ceremony B
+    } else {
+        oauth2.blockingBuildEnrollmentUrl(serverUrl)    // ceremony A
+    }
+    openInCustomTab(url)
+}
+```
+
+Both ceremonies redirect to the same URI, so the handler tells them apart by the parameters that came back: the enrollment response carries an initial access token, the authorization response carries an authorization code, and the authorization server reports its own failures in `error`.
+
+```kotlin
+fun handleRedirect(uri: Uri) {
+    uri.getQueryParameter("error")?.let { return onAuthorizationError(it) }
+
+    val state = uri.getQueryParameter("state") ?: return
+
+    when {
+        uri.getQueryParameter("iat") != null -> {
+            // End of ceremony A. The device is registered, but there is no session yet:
+            // chain ceremony B straight away, or the user lands on an app with no session.
+            oauth2.blockingHandleEnrollmentResponse(serverUrl, uri.getQueryParameter("iat")!!, state)
+            openInCustomTab(oauth2.blockingLogIn(config))
+        }
+        uri.getQueryParameter("code") != null -> {
+            // End of ceremony B. The session is open and the database is loaded.
+            val user = oauth2.blockingHandleLogInResponse(
+                existingUsername = expectedUsername,   // null on a first login
+                serverUrl = serverUrl,
+                authorizationCode = uri.getQueryParameter("code")!!,
+                state = state,
+            )
+            onLoggedIn(user)
+        }
+    }
+}
+```
+
+Both handler calls verify the `state` against the one generated when the URL was built. These four entry points are blocking and hit the network — there is no `suspend` variant, so run them off the main thread.
+
+On a re-login the existing account database is reused (matched by normalized server URL plus username), data pending upload is preserved, the configured PIN is kept, and no logout is required first.
+
+### Offline login and PIN { #android_sdk_login_token_offline }
+
+Once an account exists, the user can open it without a browser. A token-based account can define a PIN that acts as its offline code — this applies to **both OAuth2 and OpenID Connect** accounts, which behave identically once they exist:
+
+```kotlin
+oauth2.suspendSetPin("1234")
+oauth2.suspendChangePin("1234", "5678")
+
+// Every later login, offline and without a browser
+d2.userModule().suspendLogIn(username, pin, serverUrl)
+```
+
+This opens the local database without contacting the server, but it does **not** obtain new tokens. A wrong PIN reports `BAD_CREDENTIALS_OFFLINE_CODE`, distinct from the `BAD_CREDENTIALS` used for password accounts.
+
+### Reacting to token expiry { #android_sdk_login_token_expiry }
+
+While a session is open the SDK refreshes the access token on its own: any call that gets a `401` triggers a refresh with the stored refresh token and is retried, and the app sees nothing. When the refresh fails because the device is offline or the server errored, the stored tokens are kept so a later call can retry; only a token the server explicitly rejects is discarded.
+
+The outcomes that are not recoverable that way surface as a `D2Error`:
+
+| Error code | What happened | What the app must do |
+|---|---|---|
+| `OAUTH2_NO_VALID_TOKEN` | the refresh token was rejected, or there is no usable token left | ceremony **B** |
+| `OPEN_ID_CONNECT_NO_VALID_TOKEN` | the same situation for an OpenID Connect account | a new OpenID login |
+| `OAUTH2_DEVICE_NOT_REGISTERED` | the device was never enrolled, or `resetRegistration()` was called | ceremony **A**, then **B** |
+| `OAUTH2_INCOMPLETE_REGISTRATION` | the registration is unusable, typically because the device key was invalidated after the user changed the device lock | `resetRegistration()`, then **A** and **B** |
+| `OAUTH2_INVALID_STATE` / `OAUTH2_INVALID_IAT` | the `state` or the initial access token in the redirect did not verify | restart the ceremony |
+
+On these the SDK **does not close the session**: the account keeps working offline, so **being logged in is not evidence that the account can sync**. Catch the code for whichever type the account uses and send the user back through that type's first-login ceremony.
+
+### Logout and reset { #android_sdk_login_oauth2_logout }
+
+```kotlin
+// Close the session. Metadata, data and the device registration are kept.
+oauth2.suspendLogOut()
+
+// Optionally send the user through the server logout page as well, to drop the browser session.
+openInCustomTab(oauth2.blockingBuildLogoutUrl(config))
+
+// Discard the device registration and delete its key. The next login needs ceremony A again.
+oauth2.resetRegistration()
+```
+
+`suspendLogOut` is the everyday operation: it clears the credentials so a new login is required, and the next one is a plain ceremony B. `resetRegistration` is the recovery hatch — use it when the registration itself is broken, not on logout.
+
+Finally, keep the server URL consistent. The SDK normalizes it (case of protocol and domain, trailing slash, a trailing `/api`), so cosmetic differences are fine, but `http` and `https` are *not* equivalent and resolve to different accounts.
 
 ## Two-Factor Authentication {#android_sdk_two_factor_authentication}
 
@@ -172,9 +311,11 @@ Behavior notes:
 
 Metadata synchronization is usually the first step after login. It fetches and persists the metadata needed by the current user. To launch metadata synchronization we must execute:
 
-```java
-d2.metadataModule().download();
+```kotlin
+d2.metadataModule().blockingDownload()
 ```
+
+`d2.metadataModule().download()` returns an `Observable<D2Progress>` if the app wants to follow the progress of the synchronization.
 
 In order to save bandwidth usage and storage space, the SDK does not synchronize all the metadata in the server but a subset. This subset is defined as the metadata required by the user in order to perform data entry tasks: render programs and datasets, execute program rules, evaluate in-line program indicators, etc.
 
@@ -213,7 +354,7 @@ This partial metadata synchronization may expose server-side misconfiguration is
 
 The SDK does not fail the synchronization, but it stores the errors in a table for inspection. These errors can be accessed by:
 
-```java
+```kotlin
 d2.maintenanceModule().foreignKeyViolations()
 ```
 
@@ -269,19 +410,21 @@ skipped and it will continue with the next pages.
 
 This is an example of how it can be used.
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .[filters]
     .[limits]
-    .download()
+    .flowDownload()
 ```
 
-```java
+```kotlin
 d2.eventModule().eventDownloader()
     .[filters]
     .[limits]
-    .download()
+    .flowDownload()
 ```
+
+`flowDownload()` returns a `Flow<D2Progress>` so the app can follow the progress of the download. The downloaders also expose `blockingDownload()` and `rxDownload()`.
 
 Currently, it is possible to specify the next filters:
 
@@ -308,20 +451,22 @@ These limits can also be combined with each other.
 Other properties:
 
 - `overwrite()`. By default, the SDK does not overwrite data in the device in a status other than SYNCED. If you want to overwrite the data in the device, no matter the status it has, add this method to the query chain.
+- `downloadFileResources()`. The downloaders accept this modifier to download the file resources referenced by the downloaded payload in the same call, instead of issuing a separate query. The download is scoped to the payload being downloaded, so synchronizing one program no longer pulls the pending files of the other programs.
 
 The next snippet of code shows an example of the
 TrackedEntityInstanceDownloader usage.
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntityInstanceDownloader()
     .byProgramUid("program-uid")
     .limitByOrgunit(true)
     .limitByProgram(true)
     .limit(50)
-    .download()
+    .downloadFileResources(true)
+    .flowDownload()
 ```
 
-Additionally, if you want the images associated to `Image` data values available to be downloaded in the device, you must download them. See [*Dealing with FileResources*](#android_sdk_file_resources) section for more details.
+Alternatively, the images and files associated to `Image` and `File` values can be downloaded in a separate query. See [*Dealing with FileResources*](#android_sdk_file_resources) section for more details.
 
 ### Tracker data search
 
@@ -335,11 +480,11 @@ The tracked entity instance search is a powerful tool that follows a
 builder pattern and allows the download of tracked entity instances
 filtering by **different parameters**.
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntitySearch()
     .[repository mode]
     .[filters]
-    .get()
+    .suspendGet()
 ```
 
 The source where the TEIs are retrieved from is defined by the **repository mode**.
@@ -366,11 +511,11 @@ Additionally, the repository offers different strategies to fetch data:
   If this method is called several times, conditions are appended with an AND
   connector. For example:
   
-  ```java
+  ```kotlin
   d2.trackedEntityModule().trackedEntitySearch()
       .byAttribute("uid1").eq("value1")
       .byAttribute("uid2").eq("value2")
-      .get()
+      .suspendGet()
   ```
 
   That means that the instance must have attribute `uid1` with value
@@ -380,11 +525,11 @@ Additionally, the repository offers different strategies to fetch data:
   method is called several times, conditions are appended with an AND
   connector. For example:
   
-  ```java
+  ```kotlin
   d2.trackedEntityModule().trackedEntitySearch()
       .byFilter("uid1").eq("value1")
       .byFilter("uid2").eq("value2")
-      .get()
+      .suspendGet()
   ```
   
   That means that the instance must have attribute `uid1` with value
@@ -420,7 +565,7 @@ Additionally, the repository offers different strategies to fetch data:
 
 Example:
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntitySearch()
                 .byOrgUnits().eq("orgunitUid")
                 .byOrgUnitMode().eq(OrganisationUnitMode.DESCENDANTS)
@@ -436,10 +581,10 @@ to fully download them using the `byUid()` filter of the `TrackedEntityInstanceD
 
 It could happen that you add filters to the query repository in different parts of the application and you don't have a clear picture about the filters applied, specially when using working lists because they add a set of parameters. In order to solve this, you can access the filter scope at any moment in the repository:
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntitySearch()
     .[ filters ]
-    .getScope();
+    .getScope()
 ```
 
 In addition to the standard `getPaged(int)` and `getDataSource()` methods that are available in all the repositories, the TrackedEntitySearch repository exposes a method to wrap the response in a `Result` object: the `getResultDataSource()`. This method is kind of a workaround to deal with the lack of error management in the Version 2 of the Android Paging Library (it is hardly improved in version 3). Using this dataSource you can catch search errors, such as "Min attributes required" or "Max tei count reached". 
@@ -453,23 +598,25 @@ There are three concepts related to building a predifined filter for tracker obj
 - **EventFilters**: they define filters to be used against Event objects.
 - **ProgramStageWorkingList**: they define filters to be used against TrackedEntity objects and they add support to filter by event-related data. It is mandatory to specify a particular ProgramStage.
 
+Each attribute or data value condition within these filters may define an `isEmpty` property, which matches the values that are missing or blank when true, and the values that are present and not blank when false. The SDK evaluates it both in offline and online queries.
+
 As usual, they have their own collection repository and can be applied in "search" repositories. For example:
 
-```java
+```kotlin
 // Get the filters
-List<TrackedEntityInstanceFilter> filters = d2.trackedEntityModule().trackedEntityInstanceFilters().blockingGet();
-List<EventFilter> filters = d2.eventModule().eventFilters().blockingGet();
-List<ProgramStageWorkingList> workingLists = d2.programModule().programStageWorkingLists().blockingGet();
+val teiFilters = d2.trackedEntityModule().trackedEntityInstanceFilters().suspendGet()
+val eventFilters = d2.eventModule().eventFilters().suspendGet()
+val workingLists = d2.programModule().programStageWorkingLists().suspendGet()
 
 // Apply the filters
 d2.trackedEntityModule().trackedEntitySearch()
     .byTrackedEntityInstanceFilter().eq("filterUid")
     .byProgramStageWorkingList().eq("workingListUid")
-    .get()
+    .suspendGet()
 
 d2.eventModule().eventQuery()
     .byEventFilter().eq("filterUid")
-    .get();
+    .suspendGet()
 ```
 
 ### Ownership
@@ -478,17 +625,17 @@ The concept of ownership is supported in the SDK. In short, each pair trackedEnt
 
 You can get the program owners for each trackedEntityInstance by using the repository:
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntityInstances()
         .withProgramOwners()
-        .get();
+        .suspendGet()
 ```
 
 Also, you can permanently transfer the ownership by using the OwnershipManager. This transfer will be automatically uploaded to the server in the next synchronization. 
 
-```java
+```kotlin
 d2.trackedEntityModule().ownershipManager()
-        .transfer(teiUid, programUid, ownerOrgunit);
+        .suspendTransfer(teiUid, programUid, ownerOrgunit)
 ```
 
 ### Break the glass
@@ -501,25 +648,25 @@ The "Break the glass" concept is based on the ownership of the pair trackedEntit
 4. If so, request the ownwership using the ownership module (see code snippet below).
 5. Try again the query in step 2.
 
-```java
-TrackedEntityInstanceDownloader teiRepository = d2.trackedEntityModule().trackedEntityInstanceDownloader()
+```kotlin
+val teiRepository = d2.trackedEntityModule().trackedEntityInstanceDownloader()
         .byUid().eq(teiUid)
-        .byProgramUid(programUid);
+        .byProgramUid(programUid)
 
 try {
-    teiRepository.blockingDownload();
-} catch (RuntimeException e) {
-    if (e.getCause() instanceof D2Error &&
-            ((D2Error) e.getCause()).errorCode() == D2ErrorCode.OWNERSHIP_ACCESS_DENIED) {
+    teiRepository.blockingDownload()
+} catch (e: RuntimeException) {
+    val cause = e.cause
+    if (cause is D2Error && cause.errorCode() == D2ErrorCode.OWNERSHIP_ACCESS_DENIED) {
         // Show a dialog to the user and capture the reason to break the glass
-        String reason = "Reason to break the glass";
+        val reason = "Reason to break the glass"
 
         // Break the glass
         d2.trackedEntityModule().ownershipManager()
-                .blockingBreakGlass(teiUid, programUid, reason);
+                .suspendBreakGlass(teiUid, programUid, reason)
 
         // Download again
-        teiRepository.blockingDownload();
+        teiRepository.blockingDownload()
     } else {
         // Deal with other exceptions
     }
@@ -540,19 +687,19 @@ In general, there are two different cases to manage data creation/edition/deleti
 
 And in code this would look like:
 
-```java
-String eventUid = d2.eventModule().events().add(
-    EventCreateProjection.create("enrollment", "program", "programStage", "orgUnit", "attCombo"));
+```kotlin
+val eventUid = d2.eventModule().events().suspendAdd(
+    EventCreateProjection.create("enrollment", "program", "programStage", "orgUnit", "attCombo"))
 
-d2.eventModule().events().uid(eventUid).setStatus(COMPLETED);
+d2.eventModule().events().uid(eventUid).setStatus(EventStatus.COMPLETED)
 ```
 
 **Non-identifiable objects** (TrackedEntityAttributeValue, TrackedEntityDataValue). These repositories have a `value()` method that gives you access to edition methods for a single object. The parameters accepted by this method are the parameters that unambiguously identify a value.
 
 For example, writing a TrackedEntityDataValue would be like:
 
-```java
-d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).set(“5”);
+```kotlin
+d2.trackedEntityModule().trackedEntityDataValues().value(eventUid, dataElementid).suspendSet("5")
 ```
 
 Data values of type `Image` involve an additional step to create/update/read the associated file resource. More details in the [*Dealing with FileResources*](#android_sdk_file_resources) section below.
@@ -569,12 +716,12 @@ The restrictions that must be followed by the app are these ones:
 
 ### Tracker data upload
 
-TrackedEntityInstance and Event repositories have an `upload()` method to upload Tracker data and Event data (without registration) respectively. If the repository scope has been reduced by filter methods, only filtered objects will be uploaded.
+TrackedEntityInstance and Event repositories have an `upload` method to upload Tracker data and Event data (without registration) respectively. If the repository scope has been reduced by filter methods, only filtered objects will be uploaded.
 
-```java
+```kotlin
 d2.( trackedEntityModule() | eventModule() )
     .[ filters ]
-    .upload();
+    .flowUpload()
 ```
 
 Data whose state is `ERROR` or `WARNING` cannot be uploaded. It is required to solve the conflicts before attempting a new upload: this means to do a modification in the problematic data, which forces their state back to `TO_UPDATE`.
@@ -585,7 +732,7 @@ As of version 2.37, a new tracker importer was introduced (`/api/tracker` endpoi
 
 Server response is parsed to ensure that data has been correctly uploaded to the server. In case the server response includes import conflicts, these conflicts are stored in the database, so the app can check them and take an action to solve them.
 
-```java
+```kotlin
 d2.importModule().trackerImportConflicts()
 ```
 
@@ -599,20 +746,20 @@ Tracked Entity Attributes configured as **unique** and **automatically generated
 
 The app is responsible for reserving generated values before going offline. This can be triggered by:
 
-```java
+```kotlin
 // Reserve values for all the unique and automatically generated trackedEntityAttributes.
-d2.trackedEntityModule().reservedValueManager().downloadAllReservedValues(numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().flowDownloadAllReservedValues(numValuesToFillUp)
 
 // Reserve values for a particular trackedEntityAttribute.
-d2.trackedEntityModule().reservedValueManager().downloadReservedValues("attributeUid", numValuesToFillUp)
+d2.trackedEntityModule().reservedValueManager().flowDownloadReservedValues("attributeUid", numValuesToFillUp)
 ```
 
 Depending on how long the app expects to be offline, it can decide the quantity of values to reserve. In case the attribute pattern is dependant on the orgunit code, the SDK will reserve values for all the relevant orgunits. More details about the logic in Javadoc.
 
 Reserved values can be obtained by:
 
-```java
-d2.trackedEntityModule().reservedValueManager().getValue("attributeUid", "orgunitUid")
+```kotlin
+d2.trackedEntityModule().reservedValueManager().suspendGetValue("attributeUid", "orgunitUid")
 ```
 
 ### Tracker data: relationships
@@ -631,7 +778,7 @@ Relationships are accessed by using the relationships module.
 
 Query relationships associated to a TEI.
 
-```java
+```kotlin
 d2.relationshipModule().relationships().getByItem(
     RelationshipHelper.teiItem("trackedEntityInstanceUid")
 )
@@ -639,7 +786,7 @@ d2.relationshipModule().relationships().getByItem(
 
 Query relationships associated to an enrollment.
 
-```java
+```kotlin
 d2.relationshipModule().relationships().getByItem(
     RelationshipHelper.enrollmentItem("enrollmentUid")
 )
@@ -647,7 +794,7 @@ d2.relationshipModule().relationships().getByItem(
 
 Or query relationships associated to an event.
 
-```java
+```kotlin
 d2.relationshipModule().relationships().getByItem(
     RelationshipHelper.eventItem("eventUid")
 )
@@ -655,27 +802,27 @@ d2.relationshipModule().relationships().getByItem(
 
 In the same module you can create new relationships of any type using the `RelationshipHelper` to model the relationship and adding them later to the relationship collection repository:
 
-```java
-Relationship relationship = RelationshipHelper.teiToTeiRelationship("fromTEIUid", "toTEIUid", "relationshipTypeUid");
+```kotlin
+val relationship = RelationshipHelper.teiToTeiRelationship("fromTEIUid", "toTEIUid", "relationshipTypeUid")
 
-d2.relationshipModule().relationships().add(relationship);
+d2.relationshipModule().relationships().suspendAdd(relationship)
 ```
 
 If the related trackedEntityInstance does not exist yet and there are attribute values that must be inherited, you can use the following method to inherit attribute values from one TEI to another in the context of a certain program. Only those attribute marked as `inherit` will be inherited.
 
-```java
+```kotlin
 d2.trackedEntityModule().trackedEntityInstanceService()
-    .inheritAttributes("fromTeiUid", "toTeiUid", "programUid");
+    .blockingInheritAttributes("fromTeiUid", "toTeiUid", "programUid")
 ```
 
 In order to access the `dataElements` and `attributes` associated to a `relationshipConstraint`, they can be accessed through the `trackerDataView` property as in the following examples:
 
-```java
-relationshipType.toConstraint().trackerDataView().attributes();
+```kotlin
+relationshipType.toConstraint().trackerDataView().attributes()
 ```
 
-```java
-relationshipType.toConstraint().trackerDataView().dataElements();
+```kotlin
+relationshipType.toConstraint().trackerDataView().dataElements()
 ```
 
 ## Aggregated data { #android_sdk_aggregated_data }
@@ -686,8 +833,8 @@ relationshipType.toConstraint().trackerDataView().dataElements();
 >
 > See [Settings App](#android_sdk_settings_app) section to know how this application can be used to control synchronization parameters.
 
-```java
-d2.aggregatedModule().data().download()
+```kotlin
+d2.aggregatedModule().data().flowDownload()
 ```
 
 By default, the SDK downloads **aggregated data values**, **dataset
@@ -746,8 +893,8 @@ In order to write data values or data set complete registrations, it's mandatory
 the provided period ids must be already present in that table, otherwise, a Foreign Key error will be thrown. To prevent that situation, the `PeriodHelper` is
 exposed inside the `PeriodModule`. Before adding aggregated data related to a dataSet, the following method must be called:
 
-```java
-Single<List<Period>> periods = d2.periodModule().periodHelper().getPeriodsForDataSet("dataSetUid");
+```kotlin
+val periods: List<Period> = d2.periodModule().periodHelper().blockingGetPeriodsForDataSet("dataSetUid")
 ```
 
 This will ensure that: 
@@ -759,11 +906,11 @@ This will ensure that:
 
 DataValueCollectionRepository has a `value()` method that gives access to edition methods. The parameters accepted by this method are the parameters that unambiguously identify a value.
 
-```java
-DataValueObjectRepository valueRepository = d2.dataValueModule().dataValues()
-    .value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId");
+```kotlin
+val valueRepository = d2.dataValueModule().dataValues()
+    .value("periodId", "orgunitId", "dataElementId", "categoryOptionComboId", "attributeOptionComboId")
 
-valueRepository.set("value")
+valueRepository.suspendSet("value")
 ```
 
 #### Data set complete registration
@@ -775,53 +922,53 @@ new completions and delete them.
 To add a new data set complete registration is available an `add()`
 method:
 
-```java
+```kotlin
 d2.dataSetModule().dataSetCompleteRegistrations()
-    .add(dataSetCompleteRegistration);
+    .suspendAdd(dataSetCompleteRegistration)
 ```
 
 In order to remove them from the database, the repository has a `value()`
-method that gives access to deletion methods (`delete()` and
-`deleteIfExist()`). The parameters accepted by this method are the
-parameters that unambiguously identify the data set complete
-registration.
+method that gives access to deletion methods (`rxDelete()` and
+`rxDeleteIfExist()`, plus their `blocking` and `suspend` variants). The
+parameters accepted by this method are the parameters that unambiguously
+identify the data set complete registration.
 
-```java
+```kotlin
 d2.dataSetModule().dataSetCompleteRegistrations()
     .value("periodId", "orgunitId", "dataSetUid","attributeOptionCombo")
-    .delete()
+    .suspendDelete()
 ```
 
 ### Aggregated data upload
 
-DataValueCollectionRepository has an `upload()` method to upload aggregated data values.
+DataValueCollectionRepository has an `upload` method to upload aggregated data values. `flowUpload()` returns a `Flow<D2Progress>`; `blockingUpload()` and `rxUpload()` are also available.
 
-```java
-d2.dataValueModule().dataValues().upload();
+```kotlin
+d2.dataValueModule().dataValues().flowUpload()
 ```
 
 ### DataSet instances
 
 A DataSetInstance in the SDK is a handy representation of the existing aggregated data. A DataSetInstance represents a unique combination of DataSet - Period - Orgunit - AttributeOptionCombo and includes extra information like sync state, value count or displayName for some properties.
 
-```java
+```kotlin
 d2.dataSetModule().dataSetInstances()
     .[ filters ]
-    .get()
+    .suspendGet()
 
 // For example
 d2.dataSetModule().dataSetInstances()
     .byDataSetUid().eq("datasetUid")
     .byOrganisationUnitUid().eq("orgunitUid")
-    .byPeriod().in("201901", "201902")
-    .get();
+    .byPeriod().`in`("201901", "201902")
+    .suspendGet()
 ```
 
 If you only need a high level overview of the aggregated data status, you can use the repository `DataSetInstanceSummary`. It accepts the same filters and returns a count of `DataSetInstance` for each combination.
 
 ## Dealing with FileResources { #android_sdk_file_resources }
 
-The SDK offers a module (the `FileResourceModule`) and two helpers (the `FileResourceDirectoryHelper` and `FileResizerHelper`) that allow to work with files.
+The SDK offers a module (the `FileResourceModule`) and three helpers (the `FileResourceDirectoryHelper`, the `FileResizerHelper` and the `FileCompressionHelper`) that allow to work with files.
 
 In the context of a mobile connection, dealing with fileResources could be high bandwidth consuming. For this reason, fileResources are not downloaded by default when downloading data and they must be explicitly downloaded if wanted. The recommendation is to download to fileResources only if it is important to have them in the device. If they are not downloaded, there is no negative consequence in terms of data integrity; the only consequence is that they are not available in the device.
 
@@ -834,14 +981,14 @@ This module contains methods to download the file resources associated with the 
 - **File resources download**.
 The `fileResourceDownloader()` offers methods to filter the fileResources we want to download. It will search for values that match the filters and whose file resource has not been previously downloaded.
 
-  ```kt
+  ```kotlin
   d2.fileResourceModule().fileResourceDownloader()
     .byDomainType().eq(FileResourceDomainType.DATA_VALUE)
     .byDataDomainType().eq(FileResourceDataDomainType.TRACKER)
     .byElementType().eq(FileResourceElementType.DATA_ELEMENT)
-    .byValueType().in(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
+    .byValueType().`in`(FileResourceValueType.IMAGE, FileResourceValueType.FILE_RESOURCE)
     .byMaxContentLength().eq(2000000)
-    .download()
+    .flowDownload()
   ```
 
   The SDK has a default maxContentLength of 6000000.
@@ -849,22 +996,67 @@ The `fileResourceDownloader()` offers methods to filter the fileResources we wan
   After downloading the files, you can obtain the different file resources downloaded through the repository.
 
 - **File resource collection repository**.
-Through this repository it is possible to request files, save new ones and upload them to the server. 
+Through this repository it is possible to request files and save new ones. 
 
   - **Get**. It behaves in a similar fashion to any other SDK repository. It allows to get collections by applying different filters if desired.
   
-    ```java
+    ```kotlin
     d2.fileResourceModule().fileResources()
         .[ filters ]
-        .get()
+        .suspendGet()
     ```
 
-  - **Add**. To save a file you have to add it using the `add()` method of the repository by providing an object of type `File`. The `add()` method will return the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
+  - **Add**. To save a file it has to added it using the `processAndAdd()` method of the repository, providing an object of type `File` and a `ResourceContext`. The method returns the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
 
-    ```java
-    d2.fileResourceModule().fileResources()
-        .add(file); // Single<String> The fileResource uid
+    ```kotlin
+    // An image captured in the context of a program
+    val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
+        file,
+        ResourceContext.ImageContext.ProgramImageContext(programUid, dataElementUid),
+    )
+
+    // An image captured in the context of a dataSet
+    val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
+        file,
+        ResourceContext.ImageContext.DatasetImageContext(dataSetUid, dataElementUid),
+    )
+
+    // A non-image file: stored as it is
+    val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
+        file,
+        ResourceContext.FileContext,
+    )
     ```
+
+    `rxProcessAndAdd()` and `suspendProcessAndAdd()` are available as well.
+
+### Image compression { #android_sdk_image_compression }
+
+Images added through `processAndAdd()` with an `ImageContext` are compressed before being stored, so that uploads stay reasonably sized. The behaviour is driven by the **upload quality** configured per data element or attribute in the Android Settings web app (see [Settings app](#android_sdk_settings_app)):
+
+| `UploadQuality` | Behaviour |
+|-----------------|-----------|
+| `DEFAULT` | The image is compressed towards a target size of 600 KB, keeping its proportions. This is the value used when nothing is configured. |
+| `ORIGINAL` | The image is stored exactly as provided, with no compression. |
+
+Compression keeps the format when the server supports it, converting to JPEG (or PNG, when the image uses transparency) otherwise. If the image cannot be decoded, or compressing it does not make it smaller, the original file is used and a warning is logged.
+
+The configured value can also be read directly. Both methods are `suspend` functions:
+
+```kotlin
+val programQuality = d2.settingModule().programSetting()
+    .getImageQualityFromProgramSettings(programUid, dataElementUid)
+
+val dataSetQuality = d2.settingModule().dataSetSetting()
+    .getImageQualityFromDataSetSetting(dataSetUid, dataElementUid)
+```
+
+The compression itself is also exposed as a helper, in case the app needs to compress a file outside the file resource flow:
+
+```kotlin
+val compressed = FileCompressionHelper.compressFile(file)              // 600 KB target
+val smaller = FileCompressionHelper.compressFile(file, 200 * 1024L)    // custom target
+```
 
 ### File resizer helper
 

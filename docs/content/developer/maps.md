@@ -12,8 +12,8 @@ Additionally, it is possible to define custom basemaps in the Maintenance app.
 
 All these map layers are downloaded in a separate call:
 
-```java
-d2.mapsModule().mapLayersDownloader().downloadMetadata()
+```kotlin
+d2.mapsModule().mapLayersDownloader().suspendDownloadMetadata()
 ```
 
 > **Important**
@@ -22,11 +22,11 @@ d2.mapsModule().mapLayersDownloader().downloadMetadata()
 
 Then, map layers can be accessed by using the corresponding collection repository, as usual:
 
-```java
+```kotlin
 d2.mapsModule().mapLayers()
         .byName().eq("map_layer")
         .withImageryProviders()
-        .get()
+        .suspendGet()
 ```
 
 These map layers contain useful information to display them using a SDK for maps, in particular:

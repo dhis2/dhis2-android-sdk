@@ -8,7 +8,7 @@ For testing purposes you can use the [DHIS2 Android SMS Gateway](https://github.
 
 In the SDK, the SMS module can be accessed from `D2`.
 
-```java
+```kotlin
 d2.smsModule()
 ```
 
@@ -27,23 +27,23 @@ A typical workflow to use the SMS Module would be like:
 
 This a code example of a typical workflow (it used blocking methods for code simplicity):
 
-```java
+```kotlin
 // Enable SMS Module
-d2.smsModule().configCase().setModuleEnabled(true).blockingAwait();
+d2.smsModule().configCase().setModuleEnabled(true).blockingAwait()
 
 // Sync SMS Module metadata using SMS Module
-d2.smsModule().configCase().refreshMetadataIds().blockingAwait();
+d2.smsModule().configCase().refreshMetadataIds().blockingAwait()
 // or using metadata module
-d2.metadataModule().blockingDownload();
+d2.metadataModule().blockingDownload()
 
 // Configure, at least, the gateway number. See ConfigCase for more parameters
-d2.smsModule().configCase().setGatewayNumber("gateway-number").blockingAwait();
+d2.smsModule().configCase().setGatewayNumber("gateway-number").blockingAwait()
 
 // Send data. For example a tracker event:
-SmsSubmitCase case = d2.smsModule().smsSubmitCase();
-Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
+val submitCase = d2.smsModule().smsSubmitCase()
+val numSMSs = submitCase.convertTrackerEvent("event-uid").blockingGet()
 
-case.send().blockingSubscribe();
+submitCase.send().blockingSubscribe()
 ```
 
 ## SMS version { #android_sdk_sms_version }
@@ -52,7 +52,7 @@ SMSs are sent in a compressed format from/to the server. This task is done by th
 
 The SDK includes the latest available version of the compression library, but there is no guarantee that the server is using it as well. For this reason, it is required to check the server version in order to enable/disable some functionalities. The SMS version in the server can be checked by:
 
-```java
+```kotlin
 d2.systemInfoModule().versionManager().getSmsVersion()
 ```
 
@@ -74,7 +74,7 @@ For more information, please check [SMS compression repository](https://github.c
 
 ## ConfigCase { #android_sdk_sms_config_case }
 
-```java
+```kotlin
 d2.smsModule().configCase()
 ```
 
@@ -90,8 +90,8 @@ There are other optional parameters to control if the SDK should wait a response
 
 Use this case to create a new submission and send it. Submission cases are not reusable and can only be sent once. To create a new submission case call the method:
 
-```java
-SmsSubmitCase case = d2.smsModule().smsSubmitCase();
+```kotlin
+val submitCase = d2.smsModule().smsSubmitCase()
 ```
 
 There are two options to send a SMS: ask for permissions and send the SMS directly inside the application; or get the compressed message and use an external app to send the SMS.
@@ -106,11 +106,11 @@ A submission involve the following steps:
 
 As an example, sending a tracker event will be like:
 
-```java
-SmsSubmitCase case = d2.smsModule().smsSubmitCase();
-Integer numSMSs = case.convertTrackerEvent("event-uid").blockingGet();
+```kotlin
+val submitCase = d2.smsModule().smsSubmitCase()
+val numSMSs = submitCase.convertTrackerEvent("event-uid").blockingGet()
 
-case.send().blockingSubscribe();
+submitCase.send().blockingSubscribe()
 ```
 > **Important**
 >
@@ -129,8 +129,8 @@ The methods above returns a single with the number of messages that the
 items takes up. An example of the use of these methods is shown in the
 next snippet.
 
-```java
-Single<Integer> convertTask = d2.smsModule().smsSubmitCase()
+```kotlin
+val convertTask: Single<Int> = d2.smsModule().smsSubmitCase()
     .convertEnrollment("enrollment_uid")
 ```
 
@@ -138,7 +138,7 @@ To send the data converted earlier the Sdk provides a `send()` method
 that returns a stream of the current states. Also it is possible to get
 the submission id by calling the method `getSubmissionId()`.
 
-```java
+```kotlin
 d2.smsModule().smsSubmitCase().send()
 ```
 
@@ -149,22 +149,20 @@ the result cannot be found, it returns an error. The date accepted is
 the minimum date for which confirmation is going to be checked, this is
 used to skip old messages that may have the same submission id.
 
-```java
-d2.smsModule().smsSubmitCase().checkConfirmationSms(new Date());
+```kotlin
+d2.smsModule().smsSubmitCase().checkConfirmationSms(Date())
 ```
 
-These methods can fail and return a `PreconditionFailed` object if some
-conditions are not satisfied. The preconditions errors are:
+These methods fail with an error if some conditions are not satisfied. The preconditions checked before sending are:
 
-- `NO_NETWORK`.
-- `NO_CHECK_NETWORK_PERMISSION`.
-- `NO_RECEIVE_SMS_PERMISSION`.
-- `NO_SEND_SMS_PERMISSION`.
-- `NO_GATEWAY_NUMBER_SET`.
-- `NO_USER_LOGGED_IN`.
-- `NO_METADATA_DOWNLOADED`.
-- `SMS_MODULE_DISABLED`.
-
+- Network available.
+- Check network state permission granted.
+- Receive SMS permission granted.
+- Send SMS permission granted.
+- Gateway number configured.
+- A user is logged in.
+- SMS metadata has been downloaded.
+- The SMS module is enabled.
 
 ### Sending SMS using an external application { #android_sdk_sms_external_submit_case }
 
@@ -177,23 +175,23 @@ A submission using an external application involves the following steps:
 
 As an example, sending a tracker event will be like:
 
-```java
-SmsSubmitCase case = d2.smsModule().smsSubmitCase();
-String message = case.compressTrackerEvent("event-uid").blockingGet();
+```kotlin
+val submitCase = d2.smsModule().smsSubmitCase()
+val message = submitCase.compressTrackerEvent("event-uid").blockingGet()
 
 // Use an external application to send the SMS
 
 // Optionally mark the case as SENT_VIA_SMS
-case.markAsSentViaSMS();
+submitCase.markAsSentViaSMS()
 
 // If you get a response from the server, you can check if the message corresponds to the case or not.
-boolean isResponseMessage = case.isConfirmationMessage("sender_number", "message").blockingGet();
+val isResponseMessage = submitCase.isConfirmationMessage("sender_number", "message").blockingGet()
 ```
 
 
 ## QrCodeCase { #android_sdk_sms_qr_code_case }
 
-```java
+```kotlin
 d2.smsModule().qrCodeCase()
 ```
 
@@ -213,6 +211,6 @@ Also it is possible to get compressed strings that can be used to delete events:
   
 These methods returns a `Single` with the compressed data. The next code snippet shows an example of how it can be used.
 
-```java
-Single<String> convertTask = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid);
+```kotlin
+val convertTask: Single<String> = d2.smsModule().qrCodeCase().generateEnrollmentCode(enrollmentUid)
 ```

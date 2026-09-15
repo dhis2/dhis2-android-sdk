@@ -66,7 +66,7 @@ internal class DataValueNetworkHandlerImpl(
             children = true,
             includeDeleted = true,
         )
-        return apiResponse.dataValues.map { it.toDomain(dataSetUid) }
+        return apiResponse.dataValues.map { it.toDomain(dataSetUid, apiResponse) }
     }
 
     override suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {

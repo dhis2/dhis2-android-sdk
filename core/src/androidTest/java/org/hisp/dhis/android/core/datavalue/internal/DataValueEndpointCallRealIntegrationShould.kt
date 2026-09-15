@@ -85,7 +85,7 @@ class DataValueEndpointCallRealIntegrationShould : BaseRealIntegrationTest() {
         val apiDownloader: APIDownloader = APIDownloaderImpl(resourceHandler)
         val dataValueNetworkHandler = DataValueNetworkHandlerImpl(d2.httpServiceClient(), d2.coroutineAPICallExecutor())
 
-        return DataValueCall(dataValueNetworkHandler, dataValueHandler, apiDownloader)
+        return DataValueCall(dataValueNetworkHandler, dataValueHandler, apiDownloader, koin.get())
             .download(DataValueQuery(bundle))
     }
 }

@@ -35,8 +35,8 @@ import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaSeparatedC
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueNetworkHandler
+import org.hisp.dhis.android.core.datavalue.internal.DataValuePartition
 import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -51,19 +51,18 @@ internal class DataValueNetworkHandlerImpl(
 
     override suspend fun getDataValuesForDataSet(
         dataSetUid: String,
-        attributeOptionComboUids: List<String>,
-        bundle: AggregatedDataCallBundle,
+        partition: DataValuePartition,
+        lastUpdated: String?,
     ): List<DataValue> {
         val apiResponse = service.getDataValues(
             fields = DataValueFields.allFields,
-            lastUpdated = bundle.key.lastUpdatedStr(),
+            lastUpdated = lastUpdated,
             dataSetUids = dataSetUid,
-            periodIds = commaSeparatedCollectionValues(bundle.periodIds),
-            orgUnitUids = commaSeparatedCollectionValues(bundle.rootOrganisationUnitUids),
-            attributeOptionComboUids = attributeOptionComboUids
-                .takeIf { it.isNotEmpty() }
+            periodIds = commaSeparatedCollectionValues(partition.periodIds),
+            orgUnitUids = commaSeparatedCollectionValues(partition.orgUnitUids),
+            attributeOptionComboUids = partition.attributeOptionComboUids
                 ?.let { commaSeparatedCollectionValues(it) },
-            children = true,
+            children = partition.includeDescendants,
             includeDeleted = true,
         )
         return apiResponse.dataValues.map { it.toDomain(dataSetUid, apiResponse) }

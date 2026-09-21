@@ -32,7 +32,7 @@ import androidx.room.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper
 import org.hisp.dhis.android.persistence.common.querybuilders.LinkSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.common.stores.LinkStoreImpl

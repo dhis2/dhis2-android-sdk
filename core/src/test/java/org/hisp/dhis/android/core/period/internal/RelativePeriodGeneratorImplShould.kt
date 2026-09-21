@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.common.RelativePeriod
 import org.hisp.dhis.android.core.period.clock.internal.FixedClockProvider
@@ -45,7 +46,7 @@ class RelativePeriodGeneratorImplShould {
 
     @Test
     @Suppress("ComplexMethod", "LongMethod")
-    fun `Should create relative periods for all period types`() {
+    fun `Should create relative periods for all period types`() = runTest {
         RelativePeriod.values().forEach { relativePeriod ->
             val periods = periodGenerator.generateRelativePeriods(relativePeriod)
 

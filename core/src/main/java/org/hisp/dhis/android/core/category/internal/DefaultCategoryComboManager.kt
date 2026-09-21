@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
 import org.koin.core.annotation.Singleton
@@ -41,13 +42,18 @@ internal class DefaultCategoryComboManager(
     private var _defaultCategoryUid: String? = null
 
     val defaultCategoryComboUid: String?
-        get() = _defaultCategoryComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryComboUid }
+        get() = _defaultCategoryComboUid ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryComboUid }
 
     val defaultCategoryOptionComboUid: String?
-        get() = _defaultCategoryOptionComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryOptionComboUid }
+        get() = _defaultCategoryOptionComboUid
+            ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryOptionComboUid }
 
     val defaultCategoryUid: String?
-        get() = _defaultCategoryUid ?: loadDefaultsFromDatabase().let { _defaultCategoryUid }
+        get() = _defaultCategoryUid ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryUid }
+
+    suspend fun suspendGetDefaultCategoryComboUid(): String? {
+        return _defaultCategoryComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryComboUid }
+    }
 
     fun setDefaults(categoryCombo: CategoryCombo) {
         _defaultCategoryComboUid = categoryCombo.uid()
@@ -67,7 +73,9 @@ internal class DefaultCategoryComboManager(
         networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
-    private fun loadDefaultsFromDatabase() {
+    private fun blockingLoadDefaultsFromDatabase() = runBlocking { loadDefaultsFromDatabase() }
+
+    private suspend fun loadDefaultsFromDatabase() {
         if (_defaultCategoryComboUid != null) return
 
         categoryComboCollectionRepository
@@ -75,7 +83,7 @@ internal class DefaultCategoryComboManager(
             .withCategories()
             .withCategoryOptionCombos()
             .one()
-            .blockingGet()
+            .suspendGet()
             ?.let { setDefaults(it) }
     }
 }

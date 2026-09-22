@@ -32,12 +32,17 @@ import android.content.Context
 import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import net.openid.appauth.*
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.TokenRequest
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -61,6 +66,7 @@ internal class OpenIDConnectHandlerImpl(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val authenticatedUserStore: AuthenticatedUserStore,
     private val logInExceptions: LogInExceptions,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
@@ -110,7 +116,7 @@ internal class OpenIDConnectHandlerImpl(
         val response = AuthorizationResponse.fromIntent(intent)!!
         val authState = downloadToken(response.createTokenExchangeRequest())
 
-        return withContext(Dispatchers.IO) {
+        return withContext(dispatcher) {
             val user = logInCall.blockingLogInOpenIDConnect(serverUrl, authState)
             openIDConnectStateSecureStore.set(serverUrl, user.username()!!, authState)
             user

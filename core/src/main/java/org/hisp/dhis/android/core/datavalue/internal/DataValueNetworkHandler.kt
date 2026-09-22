@@ -36,7 +36,11 @@ import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResp
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 internal interface DataValueNetworkHandler {
-    suspend fun getDataValuesForDataSet(dataSetUid: String, bundle: AggregatedDataCallBundle): List<DataValue>
+    suspend fun getDataValuesForDataSet(
+        dataSetUid: String,
+        attributeOptionComboUids: List<String>,
+        bundle: AggregatedDataCallBundle,
+    ): List<DataValue>
     suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error>
     suspend fun postDataValuesWebResponse(
         dataValueSet: DataValueSet,

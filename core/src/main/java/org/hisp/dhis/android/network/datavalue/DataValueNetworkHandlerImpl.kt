@@ -51,6 +51,7 @@ internal class DataValueNetworkHandlerImpl(
 
     override suspend fun getDataValuesForDataSet(
         dataSetUid: String,
+        attributeOptionComboUids: List<String>,
         bundle: AggregatedDataCallBundle,
     ): List<DataValue> {
         val apiResponse = service.getDataValues(
@@ -59,11 +60,13 @@ internal class DataValueNetworkHandlerImpl(
             dataSetUids = dataSetUid,
             periodIds = commaSeparatedCollectionValues(bundle.periodIds),
             orgUnitUids = commaSeparatedCollectionValues(bundle.rootOrganisationUnitUids),
+            attributeOptionComboUids = attributeOptionComboUids
+                .takeIf { it.isNotEmpty() }
+                ?.let { commaSeparatedCollectionValues(it) },
             children = true,
-            paging = false,
             includeDeleted = true,
         )
-        return apiResponse.dataValues.map { it.toDomain(dataSetUid) }
+        return apiResponse.dataValues.map { it.toDomain(dataSetUid, apiResponse) }
     }
 
     override suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error> {

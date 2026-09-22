@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSet.Companion.futurePeriodsOrDefault
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitCollectionRepository
@@ -107,7 +108,7 @@ internal class AggregatedDataCallBundleFactory(
         organisationUnitsHash: Int,
     ): AggregatedDataCallBundleKey {
         val pastPeriods = getPastPeriods(dataSetSettings, dataSet)
-        val futurePeriods = if (dataSet.openFuturePeriods() == null) 1 else dataSet.openFuturePeriods()!!
+        val futurePeriods = futurePeriodsOrDefault(dataSet)
         val syncValue = syncValues[dataSet.uid()]
 
         return AggregatedDataCallBundleKey(

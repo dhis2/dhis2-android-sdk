@@ -29,7 +29,11 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
+import org.hisp.dhis.android.core.arch.helpers.internal.UrlLengthHelper
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
+import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
+import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -37,13 +41,40 @@ internal class DataValueCall(
     private val networkHandler: DataValueNetworkHandler,
     private val handler: DataValueHandler,
     private val apiDownloader: APIDownloader,
+    private val categoryOptionComboStore: CategoryOptionComboStore,
 ) : QueryCall<DataValue, DataValueQuery> {
 
+    companion object {
+        private const val QUERY_WITHOUT_UIDS_LENGTH = (
+            "dataValueSets?fields=dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo,value," +
+                "storedBy,created,lastUpdated,comment,followup,deleted&lastUpdated=0000-00-00T00:00:00.000" +
+                "&dataSet=&period=&orgUnit=&attributeOptionCombo=&children=true&includeDeleted=true"
+            ).length
+
+        private const val DATA_SET_UIDS = 1
+    }
+
     override suspend fun download(query: DataValueQuery): List<DataValue> {
-        return query.bundle.dataSets.mapNotNull { it.uid() }.flatMap { dataSetUid ->
+        val bundle = query.bundle
+        val availableUids = availableUidsForAttributeOptionCombos(bundle)
+
+        return bundle.dataSets.flatMap { dataSet ->
+            val attributeOptionComboUids = attributeOptionComboUids(dataSet, availableUids)
             apiDownloader.downloadListAsCoroutine(handler) {
-                networkHandler.getDataValuesForDataSet(dataSetUid, query.bundle)
+                networkHandler.getDataValuesForDataSet(dataSet.uid(), attributeOptionComboUids, bundle)
             }
         }
+    }
+
+    private suspend fun attributeOptionComboUids(dataSet: DataSet, availableUids: Int): List<String> {
+        val uids = categoryOptionComboStore.getForCategoryCombo(dataSet.categoryCombo().uid())
+            .map { it.uid() }
+
+        return if (uids.size <= availableUids) uids else emptyList()
+    }
+
+    private fun availableUidsForAttributeOptionCombos(bundle: AggregatedDataCallBundle): Int {
+        return UrlLengthHelper.getHowManyUidsFitInURL(QUERY_WITHOUT_UIDS_LENGTH) -
+            DATA_SET_UIDS - bundle.periodIds.size - bundle.rootOrganisationUnitUids.size
     }
 }

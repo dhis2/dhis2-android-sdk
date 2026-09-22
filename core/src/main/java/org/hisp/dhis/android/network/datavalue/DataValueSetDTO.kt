@@ -31,14 +31,24 @@ package org.hisp.dhis.android.network.datavalue
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.datavalue.internal.DataValueSet
 
+/**
+ * The properties of a dataValueSet act as defaults for the dataValues it contains: whenever a value
+ * is constant across the whole response, the server may report it here and omit it from every
+ * dataValue. DHIS2 2.44 does it with the attributeOptionCombo as soon as the request filters by it.
+ */
 @Serializable
 internal data class DataValueSetDTO(
-    val dataSet: String?,
+    val dataSet: String? = null,
+    val period: String? = null,
+    val orgUnit: String? = null,
+    val categoryOptionCombo: String? = null,
+    val attributeOptionCombo: String? = null,
+    val completeDate: String? = null,
     val dataValues: List<DataValueDTO> = emptyList(),
 ) {
     fun toDomain(): DataValueSet {
         return DataValueSet(
-            dataValues = dataValues.map { it.toDomain(dataSet) },
+            dataValues = dataValues.map { it.toDomain(dataSet, this) },
             dataSet = dataSet,
         )
     }

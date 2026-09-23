@@ -84,15 +84,7 @@ internal class OAuth2HandlerImpl(
         val deviceId = dcrNetworkHandler.getDeviceId()
         val clientName = "DHIS2 Android - $deviceId"
 
-        val result = dcrNetworkHandler.registerClient(
-            url = normalizedUrl,
-            iat = iat,
-            clientName = clientName,
-            redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
-            jwks = jwks,
-        )
-
-        when (result) {
+        when (val result = registerClient(normalizedUrl, iat, clientName, jwks)) {
             is Result.Success -> {
                 oauth2SecureStore.clientId = result.value
                 oauth2SecureStore.keyId = keyId
@@ -107,6 +99,33 @@ internal class OAuth2HandlerImpl(
                 throw result.failure
             }
         }
+    }
+
+    private suspend fun registerClient(
+        url: String,
+        iat: String,
+        clientName: String,
+        jwks: String,
+    ): Result<String, D2Error> {
+        suspend fun register(scope: String?) = dcrNetworkHandler.registerClient(
+            url = url,
+            iat = iat,
+            clientName = clientName,
+            redirectUri = OAuth2Config.DEFAULT_REDIRECT_URI,
+            scope = scope,
+            jwks = jwks,
+        )
+
+        val result = register(OAuth2Config.DEFAULT_SCOPE)
+        return if (result is Result.Failure && isScopeRejected(result.failure)) {
+            register(scope = null)
+        } else {
+            result
+        }
+    }
+
+    private fun isScopeRejected(error: D2Error): Boolean {
+        return error.httpErrorCode == HTTP_BAD_REQUEST && error.errorDescription.contains(INVALID_SCOPE_ERROR)
     }
 
     private fun deleteSupersededKey(previousKeyId: String?, newKeyId: String) {
@@ -308,5 +327,10 @@ internal class OAuth2HandlerImpl(
         }
         oauth2SecureStore.clearRegistration()
         oauth2SecureStore.clearTemporaryData()
+    }
+
+    private companion object {
+        const val HTTP_BAD_REQUEST = 400
+        const val INVALID_SCOPE_ERROR = "invalid_scope"
     }
 }

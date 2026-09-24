@@ -29,11 +29,14 @@
 package org.hisp.dhis.android.core.user.openid
 
 import android.content.Context
-import io.reactivex.Single
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthState
 import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationService
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @Singleton
 internal class OpenIDConnectTokenRefresher(
@@ -46,21 +49,24 @@ internal class OpenIDConnectTokenRefresher(
      * caller is responsible for persisting it.
      */
     @Suppress("TooGenericExceptionCaught")
-    fun refresh(authState: AuthState): OpenIdRefreshResult {
+    suspend fun refresh(authState: AuthState): OpenIdRefreshResult {
         val service = AuthorizationService(context)
         return try {
-            val idToken = Single.create<String> { emitter ->
+            val idToken = suspendCancellableCoroutine { continuation ->
                 authState.performActionWithFreshTokens(service) {
                         _: String?, freshIdToken: String?, ex: AuthorizationException? ->
                     service.dispose()
                     if (freshIdToken != null) {
-                        emitter.onSuccess(freshIdToken)
+                        continuation.resume(freshIdToken)
                     } else {
-                        emitter.onError(RefreshFailure(ex))
+                        continuation.resumeWithException(RefreshFailure(ex))
                     }
                 }
-            }.blockingGet()
+            }
             OpenIdRefreshResult.Success(idToken)
+        } catch (e: CancellationException) {
+            service.dispose()
+            throw e
         } catch (e: Exception) {
             service.dispose()
             if (isRejectedByProvider(e)) OpenIdRefreshResult.Invalid else OpenIdRefreshResult.Retryable
@@ -83,7 +89,7 @@ internal class OpenIDConnectTokenRefresher(
         return false
     }
 
-    /** Carries the AppAuth failure through RxJava so it can be classified. */
+    /** Carries the AppAuth failure through the coroutine so it can be classified. */
     private class RefreshFailure(
         val authorizationException: AuthorizationException?,
     ) : RuntimeException(authorizationException)

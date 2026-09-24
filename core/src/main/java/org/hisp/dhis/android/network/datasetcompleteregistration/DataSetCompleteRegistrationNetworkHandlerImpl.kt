@@ -98,7 +98,7 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
             val coc = categoryOptionComboCollectionRepository
                 .withCategoryOptions()
                 .uid(dataSetCompleteRegistration.attributeOptionCombo())
-                .blockingGet()
+                .suspendGet()
 
             service.deleteDataSetCompleteRegistration(
                 dataSetCompleteRegistration.dataSet(),

@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.period.Period
@@ -42,16 +42,20 @@ internal class PeriodForDataSetManager(
     private val periodStore: PeriodStore,
 ) {
     fun getPeriodsForDataSet(dataSetUid: String?): Single<List<Period>> {
-        return dataSetCollectionRepository.uid(dataSetUid).get().map { dataSet: DataSet ->
-            val dataSetFuturePeriods = dataSet.openFuturePeriods()
-            val endPeriods = dataSetFuturePeriods ?: 0
-            val periods = parentPeriodGenerator.generatePeriods(
-                dataSet.periodType()!!,
-                endPeriods,
-            )
-            runBlocking { storePeriods(periods) }
-            periods
-        }
+        return rxSingle { getPeriodsForDataSetInternal(dataSetUid) }
+    }
+
+    suspend fun getPeriodsForDataSetInternal(dataSetUid: String?): List<Period> {
+        val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet()
+            ?: throw NullPointerException("The callable returned a null value")
+        val dataSetFuturePeriods = dataSet.openFuturePeriods()
+        val endPeriods = dataSetFuturePeriods ?: 0
+        val periods = parentPeriodGenerator.generatePeriods(
+            dataSet.periodType()!!,
+            endPeriods,
+        )
+        storePeriods(periods)
+        return periods
     }
 
     suspend fun getPeriodsForDataSets(periodType: PeriodType, dataSets: List<DataSet>): List<Period> {

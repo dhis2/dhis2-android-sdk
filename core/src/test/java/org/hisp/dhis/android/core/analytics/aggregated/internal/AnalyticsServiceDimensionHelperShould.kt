@@ -150,9 +150,9 @@ class AnalyticsServiceDimensionHelperShould {
         whenever(periodGenerator.generateRelativePeriods(s.periodLast3Days.relative))
             .thenReturn(listOf(s.period1, s.period2, s.period3))
 
-        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period1.periodId()!!)).doReturn(s.period1)
-        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period2.periodId()!!)).doReturn(s.period2)
-        whenever(periodHelper.blockingGetPeriodForPeriodId(s.period3.periodId()!!)).doReturn(s.period3)
+        whenever(periodHelper.suspendGetPeriodForPeriodId(s.period1.periodId()!!)).doReturn(s.period1)
+        whenever(periodHelper.suspendGetPeriodForPeriodId(s.period2.periodId()!!)).doReturn(s.period2)
+        whenever(periodHelper.suspendGetPeriodForPeriodId(s.period3.periodId()!!)).doReturn(s.period3)
 
         val dimensionItems = listOf(
             s.dataElementItem1,

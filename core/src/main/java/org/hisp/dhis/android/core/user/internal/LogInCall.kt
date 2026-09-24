@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.HashVerification
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
@@ -190,7 +191,7 @@ internal class LogInCall(
                 val existingUser = authenticatedUserStore.selectFirst()
                 val authenticatedUser = AuthenticatedUser.builder()
                     .user(user.uid())
-                    .hash(credentials.getHash() ?: existingUser?.hash())
+                    .hash(credentials.newPasswordHash() ?: existingUser?.hash())
                     .build()
 
                 authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
@@ -215,12 +216,28 @@ internal class LogInCall(
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
-        if (credentials.getHash() != existingUser.hash()) {
-            throw wrongLocalCredentialsError(credentials)
+        when (val verification = credentials.matches(existingUser.hash())) {
+            is HashVerification.Mismatch -> throw wrongLocalCredentialsError(credentials)
+
+            is HashVerification.Match ->
+                if (verification.needsUpgrade) {
+                    upgradeStoredHash(existingUser, credentials)
+                }
         }
         credentialsSecureStore.set(credentials)
         userIdStore.set(existingUser.user()!!)
         return userStore.selectByUid(existingUser.user()!!)!!
+    }
+
+    /**
+     * Rewrites a hash that was verified successfully but is stored in an outdated format, typically
+     * the legacy MD5 one. It happens transparently while the plaintext secret is still at hand, so
+     * the user is never asked to authenticate again.
+     */
+    private suspend fun upgradeStoredHash(existingUser: AuthenticatedUser, credentials: Credentials) {
+        authenticatedUserStore.updateOrInsertWhere(
+            existingUser.toBuilder().hash(credentials.newPasswordHash()).build(),
+        )
     }
 
     @Suppress("TooGenericExceptionCaught")

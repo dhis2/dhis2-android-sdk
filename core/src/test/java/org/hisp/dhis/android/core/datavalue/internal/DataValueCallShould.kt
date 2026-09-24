@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2023, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.handlers.internal.Handler
-import org.hisp.dhis.android.core.category.CategoryOptionCombo
-import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
-import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
@@ -44,12 +41,15 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.argThat
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doSuspendableAnswer
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.stub
 import org.mockito.kotlin.verifyBlocking
+import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
@@ -58,21 +58,17 @@ class DataValueCallShould {
     private val networkHandler: DataValueNetworkHandler = mock()
     private val handler: DataValueHandler = mock()
     private val apiDownloader: APIDownloader = mock()
-    private val categoryOptionComboStore: CategoryOptionComboStore = mock()
+    private val estimator: DataValueDownloadEstimator = mock()
 
     private val dataSet1: DataSet = mock()
-    private val dataSet2: DataSet = mock()
 
     private val dataSetCall: DataValueCall by lazy {
-        DataValueCall(networkHandler, handler, apiDownloader, categoryOptionComboStore)
+        DataValueCall(networkHandler, handler, apiDownloader, estimator)
     }
 
     @Before
     fun setUp() {
         whenever(dataSet1.uid()) doReturn DS1
-        whenever(dataSet1.categoryCombo()) doReturn ObjectWithUid.create(CC1)
-        whenever(dataSet2.uid()) doReturn DS2
-        whenever(dataSet2.categoryCombo()) doReturn ObjectWithUid.create(CC2)
 
         apiDownloader.stub {
             onBlocking { downloadListAsCoroutine(any<Handler<DataValue>>(), any()) } doSuspendableAnswer {
@@ -80,69 +76,131 @@ class DataValueCallShould {
             }
         }
         networkHandler.stub {
-            onBlocking { getDataValuesForDataSet(any(), any(), any()) } doReturn emptyList()
+            onBlocking { getDataValuesForDataSet(any(), any(), anyOrNull()) } doReturn emptyList()
         }
     }
 
     @Test
-    fun send_the_attribute_option_combos_of_the_data_set() = runTest {
-        whenever(categoryOptionComboStore.getForCategoryCombo(CC1)) doReturn categoryOptionCombos(AOC1, AOC2)
+    fun send_one_request_per_data_set() = runTest {
+        estimator.stub {
+            onBlocking { estimates(any(), any()) } doReturn listOf(
+                estimate(DS1, periodIds = listOf(P1)),
+                estimate(DS2, periodIds = listOf(P1)),
+            )
+        }
+
+        dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1))))
+
+        verifyBlocking(networkHandler) { getDataValuesForDataSet(eq(DS1), any(), eq(LAST_UPDATED)) }
+        verifyBlocking(networkHandler) { getDataValuesForDataSet(eq(DS2), any(), eq(LAST_UPDATED)) }
+    }
+
+    @Test
+    fun split_a_data_set_that_exceeds_the_limit_into_several_requests() = runTest {
+        // 2 periods x 1 orgunit x 100_000 option combos x 1 aoc doubles the default limit.
+        estimator.stub {
+            onBlocking { estimates(any(), any()) } doReturn listOf(
+                estimate(
+                    dataSetUid = DS1,
+                    periodIds = listOf(P1, P2),
+                    categoryOptionCombosPerCell =
+                        DataValueDownloadPartitioner.DEFAULT_MAX_POTENTIAL_VALUES.toInt(),
+                ),
+            )
+        }
 
         dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1))))
 
         verifyBlocking(networkHandler) {
-            getDataValuesForDataSet(eq(DS1), eq(listOf(AOC1, AOC2)), any())
+            getDataValuesForDataSet(eq(DS1), argThat { periodIds == listOf(P1) }, eq(LAST_UPDATED))
+        }
+        verifyBlocking(networkHandler) {
+            getDataValuesForDataSet(eq(DS1), argThat { periodIds == listOf(P2) }, eq(LAST_UPDATED))
         }
     }
 
     @Test
-    fun send_one_request_per_data_set_with_its_own_attribute_option_combos() = runTest {
-        whenever(categoryOptionComboStore.getForCategoryCombo(CC1)) doReturn categoryOptionCombos(AOC1)
-        whenever(categoryOptionComboStore.getForCategoryCombo(CC2)) doReturn categoryOptionCombos(AOC2)
+    fun send_the_partition_dimensions_to_the_network_handler() = runTest {
+        estimator.stub {
+            onBlocking { estimates(any(), any()) } doReturn listOf(estimate(DS1, periodIds = listOf(P1)))
+        }
 
-        dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1, dataSet2))))
+        dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1))))
 
-        verifyBlocking(networkHandler) { getDataValuesForDataSet(eq(DS1), eq(listOf(AOC1)), any()) }
-        verifyBlocking(networkHandler) { getDataValuesForDataSet(eq(DS2), eq(listOf(AOC2)), any()) }
+        verifyBlocking(networkHandler) {
+            getDataValuesForDataSet(
+                eq(DS1),
+                eq(
+                    DataValuePartition(
+                        periodIds = listOf(P1),
+                        orgUnitUids = listOf(OU1),
+                        includeDescendants = true,
+                        attributeOptionComboUids = listOf(AOC1),
+                    ),
+                ),
+                eq(LAST_UPDATED),
+            )
+        }
     }
 
     @Test
-    fun omit_the_attribute_option_combos_if_they_do_not_fit_in_the_url() = runTest {
-        whenever(categoryOptionComboStore.getForCategoryCombo(CC1)) doReturn categoryOptionCombos(AOC1, AOC2)
-        val periodIds = (1..500).map { "20200$it" }
+    fun return_the_data_values_of_every_request() = runTest {
+        estimator.stub {
+            onBlocking { estimates(any(), any()) } doReturn listOf(
+                estimate(DS1, periodIds = listOf(P1)),
+                estimate(DS2, periodIds = listOf(P1)),
+            )
+        }
+        whenever(networkHandler.getDataValuesForDataSet(eq(DS1), any(), anyOrNull()))
+            .doReturn(listOf(dataValue("de1")))
+        whenever(networkHandler.getDataValuesForDataSet(eq(DS2), any(), anyOrNull()))
+            .doReturn(listOf(dataValue("de2")))
 
-        dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1), periodIds)))
-
-        verifyBlocking(networkHandler) { getDataValuesForDataSet(eq(DS1), eq(emptyList()), any()) }
-    }
-
-    @Test
-    fun return_the_data_values_of_every_data_set() = runTest {
-        whenever(categoryOptionComboStore.getForCategoryCombo(any())) doReturn emptyList()
-        whenever(networkHandler.getDataValuesForDataSet(eq(DS1), any(), any())) doReturn listOf(dataValue("de1"))
-        whenever(networkHandler.getDataValuesForDataSet(eq(DS2), any(), any())) doReturn listOf(dataValue("de2"))
-
-        val dataValues = dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1, dataSet2))))
+        val dataValues = dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1))))
 
         assertThat(dataValues.map { it.dataElement() }).containsExactly("de1", "de2")
     }
 
-    private fun bundle(dataSets: List<DataSet>, periodIds: List<String> = listOf("202001")) =
+    @Test
+    fun not_issue_any_request_when_there_is_nothing_to_download() = runTest {
+        estimator.stub {
+            onBlocking { estimates(any(), any()) } doReturn emptyList()
+        }
+
+        val dataValues = dataSetCall.download(DataValueQuery(bundle(listOf(dataSet1))))
+
+        assertThat(dataValues).isEmpty()
+        verifyNoInteractions(networkHandler)
+    }
+
+    private fun estimate(
+        dataSetUid: String,
+        periodIds: List<String>,
+        attributeOptionComboUids: List<String> = listOf(AOC1),
+        categoryOptionCombosPerCell: Int = 1,
+    ) = DataValueDownloadEstimate(
+        dataSetUid = dataSetUid,
+        periodIds = periodIds,
+        rootOrgUnitUids = listOf(OU1),
+        attributeOptionComboUids = attributeOptionComboUids,
+        categoryOptionCombosPerCell = categoryOptionCombosPerCell,
+        orgUnits = DataValueFlatOrgUnits(1),
+        maxPotentialValues = DataValueDownloadPartitioner.DEFAULT_MAX_POTENTIAL_VALUES,
+    )
+
+    private fun bundle(dataSets: List<DataSet>) =
         AggregatedDataCallBundle(
             key = AggregatedDataCallBundleKey(PeriodType.Monthly, 1, 1, null),
             dataSets = dataSets,
-            periodIds = periodIds,
+            periodIds = listOf(P1),
             rootOrganisationUnitUids = listOf(OU1),
             allOrganisationUnitUidsSet = setOf(OU1),
         )
 
-    private fun categoryOptionCombos(vararg uids: String): List<CategoryOptionCombo> =
-        uids.map { CategoryOptionCombo.builder().uid(it).build() }
-
     private fun dataValue(dataElementUid: String): DataValue =
         DataValue.builder()
             .dataElement(dataElementUid)
-            .period("202001")
+            .period(P1)
             .organisationUnit(OU1)
             .categoryOptionCombo("categoryOptCom1")
             .attributeOptionCombo(AOC1)
@@ -151,10 +209,10 @@ class DataValueCallShould {
     companion object {
         private const val DS1 = "dataSet1"
         private const val DS2 = "dataSet2"
-        private const val CC1 = "categoryCombo1"
-        private const val CC2 = "categoryCombo2"
         private const val AOC1 = "attributeOptCom1"
-        private const val AOC2 = "attributeOptCom2"
         private const val OU1 = "organisationUni1"
+        private const val P1 = "202001"
+        private const val P2 = "202002"
+        private val LAST_UPDATED: String? = null
     }
 }

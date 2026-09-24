@@ -28653,6 +28653,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_d
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/DataValueConflictCollectionRepository;Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueCall;Lorg/hisp/dhis/android/core/arch/call/factories/internal/QueryCall;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueConflictParser;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueDownloadEstimator;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueFileResourcePostCall;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datavalue_DataValueDIModule_single (Lorg/hisp/dhis/android/core/datavalue/internal/DataValueImportHandler;)V

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,33 +27,39 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.koin.core.annotation.Singleton
+internal interface DataValueOrgUnits {
+    fun assignedCount(uids: List<String>, includeDescendants: Boolean): Long
+    fun children(uids: List<String>): List<String>
+}
 
-@Singleton
-internal class DataValueCall(
-    private val networkHandler: DataValueNetworkHandler,
-    private val handler: DataValueHandler,
-    private val apiDownloader: APIDownloader,
-    private val estimator: DataValueDownloadEstimator,
-) : QueryCall<DataValue, DataValueQuery> {
+internal class DataValueFlatOrgUnits(private val assignedCount: Long) : DataValueOrgUnits {
+    override fun assignedCount(uids: List<String>, includeDescendants: Boolean): Long = assignedCount
 
-    companion object {
-        private val MAX_POTENTIAL_VALUES = DataValueDownloadPartitioner.DEFAULT_MAX_POTENTIAL_VALUES
-    }
+    override fun children(uids: List<String>): List<String> = emptyList()
+}
 
-    override suspend fun download(query: DataValueQuery): List<DataValue> {
-        val bundle = query.bundle
-        val lastUpdated = bundle.key.lastUpdatedStr()
+internal class DataValueOrgUnitHierarchy(
+    private val childrenByParent: Map<String, List<String>>,
+    private val assignedUids: Set<String>,
+) : DataValueOrgUnits {
 
-        return estimator.estimates(bundle, MAX_POTENTIAL_VALUES).flatMap { estimate ->
-            DataValueDownloadPartitioner.partition(estimate).flatMap { partition ->
-                apiDownloader.downloadListAsCoroutine(handler) {
-                    networkHandler.getDataValuesForDataSet(estimate.dataSetUid, partition, lastUpdated)
-                }
-            }
+    private val subtreeCounts = mutableMapOf<String, Long>()
+
+    override fun assignedCount(uids: List<String>, includeDescendants: Boolean): Long {
+        return uids.sumOf { uid ->
+            if (includeDescendants) subtreeCount(uid) else assignedUnit(uid)
         }
     }
+
+    override fun children(uids: List<String>): List<String> {
+        return uids.flatMap { childrenByParent[it].orEmpty() }
+    }
+
+    private fun subtreeCount(uid: String): Long {
+        return subtreeCounts.getOrPut(uid) {
+            assignedUnit(uid) + childrenByParent[uid].orEmpty().sumOf { subtreeCount(it) }
+        }
+    }
+
+    private fun assignedUnit(uid: String): Long = if (assignedUids.contains(uid)) 1L else 0L
 }

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.datavalue.internal
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataCallBundle
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummary
 import org.hisp.dhis.android.core.imports.internal.DataValueImportSummaryWebResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -38,8 +37,8 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 internal interface DataValueNetworkHandler {
     suspend fun getDataValuesForDataSet(
         dataSetUid: String,
-        attributeOptionComboUids: List<String>,
-        bundle: AggregatedDataCallBundle,
+        partition: DataValuePartition,
+        lastUpdated: String?,
     ): List<DataValue>
     suspend fun postDataValues(dataValueSet: DataValueSet): Result<DataValueImportSummary, D2Error>
     suspend fun postDataValuesWebResponse(

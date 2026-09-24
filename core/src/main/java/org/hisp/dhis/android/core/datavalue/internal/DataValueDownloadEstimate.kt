@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -27,33 +27,12 @@
  */
 package org.hisp.dhis.android.core.datavalue.internal
 
-import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
-import org.hisp.dhis.android.core.arch.call.factories.internal.QueryCall
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.koin.core.annotation.Singleton
-
-@Singleton
-internal class DataValueCall(
-    private val networkHandler: DataValueNetworkHandler,
-    private val handler: DataValueHandler,
-    private val apiDownloader: APIDownloader,
-    private val estimator: DataValueDownloadEstimator,
-) : QueryCall<DataValue, DataValueQuery> {
-
-    companion object {
-        private val MAX_POTENTIAL_VALUES = DataValueDownloadPartitioner.DEFAULT_MAX_POTENTIAL_VALUES
-    }
-
-    override suspend fun download(query: DataValueQuery): List<DataValue> {
-        val bundle = query.bundle
-        val lastUpdated = bundle.key.lastUpdatedStr()
-
-        return estimator.estimates(bundle, MAX_POTENTIAL_VALUES).flatMap { estimate ->
-            DataValueDownloadPartitioner.partition(estimate).flatMap { partition ->
-                apiDownloader.downloadListAsCoroutine(handler) {
-                    networkHandler.getDataValuesForDataSet(estimate.dataSetUid, partition, lastUpdated)
-                }
-            }
-        }
-    }
-}
+internal data class DataValueDownloadEstimate(
+    val dataSetUid: String,
+    val periodIds: List<String>,
+    val rootOrgUnitUids: List<String>,
+    val attributeOptionComboUids: List<String>,
+    val categoryOptionCombosPerCell: Int,
+    val orgUnits: DataValueOrgUnits,
+    val maxPotentialValues: Long,
+)

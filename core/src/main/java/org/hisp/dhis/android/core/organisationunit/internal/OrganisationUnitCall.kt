@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUids
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -156,6 +156,6 @@ internal class OrganisationUnitCall(
             FROM ${EventTableInfo.TABLE_NAME}
         """.trimIndent()
         val dao = databaseAdapter.getCurrentDatabase().d2Dao()
-        return dao.stringListRawQuery(SimpleSQLiteQuery(query)).toSet()
+        return dao.stringListRawQuery(RoomRawQuery(query)).toSet()
     }
 }

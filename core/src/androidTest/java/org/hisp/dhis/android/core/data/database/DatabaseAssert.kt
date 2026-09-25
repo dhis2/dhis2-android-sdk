@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.data.database
 
-import androidx.room.RoomRawQuery
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import junit.framework.Assert.fail
 import org.hisp.dhis.android.persistence.common.daos.D2Dao
 import org.junit.Assert
@@ -98,7 +97,7 @@ internal class DatabaseAssert private constructor(private val d2Dao: D2Dao) {
         }
         queryBuilder.append(" ORDER BY name")
 
-        val tableNames = d2Dao.stringListRawQuery(SimpleSQLiteQuery(queryBuilder.toString()))
+        val tableNames = d2Dao.stringListRawQuery(RoomRawQuery(queryBuilder.toString()))
 
         val tablesCountResult = mutableListOf<TableCount>()
         for (tableName in tableNames) {

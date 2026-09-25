@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -72,7 +72,7 @@ internal class ProgramIndicatorSQLExecutor(
         val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
 
-        return d2Dao.queryStringValue(SimpleSQLiteQuery(sqlQuery))
+        return d2Dao.queryStringValue(RoomRawQuery(sqlQuery))
     }
 
     suspend fun getProgramIndicatorSQL(

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
@@ -52,7 +52,7 @@ internal class IndicatorSQLEngine(
     ): String? {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val sqlQuery = getSql(indicator, contextEvaluationItem, contextMetadata)
-        val roomQuery = SimpleSQLiteQuery(sqlQuery)
+        val roomQuery = RoomRawQuery(sqlQuery)
         val valueStr = d2Dao.queryStringValue(roomQuery)
 
         return AnalyticExpressionParserUtils.roundValue(valueStr, indicator.decimals())

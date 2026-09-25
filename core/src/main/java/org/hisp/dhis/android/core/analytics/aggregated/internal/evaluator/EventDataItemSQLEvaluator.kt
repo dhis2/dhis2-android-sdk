@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -60,7 +60,7 @@ internal class EventDataItemSQLEvaluator(
     ): String? {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val sqlQuery = getSql(evaluationItem, metadata, queryMods)
-        val roomQuery = SimpleSQLiteQuery(sqlQuery)
+        val roomQuery = RoomRawQuery(sqlQuery)
 
         return d2Dao.queryStringValue(roomQuery)
     }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
@@ -58,7 +58,7 @@ internal class DataElementSQLEvaluator(
     ): String? {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val sqlQueryString = getSql(evaluationItem, metadata, queryMods)
-        val roomQuery = SimpleSQLiteQuery(sqlQueryString)
+        val roomQuery = RoomRawQuery(sqlQueryString)
 
         return d2Dao.queryStringValue(roomQuery)
     }

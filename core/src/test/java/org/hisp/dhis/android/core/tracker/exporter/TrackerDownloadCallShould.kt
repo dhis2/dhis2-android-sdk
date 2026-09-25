@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room3.RoomRawQuery
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
@@ -131,7 +131,7 @@ class TrackerDownloadCallShould {
         val orgUnit = OrganisationUnit.builder().uid(missingOrgUnitUid).build()
         val payload: Payload<OrganisationUnit> = mock()
 
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(listOf(missingOrgUnitUid))
         whenever(organisationUnitNetworkHandler.getOrganisationUnitsByUid(setOf(missingOrgUnitUid)))
             .doReturn(payload)
@@ -146,7 +146,7 @@ class TrackerDownloadCallShould {
 
     @Test
     fun not_call_network_when_no_missing_org_units() = runTest {
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(emptyList())
 
         val params = ProgramDataDownloadParams()
@@ -162,7 +162,7 @@ class TrackerDownloadCallShould {
         val orgUnits = missingUids.map { OrganisationUnit.builder().uid(it).build() }
         val payload: Payload<OrganisationUnit> = mock()
 
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(missingUids)
         whenever(organisationUnitNetworkHandler.getOrganisationUnitsByUid(missingUids.toSet()))
             .doReturn(payload)
@@ -177,7 +177,7 @@ class TrackerDownloadCallShould {
 
     @Test
     fun emit_progress_after_downloading_missing_org_units() = runTest {
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(emptyList())
 
         val params = ProgramDataDownloadParams()
@@ -233,7 +233,7 @@ class TrackerDownloadCallShould {
         )
 
         whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>())).doReturn(emptyList())
 
         val endpointCallFactory: TrackedEntityEndpointCallFactory = mock()
         whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)
@@ -288,7 +288,7 @@ class TrackerDownloadCallShould {
         )
 
         whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>())).doReturn(emptyList())
 
         val endpointCallFactory: TrackedEntityEndpointCallFactory = mock()
         whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)

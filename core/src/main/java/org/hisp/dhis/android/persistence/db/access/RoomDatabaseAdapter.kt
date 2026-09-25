@@ -135,9 +135,7 @@ internal class RoomDatabaseAdapter(
     }
 
     override suspend fun rawQuery(sqlQuery: String, queryArgs: Array<Any>?): List<Map<String, String?>> {
-        return readRows(sqlQuery, queryArgs) { statement, index ->
-            if (statement.isNull(index)) null else statement.getText(index)
-        }
+        return readRows(sqlQuery, queryArgs, ::readColumnAsString)
     }
 
     override suspend fun rawQueryWithTypedValues(

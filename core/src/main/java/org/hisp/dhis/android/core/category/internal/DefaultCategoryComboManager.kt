@@ -67,15 +67,20 @@ internal class DefaultCategoryComboManager(
         networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
+    suspend fun loadDefaults() {
+        if (_defaultCategoryComboUid != null) return
+        defaultCategoryComboQuery().suspendGet()?.let { setDefaults(it) }
+    }
+
     private fun loadDefaultsFromDatabase() {
         if (_defaultCategoryComboUid != null) return
+        defaultCategoryComboQuery().blockingGet()?.let { setDefaults(it) }
+    }
 
+    private fun defaultCategoryComboQuery() =
         categoryComboCollectionRepository
             .byIsDefault().eq(true)
             .withCategories()
             .withCategoryOptionCombos()
             .one()
-            .blockingGet()
-            ?.let { setDefaults(it) }
-    }
 }

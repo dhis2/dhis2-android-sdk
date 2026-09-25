@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -42,6 +43,7 @@ import org.koin.core.annotation.Singleton
 internal class ProgramNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
     private val dhisVersionManager: DHISVersionManagerImpl,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : ProgramNetworkHandler {
     private val service = ProgramService(httpServiceClient)
     override suspend fun getPrograms(uids: Set<String>): Payload<Program> {
@@ -52,6 +54,7 @@ internal class ProgramNetworkHandlerImpl(
             accessDataReadFilter,
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramDTO::toDomain)
     }
 

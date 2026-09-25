@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.programindicator
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorNetworkHandler
@@ -38,6 +39,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ProgramIndicatorNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : ProgramIndicatorNetworkHandler {
     private val service = ProgramIndicatorService(httpServiceClient)
 
@@ -51,6 +53,7 @@ internal class ProgramIndicatorNetworkHandlerImpl(
             uids = null,
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
     }
 
@@ -62,6 +65,7 @@ internal class ProgramIndicatorNetworkHandlerImpl(
             uids = ProgramIndicatorFields.uid.`in`(uids),
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
     }
 }

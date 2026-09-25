@@ -49,7 +49,7 @@ abstract class ReadOnlyObjectRepositoryImpl<M : Any, R : ReadOnlyObjectRepositor
      */
     override suspend fun suspendGet(): M? {
         return ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(),
+            getWithoutChildrenInternal(),
             childrenAppenderGetter,
             scope.children(),
         )
@@ -57,7 +57,7 @@ abstract class ReadOnlyObjectRepositoryImpl<M : Any, R : ReadOnlyObjectRepositor
 
     internal suspend fun getInternal(): M? {
         return ChildrenAppenderExecutor.appendInObject(
-            blockingGetWithoutChildren(),
+            getWithoutChildrenInternal(),
             childrenAppenderGetter,
             scope.children(),
         )

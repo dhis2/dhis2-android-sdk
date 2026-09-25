@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.valuetypedevicerendering
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.common.ValueTypeDeviceRendering
 import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 import org.hisp.dhis.android.persistence.common.EntityDB

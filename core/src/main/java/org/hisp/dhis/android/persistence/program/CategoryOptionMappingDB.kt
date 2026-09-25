@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.program.CategoryOptionMapping
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.processor.ParentColumn

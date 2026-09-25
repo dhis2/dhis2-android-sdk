@@ -1819,14 +1819,6 @@ public abstract class org/hisp/dhis/android/core/arch/db/access/internal/AppData
 public final class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase$Companion {
 }
 
-public final class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase_Impl : org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase {
-	public fun <init> ()V
-	public fun clearAllTables ()V
-	public fun createAutoMigrations (Ljava/util/Map;)Ljava/util/List;
-	public synthetic fun createOpenDelegate ()Landroidx/room/RoomOpenDelegateMarker;
-	public fun getRequiredAutoMigrationSpecClasses ()Ljava/util/Set;
-}
-
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/internal/BaseDatabaseExport {
 	public abstract fun decrypt (Ljava/lang/String;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun decryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -29299,7 +29291,6 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_persis
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/dataset/SectionGreyedFieldsLinkStoreImpl;Lorg/hisp/dhis/android/core/dataset/internal/SectionGreyedFieldsLinkStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/dataset/SectionIndicatorLinkStoreImpl;Lorg/hisp/dhis/android/core/dataset/internal/SectionIndicatorLinkStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/dataset/SectionStoreImpl;Lorg/hisp/dhis/android/core/dataset/internal/SectionStore;)V
-	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/SqliteDriverFactoryImpl;Lorg/hisp/dhis/android/persistence/db/access/SqliteDriverFactory;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datastore/DataStoreStoreImpl;Lorg/hisp/dhis/android/core/datastore/internal/DataStoreEntryStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datastore/LocalDataStoreStoreImpl;Lorg/hisp/dhis/android/core/datastore/internal/LocalDataStoreStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datavalue/DataValueConflictStoreImpl;Lorg/hisp/dhis/android/core/datavalue/internal/DataValueConflictStore;)V
@@ -29308,6 +29299,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_persis
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/RoomDatabaseExport;Lorg/hisp/dhis/android/core/arch/db/access/internal/BaseDatabaseExport;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/RoomDatabaseManager;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseManager;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/RoomMultiUserDatabaseManager;Lorg/hisp/dhis/android/core/configuration/internal/MultiUserDatabaseManager;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/SqliteDriverFactoryImpl;Lorg/hisp/dhis/android/persistence/db/access/SqliteDriverFactory;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/domain/AggregatedDataSyncStoreImpl;Lorg/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataSyncStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/enrollment/EnrollmentStoreImpl;Lorg/hisp/dhis/android/core/enrollment/internal/EnrollmentStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/event/EventDataFilterStoreImpl;Lorg/hisp/dhis/android/core/event/internal/EventDataFilterStore;)V

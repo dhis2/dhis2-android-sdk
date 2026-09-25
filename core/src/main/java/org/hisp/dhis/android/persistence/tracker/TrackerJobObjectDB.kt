@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.persistence.tracker
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
 import org.hisp.dhis.android.core.util.dateFormatNonNull

@@ -28,12 +28,15 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
-import androidx.room.Transactor
-import androidx.room.execSQL
-import androidx.room.useWriterConnection
+import androidx.room3.useReaderConnection
+import androidx.room3.useWriterConnection
+import androidx.room3.withWriteTransaction
+import androidx.sqlite.SQLITE_DATA_BLOB
+import androidx.sqlite.SQLITE_DATA_FLOAT
+import androidx.sqlite.SQLITE_DATA_INTEGER
+import androidx.sqlite.SQLITE_DATA_NULL
 import androidx.sqlite.SQLiteStatement
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.stores.StoreRegistry
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
@@ -43,6 +46,11 @@ import kotlin.reflect.KClass
 
 /**
  * Room-based implementation of DatabaseAdapter.
+ *
+ * Reads go through [useReaderConnection] and writes through [useWriterConnection]. That split
+ * matters: with a pooled driver such as `BundledSQLiteDriver`, Room opens one writer and several
+ * reader connections, so routing a SELECT through the writer serialises it behind every pending
+ * write for no reason.
  */
 @Singleton
 @Suppress("TooManyFunctions")
@@ -64,10 +72,9 @@ internal class RoomDatabaseAdapter(
     }
 
     override fun close() {
-        if (database != null) {
-            database!!.close()
-            database = null
-        }
+        database?.close()
+        database = null
+        databaseName = ""
     }
 
     override fun deactivate() {
@@ -75,34 +82,17 @@ internal class RoomDatabaseAdapter(
         databaseName = ""
     }
 
-    override fun beginNewTransaction(): Transaction {
+    override suspend fun <T> withTransaction(block: suspend () -> T): T {
         checkReady()
-        database!!.beginTransaction()
-        return RoomTransaction(database!!)
-    }
-
-    override fun setTransactionSuccessful() {
-        checkReady()
-        database!!.setTransactionSuccessful()
-    }
-
-    override fun runInTransaction(block: Runnable) {
-        checkReady()
-        database!!.runInTransaction(block)
-    }
-
-    override fun endTransaction() {
-        checkReady()
-        database!!.endTransaction()
+        return database!!.withWriteTransaction { block() }
     }
 
     override suspend fun execSQL(sql: String) {
         checkReady()
-
+        // Not wrapped in a transaction: several callers pass PRAGMA statements, which SQLite
+        // silently ignores inside one.
         database!!.useWriterConnection { transactor ->
-            transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                this.execSQL(sql)
-            }
+            transactor.usePrepared(sql) { it.step() }
         }
     }
 
@@ -110,10 +100,9 @@ internal class RoomDatabaseAdapter(
         return delete(tableName, whereClause, null)
     }
 
-    @Suppress("ComplexMethod")
     override suspend fun delete(tableName: String, whereClause: String?, whereArgs: Array<Any>?): Int {
         checkReady()
-        require(tableName.matches(Regex("^[a-zA-Z_][a-zA-Z0-9_]*$"))) { "Invalid table name: $tableName" }
+        require(tableName.matches(TABLE_NAME_REGEX)) { "Invalid table name: $tableName" }
 
         val deleteSql = buildString {
             append("DELETE FROM `")
@@ -126,33 +115,14 @@ internal class RoomDatabaseAdapter(
         }
 
         var rowsAffected = 0
-
-        database!!.useWriterConnection { transactor: Transactor ->
-            transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                this.usePrepared(deleteSql) { statement: SQLiteStatement ->
-                    if (whereArgs != null) {
-                        whereArgs.forEachIndexed { index, arg ->
-                            val argIndex = index + 1
-                            when (arg) {
-                                is String -> statement.bindText(argIndex, arg)
-                                is Long -> statement.bindLong(argIndex, arg)
-                                is Double -> statement.bindDouble(argIndex, arg)
-                                is ByteArray -> statement.bindBlob(argIndex, arg)
-                                is Int -> statement.bindLong(argIndex, arg.toLong())
-                                is Boolean -> statement.bindLong(argIndex, if (arg) 1L else 0L)
-                                is Float -> statement.bindDouble(argIndex, arg.toDouble())
-                                null -> statement.bindNull(argIndex)
-                                else -> statement.bindText(argIndex, arg.toString())
-                            }
-                        }
-                    }
-                    statement.step()
-                }
-
-                this.usePrepared("SELECT changes()") { changesStatement: SQLiteStatement ->
-                    if (changesStatement.step()) {
-                        rowsAffected = changesStatement.getLong(0).toInt()
-                    }
+        database!!.withWriteTransaction {
+            usePrepared(deleteSql) { statement ->
+                whereArgs?.forEachIndexed { index, arg -> bindArgument(statement, index + 1, arg) }
+                statement.step()
+            }
+            usePrepared("SELECT changes()") { changesStatement ->
+                if (changesStatement.step()) {
+                    rowsAffected = changesStatement.getLong(0).toInt()
                 }
             }
         }
@@ -165,80 +135,51 @@ internal class RoomDatabaseAdapter(
     }
 
     override suspend fun rawQuery(sqlQuery: String, queryArgs: Array<Any>?): List<Map<String, String?>> {
-        checkReady()
-        val results = mutableListOf<Map<String, String?>>()
-        database!!.useWriterConnection { transactor ->
-            transactor.withTransaction(
-                Transactor.SQLiteTransactionType.IMMEDIATE,
-            ) {
-                this.usePrepared(sqlQuery) { statement: SQLiteStatement ->
-                    // Bind arguments if any
-                    queryArgs?.forEachIndexed { index, arg ->
-                        val argIndex = index + 1
-                        bindArgument(statement, argIndex, arg)
-                    }
-
-                    var columnNamesCache: List<String>? = null
-
-                    while (statement.step()) {
-                        if (columnNamesCache == null) {
-                            columnNamesCache = List(statement.getColumnCount()) { i ->
-                                statement.getColumnName(i)
-                            }
-                        }
-
-                        val rowMap = mutableMapOf<String, String?>()
-                        columnNamesCache.forEachIndexed { idx, name ->
-                            if (statement.isNull(idx)) {
-                                rowMap[name] = ""
-                            } else {
-                                val value = statement.getText(idx)
-                                rowMap[name] = value
-                            }
-                        }
-                        results.add(rowMap)
-                    }
-                }
-            }
+        return readRows(sqlQuery, queryArgs) { statement, index ->
+            if (statement.isNull(index)) null else statement.getText(index)
         }
-        return results
     }
 
     override suspend fun rawQueryWithTypedValues(
         sqlQuery: String,
         queryArgs: Array<Any>?,
     ): List<Map<String, Any?>> {
+        return readRows(sqlQuery, queryArgs) { statement, index ->
+            when (statement.getColumnType(index)) {
+                SQLITE_DATA_NULL -> null
+                SQLITE_DATA_INTEGER -> statement.getLong(index)
+                SQLITE_DATA_FLOAT -> statement.getDouble(index)
+                SQLITE_DATA_BLOB -> statement.getBlob(index)
+                else -> statement.getText(index)
+            }
+        }
+    }
+
+    /**
+     * Runs [sqlQuery] on a reader connection and materialises every row, reading each column with
+     * [readColumn].
+     */
+    private suspend fun <V> readRows(
+        sqlQuery: String,
+        queryArgs: Array<Any>?,
+        readColumn: (SQLiteStatement, Int) -> V,
+    ): List<Map<String, V>> {
         checkReady()
-        val results = mutableListOf<Map<String, Any?>>()
+        val results = mutableListOf<Map<String, V>>()
 
-        database!!.useWriterConnection { transactor ->
-            transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                this.usePrepared(sqlQuery) { statement: SQLiteStatement ->
-                    queryArgs?.forEachIndexed { index, arg ->
-                        val argIndex = index + 1
-                        bindArgument(statement, argIndex, arg)
-                    }
+        database!!.useReaderConnection { transactor ->
+            transactor.usePrepared(sqlQuery) { statement ->
+                queryArgs?.forEachIndexed { index, arg -> bindArgument(statement, index + 1, arg) }
 
-                    var columnNamesCache: List<String>? = null
+                var columnNames: List<String>? = null
+                while (statement.step()) {
+                    val names = columnNames
+                        ?: List(statement.getColumnCount()) { statement.getColumnName(it) }
+                            .also { columnNames = it }
 
-                    while (statement.step()) {
-                        if (columnNamesCache == null) {
-                            columnNamesCache = List(statement.getColumnCount()) { i ->
-                                statement.getColumnName(i)
-                            }
-                        }
-
-                        val rowMap = mutableMapOf<String, Any?>()
-                        columnNamesCache.forEachIndexed { idx, name ->
-                            if (statement.isNull(idx)) {
-                                rowMap[name] = ""
-                            } else {
-                                val value = statement.getText(idx)
-                                rowMap[name] = value
-                            }
-                        }
-                        results.add(rowMap)
-                    }
+                    val row = LinkedHashMap<String, V>(names.size)
+                    names.forEachIndexed { index, name -> row[name] = readColumn(statement, index) }
+                    results.add(row)
                 }
             }
         }
@@ -255,18 +196,16 @@ internal class RoomDatabaseAdapter(
             is Boolean -> statement.bindLong(index, if (arg) 1L else 0L)
             is Float -> statement.bindDouble(index, arg.toDouble())
             null -> statement.bindNull(index)
-            else -> statement.bindText(index, arg.toString()) // Default to String
+            else -> statement.bindText(index, arg.toString())
         }
     }
 
     override suspend fun setForeignKeyConstraintsEnabled(enabled: Boolean) {
         checkReady()
+        // `PRAGMA foreign_keys` is a no-op inside a transaction, so this must not be wrapped in one.
         val sql = if (enabled) "PRAGMA foreign_keys = ON;" else "PRAGMA foreign_keys = OFF;"
-
-        database!!.useWriterConnection { transactor: Transactor ->
-            transactor.withTransaction(Transactor.SQLiteTransactionType.IMMEDIATE) {
-                this.execSQL(sql)
-            }
+        database!!.useWriterConnection { transactor ->
+            transactor.usePrepared(sql) { it.step() }
         }
     }
 
@@ -293,9 +232,17 @@ internal class RoomDatabaseAdapter(
         check(isReady) { "Database adapter not activated" }
     }
 
-    override fun getVersion(): Int {
+    override suspend fun getVersion(): Int {
         checkReady()
-        return database?.openHelper?.readableDatabase?.version!!
+        var version = 0
+        database!!.useReaderConnection { transactor ->
+            transactor.usePrepared("PRAGMA user_version;") { statement ->
+                if (statement.step()) {
+                    version = statement.getLong(0).toInt()
+                }
+            }
+        }
+        return version
     }
 
     override suspend fun checkpointWAL() {
@@ -305,5 +252,9 @@ internal class RoomDatabaseAdapter(
                 statement.step()
             }
         }
+    }
+
+    private companion object {
+        val TABLE_NAME_REGEX = Regex("^[a-zA-Z_][a-zA-Z0-9_]*$")
     }
 }

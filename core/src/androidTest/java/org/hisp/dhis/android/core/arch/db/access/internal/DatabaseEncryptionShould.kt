@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.util.Log
-import androidx.room.RoomRawQuery
-import androidx.room.immediateTransaction
-import androidx.room.useWriterConnection
+import androidx.room3.RoomRawQuery
+import androidx.room3.immediateTransaction
+import androidx.room3.useWriterConnection
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -45,6 +45,7 @@ import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.persistence.constant.toDB
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.SqliteDriverFactoryImpl
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,7 +62,7 @@ class DatabaseEncryptionShould : BaseMockIntegrationTest() {
         val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
         val context = InstrumentationRegistry.getInstrumentation().context
 
-        databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+        databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
         databaseManager.createOrOpenEncryptedDatabase("testDB", "test")
     }
 

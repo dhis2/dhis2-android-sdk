@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -50,6 +50,7 @@ import org.hisp.dhis.android.persistence.configuration.migration.DatabaseUserCon
 import org.hisp.dhis.android.persistence.configuration.migration.DatabasesConfigurationOldDB
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.SqliteDriverFactoryImpl
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -70,7 +71,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
     private val storeRegistry = KoinStoreRegistry()
     private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
-    private val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+    private val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
 
     private val serverUrl = "https://server.org"
     private val serverUrlWithApi = "https://server.org/api/"
@@ -217,7 +218,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
     private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
-        val nameList = d2Dao.stringListRawQuery(SimpleSQLiteQuery("SELECT username FROM UserCredentials"))
+        val nameList = d2Dao.stringListRawQuery(RoomRawQuery("SELECT username FROM UserCredentials"))
 
         return nameList.first()
     }

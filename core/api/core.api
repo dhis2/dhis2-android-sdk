@@ -1742,27 +1742,24 @@ public final class org/hisp/dhis/android/core/arch/dateformat/internal/SafeDateF
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter {
 	public abstract fun activate (Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;Ljava/lang/String;)V
-	public abstract fun beginNewTransaction ()Lorg/hisp/dhis/android/core/arch/db/access/Transaction;
 	public abstract fun checkpointWAL (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun close ()V
 	public abstract fun deactivate ()V
 	public abstract fun delete (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun delete (Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun delete (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun endTransaction ()V
 	public abstract fun execSQL (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun getCurrentDatabase ()Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase;
 	public abstract fun getDatabaseName ()Ljava/lang/String;
-	public abstract fun getVersion ()I
+	public abstract fun getVersion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun isReady ()Z
 	public abstract fun rawQuery (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun rawQuery$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun rawQueryWithTypedValues (Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun rawQueryWithTypedValues$default (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;Ljava/lang/String;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
-	public abstract fun runInTransaction (Ljava/lang/Runnable;)V
 	public abstract fun setForeignKeyConstraintsEnabled (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun setTransactionSuccessful ()V
 	public abstract fun upsertObject (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun withTransaction (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/DatabaseAdapter$DefaultImpls {
@@ -1813,12 +1810,7 @@ public abstract interface class org/hisp/dhis/android/core/arch/db/access/Databa
 	public abstract fun importDatabase (Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
 }
 
-public abstract interface class org/hisp/dhis/android/core/arch/db/access/Transaction {
-	public abstract fun end ()V
-	public abstract fun setSuccessful ()V
-}
-
-public abstract class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase : androidx/room/RoomDatabase {
+public abstract class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase : androidx/room3/RoomDatabase {
 	public static final field Companion Lorg/hisp/dhis/android/core/arch/db/access/internal/AppDatabase$Companion;
 	public static final field VERSION I
 	public fun <init> ()V
@@ -25732,12 +25724,6 @@ public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInf
 }
 
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueTableInfo$Columns$Companion {
-}
-
-public final class org/hisp/dhis/android/persistence/db/access/RoomTransaction : org/hisp/dhis/android/core/arch/db/access/Transaction {
-	public fun <init> (Landroidx/room/RoomDatabase;)V
-	public fun end ()V
-	public fun setSuccessful ()V
 }
 
 public final class org/hisp/dhis/android/persistence/dependencyinjection/OrgHispDhisAndroidPersistenceDependencyinjectionPersistenceDIModuleModuleKt {

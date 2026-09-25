@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.enrollment
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableDeletableDataObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
@@ -40,7 +40,7 @@ internal interface EnrollmentDaoAux : IdentifiableDeletableDataObjectDao<Enrollm
         SET ${EnrollmentTableInfo.Columns.AGGREGATED_SYNC_STATE} = :state
         WHERE ${IdentifiableColumns.UID} = :uid;""",
     )
-    fun setAggregatedSyncState(state: String, uid: String): Int
+    suspend fun setAggregatedSyncState(state: String, uid: String): Int
 
     @Query(
         """
@@ -48,5 +48,5 @@ internal interface EnrollmentDaoAux : IdentifiableDeletableDataObjectDao<Enrollm
         WHERE ${EnrollmentTableInfo.Columns.UID} IN (:enrollmentUids)
     """,
     )
-    fun deleteByUids(enrollmentUids: List<String>): Int
+    suspend fun deleteByUids(enrollmentUids: List<String>): Int
 }

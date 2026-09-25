@@ -28,45 +28,45 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import androidx.room.Update
-import androidx.room.Upsert
+import androidx.room3.Delete
+import androidx.room3.Insert
+import androidx.room3.OnConflictStrategy
+import androidx.room3.RawQuery
+import androidx.room3.RoomRawQuery
+import androidx.room3.Update
+import androidx.room3.Upsert
 import org.hisp.dhis.android.persistence.common.EntityDB
 
 @Suppress("TooManyFunctions")
 internal interface ObjectDao<P : EntityDB<*>> : ReadableDao<P>, ObjectDaoQueryFallbacks {
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    fun insert(entity: P): Long
+    suspend fun insert(entity: P): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(entities: Collection<P>): LongArray
+    suspend fun insert(entities: Collection<P>): LongArray
 
     @Update
-    fun update(entity: P): Int
+    suspend fun update(entity: P): Int
 
     @Update
-    fun update(entities: Collection<P>): Int
+    suspend fun update(entities: Collection<P>): Int
 
     @Upsert
-    fun upsert(entity: P): Long
+    suspend fun upsert(entity: P): Long
 
     @Upsert
-    fun upsert(entities: Collection<P>): LongArray
+    suspend fun upsert(entities: Collection<P>): LongArray
 
     @Delete
-    fun delete(entity: P): Int
+    suspend fun delete(entity: P): Int
 
     @Delete
-    fun delete(entities: Collection<P>): Int
+    suspend fun delete(entities: Collection<P>): Int
 
     @RawQuery
-    fun objectRawQuery(query: RoomRawQuery): P?
+    suspend fun objectRawQuery(query: RoomRawQuery): P?
 
     @RawQuery
-    fun stringListRawQuery(query: RoomRawQuery): List<String>
+    suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
 }

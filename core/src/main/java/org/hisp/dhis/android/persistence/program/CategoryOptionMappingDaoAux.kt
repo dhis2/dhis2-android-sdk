@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.LinkDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -48,7 +48,7 @@ internal interface CategoryOptionMappingDaoAux : LinkDao<CategoryOptionMappingDB
           AND cm.${CategoryMappingTableInfo.Columns.UID} IN (:mappingIds)
     """,
     )
-    fun selectFiltersForProgram(
+    suspend fun selectFiltersForProgram(
         programUid: String,
         mappingIds: List<String>,
     ): List<CategoryOptionFilterRow>

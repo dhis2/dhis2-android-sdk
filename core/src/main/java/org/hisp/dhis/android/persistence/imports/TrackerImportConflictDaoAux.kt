@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.imports
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -41,7 +41,7 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    fun deleteEventConflict(uid: String, tableName: String): Int
+    suspend fun deleteEventConflict(uid: String, tableName: String): Int
 
     @Query(
         """
@@ -50,7 +50,7 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    fun deleteEnrollmentConflict(uid: String, tableName: String): Int
+    suspend fun deleteEnrollmentConflict(uid: String, tableName: String): Int
 
     @Query(
         """
@@ -59,5 +59,5 @@ internal interface TrackerImportConflictDaoAux : ObjectDao<TrackerImportConflict
           AND ${TrackerImportConflictTableInfo.Columns.TABLE_REFERENCE} = :tableName
     """,
     )
-    fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
+    suspend fun deleteTrackedEntityConflict(uid: String, tableName: String): Int
 }

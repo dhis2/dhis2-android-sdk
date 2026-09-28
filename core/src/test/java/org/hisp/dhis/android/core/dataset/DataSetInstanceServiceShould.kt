@@ -51,12 +51,18 @@ import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
+import org.hisp.dhis.android.core.validation.engine.ValidationResult
+import org.hisp.dhis.android.core.validation.engine.ValidationResultViolation
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import java.util.Date
 import kotlin.time.Clock
@@ -97,6 +103,9 @@ class DataSetInstanceServiceShould {
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
     private val categoryOptionComboCollectionRepository: CategoryOptionComboCollectionRepository =
         mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
+    private val validationEngine: ValidationEngine = mock()
+    private val validationRuleCollectionRepository: ValidationRuleCollectionRepository =
+        mock(defaultAnswer = Mockito.RETURNS_DEEP_STUBS)
 
     private val categories: List<CategoryOption> = mock()
 
@@ -110,6 +119,8 @@ class DataSetInstanceServiceShould {
         categoryOptionComboService = categoryOptionComboService,
         periodGenerator = periodGenerator,
         categoryOptionRepository = categoryOptionRepository,
+        validationEngine = validationEngine,
+        validationRuleCollectionRepository = validationRuleCollectionRepository,
     )
 
     @Before
@@ -331,5 +342,117 @@ class DataSetInstanceServiceShould {
                 result.first().categoryOptionCombo()?.uid() == "coc1" &&
                 result.first().uid() == "de1.coc1",
         )
+    }
+
+    @Test
+    fun `Should be completable without running validation if validCompleteOnly is false`() = runTest {
+        whenever(dataSet.validCompleteOnly()) doReturn false
+
+        val status = suspendGetCompletionStatus()
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
+        verify(validationEngine, never()).suspendValidate(any(), any(), any(), any())
+    }
+
+    @Test
+    fun `Should be completable without running validation if validCompleteOnly is null`() = runTest {
+        whenever(dataSet.validCompleteOnly()).thenReturn(null)
+
+        val status = suspendGetCompletionStatus()
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
+        verify(validationEngine, never()).suspendValidate(any(), any(), any(), any())
+    }
+
+    @Test
+    fun `Should be completable without running validation if dataSet does not exist`() = runTest {
+        whenever(dataSetCollectionRepository.uid(any()).suspendGet()).thenReturn(null)
+
+        val status = suspendGetCompletionStatus()
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
+        verify(validationEngine, never()).suspendValidate(any(), any(), any(), any())
+    }
+
+    @Test
+    fun `Should be completable if validCompleteOnly is true and validation passes`() = runTest {
+        whenever(dataSet.validCompleteOnly()) doReturn true
+        whenever(
+            validationEngine.suspendValidate(dataSetUid, firstPeriodId, orgUnitUid, attOptionComboUid),
+        ) doReturn validationResult(ValidationResult.ValidationResultStatus.OK, emptyList())
+
+        val status = suspendGetCompletionStatus()
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
+    }
+
+    @Test
+    fun `Should not be completable with violations if validCompleteOnly is true and validation fails`() = runTest {
+        val violation: ValidationResultViolation = mock()
+        whenever(dataSet.validCompleteOnly()) doReturn true
+        whenever(
+            validationEngine.suspendValidate(dataSetUid, firstPeriodId, orgUnitUid, attOptionComboUid),
+        ) doReturn validationResult(ValidationResult.ValidationResultStatus.ERROR, listOf(violation))
+
+        val status = suspendGetCompletionStatus()
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.NotCompletable::class.java)
+        val notCompletable = status as DataSetCompletionStatus.NotCompletable
+        assertThat(notCompletable.reason).isEqualTo(DataSetNotCompletableReason.VALIDATION_RULES_NOT_PASSED)
+        assertThat(notCompletable.violations).containsExactly(violation)
+    }
+
+    @Test
+    fun `Should return NONE if dataSet has no form validation rules`() = runTest {
+        whenever(formValidationRulesRepository().suspendIsEmpty()) doReturn true
+
+        val configuration = dataSetInstanceService.suspendGetValidationRulesConfiguration(dataSetUid)
+
+        assertThat(configuration).isEqualTo(DataSetValidationRulesConfiguration.NONE)
+    }
+
+    @Test
+    fun `Should return MANDATORY if dataSet has form validation rules and validCompleteOnly is true`() = runTest {
+        whenever(formValidationRulesRepository().suspendIsEmpty()) doReturn false
+        whenever(dataSet.validCompleteOnly()) doReturn true
+
+        val configuration = dataSetInstanceService.suspendGetValidationRulesConfiguration(dataSetUid)
+
+        assertThat(configuration).isEqualTo(DataSetValidationRulesConfiguration.MANDATORY)
+    }
+
+    @Test
+    fun `Should return OPTIONAL if dataSet has form validation rules and validCompleteOnly is false`() = runTest {
+        whenever(formValidationRulesRepository().suspendIsEmpty()) doReturn false
+        whenever(dataSet.validCompleteOnly()) doReturn false
+
+        val configuration = dataSetInstanceService.suspendGetValidationRulesConfiguration(dataSetUid)
+
+        assertThat(configuration).isEqualTo(DataSetValidationRulesConfiguration.OPTIONAL)
+    }
+
+    private fun formValidationRulesRepository(): ValidationRuleCollectionRepository {
+        return validationRuleCollectionRepository
+            .byDataSetUids(listOf(dataSetUid))
+            .bySkipFormValidation().isFalse
+    }
+
+    private suspend fun suspendGetCompletionStatus(): DataSetCompletionStatus {
+        return dataSetInstanceService.suspendGetCompletionStatus(
+            dataSetUid = dataSetUid,
+            periodId = firstPeriodId,
+            organisationUnitUid = orgUnitUid,
+            attributeOptionComboUid = attOptionComboUid,
+        )
+    }
+
+    private fun validationResult(
+        status: ValidationResult.ValidationResultStatus,
+        violations: List<ValidationResultViolation>,
+    ): ValidationResult {
+        return ValidationResult.builder()
+            .status(status)
+            .violations(violations)
+            .build()
     }
 }

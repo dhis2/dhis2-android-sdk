@@ -41,20 +41,26 @@ import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
+import org.hisp.dhis.android.core.dataset.DataSetCompletionStatus
 import org.hisp.dhis.android.core.dataset.DataSetEditableStatus
 import org.hisp.dhis.android.core.dataset.DataSetInstanceService
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
+import org.hisp.dhis.android.core.dataset.DataSetNotCompletableReason
+import org.hisp.dhis.android.core.dataset.DataSetValidationRulesConfiguration
 import org.hisp.dhis.android.core.datavalue.DataValueCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitService
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.ParentPeriodGenerator
 import org.hisp.dhis.android.core.period.internal.PeriodHelper
+import org.hisp.dhis.android.core.validation.ValidationRuleCollectionRepository
+import org.hisp.dhis.android.core.validation.engine.ValidationEngine
+import org.hisp.dhis.android.core.validation.engine.ValidationResult
 import org.koin.core.annotation.Singleton
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 internal class DataSetInstanceServiceImpl(
     private val dataSetCollectionRepository: DataSetCollectionRepository,
     private val dataElementCollectionRepository: DataElementCollectionRepository,
@@ -65,6 +71,8 @@ internal class DataSetInstanceServiceImpl(
     private val periodHelper: PeriodHelper,
     private val categoryOptionComboService: CategoryOptionComboService,
     private val periodGenerator: ParentPeriodGenerator,
+    private val validationEngine: ValidationEngine,
+    private val validationRuleCollectionRepository: ValidationRuleCollectionRepository,
 ) : DataSetInstanceService {
 
     @Deprecated(
@@ -360,6 +368,53 @@ internal class DataSetInstanceServiceImpl(
                         }.build()
                     } ?: emptyList()
             } ?: emptyList()
+        }
+    }
+
+    override suspend fun suspendGetCompletionStatus(
+        dataSetUid: String,
+        periodId: String,
+        organisationUnitUid: String,
+        attributeOptionComboUid: String,
+    ): DataSetCompletionStatus {
+        val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet()
+
+        if (dataSet?.validCompleteOnly() != true) {
+            return DataSetCompletionStatus.Completable
+        }
+
+        val validationResult = validationEngine.suspendValidate(
+            dataSetUid = dataSetUid,
+            periodId = periodId,
+            orgUnitUid = organisationUnitUid,
+            attributeOptionComboUid = attributeOptionComboUid,
+        )
+
+        return if (validationResult.status() == ValidationResult.ValidationResultStatus.OK) {
+            DataSetCompletionStatus.Completable
+        } else {
+            DataSetCompletionStatus.NotCompletable(
+                reason = DataSetNotCompletableReason.VALIDATION_RULES_NOT_PASSED,
+                violations = validationResult.violations(),
+            )
+        }
+    }
+
+    override suspend fun suspendGetValidationRulesConfiguration(
+        dataSetUid: String,
+    ): DataSetValidationRulesConfiguration {
+        val hasFormValidationRules = !validationRuleCollectionRepository
+            .byDataSetUids(listOf(dataSetUid))
+            .bySkipFormValidation().isFalse
+            .suspendIsEmpty()
+
+        return when {
+            !hasFormValidationRules -> DataSetValidationRulesConfiguration.NONE
+
+            dataSetCollectionRepository.uid(dataSetUid).suspendGet()?.validCompleteOnly() == true ->
+                DataSetValidationRulesConfiguration.MANDATORY
+
+            else -> DataSetValidationRulesConfiguration.OPTIONAL
         }
     }
 

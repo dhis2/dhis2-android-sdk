@@ -73,11 +73,21 @@ internal class AnalyticsServiceMetadataHelper(
     private val periodHelper: PeriodHelper,
 ) {
 
+    /**
+     * Resolves every distinct dimension item once for the whole evaluation. Evaluation items share
+     * most of their dimension items (the same data elements and periods appear in every cell), so
+     * resolving them per evaluation item repeated the same lookups for every cell.
+     */
     suspend fun getMetadata(evaluationItems: List<AnalyticsServiceEvaluationItem>): Map<String, MetadataItem> {
         val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
+        val resolvedItemIds = mutableSetOf<String>()
 
         evaluationItems.forEach { evaluationItem ->
-            metadata += getMetadata(evaluationItem)
+            evaluationItem.allDimensionItems.forEach { item ->
+                if (resolvedItemIds.add(item.id)) {
+                    metadata += getMetadataItems(item).associateBy { it.id }
+                }
+            }
         }
 
         return metadata
@@ -94,25 +104,13 @@ internal class AnalyticsServiceMetadataHelper(
         return finalMetadata
     }
 
-    private suspend fun getMetadata(evaluationItem: AnalyticsServiceEvaluationItem): Map<String, MetadataItem> {
-        val metadata: MutableMap<String, MetadataItem> = mutableMapOf()
-
-        evaluationItem.allDimensionItems
-            .forEach { item ->
-                if (!metadata.containsKey(item.id)) {
-                    val metadataItems = when (item) {
-                        is DimensionItem.DataItem -> getDataItems(item)
-                        is DimensionItem.PeriodItem -> getPeriodItems(item)
-                        is DimensionItem.OrganisationUnitItem -> getOrganisationUnitItems(item)
-                        is DimensionItem.CategoryItem -> getCategoryItems(item)
-                    }
-                    val metadataItemsMap = metadataItems.associateBy { it.id }
-
-                    metadata += metadataItemsMap
-                }
-            }
-
-        return metadata
+    private suspend fun getMetadataItems(item: DimensionItem): List<MetadataItem> {
+        return when (item) {
+            is DimensionItem.DataItem -> getDataItems(item)
+            is DimensionItem.PeriodItem -> getPeriodItems(item)
+            is DimensionItem.OrganisationUnitItem -> getOrganisationUnitItems(item)
+            is DimensionItem.CategoryItem -> getCategoryItems(item)
+        }
     }
 
     @SuppressWarnings("ThrowsCount", "ComplexMethod", "LongMethod")
@@ -203,11 +201,11 @@ internal class AnalyticsServiceMetadataHelper(
         )
     }
 
-    private fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
+    private suspend fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.PeriodItem.Absolute -> {
-                    val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                    val period = periodHelper.suspendGetPeriodForPeriodId(item.periodId)
                     MetadataItem.PeriodItem(period)
                 }
 

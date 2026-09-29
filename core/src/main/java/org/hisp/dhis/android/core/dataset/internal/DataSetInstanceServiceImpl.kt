@@ -29,9 +29,9 @@
 package org.hisp.dhis.android.core.dataset.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
@@ -102,7 +102,7 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): DataSetEditableStatus {
-        return runBlocking {
+        return runBlockingOnIO {
             suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
         }
     }
@@ -158,7 +158,7 @@ internal class DataSetInstanceServiceImpl(
     }
 
     override fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
-        return runBlocking { suspendHasDataWriteAccess(dataSetUid) }
+        return runBlockingOnIO { suspendHasDataWriteAccess(dataSetUid) }
     }
 
     override suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean {
@@ -211,7 +211,7 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return runBlocking {
+        return runBlockingOnIO {
             suspendGetMissingMandatoryDataElementOperands(
                 dataSetUid,
                 periodId,
@@ -301,7 +301,7 @@ internal class DataSetInstanceServiceImpl(
         organisationUnitUid: String,
         attributeOptionComboUid: String,
     ): List<DataElementOperand> {
-        return runBlocking {
+        return runBlockingOnIO {
             suspendGetMissingMandatoryFieldsCombination(
                 dataSetUid,
                 periodId,

@@ -31,14 +31,14 @@ package org.hisp.dhis.android.core.arch.api.executors.internal
 import io.reactivex.Single
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 internal fun <T : Any> wrapRxSingle(
     block: suspend CoroutineScope.() -> T,
 ): Single<T> {
     return rxSingle(Dispatchers.Unconfined) {
-        runBlocking {
+        runBlockingOnIO {
             block.invoke(this)
         }
     }

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -85,7 +85,7 @@ class TrackedEntityAttributeValueObjectRepository internal constructor(
     }
 
     override fun blockingExists(): Boolean {
-        return runBlocking { suspendExists() }
+        return runBlockingOnIO { suspendExists() }
     }
 
     private fun setBuilder(value: TrackedEntityAttributeValue?): TrackedEntityAttributeValue.Builder {

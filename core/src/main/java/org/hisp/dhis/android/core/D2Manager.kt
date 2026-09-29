@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.D2ConfigurationValidator.validateAndSetDefaultValues
 import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObjectsDetection
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponentFactory
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -116,7 +116,7 @@ object D2Manager {
      */
     @JvmStatic
     fun blockingInstantiateD2(d2Config: D2Configuration): D2? {
-        return runBlocking {
+        return runBlockingOnIO {
             suspendInstantiateD2(d2Config)
         }
     }

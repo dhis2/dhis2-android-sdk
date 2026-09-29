@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.IllegalTimeZoneException
 import kotlinx.datetime.TimeZone
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,7 +45,7 @@ internal class ServerTimezoneManager(
      * @return The server timezone, defaulting to client's system timezone
      */
     fun getServerTimeZone(): TimeZone {
-        return serverTimeZone ?: runBlocking {
+        return serverTimeZone ?: runBlockingOnIO {
             systemInfoStore.selectFirst()?.serverTimeZoneId()?.let { serverTimeZoneId ->
                 parseTimeZone(serverTimeZoneId).also { serverTimeZone = it }
             } ?: TimeZone.currentSystemDefault()

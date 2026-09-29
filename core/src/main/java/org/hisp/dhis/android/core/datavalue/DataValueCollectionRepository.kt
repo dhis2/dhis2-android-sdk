@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.datavalue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -119,7 +119,7 @@ class DataValueCollectionRepository internal constructor(
         categoryOptionCombo: String,
         attributeOptionCombo: String,
     ): DataValueObjectRepository {
-        return runBlocking {
+        return runBlockingOnIO {
             val dataSet = dataSetElementStore.getFirstValidDataSet(
                 dataElementUid = dataElement,
                 periodId = period,

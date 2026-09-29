@@ -33,9 +33,9 @@ import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.runBlocking
 import net.openid.appauth.*
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
@@ -85,7 +85,7 @@ internal class OpenIDConnectHandlerImpl(
                 downloadToken(response.createTokenExchangeRequest())
                     .observeOn(Schedulers.io())
                     .map { authState ->
-                        runBlocking {
+                        runBlockingOnIO {
                             val user = logInCall.blockingLogInOpenIDConnect(serverUrl, authState)
                             openIDConnectStateSecureStore.set(serverUrl, user.username()!!, authState)
                             user

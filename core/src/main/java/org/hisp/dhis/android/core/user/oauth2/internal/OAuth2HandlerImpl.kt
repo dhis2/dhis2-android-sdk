@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.user.oauth2.internal
 
 import io.reactivex.Observable
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -66,7 +66,7 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun blockingBuildEnrollmentUrl(serverUrl: String): String {
-        return runBlocking { buildEnrollmentUrlInternal(serverUrl) }
+        return runBlockingOnIO { buildEnrollmentUrlInternal(serverUrl) }
     }
 
     private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String, state: String) {
@@ -116,7 +116,7 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) {
-        runBlocking { handleEnrollmentResponseInternal(serverUrl, iat, state) }
+        runBlockingOnIO { handleEnrollmentResponseInternal(serverUrl, iat, state) }
     }
 
     /**
@@ -136,7 +136,7 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
-        return runBlocking { buildLogoutUrlInternal(config) }
+        return runBlockingOnIO { buildLogoutUrlInternal(config) }
     }
 
     private fun buildLogoutUrlInternal(config: OAuth2Config): String {
@@ -167,7 +167,7 @@ internal class OAuth2HandlerImpl(
     }
 
     override fun blockingLogIn(config: OAuth2Config): String {
-        return runBlocking { logInInternal(config) }
+        return runBlockingOnIO { logInInternal(config) }
     }
 
     @Suppress("ThrowsCount")
@@ -235,7 +235,7 @@ internal class OAuth2HandlerImpl(
         authorizationCode: String,
         state: String,
     ): User {
-        return runBlocking {
+        return runBlockingOnIO {
             handleLogInResponseInternal(existingUsername, serverUrl, authorizationCode, state)
         }
     }

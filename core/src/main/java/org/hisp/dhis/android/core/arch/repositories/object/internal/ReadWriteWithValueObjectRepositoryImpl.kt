@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -109,7 +110,7 @@ internal constructor(
         crossinline propertyGetter: (M?) -> V?,
         crossinline updater: (M?, V?) -> M,
     ): org.hisp.dhis.android.core.common.Unit {
-        return runBlocking { updateIfChangedInternal(newValue, propertyGetter, updater) }
+        return runBlocking(Dispatchers.IO) { updateIfChangedInternal(newValue, propertyGetter, updater) }
     }
 
     protected suspend inline fun <V> updateIfChangedInternal(

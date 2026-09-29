@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithUidDataObjectRepositoryImpl
@@ -66,7 +66,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
@@ -81,7 +81,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEnrollmentDate(enrollmentDate: Date?): Unit {
-        return runBlocking { setEnrollmentDateInternal(enrollmentDate) }
+        return runBlockingOnIO { setEnrollmentDateInternal(enrollmentDate) }
     }
 
     @Throws(D2Error::class)
@@ -93,7 +93,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setIncidentDate(incidentDate: Date?): Unit {
-        return runBlocking { setIncidentDateInternal(incidentDate) }
+        return runBlockingOnIO { setIncidentDateInternal(incidentDate) }
     }
 
     @Throws(D2Error::class)
@@ -105,7 +105,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return runBlocking { setCompletedDateInternal(completedDate) }
+        return runBlockingOnIO { setCompletedDateInternal(completedDate) }
     }
 
     @Throws(D2Error::class)
@@ -117,7 +117,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean?): Unit {
-        return runBlocking { setFollowUpInternal(followUp) }
+        return runBlockingOnIO { setFollowUpInternal(followUp) }
     }
 
     @Throws(D2Error::class)
@@ -129,7 +129,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(enrollmentStatus: EnrollmentStatus): Unit {
-        return runBlocking { setStatusInternal(enrollmentStatus) }
+        return runBlockingOnIO { setStatusInternal(enrollmentStatus) }
     }
 
     @Throws(D2Error::class)
@@ -142,7 +142,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String): Unit {
-        return runBlocking { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
+        return runBlockingOnIO { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
     }
 
     @Throws(D2Error::class)
@@ -157,7 +157,7 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlocking { setGeometryInternal(geometry) }
+        return runBlockingOnIO { setGeometryInternal(geometry) }
     }
 
     @Throws(D2Error::class)

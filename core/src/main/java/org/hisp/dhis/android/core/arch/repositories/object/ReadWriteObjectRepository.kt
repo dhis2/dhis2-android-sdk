@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.maintenance.D2Error
 
@@ -66,7 +66,7 @@ interface ReadWriteObjectRepository<M : CoreObject> : ReadOnlyObjectRepository<M
      * @throws D2Error if any errors occur, including when the object doesn't exist.
      */
     @Throws(D2Error::class)
-    fun blockingDelete() = runBlocking { suspendDelete() }
+    fun blockingDelete() = runBlockingOnIO { suspendDelete() }
 
     /**
      * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
@@ -96,5 +96,5 @@ interface ReadWriteObjectRepository<M : CoreObject> : ReadOnlyObjectRepository<M
      * is performed. Unlike [.blockingDelete], it doesn't throw an exception if the object doesn't exist.
      * It blocks the thread and finishes as soon as the object is deleted in the database.
      */
-    fun blockingDeleteIfExist() = runBlocking { suspendDeleteIfExist() }
+    fun blockingDeleteIfExist() = runBlockingOnIO { suspendDeleteIfExist() }
 }

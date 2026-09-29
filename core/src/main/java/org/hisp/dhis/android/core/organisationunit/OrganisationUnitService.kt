@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.organisationunit
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.koin.core.annotation.Singleton
 import java.util.*
 
@@ -39,7 +39,7 @@ class OrganisationUnitService(
 ) {
 
     fun blockingIsDateInOrgunitRange(organisationUnitUid: String, date: Date): Boolean {
-        return runBlocking { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
+        return runBlockingOnIO { suspendIsDateInOrgunitRange(organisationUnitUid, date) }
     }
 
     @Deprecated(
@@ -61,7 +61,7 @@ class OrganisationUnitService(
             organisationUnit.closedDate()?.after(date) ?: true
     }
 
-    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean = runBlocking {
+    fun blockingIsInCaptureScope(organisationUnitUid: String): Boolean = runBlockingOnIO {
         suspendIsInCaptureScope(organisationUnitUid)
     }
 

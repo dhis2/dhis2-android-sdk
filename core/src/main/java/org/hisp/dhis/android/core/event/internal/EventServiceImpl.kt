@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.event.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -60,7 +60,7 @@ internal class EventServiceImpl(
 ) : EventService {
 
     override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
-        return runBlocking { suspendHasDataWriteAccess(eventUid) }
+        return runBlockingOnIO { suspendHasDataWriteAccess(eventUid) }
     }
 
     @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
@@ -79,7 +79,7 @@ internal class EventServiceImpl(
     }
 
     override fun blockingIsInOrgunitRange(event: Event): Boolean {
-        return runBlocking { suspendIsInOrgunitRange(event) }
+        return runBlockingOnIO { suspendIsInOrgunitRange(event) }
     }
 
     @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
@@ -100,7 +100,7 @@ internal class EventServiceImpl(
     }
 
     override fun blockingHasCategoryComboAccess(event: Event): Boolean {
-        return runBlocking { suspendHasCategoryComboAccess(event) }
+        return runBlockingOnIO { suspendHasCategoryComboAccess(event) }
     }
 
     @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
@@ -119,7 +119,7 @@ internal class EventServiceImpl(
     }
 
     override fun blockingIsEditable(eventUid: String): Boolean {
-        return runBlocking { suspendIsEditable(eventUid) }
+        return runBlockingOnIO { suspendIsEditable(eventUid) }
     }
 
     @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
@@ -137,7 +137,7 @@ internal class EventServiceImpl(
 
     @Suppress("ComplexMethod")
     override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
-        return runBlocking { suspendGetEditableStatus(eventUid) }
+        return runBlockingOnIO { suspendGetEditableStatus(eventUid) }
     }
 
     @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
@@ -187,7 +187,7 @@ internal class EventServiceImpl(
     }
 
     override fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
-        return runBlocking { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
+        return runBlockingOnIO { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
     @Deprecated(

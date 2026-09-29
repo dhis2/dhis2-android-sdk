@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithUidDataObjectRepositoryImpl
@@ -67,7 +67,7 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
@@ -82,7 +82,7 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlocking { setGeometryInternal(geometry) }
+        return runBlockingOnIO { setGeometryInternal(geometry) }
     }
 
     @Throws(D2Error::class)

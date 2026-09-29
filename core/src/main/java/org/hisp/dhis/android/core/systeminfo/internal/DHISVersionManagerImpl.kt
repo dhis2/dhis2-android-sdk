@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -48,7 +48,7 @@ internal class DHISVersionManagerImpl internal constructor(
     private var bypassDHIS2Version: Boolean? = null
 
     override fun getVersion(): DHISVersion {
-        return runBlocking { getVersionInternal() }
+        return runBlockingOnIO { getVersionInternal() }
     }
 
     internal suspend fun getVersionInternal(): DHISVersion {
@@ -65,7 +65,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
-        return runBlocking { getPatchVersionInternal() }
+        return runBlockingOnIO { getPatchVersionInternal() }
     }
 
     internal suspend fun getPatchVersionInternal(): DHISPatchVersion? {
@@ -76,7 +76,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun getSmsVersion(): SMSVersion? {
-        return runBlocking { getSmsVersionInternal() }
+        return runBlockingOnIO { getSmsVersionInternal() }
     }
 
     internal suspend fun getSmsVersionInternal(): SMSVersion? {
@@ -92,7 +92,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isVersion(version: DHISVersion): Boolean {
-        return runBlocking { isVersionInternal(version) }
+        return runBlockingOnIO { isVersionInternal(version) }
     }
 
     internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
@@ -100,7 +100,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isGreaterThan(version: DHISVersion): Boolean {
-        return runBlocking { isGreaterThanInternal(version) }
+        return runBlockingOnIO { isGreaterThanInternal(version) }
     }
 
     internal suspend fun isGreaterThanInternal(version: DHISVersion): Boolean {
@@ -108,7 +108,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isGreaterOrEqualThan(version: DHISVersion): Boolean {
-        return runBlocking { isGreaterOrEqualThanInternal(version) }
+        return runBlockingOnIO { isGreaterOrEqualThanInternal(version) }
     }
 
     internal suspend fun isGreaterOrEqualThanInternal(version: DHISVersion): Boolean {

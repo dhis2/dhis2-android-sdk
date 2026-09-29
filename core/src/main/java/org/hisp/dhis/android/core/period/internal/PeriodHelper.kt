@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.period.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.period.PeriodType.Companion.periodTypeFromPeriodId
@@ -114,7 +114,7 @@ class PeriodHelper internal constructor(
     @JvmOverloads
     @Throws(IllegalStateException::class)
     fun blockingGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int = 0): Period {
-        return runBlocking { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+        return runBlockingOnIO { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
     }
 
     internal suspend fun getPeriodForPeriodTypeAndDateInternal(
@@ -137,7 +137,7 @@ class PeriodHelper internal constructor(
      */
     @Throws(IllegalArgumentException::class)
     fun blockingGetPeriodForPeriodId(periodId: String): Period {
-        return runBlocking { suspendGetPeriodForPeriodId(periodId) }
+        return runBlockingOnIO { suspendGetPeriodForPeriodId(periodId) }
     }
 
     @Throws(IllegalArgumentException::class)

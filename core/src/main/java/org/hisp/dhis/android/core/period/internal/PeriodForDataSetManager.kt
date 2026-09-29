@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.period.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetCollectionRepository
 import org.hisp.dhis.android.core.period.Period
@@ -49,7 +49,7 @@ internal class PeriodForDataSetManager(
                 dataSet.periodType()!!,
                 endPeriods,
             )
-            runBlocking { storePeriods(periods) }
+            runBlockingOnIO { storePeriods(periods) }
             periods
         }
     }

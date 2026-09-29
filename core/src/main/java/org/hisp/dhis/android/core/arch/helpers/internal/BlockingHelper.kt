@@ -26,13 +26,20 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.call.internal
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-@Suppress("TooGenericExceptionThrown")
-internal fun <T> Flow<T>.collectAndWrapException() {
-    return runBlockingOnIO { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
+/**
+ * Blocks the calling thread until [block] completes, running [block] on [Dispatchers.IO].
+ *
+ * Use it instead of a plain `runBlocking` to bridge blocking APIs to suspend code that touches the
+ * database. Room 3 DAO functions start with `withContext(Dispatchers.IO)`; with a plain
+ * `runBlocking` every DAO call inside [block] would switch from the calling thread to an IO thread
+ * and back, whereas here only the entry and the exit switch.
+ */
+internal fun <T> runBlockingOnIO(block: suspend CoroutineScope.() -> T): T {
+    return runBlocking(Dispatchers.IO, block)
 }

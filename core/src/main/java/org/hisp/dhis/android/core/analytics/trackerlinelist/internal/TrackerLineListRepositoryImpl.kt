@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepos
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.koin.core.annotation.Singleton
 
@@ -104,7 +104,7 @@ internal class TrackerLineListRepositoryImpl(
     }
 
     override fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {
-        return runBlocking { service.evaluate(params) }
+        return runBlockingOnIO { service.evaluate(params) }
     }
 
     override suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {

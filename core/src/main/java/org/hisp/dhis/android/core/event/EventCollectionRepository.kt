@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.event
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -322,7 +322,7 @@ class EventCollectionRepository internal constructor(
     }
 
     fun countTrackedEntityInstances(): Int {
-        return runBlocking { countTrackedEntityInstancesInternal() }
+        return runBlockingOnIO { countTrackedEntityInstancesInternal() }
     }
 
     private suspend fun countTrackedEntityInstancesInternal(): Int {

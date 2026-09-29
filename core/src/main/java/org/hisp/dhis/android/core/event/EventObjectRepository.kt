@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.event
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadWriteWithUidDataObjectRepositoryImpl
@@ -69,7 +69,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlocking { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
@@ -81,7 +81,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEventDate(eventDate: Date?): Unit {
-        return runBlocking { setEventDateInternal(eventDate) }
+        return runBlockingOnIO { setEventDateInternal(eventDate) }
     }
 
     @Throws(D2Error::class)
@@ -93,7 +93,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(eventStatus: EventStatus): Unit {
-        return runBlocking { setStatusInternal(eventStatus) }
+        return runBlockingOnIO { setStatusInternal(eventStatus) }
     }
 
     @Throws(D2Error::class)
@@ -107,7 +107,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return runBlocking { setCompletedDateInternal(completedDate) }
+        return runBlockingOnIO { setCompletedDateInternal(completedDate) }
     }
 
     @Throws(D2Error::class)
@@ -119,7 +119,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedBy(completedBy: String?): Unit {
-        return runBlocking { setCompletedByInternal(completedBy) }
+        return runBlockingOnIO { setCompletedByInternal(completedBy) }
     }
 
     @Throws(D2Error::class)
@@ -131,7 +131,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setDueDate(dueDate: Date?): Unit {
-        return runBlocking { setDueDateInternal(dueDate) }
+        return runBlockingOnIO { setDueDateInternal(dueDate) }
     }
 
     @Throws(D2Error::class)
@@ -143,7 +143,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlocking { setGeometryInternal(geometry) }
+        return runBlockingOnIO { setGeometryInternal(geometry) }
     }
 
     @Throws(D2Error::class)
@@ -156,7 +156,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
-        return runBlocking { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
+        return runBlockingOnIO { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
     }
 
     @Throws(D2Error::class)
@@ -168,7 +168,7 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAssignedUser(assignedUser: String?): Unit {
-        return runBlocking { setAssignedUserInternal(assignedUser) }
+        return runBlockingOnIO { setAssignedUserInternal(assignedUser) }
     }
 
     @Throws(D2Error::class)

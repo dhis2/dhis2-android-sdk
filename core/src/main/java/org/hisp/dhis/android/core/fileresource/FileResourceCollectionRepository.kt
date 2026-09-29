@@ -33,13 +33,13 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -163,7 +163,7 @@ class FileResourceCollectionRepository internal constructor(
         rxSingle { suspendProcessAndAdd(o, resourceContext) }
 
     fun blockingProcessAndAdd(o: File, resourceContext: ResourceContext): String =
-        runBlocking { suspendProcessAndAdd(o, resourceContext) }
+        runBlockingOnIO { suspendProcessAndAdd(o, resourceContext) }
 
     private fun compressImageIfNeeded(file: File, quality: UploadQuality): File {
         return if (quality == UploadQuality.DEFAULT) {

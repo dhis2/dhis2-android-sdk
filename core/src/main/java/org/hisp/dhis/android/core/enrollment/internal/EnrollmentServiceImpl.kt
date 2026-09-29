@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.enrollment.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.enrollment.EnrollmentAccess
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
@@ -66,7 +66,7 @@ internal class EnrollmentServiceImpl(
 ) : EnrollmentService {
 
     override fun blockingIsOpen(enrollmentUid: String): Boolean {
-        return runBlocking { suspendIsOpen(enrollmentUid) }
+        return runBlockingOnIO { suspendIsOpen(enrollmentUid) }
     }
 
     @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
@@ -85,7 +85,7 @@ internal class EnrollmentServiceImpl(
     }
 
     override fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
-        return runBlocking { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
+        return runBlockingOnIO { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
     @Deprecated(
@@ -168,7 +168,7 @@ internal class EnrollmentServiceImpl(
     }
 
     override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
-        return runBlocking { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
+        return runBlockingOnIO { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
     @Deprecated(

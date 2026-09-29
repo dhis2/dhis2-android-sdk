@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationStore
@@ -52,7 +52,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
     }
 
     fun blockingGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { suspendGetByProgram(program) }
+        return runBlockingOnIO { suspendGetByProgram(program) }
     }
 
     suspend fun suspendGetByProgram(program: String?): List<AnalyticsDhisVisualizationsGroup>? {
@@ -69,7 +69,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
     }
 
     fun blockingByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
-        return runBlocking { suspendGetByDataSet(dataSet) }
+        return runBlockingOnIO { suspendGetByDataSet(dataSet) }
     }
 
     suspend fun suspendGetByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
+import androidx.room3.PooledConnection
+import androidx.room3.TransactionScope
 import androidx.room3.useReaderConnection
 import androidx.room3.useWriterConnection
 import androidx.room3.withWriteTransaction
@@ -36,12 +38,16 @@ import androidx.sqlite.SQLITE_DATA_FLOAT
 import androidx.sqlite.SQLITE_DATA_INTEGER
 import androidx.sqlite.SQLITE_DATA_NULL
 import androidx.sqlite.SQLiteStatement
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.core.arch.db.stores.StoreRegistry
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.CoreObject
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 
 /**
@@ -82,17 +88,35 @@ internal class RoomDatabaseAdapter(
         databaseName = ""
     }
 
+    /**
+     * A nested call joins the caller's transaction as a savepoint through
+     * [TransactionScope.withNestedTransaction] instead of calling [withWriteTransaction] again: every
+     * [useWriterConnection] schedules an invalidation refresh when it returns, and with a driver
+     * that pools internally (SQLCipher) each pending refresh blocks a `Dispatchers.IO` thread until
+     * the outer transaction commits. Enough of them starve the dispatcher and the outer transaction
+     * can never finish.
+     */
     override suspend fun <T> withTransaction(block: suspend () -> T): T {
         checkReady()
-        return database!!.withWriteTransaction { block() }
+        val openTransaction = currentOpenTransaction()
+        return if (openTransaction != null) {
+            openTransaction.scope.withNestedTransaction {
+                withContext(OpenWriteTransaction(openTransaction.database, this)) { block() }
+            }
+        } else {
+            val db = database!!
+            db.withWriteTransaction {
+                withContext(OpenWriteTransaction(db, this)) { block() }
+            }
+        }
     }
 
     override suspend fun execSQL(sql: String) {
         checkReady()
         // Not wrapped in a transaction: several callers pass PRAGMA statements, which SQLite
         // silently ignores inside one.
-        database!!.useWriterConnection { transactor ->
-            transactor.usePrepared(sql) { it.step() }
+        useWriter { connection ->
+            connection.usePrepared(sql) { it.step() }
         }
     }
 
@@ -114,19 +138,16 @@ internal class RoomDatabaseAdapter(
             }
         }
 
-        var rowsAffected = 0
-        database!!.withWriteTransaction {
-            usePrepared(deleteSql) { statement ->
+        return withTransaction {
+            val connection = checkNotNull(currentOpenTransaction()).scope
+            connection.usePrepared(deleteSql) { statement ->
                 whereArgs?.forEachIndexed { index, arg -> bindArgument(statement, index + 1, arg) }
                 statement.step()
             }
-            usePrepared("SELECT changes()") { changesStatement ->
-                if (changesStatement.step()) {
-                    rowsAffected = changesStatement.getLong(0).toInt()
-                }
+            connection.usePrepared("SELECT changes()") { changesStatement ->
+                if (changesStatement.step()) changesStatement.getLong(0).toInt() else 0
             }
         }
-        return rowsAffected
     }
 
     override suspend fun delete(tableName: String): Int {
@@ -202,8 +223,8 @@ internal class RoomDatabaseAdapter(
         checkReady()
         // `PRAGMA foreign_keys` is a no-op inside a transaction, so this must not be wrapped in one.
         val sql = if (enabled) "PRAGMA foreign_keys = ON;" else "PRAGMA foreign_keys = OFF;"
-        database!!.useWriterConnection { transactor ->
-            transactor.usePrepared(sql) { it.step() }
+        useWriter { connection ->
+            connection.usePrepared(sql) { it.step() }
         }
     }
 
@@ -245,11 +266,38 @@ internal class RoomDatabaseAdapter(
 
     override suspend fun checkpointWAL() {
         checkReady()
-        database!!.useWriterConnection { transactor ->
-            transactor.usePrepared("PRAGMA wal_checkpoint(PASSIVE);") { statement ->
+        useWriter { connection ->
+            connection.usePrepared("PRAGMA wal_checkpoint(PASSIVE);") { statement ->
                 statement.step()
             }
         }
+    }
+
+    /**
+     * Runs [block] on the connection of the write transaction opened by [withTransaction] on this
+     * coroutine, or on a fresh writer connection otherwise. Reusing the open transaction avoids the
+     * invalidation refresh that every [useWriterConnection] schedules (see [withTransaction]).
+     */
+    private suspend fun <R> useWriter(block: suspend (PooledConnection) -> R): R {
+        val openTransaction = currentOpenTransaction()
+        return if (openTransaction != null) {
+            block(openTransaction.scope)
+        } else {
+            database!!.useWriterConnection { block(it) }
+        }
+    }
+
+    private suspend fun currentOpenTransaction(): OpenWriteTransaction? {
+        return currentCoroutineContext()[OpenWriteTransaction]
+            ?.takeIf { it.database === database }
+    }
+
+    /** Marks a coroutine that runs inside a [withTransaction] block, and carries its connection. */
+    private class OpenWriteTransaction(
+        val database: AppDatabase,
+        val scope: TransactionScope<*>,
+    ) : AbstractCoroutineContextElement(OpenWriteTransaction) {
+        companion object Key : CoroutineContext.Key<OpenWriteTransaction>
     }
 
     private companion object {

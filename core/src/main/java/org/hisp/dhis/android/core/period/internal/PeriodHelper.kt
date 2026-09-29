@@ -158,7 +158,7 @@ class PeriodHelper internal constructor(
     }
 
     fun blockingGetPeriodsForDataSet(dataSetUid: String): List<Period> {
-        return getPeriodsForDataSet(dataSetUid).blockingGet()
+        return runBlockingOnIO { periodForDataSetManager.suspendGetPeriodsForDataSet(dataSetUid) }
     }
 
     companion object {

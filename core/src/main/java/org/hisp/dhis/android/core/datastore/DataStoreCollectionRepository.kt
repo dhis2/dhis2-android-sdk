@@ -63,7 +63,7 @@ class DataStoreCollectionRepository internal constructor(
 
     override fun flowUpload(): Flow<D2Progress> = flow {
         val entries = bySyncState().`in`(State.uploadableStatesIncludingError().toList())
-            .blockingGetWithoutChildren()
+            .getWithoutChildrenInternal()
         emitAll(call.uploadDataStoreEntries(entries))
     }
 

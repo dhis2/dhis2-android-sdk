@@ -32,16 +32,16 @@ import org.hisp.dhis.android.core.settings.SystemSettingCollectionRepository
 import org.koin.core.annotation.Singleton
 
 internal interface RelativePeriodHelper {
-    fun getFinancialYearPeriodType(): PeriodType
-    fun getWeeklyPeriodType(): PeriodType
+    suspend fun getFinancialYearPeriodType(): PeriodType
+    suspend fun getWeeklyPeriodType(): PeriodType
 }
 
 @Singleton
 internal class RelativePeriodHelperImpl(
     private val systemSettingRepository: SystemSettingCollectionRepository,
 ) : RelativePeriodHelper {
-    override fun getFinancialYearPeriodType(): PeriodType {
-        val setting = systemSettingRepository.analyticsFinancialYearStart().blockingGet()
+    override suspend fun getFinancialYearPeriodType(): PeriodType {
+        val setting = systemSettingRepository.analyticsFinancialYearStart().suspendGet()
         return setting?.value()?.let { mapFinancialYearSetting(it) } ?: PeriodType.FinancialApril
     }
 
@@ -58,8 +58,8 @@ internal class RelativePeriodHelperImpl(
         }
     }
 
-    override fun getWeeklyPeriodType(): PeriodType {
-        val setting = systemSettingRepository.analyticsWeeklyStart().blockingGet()
+    override suspend fun getWeeklyPeriodType(): PeriodType {
+        val setting = systemSettingRepository.analyticsWeeklyStart().suspendGet()
         return setting?.value()?.let { mapWeekStartSetting(it) } ?: PeriodType.Weekly
     }
 

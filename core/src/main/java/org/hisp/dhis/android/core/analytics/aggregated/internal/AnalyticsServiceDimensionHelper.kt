@@ -115,12 +115,13 @@ internal class AnalyticsServiceDimensionHelper(
         }
     }
 
-    private fun orderAndDeduplicatePeriods(periods: List<AbsoluteDimensionItem>): List<AbsoluteDimensionItem> {
+    private suspend fun orderAndDeduplicatePeriods(
+        periods: List<AbsoluteDimensionItem>,
+    ): List<AbsoluteDimensionItem> {
         return periods
-            .asSequence()
             .map { it as DimensionItem.PeriodItem.Absolute }
             .distinct()
-            .map { Pair(it, periodHelper.blockingGetPeriodForPeriodId(it.periodId)) }
+            .map { Pair(it, periodHelper.suspendGetPeriodForPeriodId(it.periodId)) }
             .sortedWith { a, b ->
                 val aPeriod = a.second
                 val bPeriod = b.second
@@ -134,6 +135,5 @@ internal class AnalyticsServiceDimensionHelper(
                 }
             }
             .map { it.first }
-            .toList()
     }
 }

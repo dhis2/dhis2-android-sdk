@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.db.access
 
 import androidx.sqlite.SQLiteDriver
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import net.zetetic.database.sqlcipher.driver.SQLCipherDriver
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader
 import org.koin.core.annotation.Singleton
 import java.nio.charset.StandardCharsets
@@ -40,7 +39,8 @@ import java.nio.charset.StandardCharsets
  *
  * Room 3 is driver-only: there is no SupportSQLite compatibility mode, so encryption has to be
  * expressed as a driver too. Plaintext databases use the bundled SQLite build (the same engine on
- * every device and, later, every platform); encrypted ones use SQLCipher's driver.
+ * every device and, later, every platform); encrypted ones use SQLCipher through
+ * [CompiledWriteSQLCipherDriver].
  *
  * Keeping the choice behind this one interface is also what a future KMP split needs -- this
  * becomes the `actual` factory for Android, while other targets supply their own.
@@ -57,7 +57,7 @@ internal class SqliteDriverFactoryImpl : SqliteDriverFactory {
             BundledSQLiteDriver()
         } else {
             NativeLibraryLoader.loadSQLCipher()
-            SQLCipherDriver(
+            CompiledWriteSQLCipherDriver(
                 password.toByteArray(StandardCharsets.UTF_8),
                 SqlCipherEncryptionHook,
                 LoggingErrorHandler(SQLCIPHER_TAG),

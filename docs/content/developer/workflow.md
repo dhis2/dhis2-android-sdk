@@ -919,25 +919,43 @@ The Sdk provides within the data set module a collection repository for
 data set complete registrations. This repository contains methods to add
 new completions and delete them.
 
-To add a new data set complete registration is available an `add()`
-method:
+To add a new data set complete registration, the repository has a `value()`
+method that gives access to the `set()` method. The parameters accepted by
+this method are the parameters that unambiguously identify the data set
+complete registration.
 
 ```kotlin
 d2.dataSetModule().dataSetCompleteRegistrations()
-    .suspendAdd(dataSetCompleteRegistration)
+    .value("periodId", "orgunitId", "dataSetUid", "attributeOptionCombo")
+    .suspendSet()
 ```
 
 In order to remove them from the database, the repository has a `value()`
 method that gives access to deletion methods (`rxDelete()` and
-`rxDeleteIfExist()`, plus their `blocking` and `suspend` variants). The
-parameters accepted by this method are the parameters that unambiguously
-identify the data set complete registration.
+`rxDeleteIfExist()`, plus their `blocking` and `suspend` variants)
 
 ```kotlin
 d2.dataSetModule().dataSetCompleteRegistrations()
     .value("periodId", "orgunitId", "dataSetUid","attributeOptionCombo")
     .suspendDelete()
 ```
+
+If the data set is configured with the property `validCompleteOnly` ("Complete only if validation passes"), it should
+only be marked as complete if no validation rule is violated. The SDK does not block the completion: it is the
+application responsibility to evaluate the completion status before calling `set()`.
+
+```kotlin
+DataSetCompletionStatus status = d2.dataSetModule().dataSetInstanceService()
+    .suspendGetCompletionStatus("dataSetUid", "periodId", "orgunitId", "attributeOptionCombo")
+
+if (status instanceof DataSetCompletionStatus.NotCompletable) {
+    // The violations are available in ((DataSetCompletionStatus.NotCompletable) status).getViolations()
+}
+```
+
+If the data set is not configured with `validCompleteOnly`, the validation rules are not evaluated and the returned
+status is always `Completable`. In that case, the app can still evaluate the validation rules by using the
+[validation rule engine](#android_sdk_validation_rule_engine) and let the user decide.
 
 ### Aggregated data upload
 

@@ -110,6 +110,11 @@ data class DataSet(
     class Builder : DataSetBuilder()
 
     companion object {
+        internal const val DEFAULT_FUTURE_PERIODS = 1
+
+        internal fun futurePeriodsOrDefault(dataSet: DataSet): Int =
+            dataSet.openFuturePeriods() ?: DEFAULT_FUTURE_PERIODS
+
         @JvmStatic
         fun builder(): Builder = Builder()
             .access(defaultAccess())

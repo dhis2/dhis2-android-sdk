@@ -32,9 +32,17 @@ import android.content.Context
 import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import net.openid.appauth.*
+import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withContext
+import net.openid.appauth.AuthState
+import net.openid.appauth.AuthorizationException
+import net.openid.appauth.AuthorizationResponse
+import net.openid.appauth.AuthorizationService
+import net.openid.appauth.TokenRequest
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -43,6 +51,8 @@ import org.hisp.dhis.android.core.user.internal.AuthenticatedUserStore
 import org.hisp.dhis.android.core.user.internal.LogInCall
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.koin.core.annotation.Singleton
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 private const val RC_AUTH = 2021
 
@@ -56,19 +66,23 @@ internal class OpenIDConnectHandlerImpl(
     private val credentialsSecureStore: CredentialsSecureStore,
     private val authenticatedUserStore: AuthenticatedUserStore,
     private val logInExceptions: LogInExceptions,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : OpenIDConnectHandler {
 
     override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
-        return OpenIDConnectRequestHelper(config).prepareAuthRequest().map {
-            val authService = AuthorizationService(context)
-            val intent = authService.getAuthorizationRequestIntent(it)
-            authService.dispose()
-            IntentWithRequestCode(intent, RC_AUTH)
-        }
+        return rxSingle { suspendLogIn(config) }
     }
 
     override fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
-        return logIn(config).blockingGet()
+        return runBlocking { suspendLogIn(config) }
+    }
+
+    private suspend fun suspendLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
+        val authRequest = OpenIDConnectRequestHelper(config).prepareAuthRequest()
+        val authService = AuthorizationService(context)
+        val intent = authService.getAuthorizationRequestIntent(authRequest)
+        authService.dispose()
+        return IntentWithRequestCode(intent, RC_AUTH)
     }
 
     override fun handleLogInResponse(
@@ -76,25 +90,7 @@ internal class OpenIDConnectHandlerImpl(
         intent: Intent?,
         requestCode: Int,
     ): Single<User> {
-        return if (requestCode == RC_AUTH && intent != null) {
-            val ex = AuthorizationException.fromIntent(intent)
-            if (ex != null) {
-                Single.error(ex)
-            } else {
-                val response = AuthorizationResponse.fromIntent(intent)!!
-                downloadToken(response.createTokenExchangeRequest())
-                    .observeOn(Schedulers.io())
-                    .map { authState ->
-                        runBlocking {
-                            val user = logInCall.blockingLogInOpenIDConnect(serverUrl, authState)
-                            openIDConnectStateSecureStore.set(serverUrl, user.username()!!, authState)
-                            user
-                        }
-                    }
-            }
-        } else {
-            Single.error(RuntimeException("Unexpected intent or request code"))
-        }
+        return rxSingle { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
     }
 
     override fun blockingHandleLogInResponse(
@@ -102,7 +98,29 @@ internal class OpenIDConnectHandlerImpl(
         intent: Intent?,
         requestCode: Int,
     ): User {
-        return handleLogInResponse(serverUrl, intent, requestCode).blockingGet()
+        return runBlocking { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
+    }
+
+    @Suppress("TooGenericExceptionThrown")
+    private suspend fun suspendHandleLogInResponse(
+        serverUrl: String,
+        intent: Intent?,
+        requestCode: Int,
+    ): User {
+        if (requestCode != RC_AUTH || intent == null) {
+            throw RuntimeException("Unexpected intent or request code")
+        }
+
+        AuthorizationException.fromIntent(intent)?.let { throw it }
+
+        val response = AuthorizationResponse.fromIntent(intent)!!
+        val authState = downloadToken(response.createTokenExchangeRequest())
+
+        return withContext(dispatcher) {
+            val user = logInCall.blockingLogInOpenIDConnect(serverUrl, authState)
+            openIDConnectStateSecureStore.set(serverUrl, user.username()!!, authState)
+            user
+        }
     }
 
     override fun logOutObservable(): Observable<Unit> {
@@ -140,8 +158,8 @@ internal class OpenIDConnectHandlerImpl(
         }
     }
 
-    private fun downloadToken(tokenRequest: TokenRequest): Single<AuthState> {
-        return Single.create { emitter ->
+    private suspend fun downloadToken(tokenRequest: TokenRequest): AuthState {
+        return suspendCancellableCoroutine { continuation ->
             val authService = AuthorizationService(context)
             authService.performTokenRequest(
                 tokenRequest,
@@ -150,9 +168,9 @@ internal class OpenIDConnectHandlerImpl(
                 val authState = AuthState()
                 authState.update(tokenResponse, tokenEx)
                 if (tokenResponse?.idToken != null) {
-                    emitter.onSuccess(authState)
+                    continuation.resume(authState)
                 } else {
-                    emitter.onError(RuntimeException(tokenEx))
+                    continuation.resumeWithException(RuntimeException(tokenEx))
                 }
             }
         }

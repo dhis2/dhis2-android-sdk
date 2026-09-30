@@ -34,11 +34,11 @@ internal class RelativePeriodHelperMock(
     private val weekStart: PeriodType = PeriodType.Weekly,
 
 ) : RelativePeriodHelper {
-    override fun getFinancialYearPeriodType(): PeriodType {
+    override suspend fun getFinancialYearPeriodType(): PeriodType {
         return periodType
     }
 
-    override fun getWeeklyPeriodType(): PeriodType {
+    override suspend fun getWeeklyPeriodType(): PeriodType {
         return weekStart
     }
 }

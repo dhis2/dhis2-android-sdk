@@ -134,7 +134,7 @@ internal class DataSetIndicatorEngineImpl(
         )
     }
 
-    private fun getPeriod(periodId: String): Period {
-        return periodHelper.blockingGetPeriodForPeriodId(periodId)
+    private suspend fun getPeriod(periodId: String): Period {
+        return periodHelper.suspendGetPeriodForPeriodId(periodId)
     }
 }

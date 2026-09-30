@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.domain.aggregated.data.internal
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSet.Companion.futurePeriodsOrDefault
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -134,7 +135,27 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
             dataSet.openFuturePeriods()!!,
             organisationUnitsHash,
         )
-        assertThat<Date>(lastUpdated).isNull()
+        assertThat(lastUpdated).isNull()
+    }
+
+    @Test
+    fun return_expected_last_updated_if_data_set_has_no_open_future_periods() {
+        val dataSetWithoutOpenFuturePeriods = dataSet.toBuilder().openFuturePeriods(null).build()
+        whenever(hashHelper.getDataSetDataElementsHash(dataSetWithoutOpenFuturePeriods))
+            .thenReturn(dataElementsHash)
+
+        val syncValueWithoutOpenFuturePeriods = syncValue.toBuilder()
+            .futurePeriods(futurePeriodsOrDefault(dataSetWithoutOpenFuturePeriods))
+            .build()
+
+        val lastUpdated = calculator.getLastUpdated(
+            syncValueWithoutOpenFuturePeriods,
+            dataSetWithoutOpenFuturePeriods,
+            pastPeriods,
+            futurePeriodsOrDefault(dataSetWithoutOpenFuturePeriods),
+            organisationUnitsHash,
+        )
+        assertThat(lastUpdated).isEqualTo(expectedLastUpdated)
     }
 
     @Test

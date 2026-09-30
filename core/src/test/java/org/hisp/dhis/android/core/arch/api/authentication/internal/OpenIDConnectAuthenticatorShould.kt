@@ -163,7 +163,7 @@ class OpenIDConnectAuthenticatorShould {
     }
 
     private fun givenRefresh(result: OpenIdRefreshResult) {
-        tokenRefresher.stub { on { refresh(any()) } doReturn result }
+        tokenRefresher.stub { onBlocking { refresh(any()) } doReturn result }
     }
 
     /**

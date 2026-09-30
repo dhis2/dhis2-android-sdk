@@ -6,10 +6,10 @@ Validation rules associated to a particular dataSet can be evaluated using the v
 >
 > Currently it is not possible to evaluate validation rules acrross different dataSets, periods, organisationUnits or attributeOptionCombos.
 
-```java
+```kotlin
 d2.validationModule()
     .validationEngine()
-    .validate(<dataSet-uid>, <period-id>, <organisation-unit-uid>, <attribute-option-combo-uid>);
+    .suspendValidate(<dataSet-uid>, <period-id>, <organisation-unit-uid>, <attribute-option-combo-uid>)
 ```
 
 It returns a validation result containing the list of violations. Each violation includes helpful methods to get a human-readable representation of the conflict.

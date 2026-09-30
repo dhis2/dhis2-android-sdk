@@ -60,6 +60,7 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.stub
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 import org.mockito.kotlin.whenever
@@ -134,7 +135,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleEnrollmentResponse_persists_registration_and_clears_temp_on_success() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), anyOrNull(), any()) }
                 .doReturn(Result.Success(CLIENT_ID))
         }
         oauth2SecureStore.tempState = STATE
@@ -154,7 +155,7 @@ class OAuth2HandlerImplShould {
     fun blockingHandleEnrollmentResponse_deletes_keypair_and_throws_on_failure() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), anyOrNull(), any()) }
                 .doReturn(Result.Failure(serverError()))
         }
         oauth2SecureStore.tempState = STATE
@@ -168,10 +169,68 @@ class OAuth2HandlerImplShould {
     }
 
     @Test
+    fun blockingHandleEnrollmentResponse_registers_with_default_scope() {
+        seedRegistrationFlowMocks()
+        dcrNetworkHandler.stub {
+            onBlocking { registerClient(any(), any(), any(), any(), anyOrNull(), any()) }
+                .doReturn(Result.Success(CLIENT_ID))
+        }
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE)
+
+        verifyBlocking(dcrNetworkHandler, times(1)) {
+            registerClient(any(), any(), any(), any(), anyOrNull(), any())
+        }
+        verifyBlocking(dcrNetworkHandler) {
+            registerClient(any(), any(), any(), any(), eq(OAuth2Config.DEFAULT_SCOPE), any())
+        }
+    }
+
+    @Test
+    fun blockingHandleEnrollmentResponse_retries_without_scope_when_server_rejects_it() {
+        seedRegistrationFlowMocks()
+        dcrNetworkHandler.stub {
+            onBlocking { registerClient(any(), any(), any(), any(), eq(OAuth2Config.DEFAULT_SCOPE), any()) }
+                .doReturn(Result.Failure(badRequestError("{\"error\":\"invalid_scope\"}")))
+            onBlocking { registerClient(any(), any(), any(), any(), eq(null), any()) }
+                .doReturn(Result.Success(CLIENT_ID))
+        }
+        oauth2SecureStore.tempState = STATE
+
+        handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE)
+
+        verifyBlocking(dcrNetworkHandler) {
+            registerClient(any(), any(), any(), any(), eq(null), any())
+        }
+        assertThat(oauth2SecureStore.clientId).isEqualTo(CLIENT_ID)
+        assertThat(oauth2SecureStore.isRegistered).isTrue()
+    }
+
+    @Test
+    fun blockingHandleEnrollmentResponse_does_not_retry_on_other_bad_requests() {
+        seedRegistrationFlowMocks()
+        dcrNetworkHandler.stub {
+            onBlocking { registerClient(any(), any(), any(), any(), anyOrNull(), any()) }
+                .doReturn(Result.Failure(badRequestError("{\"error\":\"invalid_redirect_uri\"}")))
+        }
+        oauth2SecureStore.tempState = STATE
+
+        runCatching { handler.blockingHandleEnrollmentResponse("https://server.com", validJwt(), STATE) }
+            .also { assertThat(it.isFailure).isTrue() }
+
+        verifyBlocking(dcrNetworkHandler, times(1)) {
+            registerClient(any(), any(), any(), any(), anyOrNull(), any())
+        }
+        verify(keyStoreManager).deleteKey(KEY_ID)
+        assertThat(oauth2SecureStore.isRegistered).isFalse()
+    }
+
+    @Test
     fun blockingHandleEnrollmentResponse_deletes_the_previous_key_when_enrolling_again() {
         seedRegistrationFlowMocks()
         dcrNetworkHandler.stub {
-            onBlocking { registerClient(any(), any(), any(), any(), any()) }
+            onBlocking { registerClient(any(), any(), any(), any(), anyOrNull(), any()) }
                 .doReturn(Result.Success(CLIENT_ID))
         }
         // The device was already enrolled with an older key pair.
@@ -683,6 +742,14 @@ class OAuth2HandlerImplShould {
         D2Error.builder()
             .errorCode(D2ErrorCode.UNEXPECTED)
             .errorDescription("test failure")
+            .errorComponent(D2ErrorComponent.Server)
+            .build()
+
+    private fun badRequestError(body: String): D2Error =
+        D2Error.builder()
+            .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
+            .httpErrorCode(400)
+            .errorDescription("API call failed, server message: $body")
             .errorComponent(D2ErrorComponent.Server)
             .build()
 

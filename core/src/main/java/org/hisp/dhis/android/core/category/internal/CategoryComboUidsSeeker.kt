@@ -49,6 +49,7 @@ internal class CategoryComboUidsSeeker(
         }.toMutableSet()
 
         // Always include the default CategoryCombo UID to ensure it gets downloaded
+        defaultCategoryComboManager.loadDefaults()
         defaultCategoryComboManager.defaultCategoryComboUid?.let { uids.add(it) }
 
         return uids

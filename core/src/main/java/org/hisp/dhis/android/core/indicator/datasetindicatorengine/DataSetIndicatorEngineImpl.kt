@@ -108,7 +108,7 @@ internal class DataSetIndicatorEngineImpl(
         }
     }
 
-    private fun getValueMap(
+    private suspend fun getValueMap(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,
@@ -120,7 +120,7 @@ internal class DataSetIndicatorEngineImpl(
             .byOrganisationUnitUid().eq(orgUnitUid)
             .byAttributeOptionComboUid().eq(attributeOptionComboUid)
             .byDeleted().isFalse
-            .blockingGet()
+            .suspendGet()
 
         return ExpressionHelper.getValueMap(dataValues)
     }
@@ -136,7 +136,7 @@ internal class DataSetIndicatorEngineImpl(
         )
     }
 
-    private fun getPeriod(periodId: String): Period {
-        return periodHelper.blockingGetPeriodForPeriodId(periodId)
+    private suspend fun getPeriod(periodId: String): Period {
+        return periodHelper.suspendGetPeriodForPeriodId(periodId)
     }
 }

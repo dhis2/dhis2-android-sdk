@@ -124,7 +124,7 @@ internal class ProgramItemStageElement : ProgramExpressionItem() {
     }
 
     private fun getDataElement(visitor: CommonExpressionVisitor, uid: String): DataElement {
-        return runBlockingOnIO {
+        return visitor.itemMetadata.dataElements[uid] ?: runBlockingOnIO {
             visitor.dataElementStore!!.selectByUid(uid)
                 ?: throw IllegalArgumentException("DataElement $uid does not exist.")
         }

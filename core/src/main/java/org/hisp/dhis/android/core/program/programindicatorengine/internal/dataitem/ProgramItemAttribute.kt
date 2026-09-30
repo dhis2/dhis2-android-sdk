@@ -94,7 +94,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
     }
 
     private fun getAttribute(visitor: CommonExpressionVisitor, uid: String): TrackedEntityAttribute {
-        return runBlockingOnIO {
+        return visitor.itemMetadata.trackedEntityAttributes[uid] ?: runBlockingOnIO {
             visitor.trackedEntityAttributeStore!!.selectByUid(uid)
                 ?: throw IllegalArgumentException("Attribute $uid does not exist.")
         }

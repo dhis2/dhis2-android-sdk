@@ -40,10 +40,10 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 internal class VProgramStageName : ProgramExpressionItem() {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return runBlockingOnIO {
-            getLatestEvent(visitor)?.programStage()?.let {
-                visitor.programStageStore!!.selectByUid(it)?.name()
-            }
+        return getLatestEvent(visitor)?.programStage()?.let { programStageUid ->
+            val programStage = visitor.itemMetadata.programStages[programStageUid]
+                ?: runBlockingOnIO { visitor.programStageStore!!.selectByUid(programStageUid) }
+            programStage?.name()
         }
     }
 

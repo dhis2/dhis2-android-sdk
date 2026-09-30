@@ -102,7 +102,12 @@ internal class ProgramIndicatorSQLExecutor(
         val collector = ProgramIndicatorItemIdsCollector()
         Parser.listen(programIndicator.expression(), collector)
 
-        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+        )
+        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context, itemMetadata)
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
@@ -151,6 +156,7 @@ internal class ProgramIndicatorSQLExecutor(
     private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
+        itemMetadata: ProgramIndicatorItemMetadata,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.ProgramSQLIndicator(
@@ -160,6 +166,7 @@ internal class ProgramIndicatorSQLExecutor(
                 programIndicatorSQLContext = context,
                 dataElementStore = dataElementStore,
                 trackedEntityAttributeStore = trackedEntityAttributeStore,
+                itemMetadata = itemMetadata,
             ),
         )
     }

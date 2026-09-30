@@ -65,7 +65,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val programStageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
-        val dataElement = runBlockingOnIO {
+        val dataElement = visitor.itemMetadata.dataElements[dataElementId] ?: runBlockingOnIO {
             visitor.dataElementStore!!.selectByUid(dataElementId)
                 ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
         }

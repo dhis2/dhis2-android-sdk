@@ -131,12 +131,21 @@ internal class ProgramIndicatorEngineImpl(
     }
 
     private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(context.programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+            programStageStore,
+            context.events.keys,
+        )
+
         val executor = ProgramIndicatorExecutor(
             constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
             programStageStore,
+            itemMetadata,
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

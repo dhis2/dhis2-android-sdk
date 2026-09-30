@@ -42,15 +42,17 @@ internal class PeriodForDataSetManager(
     private val periodStore: PeriodStore,
 ) {
     fun getPeriodsForDataSet(dataSetUid: String?): Single<List<Period>> {
-        return rxSingle { suspendGetPeriodsForDataSet(dataSetUid) }
+        return rxSingle { getPeriodsForDataSetInternal(dataSetUid) }
     }
 
-    suspend fun suspendGetPeriodsForDataSet(dataSetUid: String?): List<Period> {
+    suspend fun getPeriodsForDataSetInternal(dataSetUid: String?): List<Period> {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet()
             ?: throw NullPointerException("The callable returned a null value")
+        val dataSetFuturePeriods = dataSet.openFuturePeriods()
+        val endPeriods = dataSetFuturePeriods ?: 0
         val periods = parentPeriodGenerator.generatePeriods(
             dataSet.periodType()!!,
-            dataSet.openFuturePeriods() ?: 0,
+            endPeriods,
         )
         storePeriods(periods)
         return periods

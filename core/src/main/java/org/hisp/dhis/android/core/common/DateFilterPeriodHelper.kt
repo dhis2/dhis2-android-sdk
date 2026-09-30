@@ -33,6 +33,7 @@ import kotlinx.datetime.atTime
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
@@ -90,7 +91,9 @@ internal class DateFilterPeriodHelper(
         }
     }
 
-    fun getStartDate(filter: DateFilterPeriod): Date? {
+    fun getStartDate(filter: DateFilterPeriod): Date? = runBlockingOnIO { suspendGetStartDate(filter) }
+
+    suspend fun suspendGetStartDate(filter: DateFilterPeriod): Date? {
         return when (filter.type()) {
             DatePeriodType.RELATIVE ->
                 when {
@@ -103,7 +106,9 @@ internal class DateFilterPeriodHelper(
         }
     }
 
-    fun getEndDate(filter: DateFilterPeriod): Date? {
+    fun getEndDate(filter: DateFilterPeriod): Date? = runBlockingOnIO { suspendGetEndDate(filter) }
+
+    suspend fun suspendGetEndDate(filter: DateFilterPeriod): Date? {
         return when (filter.type()) {
             DatePeriodType.RELATIVE ->
                 when {
@@ -116,7 +121,7 @@ internal class DateFilterPeriodHelper(
         }
     }
 
-    private fun getPeriod(period: RelativePeriod): Period? {
+    private suspend fun getPeriod(period: RelativePeriod): Period? {
         val periods = parentPeriodGenerator.generateRelativePeriods(period)
 
         return if (periods.isNotEmpty()) {

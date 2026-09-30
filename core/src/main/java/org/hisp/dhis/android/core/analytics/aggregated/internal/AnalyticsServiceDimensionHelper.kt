@@ -115,7 +115,9 @@ internal class AnalyticsServiceDimensionHelper(
         }
     }
 
-    private suspend fun orderAndDeduplicatePeriods(periods: List<AbsoluteDimensionItem>): List<AbsoluteDimensionItem> {
+    private suspend fun orderAndDeduplicatePeriods(
+        periods: List<AbsoluteDimensionItem>,
+    ): List<AbsoluteDimensionItem> {
         return periods
             .map { it as DimensionItem.PeriodItem.Absolute }
             .distinct()

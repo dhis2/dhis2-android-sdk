@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.dataapproval.DataApproval
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalCall
 import org.hisp.dhis.android.core.dataapproval.internal.DataApprovalQuery
 import org.hisp.dhis.android.core.dataset.DataSet
+import org.hisp.dhis.android.core.dataset.DataSet.Companion.futurePeriodsOrDefault
 import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationCall
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompleteRegistrationQuery
@@ -143,7 +144,7 @@ internal class AggregatedDataCall(
                     .dataSet(dataSet.uid())
                     .periodType(dataSet.periodType()!!)
                     .pastPeriods(bundle.key.pastPeriods)
-                    .futurePeriods(dataSet.openFuturePeriods() ?: 0)
+                    .futurePeriods(futurePeriodsOrDefault(dataSet))
                     .dataElementsHash(hashHelper.getDataSetDataElementsHash(dataSet))
                     .organisationUnitsHash(bundle.allOrganisationUnitUidsSet.hashCode())
                     .lastUpdated(syncDate)

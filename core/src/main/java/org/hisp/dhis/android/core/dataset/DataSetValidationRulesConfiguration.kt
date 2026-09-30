@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,20 +26,10 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.arch.api.executors.internal
+package org.hisp.dhis.android.core.dataset
 
-import io.reactivex.Single
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
-
-internal fun <T : Any> wrapRxSingle(
-    block: suspend CoroutineScope.() -> T,
-): Single<T> {
-    return rxSingle(Dispatchers.Unconfined) {
-        runBlockingOnIO {
-            block.invoke(this)
-        }
-    }
+enum class DataSetValidationRulesConfiguration {
+    MANDATORY,
+    OPTIONAL,
+    NONE,
 }

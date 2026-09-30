@@ -6,40 +6,56 @@ Modules are the layer below `D2`. They act as a wrapper for related functionalit
 
 Repositories act as a facade for the DB (or web API in some cases). They offer read capabilities for metadata and read/write for data.
 
-## Dealing with return types: RxJava { #android_sdk_dealing_with_rxjava }
+## Dealing with return types { #android_sdk_dealing_with_return_types }
 
-The SDK uses RxJava classes (Observable, Single, Completable, Flowable) as the preferred return type for all the methods. The reasons for choosing RxJava classes are mainly two:
+Most of the actions in the SDK are time consuming and must be executed in a secondary thread. To make that explicit, and to notify about the progress of long operations such as metadata or data sync, every asynchronous method is exposed in three flavours:
 
-- **To facilitate the asynchronous treatment of returned objects.** Most of the actions in the SDK are time consuming and must be executed in a secondary thread. These return types force the app to deal with this asynchronous behavior.
-- **To notify about progress.** Methods like metadata or data sync might take several minutes to finish. From a user perspective, it is very helpful to have a sense of progress.
+| Prefix | Return type | Notes |
+|--------|-------------|-------|
+| `suspend` | the value itself | Kotlin `suspend` function. **Recommended**, and used in the examples throughout this guide. |
+| `rx` | RxJava (`Single`, `Completable`, `Observable`, `Flowable`) | For apps already built around RxJava. |
+| `blocking` | the value itself | Must not be called from the main thread. |
 
-This does not mean that applications are forced to use RxJava in their code: they are only forced to deal with the asynchronous behavior of some methods. The SDK usually exposes *blocking* version of every method.
+Operations that report progress (metadata and data download, data upload, reserved value download) do not have a `suspend` variant, because a single return value cannot convey progress. They expose a `flow` variant instead,  which returns a `Flow<D2Progress>`: `flowDownload()`, `flowUpload()`, `flowDownloadReservedValues()`.
 
-For example, the same query using RxJava and AsyncTask:
+```kotlin
+// Coroutines
+val programs = d2.programModule().programs().suspendGet()
 
-*Using RxJava*
-
-```java
+// RxJava
 d2.programModule().programs()
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .get()
-    .subscribe(programs -> {}); //List<Program>
+    .rxGet()
+    .subscribe { programs -> }   // List<Program>
+
+// Blocking, from a background thread
+val programs = d2.programModule().programs().blockingGet()
 ```
 
-*Using AsyncTask*
-
-```java
-new AsyncTask<Void, Void, List<Program>>() {
-    protected List<Program> doInBackground() {
-        return d2.programModule().programs().blockingGet();
-    }
-
-    protected void onPostExecute(List<Program> programs) {
-
-    }
-}.execute();
-```
+> **Important**
+>
+> Unprefixed RxJava methods are **deprecated** in favour of their `rx` counterparts, so that the coroutine variants can coexist with them. The old names still work, but they will be removed in a future release.
+>
+> The table below lists the drop-in replacement, which keeps the RxJava return type. When migrating, consider moving to the `suspend` variant instead.
+>
+> | Deprecated | Drop-in replacement |
+> |------------|---------------------|
+> | `get()` | `rxGet()` |
+> | `count()` | `rxCount()` |
+> | `isEmpty()` | `rxIsEmpty()` |
+> | `getUids()` | `rxGetUids()` |
+> | `exists()` | `rxExists()` |
+> | `add(o)` | `rxAdd(o)` |
+> | `set(value)` | `rxSet(value)` |
+> | `delete()` / `deleteIfExist()` | `rxDelete()` / `rxDeleteIfExist()` |
+> | `download()` | `rxDownload()` |
+> | `upload()` | `rxUpload()` |
+> | `evaluate()` | `rxEvaluate()` |
+>
+> The same rename applies to most module and service methods (`logIn()`, `logOut()`, `isLogged()`, `checkServerUrl()`, `validate()`, the `EventService` and `EnrollmentService` methods, the reserved value manager, …): the replacement is the same name prefixed with `rx`, and a `suspend` variant is available as well. `D2Manager.instantiateD2()` follows the same pattern, replaced by `D2Manager.rxInstantiateD2()`.
+>
+> Independently of that rename, `getPaged(int)` is also deprecated, replaced by `getPagingData(int)`, which returns a `Flow<PagingData<M>>` instead of a `LiveData<PagedList<M>>`.
 
 Accessing the database is time consuming and it's recommended to do it in a separate thread using any of the recommended
 methods. However, procedures that involve accessing the web API, like log in, metadata or data download or upload **must**
@@ -47,13 +63,13 @@ run in a separate thread, otherwise Android will throw an error.
 
 ## Query building { #android_sdk_query_building }
 
-Repositories offer a builder syntax with compile-time validation to access the resources. A typical query is composed of some modifiers (filter, order, nested fields) and ends with an action (get, count, getPaged,...).
+Repositories offer a builder syntax with compile-time validation to access the resources. A typical query is composed of some modifiers (filter, order, nested fields) and ends with an action (`suspendGet`/`rxGet`/`blockingGet`, `suspendCount`/`rxCount`/`blockingCount`, `getPagingData`,...).
 
-```java
+```kotlin
 // Generic syntax
 d2.<module>.<repository>
     .[ filter | orderBy | nested fields ]
-    .<action>;
+    .<action>
 
 // An example for events
 d2.eventModule().events()
@@ -61,7 +77,7 @@ d2.eventModule().events()
     .byEventDate().after(Date("2019-05-05"))
     .orderByEventDate(DESC)
     .withTrackedEntityDataValues()
-    .get();
+    .suspendGet()
 ```
 
 ### Filters { #android_sdk_filters }
@@ -74,10 +90,11 @@ Common filter operators include:
 - **String matching**: `like()`, `notLike()`
 - **Collection**: `in()` - matches any value in the provided list
 - **Null checks**: `isNull()`, `isNotNull()`
+- **Emptiness**: `isNullOrBlank()`, `isNotNullAndIsNotBlank()` - available in data value filters, where the event query repository exposes them as `isEmpty(Boolean)`
 
 Several filters can be appended to the same query in any order. Filters are joined globally using the operator "AND". This means that a query like
 
-```java
+```kotlin
 d2.eventModule().events()
     .byOrganisationUnitUid().eq("DiszpKrYNg8")
     .byEventDate().after(Date("2019-05-05"))
@@ -88,12 +105,12 @@ will return the events assigned to the orgunit "DiszpKrYNg8" **AND** whose event
 
 The `in()` operator is particularly useful for querying multiple values at once:
 
-```java
+```kotlin
 // Query tracked entity instances with specific data values
 d2.trackedEntityModule().trackedEntityInstanceQuery()
-    .byDataValue("dataElementUid").in("value1", "value2", "value3")
+    .byDataValue("dataElementUid").`in`("value1", "value2", "value3")
     .onlineFirst()
-    .get();
+    .suspendGet()
 ```
 
 ### Order by { #android_sdk_order_by }
@@ -102,7 +119,7 @@ Ordering modifiers are prefixed by the keyword "orderBy".
 
 Several "orderBy" modifiers can be appended to the same query. The order of the "orderBy" modifiers within the query determines the order priority. This means that a query like
 
-```java
+```kotlin
 d2.eventModule().events()
     .orderByEventDate(DESC)
     .orderByLastUpdated(DESC)
@@ -119,7 +136,7 @@ Due to performance issues, this kind of properties are not included by default: 
 
 Several properties can be appended in the same query in any order. For example, a query like
 
-```java
+```kotlin
 d2.programModule().programs()
     .withTrackedEntityType()
     ...
@@ -134,7 +151,7 @@ The SDK include some helpers in the package `org.hisp.dhis.android.core.arch.hel
 - `AccessHelper`: related to access (sharing settings) object.
 - `CollectionsHelper`: common operations to collections.
 - `CoordinateHelper`, `GeometryHelper`: geospatial data manipulation.
-- `FileResizeHelper`, `FileResourceDirectoryHelper`: file resource manipulation.
+- `FileResizerHelper`, `FileCompressionHelper`, `FileResourceDirectoryHelper`: file resource manipulation.
 - `UidsHelper`: common operations to collections of objects with uid.
 - `UserHelper`: operations related to user authentication.
 - `ValueType`: list of different value types and their validators.

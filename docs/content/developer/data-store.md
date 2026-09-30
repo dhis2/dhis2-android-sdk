@@ -1,6 +1,6 @@
 # Data Store { #android_sdk_data_store }
 
-```java
+```kotlin
 d2.dataStoreModule().dataStore()
 ```
 
@@ -18,30 +18,32 @@ The behavior is similar to the rest of the data:
 2. Read or modify the DataStore entries.
 3. If there are any modifications in the entries, call the method to upload the entries to the server.
 
-```java
+`DataStoreEntry.value()` holds the raw JSON value of the entry, exactly as stored in the server DataStore. Apps are expected to parse it according to the namespace schema.
+
+```kotlin
 // Download
 d2.dataStoreModule().dataStoreDownloader()
-        .byNamespace().in("namespace1", "namespace2")
-        .download();
+        .byNamespace().`in`("namespace1", "namespace2")
+        .flowDownload()
 
 // Read example
-List<DataStoreEntry> entries = d2.dataStoreModule().dataStore()
+val entries = d2.dataStoreModule().dataStore()
         .byNamespace().eq("namespace1")
-        .byKey().in("key1", "key2")
-        .get()
+        .byKey().`in`("key1", "key2")
+        .suspendGet()
 
 // Write example
 d2.dataStoreModule().dataStore()
         .value("namespace1", "key1")
-        .set("value");
+        .suspendSet("value")
 
 // Upload
-d2.dataStoreModule().dataStore().upload();
+d2.dataStoreModule().dataStore().flowUpload()
 ```
 
 ## Local Data Store { #android_sdk_local_data_store }
 
-```java
+```kotlin
 d2.dataStoreModule().localDataStore()
 ```
 
@@ -49,14 +51,13 @@ This repository is ideal for storing any kind of information.
 
 This collection supports key value pairs (`KeyValuePair`) and it can be stored as others values in the SDK.
 
-```java
+```kotlin
 // Access the object repository
-LocalDataStoreObjectRepository objectRepository = 
-    d2.dataStoreModule().localDataStore().value("key");
+val objectRepository = d2.dataStoreModule().localDataStore().value("key")
 
 // Set or update a key value pair
-objectRepository.set("value");
+objectRepository.suspendSet("value")
 
 // Remove key value pair
-objectRepository.delete();
+objectRepository.suspendDelete()
 ```

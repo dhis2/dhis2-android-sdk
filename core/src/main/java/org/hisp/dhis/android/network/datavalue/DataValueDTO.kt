@@ -37,10 +37,10 @@ import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 internal data class DataValueDTO(
     override val deleted: Boolean?,
     val dataElement: String,
-    val period: String,
-    val orgUnit: String,
-    val categoryOptionCombo: String,
-    val attributeOptionCombo: String,
+    val period: String? = null,
+    val orgUnit: String? = null,
+    val categoryOptionCombo: String? = null,
+    val attributeOptionCombo: String? = null,
     val value: String?,
     val storedBy: String?,
     val created: String?,
@@ -50,14 +50,14 @@ internal data class DataValueDTO(
 ) : BaseDeletableDataObjectDTO {
 
     @Suppress("ComplexMethod")
-    fun toDomain(sourceDataSet: String?): DataValue {
+    fun toDomain(sourceDataSet: String?, dataValueSet: DataValueSetDTO): DataValue {
         val builder = DataValue.builder().apply {
             deleted?.let { deleted(it) }
             dataElement(dataElement)
-            period(period)
-            organisationUnit(orgUnit)
-            categoryOptionCombo(categoryOptionCombo)
-            attributeOptionCombo(attributeOptionCombo)
+            (period ?: dataValueSet.period)?.let { period(it) }
+            (orgUnit ?: dataValueSet.orgUnit)?.let { organisationUnit(it) }
+            (categoryOptionCombo ?: dataValueSet.categoryOptionCombo)?.let { categoryOptionCombo(it) }
+            (attributeOptionCombo ?: dataValueSet.attributeOptionCombo)?.let { attributeOptionCombo(it) }
             value?.let { value(it) }
             storedBy?.let { storedBy(it) }
             created?.let { created(DateUtils.DATE_FORMAT.parse(it)) }

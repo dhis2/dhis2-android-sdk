@@ -29,7 +29,12 @@ package org.hisp.dhis.android.core.relationship.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.relationship.Relationship
+import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
+import org.hisp.dhis.android.core.relationship.RelationshipHelper
+import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipType
+import org.hisp.dhis.android.persistence.relationship.RelationshipItemTableInfo.Columns
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -73,4 +78,193 @@ class RelationshipDHISVersionManagerShould {
         assertThat(ownedToRelationships).isEmpty()
         assertThat(ownedFromRelationships.size).isEqualTo(1)
     }
+
+    @Test
+    fun not_own_relationship_when_the_from_item_is_null() = runTest {
+        whenever(relationshipTypeStore.selectByUid(RelationshipSamples.TYPE)).thenReturn(relationshipType)
+        whenever(relationshipType.bidirectional()).thenReturn(false)
+
+        val relationships = listOf(relationshipWithItems(null, RelationshipSamples.toItem))
+        val ownedRelationships =
+            relationshipDHISVersionManager.getOwnedRelationships(relationships, RelationshipSamples.FROM_UID)
+
+        assertThat(ownedRelationships).isEmpty()
+    }
+
+    @Test
+    fun not_own_relationship_when_it_has_no_type() = runTest {
+        val relationships = listOf(
+            RelationshipSamples.get230().toBuilder().relationshipType(null).build(),
+        )
+        val ownedRelationships =
+            relationshipDHISVersionManager.getOwnedRelationships(relationships, RelationshipSamples.TO_UID)
+
+        assertThat(ownedRelationships).isEmpty()
+    }
+
+    @Test
+    fun save_tei_relative_when_parent_is_the_from_item() {
+        val relatives = RelationshipItemRelatives()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(RelationshipSamples.get230()),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).containsExactly(
+            RelationshipItemRelative(
+                itemUid = RelationshipSamples.TO_UID,
+                itemType = Columns.TRACKED_ENTITY_INSTANCE,
+                relationshipTypeUid = RelationshipSamples.TYPE,
+                constraintType = RelationshipConstraintType.TO,
+            ),
+        )
+        assertThat(relatives.getRelativeEnrollments()).isEmpty()
+        assertThat(relatives.getRelativeEvents()).isEmpty()
+    }
+
+    @Test
+    fun save_tei_relative_when_parent_is_the_to_item() {
+        val relatives = RelationshipItemRelatives()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(RelationshipSamples.get230()),
+            RelationshipSamples.TO_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).containsExactly(
+            RelationshipItemRelative(
+                itemUid = RelationshipSamples.FROM_UID,
+                itemType = Columns.TRACKED_ENTITY_INSTANCE,
+                relationshipTypeUid = RelationshipSamples.TYPE,
+                constraintType = RelationshipConstraintType.FROM,
+            ),
+        )
+    }
+
+    @Test
+    fun not_save_any_relative_when_parent_matches_neither_side() {
+        val relatives = RelationshipItemRelatives()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(RelationshipSamples.get230()),
+            "unrelatedUid",
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+        assertThat(relatives.getRelativeEnrollments()).isEmpty()
+        assertThat(relatives.getRelativeEvents()).isEmpty()
+    }
+
+    @Test
+    fun save_enrollment_relative_in_the_enrollment_set() {
+        val relatives = RelationshipItemRelatives()
+        val relationship = relationshipWithTo(RelationshipHelper.enrollmentItem("enrollment1"))
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationship),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeEnrollments()).containsExactly(
+            RelationshipItemRelative(
+                itemUid = "enrollment1",
+                itemType = Columns.ENROLLMENT,
+                relationshipTypeUid = RelationshipSamples.TYPE,
+                constraintType = RelationshipConstraintType.TO,
+            ),
+        )
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+    }
+
+    @Test
+    fun save_event_relative_in_the_event_set() {
+        val relatives = RelationshipItemRelatives()
+        val relationship = relationshipWithTo(RelationshipHelper.eventItem("event1"))
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationship),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeEvents()).containsExactly(
+            RelationshipItemRelative(
+                itemUid = "event1",
+                itemType = Columns.EVENT,
+                relationshipTypeUid = RelationshipSamples.TYPE,
+                constraintType = RelationshipConstraintType.TO,
+            ),
+        )
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+    }
+
+    @Test
+    fun not_save_relative_when_the_opposite_item_is_null() {
+        val relatives = RelationshipItemRelatives()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationshipWithItems(RelationshipSamples.fromItem, null)),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+    }
+
+    @Test
+    fun not_save_relative_when_the_from_item_is_null_and_parent_is_the_to_item() {
+        val relatives = RelationshipItemRelatives()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationshipWithItems(null, RelationshipSamples.toItem)),
+            RelationshipSamples.TO_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+    }
+
+    @Test
+    fun not_save_relative_when_relationship_has_no_type() {
+        val relatives = RelationshipItemRelatives()
+        val relationship = Relationship.builder()
+            .uid(RelationshipSamples.UID)
+            .relationshipType(null)
+            .from(RelationshipSamples.fromItem)
+            .to(RelationshipSamples.toItem)
+            .build()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationship),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).isEmpty()
+    }
+
+    @Test
+    fun not_duplicate_relatives_when_the_same_relationship_is_processed_twice() {
+        val relatives = RelationshipItemRelatives()
+        val relationship = RelationshipSamples.get230()
+
+        relationshipDHISVersionManager.saveRelativesIfNotExist(
+            listOf(relationship, relationship),
+            RelationshipSamples.FROM_UID,
+            relatives,
+        )
+
+        assertThat(relatives.getRelativeTrackedEntityInstances()).hasSize(1)
+    }
+
+    private fun relationshipWithTo(to: RelationshipItem): Relationship =
+        relationshipWithItems(RelationshipSamples.fromItem, to)
+
+    private fun relationshipWithItems(from: RelationshipItem?, to: RelationshipItem?): Relationship =
+        RelationshipSamples.get230(RelationshipSamples.UID, from, to)
 }

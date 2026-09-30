@@ -29,7 +29,7 @@ The database can be exported and imported in a different device.
 
 One of the main use cases of this functionality is debugging: sometimes it is hard to know the reason for a sync problem or a bug, and it is very useful to replicate the issue in an emulator or a different device.  
 
-```kt
+```kotlin
 // Export database
 val database = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
 
@@ -39,7 +39,7 @@ val metadata = d2.maintenanceModule().databaseImportExport().importDatabase(data
 // The metadata object contains information about the database (serverUrl, username,...) 
 
 // Once the database is imported, it is possible to login as usual
-d2.userModule().login("username", "password", "serverUrl")
+d2.userModule().suspendLogIn("username", "password", "serverUrl")
 ```
 
 The export process encrypts the database using ZIP encryption, so the database file can't be read unless the right user credentials are provided. 

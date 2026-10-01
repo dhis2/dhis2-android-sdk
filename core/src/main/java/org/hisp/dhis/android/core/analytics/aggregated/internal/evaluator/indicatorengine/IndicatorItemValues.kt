@@ -26,42 +26,50 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
+package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
-import org.hisp.dhis.android.core.parser.internal.expression.CommonParser
-import org.koin.core.annotation.Singleton
+import org.hisp.dhis.android.core.analytics.AnalyticsException
+import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 
-@Singleton
-internal class AnalyticExpressionEngine(
-    private val visitor: CommonExpressionVisitor,
-) {
+/**
+ * Values of the data items of an indicator expression, computed before the expression is visited.
+ * The ANTLR visitor is not suspending, so without them every item runs its query from a nested
+ * blocking call, outside the caller's database connection.
+ */
+internal class IndicatorItemValues {
+    var collecting: Boolean = false
 
-    suspend fun evaluate(
-        expression: String,
-    ): Any? {
-        resolveItemValues(expression)
-        return CommonParser.visit(expression, visitor)
+    private val pending = LinkedHashMap<Key, suspend () -> String?>()
+    private val resolved = HashMap<Key, String?>()
+
+    data class Key(
+        val sql: Boolean,
+        val evaluationItem: AnalyticsServiceEvaluationItem,
+        val queryMods: QueryMods?,
+    )
+
+    fun collect(key: Key, compute: suspend () -> String?) {
+        if (key !in resolved) {
+            pending.putIfAbsent(key, compute)
+        }
     }
 
     /**
-     * Visits the expression once to collect its data items, with placeholder values, and computes
-     * them here, where the caller's connection is available. Items the collecting visit does not
-     * reach, like a branch of `if()` taken only with the real values, are computed during the visit.
+     * An item that fails is left out: the visit computes it again, and fails, only if it reaches it.
      */
-    @Suppress("TooGenericExceptionCaught")
-    private suspend fun resolveItemValues(expression: String) {
-        val itemValues = visitor.indicatorContext?.itemValues ?: return
-        val collector = CommonExpressionVisitor(visitor.scope).also { it.days = visitor.days }
-
-        itemValues.collecting = true
-        try {
-            CommonParser.visit(expression, collector)
-        } catch (_: Exception) {
-            // The visit below reports it
-        } finally {
-            itemValues.collecting = false
+    suspend fun resolve() {
+        pending.forEach { (key, compute) ->
+            try {
+                resolved[key] = compute()
+            } catch (_: AnalyticsException) {
+                // Computed again during the visit
+            }
         }
-        itemValues.resolve()
+        pending.clear()
     }
+
+    fun isResolved(key: Key): Boolean = key in resolved
+
+    operator fun get(key: Key): String? = resolved[key]
 }

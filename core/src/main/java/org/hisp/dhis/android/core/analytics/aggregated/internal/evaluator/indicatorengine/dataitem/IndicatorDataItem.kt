@@ -33,47 +33,60 @@ import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.AnalyticsEvaluator
+import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine.IndicatorItemValues
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.parser.internal.expression.QueryMods
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
 
 internal interface IndicatorDataItem : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            runBlockingOnIO {
-                getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                    getEvaluator(visitor).evaluate(
-                        evaluationItem = evaluationItem,
-                        metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                        queryMods = visitor.state.queryMods,
-                    )
-                }
-            }
+        return value(ctx, visitor, sql = false) { evaluationItem, metadata, queryMods ->
+            getEvaluator(visitor).evaluate(evaluationItem, metadata, queryMods)
         } ?: ParserUtils.DOUBLE_VALUE_IF_NULL
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return getEvaluationItem(ctx, visitor)?.let { evaluationItem ->
-            runBlockingOnIO {
-                getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
-                    getEvaluator(visitor).getSql(
-                        evaluationItem = evaluationItem,
-                        metadata = visitor.indicatorContext!!.contextMetadata + metadataEntry,
-                        queryMods = visitor.state.queryMods,
-                    )?.let { "($it)" }
-                }
-            }
+        return value(ctx, visitor, sql = true) { evaluationItem, metadata, queryMods ->
+            getEvaluator(visitor).getSql(evaluationItem, metadata, queryMods)?.let { "($it)" }
         }
     }
 
     fun getEvaluator(visitor: CommonExpressionVisitor): AnalyticsEvaluator
 
     fun getDataItem(ctx: ExprContext, visitor: CommonExpressionVisitor): AbsoluteDimensionItem?
+
+    private fun value(
+        ctx: ExprContext,
+        visitor: CommonExpressionVisitor,
+        sql: Boolean,
+        compute: suspend (AnalyticsServiceEvaluationItem, Map<String, MetadataItem>, QueryMods?) -> String?,
+    ): String? {
+        val evaluationItem = getEvaluationItem(ctx, visitor) ?: return null
+        val indicatorContext = visitor.indicatorContext!!
+        val queryMods = visitor.state.queryMods?.copy()
+        val key = IndicatorItemValues.Key(sql, evaluationItem, queryMods)
+        val computeItem: suspend () -> String? = {
+            getMetadataEntry(evaluationItem, visitor)?.let { metadataEntry ->
+                compute(evaluationItem, indicatorContext.contextMetadata + metadataEntry, queryMods)
+            }
+        }
+        val itemValues = indicatorContext.itemValues
+
+        return when {
+            itemValues.collecting -> {
+                itemValues.collect(key, computeItem)
+                null
+            }
+            itemValues.isResolved(key) -> itemValues[key]
+            else -> runBlockingOnIO { computeItem() }
+        }
+    }
 
     private fun getEvaluationItem(
         ctx: ExprContext,

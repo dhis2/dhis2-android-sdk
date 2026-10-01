@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -55,8 +56,10 @@ class EnrollmentCollectionRepository internal constructor(
     scope: RepositoryScope,
     transformer: EnrollmentProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Enrollment, EnrollmentCreateProjection, EnrollmentCollectionRepository>(
     enrollmentStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -66,6 +69,7 @@ class EnrollmentCollectionRepository internal constructor(
             s,
             transformer,
             trackerDataManager,
+            databaseAdapter,
         )
     },
 ) {
@@ -77,6 +81,7 @@ class EnrollmentCollectionRepository internal constructor(
         val updatedScope = withUidFilterItem(scope, uid)
         return EnrollmentObjectRepository(
             enrollmentStore,
+            databaseAdapter,
             uid,
             childrenAppenders,
             updatedScope,

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUploadWithUidCollectionRepository
@@ -66,12 +67,14 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
     private val trackerDataManager: TrackerDataManager,
     private val postCall: TrackedEntityInstancePostParentCall,
     private val jobQueryCall: JobQueryCall,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadWriteWithUidCollectionRepositoryImpl<
     TrackedEntityInstance,
     TrackedEntityInstanceCreateProjection,
     TrackedEntityInstanceCollectionRepository,
     >(
     trackedEntityInstanceStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -85,6 +88,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
             trackerDataManager,
             postCall,
             jobQueryCall,
+            databaseAdapter,
         )
     },
 ),
@@ -106,6 +110,7 @@ class TrackedEntityInstanceCollectionRepository internal constructor(
         val updatedScope = withUidFilterItem(scope, uid)
         return TrackedEntityInstanceObjectRepository(
             trackedEntityInstanceStore,
+            databaseAdapter,
             uid,
             childrenAppenders,
             updatedScope,

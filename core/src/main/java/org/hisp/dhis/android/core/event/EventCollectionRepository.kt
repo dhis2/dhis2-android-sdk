@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -74,8 +75,10 @@ class EventCollectionRepository internal constructor(
     transformer: EventProjectionTransformer,
     private val trackerDataManager: TrackerDataManager,
     private val jobQueryCall: JobQueryCall,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Event, EventCreateProjection, EventCollectionRepository>(
     eventStore,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -88,6 +91,7 @@ class EventCollectionRepository internal constructor(
             transformer,
             trackerDataManager,
             jobQueryCall,
+            databaseAdapter,
         )
     },
 ),
@@ -111,6 +115,7 @@ class EventCollectionRepository internal constructor(
         val updatedScope = withUidFilterItem(scope, uid)
         return EventObjectRepository(
             eventStore,
+            databaseAdapter,
             userStore,
             uid,
             childrenAppenders,
@@ -153,6 +158,7 @@ class EventCollectionRepository internal constructor(
                 transformer as EventProjectionTransformer,
                 trackerDataManager,
                 jobQueryCall,
+                databaseAdapter,
             )
         }
         return EventStatusFilterConnector(repositoryFactory, scope, EventTableInfo.Columns.STATUS)

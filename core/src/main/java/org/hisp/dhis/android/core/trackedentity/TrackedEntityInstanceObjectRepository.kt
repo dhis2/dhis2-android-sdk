@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
@@ -46,17 +47,20 @@ import java.util.Date
 
 class TrackedEntityInstanceObjectRepository internal constructor(
     store: TrackedEntityInstanceStore,
+    databaseAdapter: DatabaseAdapter,
     uid: String?,
     childrenAppenders: ChildrenAppenderGetter<TrackedEntityInstance>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<TrackedEntityInstance, TrackedEntityInstanceObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         TrackedEntityInstanceObjectRepository(
             store,
+            databaseAdapter,
             uid,
             childrenAppenders,
             s,

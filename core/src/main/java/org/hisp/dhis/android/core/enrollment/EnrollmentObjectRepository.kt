@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
@@ -45,17 +46,20 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 class EnrollmentObjectRepository internal constructor(
     store: EnrollmentStore,
+    databaseAdapter: DatabaseAdapter,
     uid: String?,
     childrenAppenders: ChildrenAppenderGetter<Enrollment>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Enrollment, EnrollmentObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         EnrollmentObjectRepository(
             store,
+            databaseAdapter,
             uid,
             childrenAppenders,
             s,

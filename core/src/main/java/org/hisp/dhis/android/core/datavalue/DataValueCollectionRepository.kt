@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
@@ -61,12 +62,13 @@ class DataValueCollectionRepository internal constructor(
     scope: RepositoryScope,
     private val postCall: DataValuePostCall,
     private val dataSetElementStore: DataSetElementStore,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadOnlyCollectionRepositoryImpl<DataValue, DataValueCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        DataValueCollectionRepository(store, s, postCall, dataSetElementStore)
+        DataValueCollectionRepository(store, s, postCall, dataSetElementStore, databaseAdapter)
     },
 ),
     ReadOnlyWithUploadCollectionRepository<DataValue> {
@@ -93,6 +95,7 @@ class DataValueCollectionRepository internal constructor(
             .scope
         return DataValueObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             updatedScope,
             period,

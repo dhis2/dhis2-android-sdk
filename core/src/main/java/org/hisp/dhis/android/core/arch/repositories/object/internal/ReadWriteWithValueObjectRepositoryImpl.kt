@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 open class ReadWriteWithValueObjectRepositoryImpl<M : CoreObject, R : ReadOnlyObjectRepository<M>>
 internal constructor(
     private val store: ObjectWithoutUidStore<M>,
+    private val databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
@@ -56,7 +58,9 @@ internal constructor(
      */
     @Throws(D2Error::class)
     override suspend fun suspendDelete() {
-        getWithoutChildrenInternal()?.let { suspendDelete(it) }
+        databaseAdapter.withTransaction {
+            getWithoutChildrenInternal()?.let { suspendDelete(it) }
+        }
     }
 
     /**
@@ -75,8 +79,10 @@ internal constructor(
     @Suppress("TooGenericExceptionCaught")
     protected open suspend fun suspendDelete(m: M) {
         try {
-            store.deleteWhere(m)
-            propagateState(m)
+            databaseAdapter.withTransaction {
+                store.deleteWhere(m)
+                propagateState(m)
+            }
         } catch (e: Exception) {
             throw D2Error
                 .builder()
@@ -89,11 +95,21 @@ internal constructor(
     }
 
     @Throws(D2Error::class)
-    @Suppress("TooGenericExceptionCaught")
     protected suspend fun setObject(m: M) {
+        inValueTransaction { writeObject(m) }
+    }
+
+    private suspend fun writeObject(m: M) {
+        store.updateOrInsertWhere(m)
+        propagateState(m)
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun inValueTransaction(block: suspend () -> Unit) {
         try {
-            store.updateOrInsertWhere(m)
-            propagateState(m)
+            databaseAdapter.withTransaction { block() }
+        } catch (e: D2Error) {
+            throw e
         } catch (e: Exception) {
             throw D2Error
                 .builder()
@@ -105,24 +121,26 @@ internal constructor(
         }
     }
 
-    protected inline fun <V> updateIfChanged(
+    protected fun <V> updateIfChanged(
         newValue: V?,
-        crossinline propertyGetter: (M?) -> V?,
-        crossinline updater: (M?, V?) -> M,
+        propertyGetter: (M?) -> V?,
+        updater: (M?, V?) -> M,
     ): org.hisp.dhis.android.core.common.Unit {
         return runBlocking(Dispatchers.IO) { updateIfChangedInternal(newValue, propertyGetter, updater) }
     }
 
-    protected suspend inline fun <V> updateIfChangedInternal(
+    protected suspend fun <V> updateIfChangedInternal(
         newValue: V?,
         propertyGetter: (M?) -> V?,
-        crossinline updater: (M?, V?) -> M,
+        updater: (M?, V?) -> M,
     ): org.hisp.dhis.android.core.common.Unit {
-        val obj = getWithoutChildrenInternal()
-        val currentValue = propertyGetter(obj)
+        inValueTransaction {
+            val obj = getWithoutChildrenInternal()
+            val currentValue = propertyGetter(obj)
 
-        if (currentValue != newValue) {
-            setObject(updater(obj, newValue))
+            if (currentValue != newValue) {
+                writeObject(updater(obj, newValue))
+            }
         }
         return org.hisp.dhis.android.core.common.Unit()
     }

@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.event
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
@@ -46,6 +47,7 @@ import java.util.Date
 @Suppress("TooManyFunctions")
 class EventObjectRepository internal constructor(
     store: EventStore,
+    databaseAdapter: DatabaseAdapter,
     private val userStore: UserStore,
     uid: String?,
     childrenAppenders: ChildrenAppenderGetter<Event>,
@@ -53,11 +55,13 @@ class EventObjectRepository internal constructor(
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Event, EventObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         EventObjectRepository(
             store,
+            databaseAdapter,
             userStore,
             uid,
             childrenAppenders,

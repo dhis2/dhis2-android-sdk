@@ -55,6 +55,14 @@ class IntegerValidatorShould : ValidatorShouldHelper<IntegerFailure>(IntegerVali
     }
 
     @Test
+    fun `Should fail when passing values accepted by Int parsing but rejected by the server`() {
+        valueShouldFail("+4", IntegerFailure.NumberFormatException)
+        valueShouldFail("-0", IntegerFailure.NumberFormatException)
+        valueShouldFail("+2147483648", IntegerFailure.NumberFormatException)
+        valueShouldFail("\u0661\u0662", IntegerFailure.NumberFormatException)
+    }
+
+    @Test
     fun `Should fail with leading zeros`() {
         valueShouldFail("00034", IntegerFailure.LeadingZeroException)
         valueShouldFail("-0047", IntegerFailure.LeadingZeroException)

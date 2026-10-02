@@ -46,22 +46,18 @@ internal data class Credentials(
 
     /**
      * Derives a new hash for the stored secret, to be persisted in the AuthenticatedUser table.
-     * The result is salted and therefore different on every call, so it must never be compared:
-     * use [matches] to verify a secret against an already stored hash.
      */
-    fun newPasswordHash(): String? {
+    fun getHash(): String? {
         return passwordOrPin?.let { PasswordHasher.hash(it) }
     }
 
     /**
-     * Verifies the stored secret against [storedHash], which may be in either the current or the
-     * legacy MD5 format. Accounts without a secret (token based accounts with no PIN) are expected
-     * to have no stored hash either.
+     * Verifies the stored secret against [storedHash], which may be in either the current or the legacy MD5 format.
+     * A missing secret or a missing stored hash (no PIN set up) never matches.
      */
     fun matches(storedHash: String?): HashVerification {
         val secret = passwordOrPin
         return when {
-            secret == null && storedHash == null -> HashVerification.Match(needsUpgrade = false)
             secret == null || storedHash == null -> HashVerification.Mismatch
             else -> PasswordHasher.verify(username, secret, storedHash)
         }

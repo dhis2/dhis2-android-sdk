@@ -191,7 +191,7 @@ internal class LogInCall(
                 val existingUser = authenticatedUserStore.selectFirst()
                 val authenticatedUser = AuthenticatedUser.builder()
                     .user(user.uid())
-                    .hash(credentials.newPasswordHash() ?: existingUser?.hash())
+                    .hash(credentials.getHash() ?: existingUser?.hash())
                     .build()
 
                 authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
@@ -236,7 +236,7 @@ internal class LogInCall(
      */
     private suspend fun upgradeStoredHash(existingUser: AuthenticatedUser, credentials: Credentials) {
         authenticatedUserStore.updateOrInsertWhere(
-            existingUser.toBuilder().hash(credentials.newPasswordHash()).build(),
+            existingUser.toBuilder().hash(credentials.getHash()).build(),
         )
     }
 

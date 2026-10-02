@@ -141,7 +141,7 @@ internal class OpenIDConnectHandlerImpl(
                     Result.Failure(logInExceptions.noAuthenticatedUserPersistedError())
                 } else {
                     authenticatedUserStore.updateOrInsertWhere(
-                        existing.toBuilder().hash(updated.newPasswordHash()).build(),
+                        existing.toBuilder().hash(updated.getHash()).build(),
                     )
                     Result.Success(Unit)
                 }

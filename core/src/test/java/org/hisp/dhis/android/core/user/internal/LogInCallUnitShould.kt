@@ -445,10 +445,10 @@ class LogInCallUnitShould : BaseCallShould() {
         val state = oauth2State(accessToken = ACCESS_TOKEN).copy(accessToken = null, refreshToken = null)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        val user = instantiateCall(USERNAME, null, SERVER_URL)
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
 
         assertThat(user).isEqualTo(dbUser)
         verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
@@ -459,30 +459,14 @@ class LogInCallUnitShould : BaseCallShould() {
         val state = oauth2State(accessToken = ACCESS_TOKEN)
         whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
         givenExistingDatabase()
-        whenever(authenticatedUser.hash()).thenReturn(null)
+        whenever(authenticatedUser.hash()).thenReturn(PIN_HASH)
         whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
 
-        // password is null — must NOT throw because the OAuth2 path skips the null check
-        val user = instantiateCall(USERNAME, null, SERVER_URL)
+        // the PIN is always set after an OAuth2 login, so offline login verifies it
+        val user = instantiateCall(USERNAME, PIN, SERVER_URL)
 
         assertThat(user).isEqualTo(dbUser)
         verifyBlocking(userNetworkHandler, never()) { authenticate(any()) }
-    }
-
-    @Test
-    fun persist_credentials_with_oauth2_state_and_null_password_after_oauth2_login() = runTest {
-        val state = oauth2State(accessToken = ACCESS_TOKEN)
-        whenever(oauth2StateSecureStore.get(SERVER_URL, USERNAME)).thenReturn(state)
-        givenExistingDatabase()
-        // The PIN is set right after the first login, so it is still null when re-logging in.
-        whenever(authenticatedUser.hash()).thenReturn(null)
-        whenever(authenticatedUserStore.selectFirst()).thenReturn(authenticatedUser)
-
-        instantiateCall(USERNAME, null, SERVER_URL)
-
-        verify(credentialsSecureStore).set(
-            Credentials(USERNAME, SERVER_URL, null, null, null, state),
-        )
     }
 
     @Test

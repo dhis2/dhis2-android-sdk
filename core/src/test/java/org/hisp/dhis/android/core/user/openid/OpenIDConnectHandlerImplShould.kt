@@ -145,7 +145,7 @@ class OpenIDConnectHandlerImplShould {
     fun changePin_replaces_pin_when_current_matches() {
         val current = credentialsWithOpenId(authState).copy(pin = PIN)
         whenever(credentialsSecureStore.get()).thenReturn(current)
-        val existing = AuthenticatedUser.builder().user("uid").hash(current.newPasswordHash()).build()
+        val existing = AuthenticatedUser.builder().user("uid").hash(current.getHash()).build()
         authenticatedUserStore.stub {
             onBlocking { selectFirst() }.doReturn(existing)
         }

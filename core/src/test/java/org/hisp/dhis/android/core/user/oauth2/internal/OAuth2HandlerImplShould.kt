@@ -31,11 +31,12 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.HashVerification
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.arch.storage.internal.PasswordHasher
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -573,7 +574,8 @@ class OAuth2HandlerImplShould {
         assertThat(credentialsCaptor.firstValue.oauth2State).isNotNull()
         val userCaptor = argumentCaptor<AuthenticatedUser>()
         verifyBlocking(authenticatedUserStore) { updateOrInsertWhere(userCaptor.capture()) }
-        assertThat(userCaptor.firstValue.hash()).isEqualTo(UserHelper.md5(USERNAME, PIN))
+        assertThat(PasswordHasher.verify(USERNAME, PIN, userCaptor.firstValue.hash()!!))
+            .isEqualTo(HashVerification.Match(needsUpgrade = false))
     }
 
     @Test

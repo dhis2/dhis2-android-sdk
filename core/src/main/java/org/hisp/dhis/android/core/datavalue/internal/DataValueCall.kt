@@ -37,12 +37,22 @@ internal class DataValueCall(
     private val networkHandler: DataValueNetworkHandler,
     private val handler: DataValueHandler,
     private val apiDownloader: APIDownloader,
+    private val estimator: DataValueDownloadEstimator,
 ) : QueryCall<DataValue, DataValueQuery> {
 
+    companion object {
+        private val MAX_POTENTIAL_VALUES = DataValueDownloadPartitioner.DEFAULT_MAX_POTENTIAL_VALUES
+    }
+
     override suspend fun download(query: DataValueQuery): List<DataValue> {
-        return query.bundle.dataSets.mapNotNull { it.uid() }.flatMap { dataSetUid ->
-            apiDownloader.downloadListAsCoroutine(handler) {
-                networkHandler.getDataValuesForDataSet(dataSetUid, query.bundle)
+        val bundle = query.bundle
+        val lastUpdated = bundle.key.lastUpdatedStr()
+
+        return estimator.estimates(bundle, MAX_POTENTIAL_VALUES).flatMap { estimate ->
+            DataValueDownloadPartitioner.partition(estimate).flatMap { partition ->
+                apiDownloader.downloadListAsCoroutine(handler) {
+                    networkHandler.getDataValuesForDataSet(estimate.dataSetUid, partition, lastUpdated)
+                }
             }
         }
     }

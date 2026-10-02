@@ -98,6 +98,7 @@ internal data class ProgramDTO(
     val displayOrgUnitLabel: String?,
     val relationshipLabel: String?,
     val displayRelationshipLabel: String?,
+    val displayRelationshipsLabel: String?,
     val noteLabel: String?,
     val displayNoteLabel: String?,
     val trackedEntityAttributeLabel: String?,
@@ -149,6 +150,7 @@ internal data class ProgramDTO(
             displayFollowUpLabel(displayFollowUpLabel ?: followUpLabel)
             displayOrgUnitLabel(displayOrgUnitLabel ?: orgUnitLabel)
             displayRelationshipLabel(displayRelationshipLabel ?: relationshipLabel)
+            displayRelationshipsLabel(displayRelationshipsLabel)
             displayNoteLabel(displayNoteLabel ?: noteLabel)
             displayTrackedEntityAttributeLabel(displayTrackedEntityAttributeLabel ?: trackedEntityAttributeLabel)
             displayProgramStageLabel(displayProgramStageLabel ?: programStageLabel)

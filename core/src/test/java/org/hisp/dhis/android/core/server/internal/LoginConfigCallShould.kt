@@ -129,6 +129,41 @@ class LoginConfigCallShould {
     }
 
     @Test
+    fun marks_oauth_disabled_without_fetching_config_when_server_version_is_lower_than_2_43() = runTest {
+        oauth2SecureStore.authorizationEndpoint = "stale-auth"
+        oauth2SecureStore.jwksUri = "stale-jwks"
+
+        networkHandler.stub {
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample(apiVersion = "2.42.1")
+            onBlocking { oauthConfigFor(any(), any()) } doReturn oauthConfigSample()
+        }
+
+        val result = call.checkServerUrl(NORMALIZED_URL)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        val loginConfig = (result as Result.Success<LoginConfig, D2Error>).value
+        assertThat(loginConfig.isOauthEnabled).isFalse()
+        verifyBlocking(networkHandler, never()) { oauthConfigFor(any(), any()) }
+        assertThat(oauth2SecureStore.authorizationEndpoint).isNull()
+        assertThat(oauth2SecureStore.jwksUri).isNull()
+    }
+
+    @Test
+    fun marks_oauth_disabled_without_fetching_config_when_server_version_is_unknown() = runTest {
+        networkHandler.stub {
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample(apiVersion = null)
+            onBlocking { oauthConfigFor(any(), any()) } doReturn oauthConfigSample()
+        }
+
+        val result = call.checkServerUrl(NORMALIZED_URL)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        val loginConfig = (result as Result.Success<LoginConfig, D2Error>).value
+        assertThat(loginConfig.isOauthEnabled).isFalse()
+        verifyBlocking(networkHandler, never()) { oauthConfigFor(any(), any()) }
+    }
+
+    @Test
     fun falls_back_to_ping_without_touching_oauth_store_when_login_config_fails() = runTest {
         oauth2SecureStore.authorizationEndpoint = "kept-auth"
         oauth2SecureStore.jwksUri = "kept-jwks"
@@ -150,8 +185,8 @@ class LoginConfigCallShould {
         assertThat(oauth2SecureStore.jwksUri).isEqualTo("kept-jwks")
     }
 
-    private fun loginConfigSample(): LoginConfig =
-        LoginConfig(applicationTitle = "Demo")
+    private fun loginConfigSample(apiVersion: String? = SUPPORTED_OAUTH_VERSION): LoginConfig =
+        LoginConfig(applicationTitle = "Demo", apiVersion = apiVersion)
 
     private fun oauthConfigSample(): OauthConfig =
         OauthConfig(
@@ -180,6 +215,7 @@ class LoginConfigCallShould {
 
     companion object {
         private const val NORMALIZED_URL = "https://server.com"
+        private const val SUPPORTED_OAUTH_VERSION = "2.43.0"
         private const val AUTHORIZATION_ENDPOINT = "https://server.com/oauth2/authorize"
         private const val JWKS_URI = "https://server.com/.well-known/jwks.json"
     }

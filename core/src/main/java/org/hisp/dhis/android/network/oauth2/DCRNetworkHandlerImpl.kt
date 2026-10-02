@@ -70,7 +70,7 @@ internal class DCRNetworkHandlerImpl(
         iat: String,
         clientName: String,
         redirectUri: String,
-        scope: String,
+        scope: String?,
         jwks: String,
     ): Result<String, D2Error> {
         val jwksUri = oAuth2SecureStore.jwksUri

@@ -29,48 +29,48 @@
 package org.hisp.dhis.android.core.user.openid
 
 import android.net.Uri
-import io.reactivex.Single
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.openid.appauth.AuthorizationRequest
 import net.openid.appauth.AuthorizationServiceConfiguration
 import net.openid.appauth.ResponseTypeValues
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 internal class OpenIDConnectRequestHelper(private val config: OpenIDConnectConfig) {
 
-    fun prepareAuthRequest(): Single<AuthorizationRequest> {
-        val configSingle = if (config.discoveryUri != null) {
+    suspend fun prepareAuthRequest(): AuthorizationRequest {
+        val serviceConfiguration = if (config.discoveryUri != null) {
             discoverAuthConfig(config.discoveryUri)
         } else {
             loadAuthConfig()
         }
 
-        return configSingle.map { buildRequest(it) }
+        return buildRequest(serviceConfiguration)
     }
 
-    private fun discoverAuthConfig(discoveryUri: Uri): Single<AuthorizationServiceConfiguration> {
-        return Single.create { emitter ->
+    private suspend fun discoverAuthConfig(discoveryUri: Uri): AuthorizationServiceConfiguration {
+        return suspendCancellableCoroutine { continuation ->
             AuthorizationServiceConfiguration.fetchFromUrl(discoveryUri) { serviceConfiguration, exception ->
-                if (exception != null) {
-                    emitter.onError(exception)
-                } else if (serviceConfiguration != null) {
-                    emitter.onSuccess(serviceConfiguration)
+                when {
+                    exception != null -> continuation.resumeWithException(exception)
+                    serviceConfiguration != null -> continuation.resume(serviceConfiguration)
+                    else -> continuation.resumeWithException(
+                        RuntimeException("Could not fetch the OpenID Connect configuration"),
+                    )
                 }
             }
         }
     }
 
-    private fun loadAuthConfig(): Single<AuthorizationServiceConfiguration> {
-        return if (config.authorizationUri == null || config.tokenUrl == null) {
-            Single.error<AuthorizationServiceConfiguration>(
-                RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined"),
-            )
-        } else {
-            Single.just(
-                AuthorizationServiceConfiguration(
-                    Uri.parse(config.authorizationUri),
-                    Uri.parse(config.tokenUrl),
-                ),
-            )
+    @Suppress("TooGenericExceptionThrown")
+    private fun loadAuthConfig(): AuthorizationServiceConfiguration {
+        if (config.authorizationUri == null || config.tokenUrl == null) {
+            throw RuntimeException("Either discoveryUri or (authorizationUri and tokenUri) must be defined")
         }
+        return AuthorizationServiceConfiguration(
+            Uri.parse(config.authorizationUri),
+            Uri.parse(config.tokenUrl),
+        )
     }
 
     private fun buildRequest(

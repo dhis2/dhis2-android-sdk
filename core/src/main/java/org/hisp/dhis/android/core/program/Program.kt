@@ -88,6 +88,7 @@ data class Program(
     val displayFollowUpLabel: String?,
     val displayOrgUnitLabel: String?,
     val displayRelationshipLabel: String?,
+    val displayRelationshipsLabel: String?,
     val displayNoteLabel: String?,
     val displayTrackedEntityAttributeLabel: String?,
     val displayProgramStageLabel: String?,
@@ -139,6 +140,8 @@ data class Program(
     fun displayEnrollmentLabel(): String? = displayEnrollmentLabel
 
     fun displayEnrollmentsLabel(): String? = displayEnrollmentsLabel
+
+    fun displayRelationshipsLabel(): String? = displayRelationshipsLabel
 
     @Deprecated("since v41, replaced by displayFollowUpLabel()")
     fun followUpLabel(): String? = displayFollowUpLabel

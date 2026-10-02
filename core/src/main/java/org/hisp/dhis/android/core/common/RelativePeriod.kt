@@ -85,7 +85,7 @@ enum class RelativePeriod constructor(
     LAST_52_WEEKS(PeriodType.Weekly, -52, 0),
     ;
 
-    internal fun getPeriodType(relativePeriodHelper: RelativePeriodHelper): PeriodType {
+    internal suspend fun getPeriodType(relativePeriodHelper: RelativePeriodHelper): PeriodType {
         return if (isFinancialYearRelativePeriod()) {
             relativePeriodHelper.getFinancialYearPeriodType()
         } else if (isWeeklyRelativePeriod()) {

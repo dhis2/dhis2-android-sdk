@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.server.OauthConfig
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
@@ -66,8 +67,9 @@ internal class LoginConfigCall(
     }
 
     private suspend fun withOauthConfig(serverUrl: String, loginConfig: LoginConfig): LoginConfig {
-        val oauthConfig = tryFetchOauthConfig(serverUrl)
-        return if (oauthConfig != null && oauthConfig.supportsRequiredFunctions()) {
+        val oauthConfig = tryFetchOauthConfig(serverUrl, loginConfig.apiVersion)
+            ?.takeIf { it.supportsRequiredFunctions() }
+        return if (oauthConfig != null) {
             oAuth2SecureStore.setEndpoints(oauthConfig)
             loginConfig.apply { isOauthEnabled = true }
         } else {
@@ -76,7 +78,12 @@ internal class LoginConfigCall(
         }
     }
 
-    private suspend fun tryFetchOauthConfig(serverUrl: String): OauthConfig? {
+    private suspend fun tryFetchOauthConfig(serverUrl: String, apiVersion: String?): OauthConfig? {
+        val serverVersion = apiVersion?.let { DHISVersion.getValue(it) }
+        if (serverVersion == null || serverVersion < MIN_OAUTH_VERSION) {
+            return null
+        }
+
         return coroutineAPICallExecutor.wrap(storeError = false) {
             networkHandler.oauthConfigFor(serverUrl)
         }.getOrNull()
@@ -109,5 +116,9 @@ internal class LoginConfigCall(
                     d2Error
                 }
             }
+    }
+
+    companion object {
+        private val MIN_OAUTH_VERSION = DHISVersion.V2_43
     }
 }

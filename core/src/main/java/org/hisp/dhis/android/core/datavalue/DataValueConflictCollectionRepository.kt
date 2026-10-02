@@ -35,9 +35,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterC
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueConflictKey
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operator
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.dataValueConflictKey
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.operator
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValueConflictStore
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.persistence.datavalue.DataValueConflictTableInfo

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
@@ -68,5 +67,5 @@ internal interface FileResourceNetworkHandler {
         v: CustomIcon,
     ): ByteArray
 
-    suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray
+    suspend fun getFileFromDataValue(v: MissingAggregatedDataValue, dimension: String): ByteArray
 }

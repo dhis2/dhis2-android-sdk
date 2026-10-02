@@ -66,6 +66,7 @@ internal class ProgramShould : CoreObjectShould<ProgramDTO>("program/program.jso
         assertThat(program.displayFollowUpLabel()).isEqualTo("Follow up Label")
         assertThat(program.displayOrgUnitLabel()).isEqualTo("OrgUnit Label")
         assertThat(program.displayRelationshipLabel()).isEqualTo("Relationship Label")
+        assertThat(program.displayRelationshipsLabel()).isEqualTo("Relationships Label")
         assertThat(program.displayNoteLabel()).isEqualTo("Note Label")
         assertThat(program.displayTrackedEntityAttributeLabel()).isEqualTo("TrackedEntityAttribute Label")
         assertThat(program.displayProgramStageLabel()).isEqualTo("ProgramStage Label")

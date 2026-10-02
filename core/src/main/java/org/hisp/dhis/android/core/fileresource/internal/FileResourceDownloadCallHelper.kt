@@ -27,9 +27,11 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboCategoryOptionLinkStore
+import org.hisp.dhis.android.core.category.internal.CategoryOptionComboStore
 import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
@@ -72,6 +74,8 @@ internal class FileResourceDownloadCallHelper(
     private val dataSetElementStore: DataSetElementStore,
     private val dataValueStore: DataValueStore,
     private val customIconStore: CustomIconStore,
+    private val categoryOptionComboStore: CategoryOptionComboStore,
+    private val categoryOptionComboCategoryOptionLinkStore: CategoryOptionComboCategoryOptionLinkStore,
     private val dhisVersionManager: DHISVersionManagerImpl,
 ) {
 
@@ -225,7 +229,7 @@ internal class FileResourceDownloadCallHelper(
     suspend fun getMissingAggregatedDataValues(
         params: FileResourceDownloadParams,
         existingFileResources: List<String>,
-    ): List<DataValue> {
+    ): List<MissingAggregatedDataValue> {
         val dataElementUidsWhereClause = WhereClauseBuilder()
             .appendInKeyEnumValues(DataElementTableInfo.Columns.VALUE_TYPE, params.valueTypes.map { it.valueType })
             .appendKeyStringValue(DataElementTableInfo.Columns.DOMAIN_TYPE, "AGGREGATE")
@@ -250,7 +254,28 @@ internal class FileResourceDownloadCallHelper(
             .appendNotInKeyStringValues(DataValueTableInfo.Columns.VALUE, existingFileResources)
             .build()
 
-        return dataValueStore.selectWhere(dataValuesWhereClause)
+        val dataValues = dataValueStore.selectWhere(dataValuesWhereClause)
+        val attributeOptionCombos = dataValues
+            .map { it.attributeOptionCombo() }
+            .distinct()
+            .associateWith { getAttributeOptionComboParams(it) }
+
+        return dataValues.map { dataValue ->
+            val (categoryCombo, categoryOptions) = attributeOptionCombos.getValue(dataValue.attributeOptionCombo())
+            MissingAggregatedDataValue(dataValue, categoryCombo, categoryOptions)
+        }
+    }
+
+    private suspend fun getAttributeOptionComboParams(attributeOptionCombo: String): Pair<String?, String?> {
+        val categoryCombo = categoryOptionComboStore.selectByUid(attributeOptionCombo)?.categoryCombo()?.uid()
+
+        val categoryOptions = categoryOptionComboCategoryOptionLinkStore
+            .selectLinksForMasterUid(attributeOptionCombo)
+            .map { it.categoryOption() }
+            .takeIf { it.isNotEmpty() }
+            ?.let { CollectionsHelper.semicolonSeparatedCollectionValues(it) }
+
+        return categoryCombo to categoryOptions
     }
 
     suspend fun getMissingCustomIcons(

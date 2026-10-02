@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.server
 
 import com.google.common.truth.Truth.assertThat
-import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -43,7 +42,6 @@ class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
     fun setUp() {
         setUpClass(MockIntegrationTestDatabaseContent.EmptyEnqueable)
         dhis2MockServer.enqueueMockResponse(LOGIN_CONFIG_JSON)
-        dhis2MockServer.enqueueMockResponse(HttpStatusCode.NotFound.value)
     }
 
     @Test
@@ -73,6 +71,7 @@ class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
         assertThat(loginConfig.selfRegistrationNoRecaptcha).isFalse()
         assertThat(loginConfig.allowAccountRecovery).isTrue()
         assertThat(loginConfig.useCustomLogoFront).isFalse()
+        assertThat(loginConfig.isOauthEnabled).isFalse()
 
         val oidcProviders = loginConfig.oidcProviders
         assertThat(oidcProviders).hasSize(2)

@@ -81,7 +81,7 @@ internal class TrackedEntityInstanceQueryDataFetcher(
             }
             if (result.size < requestedLoadSize && scope.mode() == RepositoryMode.OFFLINE_FIRST) {
                 val onlineInstances = queryOnline(requestedLoadSize)
-                result.addAll(onlineInstances.filter { it.succeeded })
+                result.addAll(onlineInstances)
             }
         } else {
             val instances = queryOnline(requestedLoadSize)

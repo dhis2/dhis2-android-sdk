@@ -90,19 +90,19 @@ class RelationshipCollectionRepository internal constructor(
     @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     override suspend fun suspendAdd(o: Relationship): String {
-        if (relationshipHandler.doesRelationshipExist(o)) {
-            throw D2Error
-                .builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                .errorDescription("Tried to create already existing Relationship: $o")
-                .build()
-        } else if (o.from() == null || o.to() == null) {
+        if (o.from() == null || o.to() == null) {
             throw D2Error
                 .builder()
                 .errorComponent(D2ErrorComponent.SDK)
                 .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                 .errorDescription("Relationship is missing either 'from' or 'to' component.")
+                .build()
+        } else if (relationshipHandler.doesRelationshipExist(o)) {
+            throw D2Error
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                .errorDescription("Tried to create already existing Relationship: $o")
                 .build()
         } else {
             val from = o.from()

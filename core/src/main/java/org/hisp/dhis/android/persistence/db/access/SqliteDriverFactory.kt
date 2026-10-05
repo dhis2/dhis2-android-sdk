@@ -45,7 +45,7 @@ import java.nio.charset.StandardCharsets
  * Keeping the choice behind this one interface is also what a future KMP split needs -- this
  * becomes the `actual` factory for Android, while other targets supply their own.
  */
-internal interface SqliteDriverFactory {
+internal fun interface SqliteDriverFactory {
     fun create(password: String?): SQLiteDriver
 }
 

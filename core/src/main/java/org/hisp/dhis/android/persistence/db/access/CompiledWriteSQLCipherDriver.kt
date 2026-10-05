@@ -64,8 +64,10 @@ internal class CompiledWriteSQLCipherDriver(
     }
 }
 
-private class CompiledWriteConnection(private val database: SQLiteDatabase) : SQLiteConnection {
-    private val delegate = SQLCipherConnection(database)
+private class CompiledWriteConnection(
+    database: SQLiteDatabase,
+    private val delegate: SQLCipherConnection = SQLCipherConnection(database),
+) : SQLiteConnection by delegate {
     private val cache = CompiledStatementCache(database)
 
     override fun prepare(sql: String): SQLiteStatement {
@@ -77,8 +79,6 @@ private class CompiledWriteConnection(private val database: SQLiteDatabase) : SQ
             else -> CursorClosingStatement(delegate.prepare(sql))
         }
     }
-
-    override fun inTransaction(): Boolean = delegate.inTransaction()
 
     override fun close() {
         cache.close()

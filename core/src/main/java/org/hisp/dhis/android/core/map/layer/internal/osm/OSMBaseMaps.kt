@@ -33,11 +33,12 @@ object OSMBaseMaps {
         OSMBaseMap(
             id = "osmLight",
             name = "OSM Light",
-            imageUrl = "https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}@2x.png",
-            subdomains = listOf("a", "b", "c", "d"),
-            subdomainPlaceholder = "{s}",
-            attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors," +
-                " &copy; <a href=\"https://carto.com/attribution\">Carto</a>",
+            imageUrl = "https://tiles.openfreemap.org/styles/positron",
+            subdomains = null,
+            subdomainPlaceholder = null,
+            attribution = "&copy; <a href =\"https://openfreemap.org/\">OpenFreeMap " +
+                    "<a href =\"https://www.openmaptiles.org/\">OpenMapTiles "+
+                    "Data from <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
         ),
         OSMBaseMap(
             id = "openStreetMap",

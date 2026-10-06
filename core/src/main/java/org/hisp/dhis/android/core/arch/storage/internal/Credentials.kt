@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
-import org.hisp.dhis.android.core.arch.helpers.UserHelper
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
@@ -45,8 +44,23 @@ internal data class Credentials(
     val passwordOrPin: String?
         get() = password ?: pin
 
+    /**
+     * Derives a new hash for the stored secret, to be persisted in the AuthenticatedUser table.
+     */
     fun getHash(): String? {
-        return passwordOrPin?.let { UserHelper.md5(username, it) }
+        return passwordOrPin?.let { PasswordHasher.hash(it) }
+    }
+
+    /**
+     * Verifies the stored secret against [storedHash], which may be in either the current or the legacy MD5 format.
+     * A missing secret or a missing stored hash (no PIN set up) never matches.
+     */
+    fun matches(storedHash: String?): HashVerification {
+        val secret = passwordOrPin
+        return when {
+            secret == null || storedHash == null -> HashVerification.Mismatch
+            else -> PasswordHasher.verify(username, secret, storedHash)
+        }
     }
 
     override fun equals(other: Any?) =

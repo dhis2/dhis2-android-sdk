@@ -58,10 +58,7 @@ internal class JobReportEnrollmentHandler internal constructor(
     suspend fun handleEnrollmentNotes(enrollmentUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE,
-                State.uploadableStatesIncludingError().map { it.name },
-            )
+            .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
             .appendKeyStringValue(NoteTableInfo.Columns.ENROLLMENT, enrollmentUid).build()
         for (note in noteStore.selectWhere(whereClause)) {
             noteStore.update(note.toBuilder().syncState(newNoteState).build())
@@ -72,8 +69,11 @@ internal class JobReportEnrollmentHandler internal constructor(
         conflictStore.deleteEnrollmentConflicts(uid)
         val handleAction = enrollmentStore.setSyncStateOrDelete(uid, state)
 
-        if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
+        if (handleAction != HandleAction.Delete) {
             handleEnrollmentNotes(uid, state)
+        }
+
+        if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
             handleSyncedEnrollmentAttributes(uid)
         }
 

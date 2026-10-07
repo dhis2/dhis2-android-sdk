@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterObjectType
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerJobObject
@@ -43,6 +45,7 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val fileResourceStore: FileResourceStore,
+    private val noteStore: NoteStore,
     private val h: StatePersistorHelper,
 ) {
 
@@ -59,21 +62,25 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
         val enrollmentMap = mutableMapOf<State, MutableList<String>>()
         val eventMap = mutableMapOf<State, MutableList<String>>()
         val relationshipMap = mutableMapOf<State, MutableList<String>>()
+        val noteMap = mutableMapOf<State, MutableList<String>>()
 
         val trackedEntities = payload.trackedEntities
         val enrollments = trackedEntities.flatMap { it.enrollments ?: emptyList() } + payload.enrollments
         val events = enrollments.flatMap { it.events ?: emptyList() } + payload.events
         val relationships = payload.relationships
+        val notes = enrollments.flatMap { it.notes.orEmpty() } + events.flatMap { it.notes.orEmpty() }
 
         trackedEntities.forEach { h.addState(teiMap, it, forcedState) }
         enrollments.forEach { h.addState(enrollmentMap, it, forcedState) }
         events.forEach { h.addState(eventMap, it, forcedState) }
         relationships.forEach { h.addState(relationshipMap, it, forcedState) }
+        notes.forEach { h.addState(noteMap, it, forcedState) }
 
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
         h.persistStates(relationshipMap, relationshipStore)
+        h.persistStates(noteMap, noteStore)
     }
 
     suspend fun setStates(objects: List<TrackerJobObject>, forcedState: State?) {
@@ -82,14 +89,18 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
         val eventMap = mutableMapOf<State, MutableList<String>>()
         val relationshipMap = mutableMapOf<State, MutableList<String>>()
         val fileResourcesMap = mutableMapOf<State, MutableList<String>>()
+        val noteMap = mutableMapOf<State, MutableList<String>>()
+        val notes = mutableListOf<Note>()
 
         objects.forEach {
             when (it.trackerType) {
                 TrackerImporterObjectType.EVENT -> eventStore.selectByUid(it.objectUid)?.let { e ->
                     h.addState(eventMap, e, forcedState)
+                    notes += noteStore.getForEvent(e.uid())
                 }
                 TrackerImporterObjectType.ENROLLMENT -> enrollmentStore.selectByUid(it.objectUid)?.let { e ->
                     h.addState(enrollmentMap, e, forcedState)
+                    notes += noteStore.getForEnrollment(e.uid())
                 }
                 TrackerImporterObjectType.TRACKED_ENTITY ->
                     trackedEntityInstanceStore.selectByUid(it.objectUid)
@@ -103,10 +114,13 @@ internal class NewTrackerImporterTrackedEntityPostStateManager internal construc
             }
         }
 
+        notes.forEach { h.addState(noteMap, it, forcedState) }
+
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
         h.persistStates(relationshipMap, relationshipStore)
         h.persistStates(fileResourcesMap, fileResourceStore)
+        h.persistStates(noteMap, noteStore)
     }
 }

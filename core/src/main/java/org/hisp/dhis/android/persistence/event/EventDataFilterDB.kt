@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.persistence.common.DateFilterPeriodDB
 import org.hisp.dhis.android.persistence.common.EntityDB

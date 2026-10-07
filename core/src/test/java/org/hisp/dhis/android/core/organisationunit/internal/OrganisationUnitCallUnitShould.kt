@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room3.RoomRawQuery
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -120,7 +120,7 @@ class OrganisationUnitCallUnitShould {
         whenever(organisationUnitStore.selectByUids(any())).doReturn(listOf(organisationUnit))
         whenever(databaseAdapter.getCurrentDatabase()).doReturn(appDatabase)
         whenever(appDatabase.d2Dao()).doReturn(d2Dao)
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(emptyList())
 
         organisationUnitCall = {
@@ -178,7 +178,7 @@ class OrganisationUnitCallUnitShould {
     @Test
     fun include_tracker_data_org_units_in_cleaner_call() = runTest {
         val trackerOrgUnit = "trackerOrgUnitUid"
-        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>()))
+        whenever(d2Dao.stringListRawQuery(any<RoomRawQuery>()))
             .doReturn(listOf(trackerOrgUnit))
 
         organisationUnitCall.invoke()

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 
 internal interface IdentifiableDataObjectSQLStatementBuilder : SQLStatementBuilder {
     fun setSyncState(uid: String, state: String): RoomRawQuery

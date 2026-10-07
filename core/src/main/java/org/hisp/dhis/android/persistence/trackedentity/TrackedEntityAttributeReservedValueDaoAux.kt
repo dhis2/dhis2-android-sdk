@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -46,7 +46,7 @@ internal interface TrackedEntityAttributeReservedValueDaoAux : ObjectDao<Tracked
             AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.TEMPORAL_VALIDITY_DATE} IS NOT NULL)
         """,
     )
-    fun deleteExpired(serverDateAsString: String): Int
+    suspend fun deleteExpired(serverDateAsString: String): Int
 
     @Query(
         """
@@ -55,5 +55,5 @@ internal interface TrackedEntityAttributeReservedValueDaoAux : ObjectDao<Tracked
         AND ${TrackedEntityAttributeReservedValueTableInfo.Columns.PATTERN} != :pattern
         """,
     )
-    fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
+    suspend fun deleteIfOutdatedPattern(ownerUid: String, pattern: String)
 }

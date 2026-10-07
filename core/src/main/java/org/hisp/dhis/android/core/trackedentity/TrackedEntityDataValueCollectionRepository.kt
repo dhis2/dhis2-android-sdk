@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -45,6 +46,7 @@ class TrackedEntityDataValueCollectionRepository internal constructor(
     private val store: TrackedEntityDataValueStore,
     scope: RepositoryScope,
     private val dataStatePropagator: DataStatePropagator,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadOnlyCollectionRepositoryImpl<TrackedEntityDataValue, TrackedEntityDataValueCollectionRepository>(
     store,
     childrenAppenders,
@@ -56,6 +58,7 @@ class TrackedEntityDataValueCollectionRepository internal constructor(
             store,
             s,
             dataStatePropagator,
+            databaseAdapter,
         )
     },
 ) {
@@ -63,6 +66,7 @@ class TrackedEntityDataValueCollectionRepository internal constructor(
         val updatedScope = byEvent().eq(event).byDataElement().eq(dataElement).scope
         return TrackedEntityDataValueObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             updatedScope,
             dataStatePropagator,

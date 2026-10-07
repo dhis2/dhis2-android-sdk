@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.validation.engine
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 interface ValidationEngine {
     /**
@@ -85,7 +85,7 @@ interface ValidationEngine {
         periodId: String,
         orgUnitUid: String,
         attributeOptionComboUid: String,
-    ): ValidationResult = runBlocking { suspendValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
+    ): ValidationResult = runBlockingOnIO { suspendValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
 
     /**
      * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the

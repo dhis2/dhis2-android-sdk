@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
@@ -50,6 +49,7 @@ import org.hisp.dhis.android.core.program.programindicatorengine.internal.Progra
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.EventAlias
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
+import org.hisp.dhis.android.persistence.db.access.queryScalarAsString
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.antlr.Parser
@@ -70,9 +70,7 @@ internal class ProgramIndicatorSQLExecutor(
         queryMods: QueryMods?,
     ): String? {
         val sqlQuery = getProgramIndicatorSQL(evaluationItem, metadata, queryMods)
-        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
-
-        return d2Dao.queryStringValue(SimpleSQLiteQuery(sqlQuery))
+        return databaseAdapter.getCurrentDatabase().queryScalarAsString(sqlQuery)
     }
 
     suspend fun getProgramIndicatorSQL(
@@ -104,7 +102,12 @@ internal class ProgramIndicatorSQLExecutor(
         val collector = ProgramIndicatorItemIdsCollector()
         Parser.listen(programIndicator.expression(), collector)
 
-        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+        )
+        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context, itemMetadata)
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
@@ -153,6 +156,7 @@ internal class ProgramIndicatorSQLExecutor(
     private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
+        itemMetadata: ProgramIndicatorItemMetadata,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.ProgramSQLIndicator(
@@ -162,6 +166,7 @@ internal class ProgramIndicatorSQLExecutor(
                 programIndicatorSQLContext = context,
                 dataElementStore = dataElementStore,
                 trackedEntityAttributeStore = trackedEntityAttributeStore,
+                itemMetadata = itemMetadata,
             ),
         )
     }

@@ -31,12 +31,13 @@ package org.hisp.dhis.android.persistence.db.access
 import android.content.Context
 import android.database.sqlite.SQLiteException
 import android.util.Log
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.room3.Room
+import androidx.room3.RoomDatabase
+import androidx.sqlite.SQLiteConnection
+import androidx.sqlite.execSQL
+import kotlinx.coroutines.Dispatchers
 import net.zetetic.database.DatabaseErrorHandler
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
-import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
@@ -47,84 +48,102 @@ import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.A
 import org.koin.core.annotation.Singleton
 import java.io.File
 import java.nio.charset.StandardCharsets
-import java.util.concurrent.Executors
 
 /**
  * Room-based implementation of DatabaseManager with encryption capabilities.
+ *
+ * Room 3 has no SupportSQLite compatibility mode, so every database -- plaintext, encrypted or
+ * in-memory -- is opened through a [SqliteDriverFactory]. That makes the only difference between
+ * the variants the driver and whether migrations are applied.
  */
 @Singleton
+@Suppress("TooManyFunctions")
 internal class RoomDatabaseManager(
     private val databaseAdapter: DatabaseAdapter,
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,
+    private val driverFactory: SqliteDriverFactory,
 ) : DatabaseManager {
 
     companion object {
         private const val TAG = "RoomDatabaseManager"
-        private val singleThreadExecutor = Executors.newFixedThreadPool(1) { r ->
-            Thread(r, "SQL-DB-Thread")
-        }
+        private const val IN_MEMORY_DB_NAME = "inmemory-test-db"
+
+        /**
+         * Long-standing workaround: holding a strong reference to every file-backed database ever
+         * opened prevents a close-related crash seen in the app. It has been in place for years and
+         * is deliberately kept through the Room 3 migration. It may well be unnecessary now that
+         * the adapter owns the close lifecycle and no `RoomDatabase` is left half-closed, but that
+         * has to be proven on a real app before the list is removed -- see ANDROSDK-2382 notes.
+         */
         private val dbListoToPreventCloseError: MutableList<RoomDatabase> = ArrayList()
+    }
+
+    /**
+     * Applies the settings Room cannot express on the builder. Room 3 callbacks are suspending and
+     * receive a raw [SQLiteConnection].
+     */
+    private fun foreignKeysOffCallback() = object : RoomDatabase.Callback() {
+        override suspend fun onOpen(connection: SQLiteConnection) {
+            connection.execSQL("PRAGMA foreign_keys=OFF;")
+        }
+    }
+
+    @Suppress("SpreadOperator")
+    private fun build(
+        databaseName: String?,
+        password: String?,
+        applyMigrations: Boolean,
+        callback: RoomDatabase.Callback? = null,
+    ): AppDatabase {
+        val builder = if (databaseName == null) {
+            Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
+        } else {
+            Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
+        }
+
+        return builder
+            .setDriver(driverFactory.create(password))
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .apply {
+                if (applyMigrations) addMigrations(*ALL_MIGRATIONS.toTypedArray())
+                if (callback != null) addCallback(callback)
+            }
+            .build()
+    }
+
+    private fun activate(database: AppDatabase, databaseName: String): DatabaseAdapter {
+        databaseAdapter.activate(database, databaseName)
+        return databaseAdapter
     }
 
     override fun createInMemoryDatabase(): DatabaseAdapter {
         Log.d(TAG, "createInMemoryDatabase called. Setting up PRAGMA foreign_keys=OFF.")
-        val database = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
-            .setQueryExecutor(singleThreadExecutor)
-            .setTransactionExecutor(singleThreadExecutor)
-            .allowMainThreadQueries()
-            .addCallback(object : RoomDatabase.Callback() {
-                override fun onOpen(db: SupportSQLiteDatabase) {
-                    super.onOpen(db)
-                    db.execSQL("PRAGMA foreign_keys=OFF;")
-                }
-            })
-            .build()
-        databaseAdapter.activate(database, "inmemory-test-db")
-        return databaseAdapter
+        val database = build(
+            databaseName = null,
+            password = null,
+            applyMigrations = false,
+            callback = foreignKeysOffCallback(),
+        )
+        return activate(database, IN_MEMORY_DB_NAME)
     }
 
-    @Suppress("SpreadOperator")
     override fun createOrOpenUnencryptedDatabase(databaseName: String): DatabaseAdapter {
-        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setQueryExecutor(singleThreadExecutor)
-            .setTransactionExecutor(singleThreadExecutor)
-            .allowMainThreadQueries()
-            .addMigrations(*ALL_MIGRATIONS.toTypedArray())
-            .build()
-        databaseAdapter.activate(database, databaseName)
+        val database = build(databaseName, password = null, applyMigrations = true)
         dbListoToPreventCloseError.add(database)
-        return databaseAdapter
+        return activate(database, databaseName)
     }
 
     override fun createOrOpenUnencryptedDatabaseWithoutMigration(databaseName: String): DatabaseAdapter {
-        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setQueryExecutor(singleThreadExecutor)
-            .setTransactionExecutor(singleThreadExecutor)
-            .allowMainThreadQueries()
-            .build()
-        databaseAdapter.activate(database, databaseName)
+        val database = build(databaseName, password = null, applyMigrations = false)
         dbListoToPreventCloseError.add(database)
-        return databaseAdapter
+        return activate(database, databaseName)
     }
 
-    @Suppress("SpreadOperator")
     override fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter {
-        // Load SQLCipher native library before creating encrypted database
-        NativeLibraryLoader.loadSQLCipher()
-
-        val hook = RoomDatabaseExport.Companion.EncryptionHook
-        val factory = SupportOpenHelperFactory(password.toByteArray(StandardCharsets.UTF_8), hook, true)
-        val database = Room.databaseBuilder(context, AppDatabase::class.java, databaseName)
-            .setQueryExecutor(singleThreadExecutor)
-            .setTransactionExecutor(singleThreadExecutor)
-            .allowMainThreadQueries()
-            .addMigrations(*ALL_MIGRATIONS.toTypedArray())
-            .openHelperFactory(factory)
-            .build()
-        databaseAdapter.activate(database, databaseName)
+        val database = build(databaseName, password, applyMigrations = true)
         dbListoToPreventCloseError.add(database)
-        return databaseAdapter
+        return activate(database, databaseName)
     }
 
     override fun createOrOpenDatabase(account: DatabaseAccount): DatabaseAdapter {

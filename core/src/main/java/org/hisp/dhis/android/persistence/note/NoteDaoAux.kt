@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.note
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -41,7 +41,7 @@ internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
         WHERE ${NoteTableInfo.Columns.ENROLLMENT} = :enrollmentUid
     """,
     )
-    fun deleteNotesByEnrollment(enrollmentUid: String): Int
+    suspend fun deleteNotesByEnrollment(enrollmentUid: String): Int
 
     @Query(
         """
@@ -49,5 +49,5 @@ internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
         WHERE ${NoteTableInfo.Columns.EVENT} = :eventUid
     """,
     )
-    fun deleteNotesByEvent(eventUid: String): Int
+    suspend fun deleteNotesByEvent(eventUid: String): Int
 }

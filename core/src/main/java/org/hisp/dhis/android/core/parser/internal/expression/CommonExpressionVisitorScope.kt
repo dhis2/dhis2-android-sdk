@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnitGroup
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorItemMetadata
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 
@@ -54,6 +55,7 @@ internal sealed class CommonExpressionVisitorScope(
     val programIndicatorContext: ProgramIndicatorContext? = null,
     val programIndicatorSQLContext: ProgramIndicatorSQLContext? = null,
     val programIndicatorExecutor: ProgramIndicatorExecutor? = null,
+    val itemMetadata: ProgramIndicatorItemMetadata = ProgramIndicatorItemMetadata(),
 ) {
     class Expression(
         constantMap: Map<String, Constant>,
@@ -82,6 +84,7 @@ internal sealed class CommonExpressionVisitorScope(
         dataElementStore: IdentifiableObjectStore<DataElement>,
         trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
         programStageStore: IdentifiableObjectStore<ProgramStage>,
+        itemMetadata: ProgramIndicatorItemMetadata,
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,
@@ -91,6 +94,7 @@ internal sealed class CommonExpressionVisitorScope(
         dataElementStore = dataElementStore,
         trackedAttributeStore = trackedEntityAttributeStore,
         programStageStore = programStageStore,
+        itemMetadata = itemMetadata,
     )
 
     class ProgramSQLIndicator(
@@ -100,6 +104,7 @@ internal sealed class CommonExpressionVisitorScope(
         programIndicatorSQLContext: ProgramIndicatorSQLContext,
         dataElementStore: IdentifiableObjectStore<DataElement>,
         trackedEntityAttributeStore: IdentifiableObjectStore<TrackedEntityAttribute>,
+        itemMetadata: ProgramIndicatorItemMetadata,
     ) : CommonExpressionVisitorScope(
         constantMap,
         itemMap,
@@ -107,6 +112,7 @@ internal sealed class CommonExpressionVisitorScope(
         programIndicatorSQLContext = programIndicatorSQLContext,
         dataElementStore = dataElementStore,
         trackedAttributeStore = trackedEntityAttributeStore,
+        itemMetadata = itemMetadata,
     )
 
     class AnalyticsIndicator(

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import androidx.room.TypeConverter
+import androidx.room3.ColumnTypeConverter
 
 internal class AccessDBTypeConverter {
 
-    @TypeConverter
+    @ColumnTypeConverter
     fun fromAccessDB(accessDB: AccessDB?): Boolean {
         return accessDB?.accessDataWrite ?: false
     }
 
-    @TypeConverter
+    @ColumnTypeConverter
     fun toAccessDB(value: Boolean?): AccessDB? {
         return value?.let { AccessDB(it) }
     }

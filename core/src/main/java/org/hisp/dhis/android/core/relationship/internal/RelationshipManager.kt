@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.relationship.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipItem
@@ -46,7 +46,7 @@ internal class RelationshipManager(
         includeDeleted: Boolean,
         onlyAccessible: Boolean,
     ): List<Relationship> {
-        return runBlocking { getByItem(searchItem, includeDeleted, onlyAccessible) }
+        return runBlockingOnIO { getByItem(searchItem, includeDeleted, onlyAccessible) }
     }
 
     internal suspend fun getByItem(

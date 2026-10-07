@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.function
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramExpressionItem
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLUtils.getDataValueEventWhereClause
@@ -65,7 +65,7 @@ internal abstract class ProgramCountFunction : ProgramExpressionItem() {
         val programStageId = ctx.uid0.text
         val dataElementId = ctx.uid1.text
 
-        val dataElement = runBlocking {
+        val dataElement = visitor.itemMetadata.dataElements[dataElementId] ?: runBlockingOnIO {
             visitor.dataElementStore!!.selectByUid(dataElementId)
                 ?: throw IllegalArgumentException("DataElement $dataElementId does not exist.")
         }

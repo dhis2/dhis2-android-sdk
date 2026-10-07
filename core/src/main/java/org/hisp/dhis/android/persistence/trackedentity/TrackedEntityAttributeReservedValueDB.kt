@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeReservedValue
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate

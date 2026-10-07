@@ -69,7 +69,7 @@ internal class EventDateUtils(
      * @param expiryDays            extra days after period to edit event.
      * @return true or false
      */
-    fun isEventExpired(
+    suspend fun isEventExpired(
         event: Event,
         completeExpiryDays: Int,
         programPeriodType: PeriodType?,
@@ -91,13 +91,13 @@ internal class EventDateUtils(
         ?.let { isExpiredAfterCompletion(null, Instant.fromEpochMilliseconds(it), completeExpiryDays) }
         ?: false
 
-    private fun isExpiredBecauseOfPeriod(
+    private suspend fun isExpiredBecauseOfPeriod(
         event: Event,
         programPeriodType: PeriodType?,
         expiryDays: Int,
     ) = (event.eventDate() ?: event.dueDate())?.let { eventDateOrDueDate ->
         programPeriodType?.let { periodType ->
-            val nextPeriod = periodHelper.blockingGetPeriodForPeriodTypeAndDate(periodType, eventDateOrDueDate, 1)
+            val nextPeriod = periodHelper.getPeriodForPeriodTypeAndDateInternal(periodType, eventDateOrDueDate, 1)
                 .startDate()?.let { Instant.fromEpochMilliseconds(it.time).plusDays(expiryDays) }
 
             nextPeriod != null && expiryDays > 0 && nextPeriod <= currentDateInstant()

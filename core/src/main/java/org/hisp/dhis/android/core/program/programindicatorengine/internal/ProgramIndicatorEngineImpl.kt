@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.internal.ConstantStore
@@ -77,7 +77,7 @@ internal class ProgramIndicatorEngineImpl(
         eventUid: String?,
         programIndicatorUid: String,
     ): String? {
-        return runBlocking { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
+        return runBlockingOnIO { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
     }
 
     internal suspend fun getEnrollmentProgramIndicatorValueInternal(
@@ -100,7 +100,7 @@ internal class ProgramIndicatorEngineImpl(
     }
 
     override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
-        return runBlocking { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
+        return runBlockingOnIO { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
     }
 
     internal suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
@@ -127,16 +127,25 @@ internal class ProgramIndicatorEngineImpl(
     }
 
     override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
-        return runBlocking { getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid) }
+        return runBlockingOnIO { getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid) }
     }
 
     private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(context.programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+            programStageStore,
+            context.events.keys,
+        )
+
         val executor = ProgramIndicatorExecutor(
             constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
             programStageStore,
+            itemMetadata,
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

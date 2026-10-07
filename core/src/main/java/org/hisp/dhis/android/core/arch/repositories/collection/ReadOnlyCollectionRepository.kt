@@ -32,8 +32,8 @@ import androidx.paging.PagedList
 import androidx.paging.PagingData
 import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
 @Suppress("TooManyFunctions")
@@ -66,7 +66,7 @@ interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
      *
      * @return List of objects
      */
-    fun blockingGet(): List<M> = runBlocking { suspendGet() }
+    fun blockingGet(): List<M> = runBlockingOnIO { suspendGet() }
 
     /**
      * Handy method to use in conjunction with PagedListAdapter to build paged lists.
@@ -109,7 +109,7 @@ interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
      *
      * @return Element count
      */
-    fun blockingCount(): Int = runBlocking { suspendCount() }
+    fun blockingCount(): Int = runBlockingOnIO { suspendCount() }
 
     /**
      * Check if selection of objects in current scope with applied filters is empty in a suspend way.
@@ -139,7 +139,7 @@ interface ReadOnlyCollectionRepository<M : Any> : BaseRepository {
      *
      * @return If selection is empty
      */
-    fun blockingIsEmpty(): Boolean = runBlocking { suspendIsEmpty() }
+    fun blockingIsEmpty(): Boolean = runBlockingOnIO { suspendIsEmpty() }
 
     /**
      * Get a [ReadOnlyObjectRepository] pointing to the first element in the list.

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import android.content.Context
 import android.database.SQLException
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
@@ -142,7 +142,7 @@ internal class DatabaseConfigurationMigration(
     private suspend fun getUsernameForOldDatabase(databaseAdapter: DatabaseAdapter): String? {
         return try {
             val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
-            val roomQuery = SimpleSQLiteQuery("SELECT username FROM UserCredentials")
+            val roomQuery = RoomRawQuery("SELECT username FROM UserCredentials")
             d2Dao.queryStringValue(roomQuery)
         } catch (_: SQLException) {
             return null

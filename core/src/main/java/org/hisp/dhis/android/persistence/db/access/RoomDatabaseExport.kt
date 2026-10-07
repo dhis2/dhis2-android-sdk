@@ -55,18 +55,6 @@ internal class RoomDatabaseExport(
 
     companion object {
         private const val TAG = "RoomDatabaseExport"
-        private const val CIPHER_PAGE_SIZE = 16384
-
-        internal object EncryptionHook : SQLiteDatabaseHook {
-            override fun preKey(connection: SQLiteConnection) {
-                // Nothing to do here
-            }
-
-            override fun postKey(connection: SQLiteConnection) {
-                connection.executeRaw("PRAGMA cipher_page_size = $CIPHER_PAGE_SIZE;", null, null)
-                connection.execute("PRAGMA cipher_memory_security = OFF;", null, null)
-            }
-        }
     }
 
     /**
@@ -81,7 +69,7 @@ internal class RoomDatabaseExport(
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             encrypt = true,
             oldHook = null,
-            newHook = Companion.EncryptionHook,
+            newHook = SqlCipherEncryptionHook,
         )
     }
 
@@ -96,7 +84,7 @@ internal class RoomDatabaseExport(
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             encrypt = true,
             oldHook = null,
-            newHook = Companion.EncryptionHook,
+            newHook = SqlCipherEncryptionHook,
         )
     }
 
@@ -111,7 +99,7 @@ internal class RoomDatabaseExport(
             oldPassword = passwordManager.getPassword(oldConfiguration.databaseName()),
             newPassword = "", // Empty password for unencrypted database
             encrypt = false,
-            oldHook = Companion.EncryptionHook,
+            oldHook = SqlCipherEncryptionHook,
             newHook = null,
         )
     }
@@ -126,7 +114,7 @@ internal class RoomDatabaseExport(
             oldPassword = passwordManager.getPassword(account.databaseName()),
             newPassword = "", // Empty password for unencrypted database
             encrypt = false,
-            oldHook = Companion.EncryptionHook,
+            oldHook = SqlCipherEncryptionHook,
             newHook = null,
         )
     }
@@ -182,7 +170,7 @@ internal class RoomDatabaseExport(
                 // Add version to target database
                 val version = sourceDbDirect.version
                 sourceDbDirect.close()
-                val targetEncryptionHook = if (encrypt) Companion.EncryptionHook else null
+                val targetEncryptionHook = if (encrypt) SqlCipherEncryptionHook else null
                 val targetDbDirect = databaseManager.openSQLCipherDatabaseDirectly(
                     targetFile,
                     newPassword,

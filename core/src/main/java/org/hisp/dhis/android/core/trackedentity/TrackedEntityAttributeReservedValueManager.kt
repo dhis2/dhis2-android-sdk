@@ -35,13 +35,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.asObservable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
 import org.hisp.dhis.android.core.common.IdentifiableColumns
@@ -89,7 +89,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .getValue
      */
     fun blockingGetValue(attributeUid: String, organisationUnitUid: String): String {
-        return runBlocking {
+        return runBlockingOnIO {
             suspendGetValue(attributeUid, organisationUnitUid)
         }
     }
@@ -232,7 +232,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .count
      */
     fun blockingCount(attributeUid: String, organisationUnitUid: String?): Int {
-        return runBlocking { countInternal(attributeUid, organisationUnitUid) }
+        return runBlockingOnIO { countInternal(attributeUid, organisationUnitUid) }
     }
 
     suspend fun suspendCount(attributeUid: String, organisationUnitUid: String?): Int =
@@ -261,7 +261,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
      * @see .getReservedValueSummaries
      */
     fun blockingGetReservedValueSummaries(): List<ReservedValueSummary> {
-        return runBlocking { getReservedValueSummariesInternal() }
+        return runBlockingOnIO { getReservedValueSummariesInternal() }
     }
 
     suspend fun suspendGetReservedValueSummaries(): List<ReservedValueSummary> =

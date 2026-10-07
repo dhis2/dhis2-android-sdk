@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.tracker
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -40,5 +40,5 @@ internal interface TrackerJobObjectDaoAux : ObjectDao<TrackerJobObjectDB> {
         WHERE ${TrackerJobObjectTableInfo.Columns.JOB_UID} = :jobUid
     """,
     )
-    fun deleteByJobUid(jobUid: String): Int
+    suspend fun deleteByJobUid(jobUid: String): Int
 }

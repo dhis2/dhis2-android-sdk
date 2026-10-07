@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.arch.call.internal.GenericCallData
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -49,7 +48,6 @@ abstract class BaseCallShould {
     protected val serverDate: Date = mock()
     internal val resourceHandler: ResourceHandler = mock()
     internal val genericCallData: GenericCallData = mock()
-    protected val transaction: Transaction = mock()
     protected val d2Error: D2Error = mock()
 
     protected lateinit var errorResponse: D2HttpException
@@ -65,7 +63,6 @@ abstract class BaseCallShould {
             resourceHandler.getLastUpdated(any()),
         ).thenReturn(null)
 
-        whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
 
         errorResponse = D2HttpException(
             D2HttpResponse(

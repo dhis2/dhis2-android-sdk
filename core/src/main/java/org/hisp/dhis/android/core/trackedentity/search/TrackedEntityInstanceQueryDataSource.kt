@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.ItemKeyedDataSource
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
 internal class TrackedEntityInstanceQueryDataSource(
@@ -42,7 +42,7 @@ internal class TrackedEntityInstanceQueryDataSource(
     ) {
         dataFetcher.refresh()
         callback.onResult(
-            runBlocking { loadPages(params.requestedLoadSize) },
+            runBlockingOnIO { loadPages(params.requestedLoadSize) },
         )
     }
 
@@ -51,7 +51,7 @@ internal class TrackedEntityInstanceQueryDataSource(
         callback: LoadCallback<TrackedEntityInstance>,
     ) {
         callback.onResult(
-            runBlocking { loadPages(params.requestedLoadSize) },
+            runBlockingOnIO { loadPages(params.requestedLoadSize) },
         )
     }
 

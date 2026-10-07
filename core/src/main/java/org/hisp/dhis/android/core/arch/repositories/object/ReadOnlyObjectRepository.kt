@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 
 interface ReadOnlyObjectRepository<M : Any> : BaseRepository {
@@ -59,7 +59,7 @@ interface ReadOnlyObjectRepository<M : Any> : BaseRepository {
      * executed in the main thread. Consider the asynchronous version [.rxGet].
      * @return the object
      */
-    fun blockingGet(): M? = runBlocking { suspendGet() }
+    fun blockingGet(): M? = runBlockingOnIO { suspendGet() }
 
     /**
      * Returns if the object exists in a suspend way.
@@ -85,5 +85,5 @@ interface ReadOnlyObjectRepository<M : Any> : BaseRepository {
      * executed in the main thread. Consider the asynchronous version [.rxExists].
      * @return if the object exists
      */
-    fun blockingExists(): Boolean = runBlocking { suspendExists() }
+    fun blockingExists(): Boolean = runBlockingOnIO { suspendExists() }
 }

@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.arch.call.internal
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 @Suppress("TooGenericExceptionThrown")
 internal fun <T> Flow<T>.collectAndWrapException() {
-    return runBlocking { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
+    return runBlockingOnIO { this@collectAndWrapException.catch { t -> throw RuntimeException(t) }.collect {} }
 }

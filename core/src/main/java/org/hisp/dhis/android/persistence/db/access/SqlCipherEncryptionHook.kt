@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -28,32 +28,27 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
-import androidx.room.RoomDatabase
-import org.hisp.dhis.android.core.arch.db.access.Transaction
+import net.zetetic.database.sqlcipher.SQLiteConnection
+import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
+
+/** Page size used for every encrypted database the SDK creates. */
+internal const val CIPHER_PAGE_SIZE = 16384
 
 /**
- * Room-based implementation of Transaction.
+ * Cipher settings applied right after the key is set on a SQLCipher connection.
+ *
+ * Every code path that opens an encrypted database must use this hook, otherwise the resulting
+ * file is unreadable by the others: [SqliteDriverFactoryImpl] when Room opens an account database,
+ * and [RoomDatabaseExport] when it encrypts, decrypts or copies one. That is why it lives here
+ * rather than inside either of them.
  */
-class RoomTransaction(private val database: RoomDatabase) : Transaction {
-    private var successful = false
-    private var ended = false
-
-    override fun setSuccessful() {
-        checkNotEnded()
-        database.setTransactionSuccessful()
-        successful = true
+internal object SqlCipherEncryptionHook : SQLiteDatabaseHook {
+    override fun preKey(connection: SQLiteConnection) {
+        // Nothing to do here
     }
 
-    override fun end() {
-        checkNotEnded()
-        if (successful) {
-            database.setTransactionSuccessful()
-        }
-        database.endTransaction()
-        ended = true
-    }
-
-    private fun checkNotEnded() {
-        check(!ended) { "Transaction already ended" }
+    override fun postKey(connection: SQLiteConnection) {
+        connection.executeRaw("PRAGMA cipher_page_size = $CIPHER_PAGE_SIZE;", null, null)
+        connection.execute("PRAGMA cipher_memory_security = OFF;", null, null)
     }
 }

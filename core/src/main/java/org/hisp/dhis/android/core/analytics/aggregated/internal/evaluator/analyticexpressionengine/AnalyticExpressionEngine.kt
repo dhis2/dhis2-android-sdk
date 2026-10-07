@@ -25,6 +25,7 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine
 
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
@@ -36,9 +37,31 @@ internal class AnalyticExpressionEngine(
     private val visitor: CommonExpressionVisitor,
 ) {
 
-    fun evaluate(
+    suspend fun evaluate(
         expression: String,
     ): Any? {
+        resolveItemValues(expression)
         return CommonParser.visit(expression, visitor)
+    }
+
+    /**
+     * Visits the expression once to collect its data items, with placeholder values, and computes
+     * them here, where the caller's connection is available. Items the collecting visit does not
+     * reach, like a branch of `if()` taken only with the real values, are computed during the visit.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    private suspend fun resolveItemValues(expression: String) {
+        val itemValues = visitor.indicatorContext?.itemValues ?: return
+        val collector = CommonExpressionVisitor(visitor.scope).also { it.days = visitor.days }
+
+        itemValues.collecting = true
+        try {
+            CommonParser.visit(expression, collector)
+        } catch (_: Exception) {
+            // The visit below reports it
+        } finally {
+            itemValues.collecting = false
+        }
+        itemValues.resolve()
     }
 }

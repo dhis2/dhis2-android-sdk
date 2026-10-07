@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common
 
-import androidx.room.ColumnInfo
+import androidx.room3.ColumnInfo
 
 internal data class SchemaRow(
     @ColumnInfo(name = "name") val name: String,

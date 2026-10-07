@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.tracker.exporter
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
@@ -508,6 +508,6 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             FROM ${OrganisationUnitTableInfo.TABLE_NAME}
         """.trimIndent()
         val dao = databaseAdapter.getCurrentDatabase().d2Dao()
-        return dao.stringListRawQuery(SimpleSQLiteQuery(query)).toSet()
+        return dao.stringListRawQuery(RoomRawQuery(query)).toSet()
     }
 }

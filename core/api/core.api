@@ -9332,6 +9332,7 @@ public final class org/hisp/dhis/android/core/event/EventNonEditableReason : jav
 	public static final field BLOCKED_BY_COMPLETION Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field ENROLLMENT_IS_NOT_OPEN Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field EVENT_DATE_IS_NOT_IN_ORGUNIT_RANGE Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
+	public static final field EVENT_NOT_FOUND Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field EXPIRED Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field NO_CATEGORY_COMBO_ACCESS Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
 	public static final field NO_DATA_WRITE_ACCESS Lorg/hisp/dhis/android/core/event/EventNonEditableReason;
@@ -9474,19 +9475,19 @@ public final class org/hisp/dhis/android/core/event/EventQueryCriteriaBuilder$Co
 
 public abstract interface class org/hisp/dhis/android/core/event/EventService {
 	public abstract fun blockingCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Z
-	public abstract fun blockingGetEditableStatus (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventEditableStatus;
+	public fun blockingGetEditableStatus (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventEditableStatus;
 	public abstract fun blockingHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Z
 	public abstract fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
 	public abstract fun blockingIsEditable (Ljava/lang/String;)Z
 	public abstract fun blockingIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Z
 	public abstract fun canAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun getEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun hasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
 	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isEditable (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun isInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
 	public abstract fun rxCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxGetEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxGetEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun rxHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
 	public abstract fun rxHasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun rxIsEditable (Ljava/lang/String;)Lio/reactivex/Single;
@@ -9497,6 +9498,12 @@ public abstract interface class org/hisp/dhis/android/core/event/EventService {
 	public abstract fun suspendHasDataWriteAccess (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendIsEditable (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/event/EventService$DefaultImpls {
+	public static fun blockingGetEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventEditableStatus;
+	public static fun getEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxGetEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum {

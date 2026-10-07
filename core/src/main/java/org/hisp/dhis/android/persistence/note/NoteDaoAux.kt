@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.persistence.note
 
 import androidx.room.Query
-import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
+import org.hisp.dhis.android.persistence.common.daos.IdentifiableDataObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
 @GenerateDaoQueries
-internal interface NoteDaoAux : IdentifiableObjectDao<NoteDB> {
+internal interface NoteDaoAux : IdentifiableDataObjectDao<NoteDB> {
 
     @Query(
         """

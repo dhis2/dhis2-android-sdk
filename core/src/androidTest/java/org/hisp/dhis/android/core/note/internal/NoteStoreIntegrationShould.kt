@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.note.internal
 
 import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.data.database.IdentifiableObjectStoreAbstractIntegrationShould
+import org.hisp.dhis.android.core.data.database.IdentifiableDataObjectStoreAbstractIntegrationShould
 import org.hisp.dhis.android.core.data.note.NoteSamples
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
@@ -39,7 +39,7 @@ import org.hisp.dhis.android.persistence.note.NoteTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class NoteStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<Note>(
+class NoteStoreIntegrationShould : IdentifiableDataObjectStoreAbstractIntegrationShould<Note>(
     NoteStoreImpl(TestDatabaseAdapterFactory.get()),
     NoteTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
@@ -63,6 +63,20 @@ class NoteStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationSho
             .storedBy(null)
             .storedDate(null)
             .deleted(null)
+            .build()
+    }
+
+    override fun buildObjectWithToDeleteState(): Note {
+        return NoteSamples.getNote().toBuilder()
+            .syncState(State.TO_UPDATE)
+            .deleted(true)
+            .build()
+    }
+
+    override fun buildObjectWithSyncedState(): Note {
+        return NoteSamples.getNote().toBuilder()
+            .syncState(State.SYNCED)
+            .deleted(false)
             .build()
     }
 }

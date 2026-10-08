@@ -91,7 +91,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
 
     @Test
     fun download_events_by_uid() {
-        enqueue(eventsWithUids)
+        dhis2MockServer.enqueueMockResponse(eventsWithUids)
         d2.eventModule().eventDownloader().byUid().`in`("wAiGPfJGMxt", "PpNGhvEYnXe").blockingDownload()
         assertThat(d2.eventModule().events().blockingCount()).isEqualTo(2)
     }

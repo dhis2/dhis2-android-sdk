@@ -93,7 +93,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
     fun download_tracked_entity_instance_enrollments_and_events() {
         val teiUid = "PgmUFEQYZdt"
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(teiCollectionFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiUid).blockingDownload()
@@ -106,7 +105,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiUid = "PgmUFEQYZdt"
         val program = "lxAQ7Zs9VYR"
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(teiSingleFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
@@ -114,7 +112,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
             .byProgramUid(program)
             .blockingDownload()
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(teiWithRemovedDataFile)
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
@@ -133,7 +130,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiUid = "PgmUFEQYZdt"
         val program = "lxAQ7Zs9VYR"
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(401, "trackedentity/glass/glass_protected_tei_failure.json")
         try {
             d2.trackedEntityModule().trackedEntityInstanceDownloader()
@@ -149,7 +145,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         dhis2MockServer.enqueueMockResponse("trackedentity/glass/break_glass_successful.json")
         d2.trackedEntityModule().ownershipManager().blockingBreakGlass(teiUid, program, "Reason")
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(teiFile)
         d2.trackedEntityModule().trackedEntityInstanceDownloader()
             .byUid().eq(teiUid)
@@ -187,7 +182,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiUid = "PgmUFEQYZdt"
         val program = "lxAQ7Zs9VYR"
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         // Old servers (< v42) return 403 with OWNERSHIP_ACCESS_DENIED message
         dhis2MockServer.enqueueMockResponse(403, "trackedentity/glass/glass_protected_tei_failure_403.json")
 
@@ -208,7 +202,6 @@ abstract class TrackedEntityInstanceCallBaseMockIntegrationShould : BaseMockInte
         val teiUid = "PgmUFEQYZdt"
         val program = "lxAQ7Zs9VYR"
 
-        dhis2MockServer.enqueueSystemInfoResponse()
         // v42+ servers return 404 to hide ownership information
         dhis2MockServer.enqueueMockResponse(404, "trackedentity/glass/glass_v42_not_found.json")
         dhis2MockServer.enqueueMockResponse(teiWithSearchOnlyOrgUnitFile)

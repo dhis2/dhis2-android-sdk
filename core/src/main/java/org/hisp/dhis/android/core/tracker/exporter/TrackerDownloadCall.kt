@@ -78,11 +78,9 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             send(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
         } else {
             val relatives = RelationshipItemRelatives()
-            val systemInfo = systemInfoModuleDownloader.downloadAndReturn()
-            val syncDate = systemInfo?.serverDate!!
 
             coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
-                downloadInternal(params, progressManager, relatives, syncDate).collect { v -> send(v) }
+                downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
                 downloadMissingOrgUnits(progressManager).collect { v -> send(v) }
                 send(progressManager.complete())
@@ -94,10 +92,14 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         params: ProgramDataDownloadParams,
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives,
-        syncDate: Date,
     ): Flow<TrackerD2Progress> = flow {
         val bundles: List<Q> = getBundles(params)
         val programs = bundles.flatMap { it.commonParams.programs }
+        val syncDate = if (bundles.any { it.commonParams.uids.isEmpty() }) {
+            systemInfoModuleDownloader.downloadAndReturn()?.serverDate
+        } else {
+            null
+        }
 
         progressManager.setTotalCalls(programs.size + 2)
         progressManager.setPrograms(programs)
@@ -132,7 +134,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                     iterationNotFinished(bundle, params, bundleResult, iterationCount)
                 )
 
-                if (successfulSync) {
+                if (successfulSync && syncDate != null) {
                     updateLastUpdated(bundle, syncDate)
                 }
             }

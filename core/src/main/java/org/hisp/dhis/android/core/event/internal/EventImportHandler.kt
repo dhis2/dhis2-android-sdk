@@ -79,6 +79,7 @@ internal class EventImportHandler(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEventImportConflicts(eventImportSummary, enrollmentUid)
+                    jobReportEventHandler.handleEventNotes(eventUid, state)
 
                     if (state == State.SYNCED &&
                         (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)

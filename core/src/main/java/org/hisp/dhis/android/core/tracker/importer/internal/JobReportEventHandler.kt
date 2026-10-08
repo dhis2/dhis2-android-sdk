@@ -58,6 +58,10 @@ internal class JobReportEventHandler internal constructor(
         conflictStore.deleteEventConflicts(uid)
         val handleAction = eventStore.setSyncStateOrDelete(uid, state)
 
+        if (handleAction != HandleAction.Delete) {
+            handleEventNotes(uid, state)
+        }
+
         if (state == State.SYNCED && (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)) {
             handleSyncedEvent(uid)
         }
@@ -90,19 +94,15 @@ internal class JobReportEventHandler internal constructor(
     }
 
     suspend fun handleSyncedEvent(eventUid: String) {
-        handleEventNotes(eventUid, State.SYNCED)
         trackedEntityDataValueStore.setSyncStateByEvent(eventUid, State.SYNCED)
         trackedEntityDataValueStore.removeDeletedDataValuesByEvent(eventUid)
         trackedEntityDataValueStore.removeUnassignedDataValuesByEvent(eventUid)
     }
 
-    private suspend fun handleEventNotes(eventUid: String, state: State) {
+    suspend fun handleEventNotes(eventUid: String, state: State) {
         val newNoteState = if (state == State.SYNCED) State.SYNCED else State.TO_POST
         val whereClause = WhereClauseBuilder()
-            .appendInKeyStringValues(
-                DataColumns.SYNC_STATE,
-                State.uploadableStatesIncludingError().map { it.name },
-            )
+            .appendKeyStringValue(DataColumns.SYNC_STATE, State.UPLOADING)
             .appendKeyStringValue(NoteTableInfo.Columns.EVENT, eventUid).build()
         for (note in noteStore.selectWhere(whereClause)) {
             noteStore.update(note.toBuilder().syncState(newNoteState).build())

@@ -31,18 +31,18 @@ package org.hisp.dhis.android.persistence.note
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteStore
-import org.hisp.dhis.android.persistence.common.querybuilders.SQLStatementBuilderImpl
+import org.hisp.dhis.android.persistence.common.querybuilders.IdentifiableDataObjectSQLStatementBuilderImpl
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
-import org.hisp.dhis.android.persistence.common.stores.IdentifiableObjectStoreImpl
+import org.hisp.dhis.android.persistence.common.stores.IdentifiableDataObjectStoreImpl
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class NoteStoreImpl(
     private val databaseAdapter: DatabaseAdapter,
-) : NoteStore, IdentifiableObjectStoreImpl<Note, NoteDB>(
+) : NoteStore, IdentifiableDataObjectStoreImpl<Note, NoteDB>(
     { databaseAdapter.getCurrentDatabase().noteDao() },
     Note::toDB,
-    SQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
+    IdentifiableDataObjectSQLStatementBuilderImpl(NoteTableInfo.TABLE_INFO),
 ) {
     override suspend fun getForEvent(eventUid: String): List<Note> {
         val whereClause = WhereClauseBuilder()

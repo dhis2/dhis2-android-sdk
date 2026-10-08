@@ -82,15 +82,10 @@ internal class EnrollmentImportHandler(
 
                 if (handleAction !== HandleAction.Delete) {
                     storeEnrollmentImportConflicts(enrollmentImportSummary, teiUid)
+                    jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                     val evSummary = handleEventImportSummaries(enrollmentImportSummary, enrollments)
                     summary.add(evSummary)
                     dataStatePropagator.refreshEnrollmentAggregatedSyncState(enrollmentUid)
-                }
-
-                if (syncState == State.SYNCED &&
-                    (handleAction == HandleAction.Update || handleAction == HandleAction.Insert)
-                ) {
-                    jobReportEnrollmentHandler.handleEnrollmentNotes(enrollmentUid, syncState)
                 }
             }
         }

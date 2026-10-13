@@ -120,8 +120,8 @@ class JobReportEnrollmentHandlerShould {
     }
 
     @Test
-    fun mark_pending_notes_as_synced_when_enrollment_is_updated() = runTest {
-        val note = Note.builder().uid("note_uid").enrollment(enrollmentUid).syncState(State.TO_POST).build()
+    fun mark_uploading_notes_as_synced_when_enrollment_is_updated() = runTest {
+        val note = uploadingNote()
         whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.SYNCED)).doReturn(HandleAction.Update)
         whenever(noteStore.selectWhere(any<String>())).doReturn(listOf(note))
 
@@ -216,19 +216,24 @@ class JobReportEnrollmentHandlerShould {
 
     @Test
     fun set_to_update_state_when_enrollment_is_not_present_in_report() = runTest {
+        val note = uploadingNote()
         whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.TO_UPDATE)).doReturn(HandleAction.Update)
+        whenever(noteStore.selectWhere(any<String>())).doReturn(listOf(note))
 
         handler.handleNotPresent(jobObject)
 
         verify(conflictStore).deleteEnrollmentConflicts(enrollmentUid)
         verify(enrollmentStore).setSyncStateOrDelete(enrollmentUid, State.TO_UPDATE)
-        verifyNoInteractions(noteStore, programTrackedEntityAttributeStore, trackedEntityAttributeValueStore)
+        verify(noteStore).update(note.toBuilder().syncState(State.TO_POST).build())
+        verifyNoInteractions(programTrackedEntityAttributeStore, trackedEntityAttributeValueStore)
     }
 
     @Test
     fun set_error_state_and_store_conflict_on_error() = runTest {
         val error = validationError(ImporterError.E1000.name)
+        val note = uploadingNote()
         whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.ERROR)).doReturn(HandleAction.Update)
+        whenever(noteStore.selectWhere(any<String>())).doReturn(listOf(note))
         givenStoredEnrollment(enrollment)
         whenever(conflictHelper.getConflictBuilder(error)).doReturn(
             TrackerImportConflict.builder().errorCode(error.errorCode).conflict(error.message),
@@ -237,7 +242,8 @@ class JobReportEnrollmentHandlerShould {
         handler.handleError(jobObject, error)
 
         verify(enrollmentStore).setSyncStateOrDelete(enrollmentUid, State.ERROR)
-        verifyNoInteractions(noteStore, programTrackedEntityAttributeStore, trackedEntityAttributeValueStore)
+        verify(noteStore).update(note.toBuilder().syncState(State.TO_POST).build())
+        verifyNoInteractions(programTrackedEntityAttributeStore, trackedEntityAttributeValueStore)
 
         val captor = argumentCaptor<TrackerImportConflict>()
         verify(conflictStore).updateOrInsertWhere(captor.capture())
@@ -285,26 +291,33 @@ class JobReportEnrollmentHandlerShould {
 
     @Test
     fun set_notes_to_post_when_handling_notes_with_a_not_synced_state() = runTest {
-        val note = Note.builder().uid("note_uid").enrollment(enrollmentUid).syncState(State.ERROR).build()
+        val note = uploadingNote()
         whenever(noteStore.selectWhere(any<String>())).doReturn(listOf(note))
 
-        handler.handleEnrollmentNotes(enrollmentUid, State.ERROR)
+        handler.handleEnrollmentNotes(enrollmentUid, State.WARNING)
 
         verify(noteStore).update(note.toBuilder().syncState(State.TO_POST).build())
     }
 
     @Test
-    fun only_select_uploadable_notes() = runTest {
+    fun only_select_uploading_notes_of_the_enrollment() = runTest {
         handler.handleEnrollmentNotes(enrollmentUid, State.SYNCED)
 
         verify(noteStore).selectWhere(
             argThat<String> {
-                State.uploadableStatesIncludingError().all { contains("'${it.name}'") } &&
-                    !contains("'${State.SYNCED.name}'")
+                contains("'${State.UPLOADING.name}'") &&
+                    contains("'$enrollmentUid'") &&
+                    State.entries.filter { it != State.UPLOADING }.none { s -> contains("'${s.name}'") }
             },
         )
         verify(noteStore, never()).update(any<Note>())
     }
+
+    private fun uploadingNote() = Note.builder()
+        .uid("note_uid")
+        .enrollment(enrollmentUid)
+        .syncState(State.UPLOADING)
+        .build()
 
     private suspend fun givenStoredEnrollment(e: Enrollment) {
         whenever(enrollmentStore.selectByUid(enrollmentUid)).doReturn(e)

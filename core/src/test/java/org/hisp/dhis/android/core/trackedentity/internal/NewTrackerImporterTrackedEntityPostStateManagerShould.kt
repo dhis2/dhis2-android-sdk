@@ -37,6 +37,9 @@ import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.note.NewTrackerImporterNote
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipSamples
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
@@ -66,6 +69,10 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
     private val eventStore: EventStore = mock()
     private val relationshipStore: RelationshipStore = mock()
     private val fileResourceStore: FileResourceStore = mock()
+    private val noteStore: NoteStore = mock {
+        onBlocking { getForEvent(any()) } doReturn emptyList()
+        onBlocking { getForEnrollment(any()) } doReturn emptyList()
+    }
 
     private lateinit var stateManager: NewTrackerImporterTrackedEntityPostStateManager
 
@@ -77,6 +84,7 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
             eventStore,
             relationshipStore,
             fileResourceStore,
+            noteStore,
             StatePersistorHelper(),
         )
     }
@@ -91,6 +99,7 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
             eventStore,
             relationshipStore,
             fileResourceStore,
+            noteStore,
         )
     }
 
@@ -111,7 +120,44 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         verify(enrollmentStore).setSyncState(listOf("nestedEnrollment", "enrollment1"), State.UPLOADING)
         verify(eventStore).setSyncState(listOf("nestedEvent", "enrollmentEvent", "event1"), State.UPLOADING)
         verify(relationshipStore).setSyncState(listOf("relationship1"), State.UPLOADING)
-        verifyNoInteractions(fileResourceStore)
+        verifyNoInteractions(fileResourceStore, noteStore)
+    }
+
+    @Test
+    fun set_forced_state_to_notes_of_every_enrollment_and_event_in_payload() = runTest {
+        val nestedEvent = event("nestedEvent", notes = listOf(note("nestedEventNote")))
+        val nestedEnrollment = enrollment(
+            "nestedEnrollment",
+            events = listOf(nestedEvent),
+            notes = listOf(note("nestedEnrollmentNote")),
+        )
+        val payload = NewTrackerImporterPayload(
+            trackedEntities = mutableListOf(trackedEntity("tei1", enrollments = listOf(nestedEnrollment))),
+            enrollments = mutableListOf(enrollment("enrollment1", notes = listOf(note("enrollmentNote")))),
+            events = mutableListOf(event("event1", notes = listOf(note("eventNote")))),
+        )
+
+        stateManager.setStates(payload, State.UPLOADING)
+
+        verify(noteStore).setSyncState(
+            listOf("nestedEnrollmentNote", "enrollmentNote", "nestedEventNote", "eventNote"),
+            State.UPLOADING,
+        )
+    }
+
+    @Test
+    fun restore_payload_notes_using_their_own_state() = runTest {
+        val payload = NewTrackerImporterPayload(
+            enrollments = mutableListOf(
+                enrollment("enrollment1", notes = listOf(note("note1", State.TO_POST), note("note2", State.UPLOADING))),
+            ),
+            events = mutableListOf(event("event1", notes = null)),
+        )
+
+        stateManager.restoreStates(payload)
+
+        verify(noteStore).setSyncState(listOf("note1"), State.TO_POST)
+        verify(noteStore).setSyncState(listOf("note2"), State.TO_UPDATE)
     }
 
     @Test
@@ -213,6 +259,38 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
     }
 
     @Test
+    fun set_forced_state_to_stored_notes_of_enrollment_and_event_job_objects() = runTest {
+        givenStoredObjects()
+        whenever(noteStore.getForEnrollment("enrollment1")).doReturn(listOf(storedNote("enrollmentNote")))
+        whenever(noteStore.getForEvent("event1")).doReturn(listOf(storedNote("eventNote")))
+
+        stateManager.setStates(
+            listOf(
+                jobObject(TrackerImporterObjectType.TRACKED_ENTITY, "tei1"),
+                jobObject(TrackerImporterObjectType.ENROLLMENT, "enrollment1"),
+                jobObject(TrackerImporterObjectType.EVENT, "event1"),
+                jobObject(TrackerImporterObjectType.RELATIONSHIP, "relationship1"),
+            ),
+            State.UPLOADING,
+        )
+
+        verify(noteStore).setSyncState(listOf("enrollmentNote", "eventNote"), State.UPLOADING)
+    }
+
+    @Test
+    fun restore_stored_notes_of_job_objects_using_their_own_state() = runTest {
+        givenStoredObjects()
+        whenever(noteStore.getForEnrollment("enrollment1")).doReturn(
+            listOf(storedNote("note1", State.UPLOADING), storedNote("note2", State.TO_POST)),
+        )
+
+        stateManager.restoreStates(listOf(jobObject(TrackerImporterObjectType.ENROLLMENT, "enrollment1")))
+
+        verify(noteStore).setSyncState(listOf("note1"), State.TO_UPDATE)
+        verify(noteStore).setSyncState(listOf("note2"), State.TO_POST)
+    }
+
+    @Test
     fun skip_job_objects_not_found_in_the_database() = runTest {
         stateManager.setStates(
             listOf(
@@ -235,6 +313,7 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         verify(eventStore, never()).setSyncState(any<List<String>>(), any())
         verify(relationshipStore, never()).setSyncState(any<List<String>>(), any())
         verify(fileResourceStore, never()).setSyncState(any<List<String>>(), any())
+        verifyNoInteractions(noteStore)
     }
 
     @Test
@@ -247,6 +326,7 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
             eventStore,
             relationshipStore,
             fileResourceStore,
+            noteStore,
         )
     }
 
@@ -303,6 +383,7 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         uid: String,
         syncState: State? = State.TO_POST,
         events: List<NewTrackerImporterEvent>? = emptyList(),
+        notes: List<NewTrackerImporterNote>? = emptyList(),
     ) = NewTrackerImporterEnrollment(
         uid = uid,
         deleted = false,
@@ -323,9 +404,14 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         attributeOptionCombo = null,
         aggregatedSyncState = syncState,
         events = events,
+        notes = notes,
     )
 
-    private fun event(uid: String, syncState: State? = State.TO_POST) = NewTrackerImporterEvent(
+    private fun event(
+        uid: String,
+        syncState: State? = State.TO_POST,
+        notes: List<NewTrackerImporterNote>? = emptyList(),
+    ) = NewTrackerImporterEvent(
         uid = uid,
         deleted = false,
         syncState = syncState,
@@ -345,8 +431,26 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         scheduledAt = null,
         attributeOptionCombo = null,
         assignedUser = null,
+        notes = notes,
         aggregatedSyncState = syncState,
     )
+
+    private fun note(uid: String, syncState: State? = State.TO_POST) = NewTrackerImporterNote(
+        uid = uid,
+        deleted = false,
+        syncState = syncState,
+        noteType = null,
+        event = null,
+        enrollment = null,
+        value = null,
+        storedBy = null,
+        storedAt = null,
+    )
+
+    private fun storedNote(uid: String, syncState: State = State.TO_POST) = Note.builder()
+        .uid(uid)
+        .syncState(syncState)
+        .build()
 
     private fun relationship(uid: String, syncState: State? = State.TO_POST) = NewTrackerImporterRelationship(
         uid = uid,

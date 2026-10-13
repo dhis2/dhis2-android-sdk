@@ -257,6 +257,18 @@ class OldTrackerImporterPostCallShould {
     }
 
     @Test
+    fun restore_uploading_notes_after_posting_a_partition() = runTest {
+        givenTeiPayload(OldTrackerImporterPayload(trackedEntityInstances = listOf(tei1, tei2)))
+
+        postCall.uploadTrackedEntityInstances(listOf(tei1, tei2)).toList()
+
+        inOrder(teiWebResponseHandler, trackerStateManager) {
+            verify(teiWebResponseHandler).handleWebResponse(TEIWebResponse.empty(), listOf(tei1, tei2))
+            verify(trackerStateManager).restoreUploadingNotes(trackedEntityInstances = listOf(tei1, tei2))
+        }
+    }
+
+    @Test
     fun not_break_the_glass_when_there_are_no_glass_errors() = runTest {
         givenTeiPayload(OldTrackerImporterPayload(trackedEntityInstances = listOf(tei1)))
 
@@ -313,6 +325,8 @@ class OldTrackerImporterPostCallShould {
             fileResources = listOf("fileResource1"),
         )
         verify(fileResourcePostCall, never()).updateFileResourceStates(listOf("fileResource1"))
+        verify(trackerStateManager, never()).restoreUploadingNotes(trackedEntityInstances = firstPartition)
+        verify(trackerStateManager).restoreUploadingNotes(trackedEntityInstances = secondPartition)
         verify(networkHandler).postTrackedEntityInstances(secondPartition, "SYNC")
         verify(relationshipPostCall).postRelationships(listOf(postedRelationship))
         assertThat(progresses.filter { it.doneCalls().last() == "TrackedEntityInstance" }).hasSize(2)
@@ -344,6 +358,7 @@ class OldTrackerImporterPostCallShould {
             fileResources = emptyList(),
         )
         assertThat(emissions.map { it.doneCalls().last() }).doesNotContain("TrackedEntityInstance")
+        verify(trackerStateManager, never()).restoreUploadingNotes(any(), any())
         verifyNoInteractions(eventNetworkHandler)
         verify(relationshipPostCall, never()).postRelationships(any())
     }
@@ -434,6 +449,18 @@ class OldTrackerImporterPostCallShould {
     }
 
     @Test
+    fun restore_uploading_notes_after_posting_events() = runTest {
+        givenEventPayload(OldTrackerImporterPayload(events = listOf(event1, event2)))
+
+        postCall.uploadEvents(listOf(event1, event2)).toList()
+
+        inOrder(eventImportHandler, trackerStateManager) {
+            verify(eventImportHandler).handleEventImportSummaries(null, listOf(event1, event2))
+            verify(trackerStateManager).restoreUploadingNotes(events = listOf(event1, event2))
+        }
+    }
+
+    @Test
     fun restore_states_and_rethrow_when_posting_events_fails() = runTest {
         whenever(fileResourcePostCall.uploadEventsFileResources(any()))
             .doReturn(ItemsWithFileResources(listOf(event1), listOf("fileResource1")))
@@ -459,6 +486,7 @@ class OldTrackerImporterPostCallShould {
             fileResources = listOf("fileResource1"),
         )
         verify(fileResourcePostCall, never()).updateFileResourceStates(any())
+        verify(trackerStateManager, never()).restoreUploadingNotes(any(), any())
         verifyNoInteractions(eventImportHandler)
         verify(relationshipPostCall, never()).postRelationships(any())
         verify(programOwnerPostCall, never()).uploadProgramOwners(any())

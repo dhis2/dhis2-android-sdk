@@ -43,20 +43,21 @@ internal class NoteUniquenessManager(private val noteStore: NoteStore) {
             NoteType.EVENT_NOTE -> NoteTableInfo.Columns.EVENT
         }
 
-        val toPostWhere = WhereClauseBuilder()
-            .appendKeyStringValue(DataColumns.SYNC_STATE, State.TO_POST)
+        val pendingWhere = WhereClauseBuilder()
+            .appendInKeyStringValues(
+                DataColumns.SYNC_STATE,
+                State.uploadableStatesIncludingError().map { it.name },
+            )
             .appendKeyStringValue(ownerColumn, ownerUid)
             .build()
 
-        val toPostNotes = noteStore.selectWhere(toPostWhere)
+        val pendingNotes = noteStore.selectWhere(pendingWhere).toSet()
 
         noteStore.deleteByOwner(ownerColumn, ownerUid)
 
         val newNotes = notes
             .map { it.toBuilder().syncState(State.SYNCED).build() }
             .toSet()
-
-        val pendingNotes = toPostNotes.toSet()
 
         return newNotes + pendingNotes
     }

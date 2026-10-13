@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
@@ -62,6 +63,8 @@ class EventImportHandlerShould {
     private val events: List<Event> = ArrayList()
 
     private val event: Event = mock()
+
+    private val eventUid = "test_event_uid"
 
     // object to test
     private lateinit var eventImportHandler: EventImportHandler
@@ -102,6 +105,48 @@ class EventImportHandlerShould {
         eventImportHandler.handleEventImportSummaries(listOf(summary), events)
 
         verify(eventStore, times(1)).setSyncStateOrDelete("test_event_uid", State.ERROR)
+    }
+
+    @Test
+    fun handle_event_notes_as_synced_when_event_import_summary_is_success() = runTest {
+        whenever(eventStore.setSyncStateOrDelete(eventUid, State.SYNCED)).thenReturn(HandleAction.Update)
+        val summary = createSummary(ImportStatus.SUCCESS, eventUid)
+
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
+
+        verify(jobReportEventHandler, times(1)).handleEventNotes(eventUid, State.SYNCED)
+        verify(jobReportEventHandler, times(1)).handleSyncedEvent(eventUid)
+    }
+
+    @Test
+    fun handle_event_notes_as_synced_when_event_was_modified_during_upload() = runTest {
+        whenever(eventStore.setSyncStateOrDelete(eventUid, State.SYNCED)).thenReturn(HandleAction.NoAction)
+        val summary = createSummary(ImportStatus.SUCCESS, eventUid)
+
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
+
+        verify(jobReportEventHandler, times(1)).handleEventNotes(eventUid, State.SYNCED)
+        verify(jobReportEventHandler, never()).handleSyncedEvent(any())
+    }
+
+    @Test
+    fun handle_event_notes_as_error_when_event_import_summary_is_error() = runTest {
+        whenever(eventStore.setSyncStateOrDelete(eventUid, State.ERROR)).thenReturn(HandleAction.Update)
+        val summary = createSummary(ImportStatus.ERROR, eventUid)
+
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
+
+        verify(jobReportEventHandler, times(1)).handleEventNotes(eventUid, State.ERROR)
+    }
+
+    @Test
+    fun not_handle_event_notes_when_event_is_deleted() = runTest {
+        whenever(eventStore.setSyncStateOrDelete(eventUid, State.SYNCED)).thenReturn(HandleAction.Delete)
+        val summary = createSummary(ImportStatus.SUCCESS, eventUid)
+
+        eventImportHandler.handleEventImportSummaries(listOf(summary), events)
+
+        verify(jobReportEventHandler, never()).handleEventNotes(any(), any())
     }
 
     @Test

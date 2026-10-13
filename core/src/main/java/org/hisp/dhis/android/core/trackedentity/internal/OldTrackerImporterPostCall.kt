@@ -110,6 +110,7 @@ internal class OldTrackerImporterPostCall internal constructor(
                 }
 
                 fileResourcePostCall.updateFileResourceStates(partition.fileResources)
+                trackerStateManager.restoreUploadingNotes(trackedEntityInstances = partition.items)
 
                 emit(progressManager.increaseProgress(TrackedEntityInstance::class.java, false))
             } catch (e: Exception) {
@@ -167,6 +168,7 @@ internal class OldTrackerImporterPostCall internal constructor(
                 )
 
                 fileResourcePostCall.updateFileResourceStates(validEvents.fileResources)
+                trackerStateManager.restoreUploadingNotes(events = validEvents.items)
 
                 emit(progressManager.increaseProgress(Event::class.java, true))
             } catch (e: Exception) {

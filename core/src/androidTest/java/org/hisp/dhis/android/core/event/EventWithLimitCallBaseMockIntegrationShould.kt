@@ -85,7 +85,6 @@ abstract class EventWithLimitCallBaseMockIntegrationShould : BaseMockIntegration
     // @Test TODO https://jira.dhis2.org/browse/ANDROSDK-1328
     fun download_events_by_uid_limited_by_one() = runTest {
         val eventLimitByOrgUnit = 1
-        dhis2MockServer.enqueueSystemInfoResponse()
         dhis2MockServer.enqueueMockResponse(downloadEventsByUidLimitedByOneFile)
         d2.eventModule().eventDownloader()
             .byUid()

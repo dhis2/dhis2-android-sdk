@@ -204,6 +204,54 @@ class TrackerDownloadCallShould {
     }
 
     @Test
+    fun download_system_info_once_when_downloading_by_program() = runTest {
+        givenASinglePageOfTeis(program = "program1")
+
+        call.download(ProgramDataDownloadParams()).toList()
+
+        verify(systemInfoModuleDownloader, times(1)).downloadAndReturn()
+        verify(lastUpdatedManager).update(any(), any())
+    }
+
+    @Test
+    fun not_download_system_info_when_downloading_by_uid() = runTest {
+        val commonParams = TrackerQueryCommonParams(
+            uids = listOf("tei1"),
+            programs = emptyList(),
+            program = null,
+            startDate = null,
+            hasLimitByOrgUnit = false,
+            ouMode = OrganisationUnitMode.DESCENDANTS,
+            orgUnitsBeforeDivision = emptyList(),
+            limit = ProgramDataDownloadParams.DEFAULT_LIMIT,
+        )
+        val bundle = TrackerQueryBundle(commonParams, emptyList(), null, null, null)
+
+        whenever(queryFactory.getQueries(any())).doReturn(listOf(bundle))
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+
+        val endpointCallFactory: TrackedEntityEndpointCallFactory = mock()
+        whenever(trackerCallFactory.getTrackedEntityCall()).doReturn(endpointCallFactory)
+        val payload: Payload<TrackedEntityInstance> = mock()
+        whenever(payload.items).doReturn(emptyList())
+        whenever(endpointCallFactory.getCollectionCall(any())).doReturn(payload)
+
+        call.download(ProgramDataDownloadParams()).toList()
+
+        verify(systemInfoModuleDownloader, never()).downloadAndReturn()
+        verify(lastUpdatedManager, never()).update(any(), any())
+    }
+
+    @Test
+    fun not_download_system_info_when_there_is_nothing_to_download() = runTest {
+        whenever(d2Dao.stringListRawQuery(any<SupportSQLiteQuery>())).doReturn(emptyList())
+
+        call.download(ProgramDataDownloadParams()).toList()
+
+        verify(systemInfoModuleDownloader, never()).downloadAndReturn()
+    }
+
+    @Test
     fun not_download_file_resources_when_disabled() = runTest {
         givenASinglePageOfTeis(program = "program1")
 

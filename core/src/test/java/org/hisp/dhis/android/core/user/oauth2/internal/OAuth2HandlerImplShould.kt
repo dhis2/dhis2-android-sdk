@@ -496,6 +496,14 @@ class OAuth2HandlerImplShould {
     }
 
     @Test
+    fun isDeviceRegistered_false_when_key_id_missing() {
+        oauth2SecureStore.isRegistered = true
+        oauth2SecureStore.clientId = CLIENT_ID
+
+        assertThat(handler.isDeviceRegistered()).isFalse()
+    }
+
+    @Test
     fun isLoggedIn_requires_both_user_logged_in_and_oauth2_state_present() {
         whenever(logInCall.isUserLoggedIn()).thenReturn(false)
         assertThat(handler.isLoggedIn()).isFalse()
@@ -635,6 +643,26 @@ class OAuth2HandlerImplShould {
         val result = handler.blockingChangePin("wrong", NEW_PIN)
 
         assertThat(result).isInstanceOf(Result.Failure::class.java)
+        verify(credentialsSecureStore, never()).set(any())
+    }
+
+    @Test
+    fun changePin_fails_when_not_logged_in() {
+        whenever(credentialsSecureStore.get()).thenReturn(null)
+
+        val result = handler.blockingChangePin(PIN, NEW_PIN)
+
+        assertThat((result as Result.Failure).failure.errorDescription).isEqualTo("no session")
+        verify(credentialsSecureStore, never()).set(any())
+    }
+
+    @Test
+    fun changePin_fails_when_no_pin_was_set_up() {
+        whenever(credentialsSecureStore.get()).thenReturn(credentialsWithOAuth2(sampleOAuth2State()))
+
+        val result = handler.blockingChangePin(PIN, NEW_PIN)
+
+        assertThat((result as Result.Failure).failure.errorDescription).isEqualTo("bad pin")
         verify(credentialsSecureStore, never()).set(any())
     }
 

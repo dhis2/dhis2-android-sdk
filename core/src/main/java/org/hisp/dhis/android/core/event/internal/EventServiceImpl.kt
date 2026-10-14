@@ -136,21 +136,9 @@ internal class EventServiceImpl(
     }
 
     @Suppress("ComplexMethod")
-    override fun blockingGetEditableStatus(eventUid: String): EventEditableStatus {
-        return runBlocking { suspendGetEditableStatus(eventUid) }
-    }
-
-    @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
-    override fun getEditableStatus(eventUid: String): Single<EventEditableStatus> {
-        return rxSingle { suspendGetEditableStatus(eventUid) }
-    }
-
-    override fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus> {
-        return rxSingle { suspendGetEditableStatus(eventUid) }
-    }
-
     override suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus {
-        val event = eventRepository.uid(eventUid).suspendGet()!!
+        val event = eventRepository.uid(eventUid).suspendGet()
+            ?: return EventEditableStatus.NonEditable(EventNonEditableReason.EVENT_NOT_FOUND)
         val program = programRepository.uid(event.program()).suspendGet()
         val programStage = programStageRepository.uid(event.programStage()).suspendGet()
 

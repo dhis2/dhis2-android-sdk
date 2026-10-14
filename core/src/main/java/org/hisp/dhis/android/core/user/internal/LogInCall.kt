@@ -33,6 +33,10 @@ import org.hisp.dhis.android.core.arch.api.internal.ServerURLWrapper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.UserIdInMemoryStore
+import org.hisp.dhis.android.core.common.AuthorizationType
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
+import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
+import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlParser
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -41,10 +45,12 @@ import org.hisp.dhis.android.core.user.AccountDeletionReason
 import org.hisp.dhis.android.core.user.AuthenticatedUser
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
+import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class LogInCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: UserNetworkHandler,
@@ -58,23 +64,79 @@ internal class LogInCall(
     private val exceptions: LogInExceptions,
     private val accountManager: AccountManagerImpl,
     private val apiCallErrorCatcher: UserAuthenticateCallErrorCatcher,
+    private val oauth2StateSecureStore: OAuth2StateSecureStore,
+    private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
+    private val databasesConfigurationStore: DatabaseConfigurationInsecureStore,
 ) {
     @Throws(D2Error::class)
-    suspend fun logIn(username: String?, password: String?, serverUrl: String?): User {
+    suspend fun logIn(username: String?, passwordOrPin: String?, serverUrl: String?): User {
         exceptions.throwExceptionIfUsernameNull(username)
-        exceptions.throwExceptionIfPasswordNull(password)
         exceptions.throwExceptionIfAlreadyAuthenticated()
 
         val trimmedServerUrl = ServerUrlParser.trimAndRemoveTrailingSlash(serverUrl)
-
         val parsedServerUrl = ServerUrlParser.parse(trimmedServerUrl)
         ServerURLWrapper.setServerUrl(parsedServerUrl.toString())
 
-        val credentials = Credentials(username!!, trimmedServerUrl!!, password, null)
+        val oauth2State = oauth2StateSecureStore.get(trimmedServerUrl!!, username!!)
+        val openIdState = openIDConnectStateSecureStore.get(trimmedServerUrl, username)
 
+        val authorizationType = authorizationTypeOf(trimmedServerUrl, username, oauth2State, openIdState)
+        return when (authorizationType) {
+            AuthorizationType.BASIC ->
+                logInWithPassword(trimmedServerUrl, username, passwordOrPin)
+            AuthorizationType.OAUTH2, AuthorizationType.OPEN_ID_CONNECT ->
+                logInWithTokenAccount(
+                    Credentials(
+                        username = username,
+                        serverUrl = trimmedServerUrl,
+                        password = null,
+                        pin = passwordOrPin,
+                        openIDConnectState = openIdState,
+                        oauth2State = oauth2State,
+                        authorizationType = authorizationType,
+                    ),
+                )
+        }
+    }
+
+    private suspend fun logInWithTokenAccount(credentials: Credentials): User {
+        return if (loginDatabaseManager.isPendingToImportDB(credentials.serverUrl, credentials.username)) {
+            importDB(credentials.serverUrl, credentials)
+        } else {
+            tryLoginOffline(credentials)
+        }
+    }
+
+    private fun authorizationTypeOf(
+        serverUrl: String,
+        username: String,
+        oauth2State: OAuth2State?,
+        openIdState: AuthState?,
+    ): AuthorizationType {
+        return when {
+            oauth2State != null -> AuthorizationType.OAUTH2
+            openIdState != null -> AuthorizationType.OPEN_ID_CONNECT
+            else -> {
+                val account = DatabaseConfigurationHelper.getAccount(
+                    databasesConfigurationStore.get(),
+                    serverUrl,
+                    username,
+                )
+                account?.authorizationType() ?: AuthorizationType.BASIC
+            }
+        }
+    }
+
+    private suspend fun logInWithPassword(
+        serverUrl: String,
+        username: String,
+        password: String?,
+    ): User {
+        exceptions.throwExceptionIfPasswordNull(password)
+        val credentials = Credentials(username, serverUrl, password, null, null, null)
         return try {
-            if (loginDatabaseManager.isPendingToImportDB(trimmedServerUrl, username)) {
-                importDB(trimmedServerUrl, credentials)
+            if (loginDatabaseManager.isPendingToImportDB(serverUrl, username)) {
+                importDB(serverUrl, credentials)
             } else {
                 val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                     networkHandler.authenticate(
@@ -117,13 +179,18 @@ internal class LogInCall(
         credentialsSecureStore.set(credentials)
         userIdStore.set(user.uid())
 
-        loginDatabaseManager.loadDatabaseOnline(credentials.serverUrl, credentials.username)
+        loginDatabaseManager.loadDatabaseOnline(
+            credentials.serverUrl,
+            credentials.username,
+            credentials.authorizationType,
+        )
 
         return coroutineAPICallExecutor.wrapTransactionallyRoom {
             try {
+                val existingUser = authenticatedUserStore.selectFirst()
                 val authenticatedUser = AuthenticatedUser.builder()
                     .user(user.uid())
-                    .hash(credentials.getHash())
+                    .hash(credentials.getHash() ?: existingUser?.hash())
                     .build()
 
                 authenticatedUserStore.updateOrInsertWhere(authenticatedUser)
@@ -141,16 +208,15 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     @Suppress("ThrowsCount")
-    private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error): User {
-        val existingDatabase =
-            loginDatabaseManager.loadExistingKeepingEncryption(credentials.serverUrl, credentials.username)
+    private suspend fun tryLoginOffline(credentials: Credentials, originalError: D2Error? = null): User {
+        val existingDatabase = loginDatabaseManager.loadExistingKeepingEncryption(credentials)
         if (!existingDatabase) {
-            throw originalError
+            throw originalError ?: exceptions.noUserOfflineError()
         }
         val existingUser = authenticatedUserStore.selectFirst() ?: throw exceptions.noUserOfflineError()
 
         if (credentials.getHash() != existingUser.hash()) {
-            throw exceptions.badCredentialsError()
+            throw wrongLocalCredentialsError(credentials)
         }
         credentialsSecureStore.set(credentials)
         userIdStore.set(existingUser.user()!!)
@@ -166,13 +232,22 @@ internal class LogInCall(
             userIdStore.set(existingUser.user()!!)
             return userStore.selectByUid(existingUser.user()!!)!!
         } catch (e: Exception) {
-            throw exceptions.badCredentialsError()
+            throw wrongLocalCredentialsError(credentials)
+        }
+    }
+
+    private fun wrongLocalCredentialsError(credentials: Credentials): D2Error {
+        return when (credentials.authorizationType) {
+            AuthorizationType.OAUTH2, AuthorizationType.OPEN_ID_CONNECT ->
+                exceptions.incorrectOfflineCodeError()
+            AuthorizationType.BASIC -> exceptions.badCredentialsError()
         }
     }
 
     @Throws(D2Error::class)
     suspend fun blockingLogInOpenIDConnect(serverUrl: String, openIDConnectState: AuthState): User {
         return logInWithToken(
+            existingUsername = null,
             serverUrl = serverUrl,
             token = openIDConnectState.idToken!!,
             openIDConnectState = openIDConnectState,
@@ -181,10 +256,12 @@ internal class LogInCall(
     }
 
     @Throws(D2Error::class)
-    suspend fun logInOAuth2(serverUrl: String, oauth2State: OAuth2State): User {
+    suspend fun logInOAuth2(existingUsername: String?, serverUrl: String, oauth2State: OAuth2State): User {
         return logInWithToken(
+            existingUsername = existingUsername,
             serverUrl = serverUrl,
-            token = oauth2State.accessToken!!,
+            token = oauth2State.accessToken
+                ?: throw exceptions.oauth2NoValidTokenError("The OAuth2 response has no access token"),
             openIDConnectState = null,
             oauth2State = oauth2State,
         )
@@ -192,6 +269,7 @@ internal class LogInCall(
 
     @Throws(D2Error::class)
     private suspend fun logInWithToken(
+        existingUsername: String?,
         serverUrl: String,
         token: String,
         openIDConnectState: AuthState?,
@@ -207,10 +285,15 @@ internal class LogInCall(
             val user = coroutineAPICallExecutor.wrap(errorCatcher = apiCallErrorCatcher) {
                 networkHandler.authenticate("Bearer $token")
             }.getOrThrow()
+            val username = user.username()!!
+            if (existingUsername != null && username != existingUsername) {
+                throw exceptions.authenticatedUserMismatchError()
+            }
             credentials = Credentials(
-                username = user.username()!!,
+                username = username,
                 serverUrl = trimmedServerUrl!!,
                 password = null,
+                pin = pinOfCurrentSession(trimmedServerUrl, username),
                 openIDConnectState = openIDConnectState,
                 oauth2State = oauth2State,
             )
@@ -218,6 +301,13 @@ internal class LogInCall(
         } catch (d2Error: D2Error) {
             throw handleOnlineException(d2Error, credentials)
         }
+    }
+
+    private fun pinOfCurrentSession(serverUrl: String, username: String): String? {
+        val current = credentialsSecureStore.get() ?: return null
+        val isSameAccount = current.username == username &&
+            ServerUrlNormalizer.areEquivalent(current.serverUrl, serverUrl)
+        return if (isSameAccount) current.pin else null
     }
 
     fun isUserLoggedIn(): Boolean {

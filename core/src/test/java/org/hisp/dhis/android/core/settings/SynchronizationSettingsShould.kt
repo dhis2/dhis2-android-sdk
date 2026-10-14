@@ -62,10 +62,10 @@ internal class SynchronizationSettingsShould : CoreObjectShould<SynchronizationS
         assertThat(syncSettings.programSettings()).isNotNull()
         assertThat(syncSettings.programSettings()!!.globalSettings()).isNotNull()
         assertThat(
-            syncSettings.programSettings()!!.globalSettings()!!.teiDownload(),
+            syncSettings.programSettings()!!.globalSettings().teiDownload(),
         ).isEqualTo(500)
         assertThat(
-            syncSettings.programSettings()!!.globalSettings()!!.settingDownload(),
+            syncSettings.programSettings()!!.globalSettings().settingDownload(),
         ).isEqualTo(LimitScope.ALL_ORG_UNITS)
         assertThat(syncSettings.programSettings()!!.specificSettings()).isNotNull()
         assertThat(

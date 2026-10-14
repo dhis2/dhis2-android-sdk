@@ -52,8 +52,8 @@ internal data class SectionGreyedFieldsLinkDB(
 
 internal fun SectionGreyedFieldsLink.toDB(): SectionGreyedFieldsLinkDB {
     return SectionGreyedFieldsLinkDB(
-        section = section()!!,
-        dataElementOperand = dataElementOperand()!!,
-        categoryOptionCombo = categoryOptionCombo()!!,
+        section = section(),
+        dataElementOperand = dataElementOperand(),
+        categoryOptionCombo = categoryOptionCombo(),
     )
 }

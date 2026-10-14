@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.expressiondimensionitem.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class ExpressionDimensionItemModuleDownloader internal constructor(
     private val expressionDimensionItemUidsSeeker: ExpressionDimensionItemUidsSeeker,
     private val expressionDimensionItemCall: ExpressionDimensionItemCall,
 ) : UntypedModuleDownloaderCoroutines {
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val uids = expressionDimensionItemUidsSeeker.seekUids()
         expressionDimensionItemCall.download(uids)
     }

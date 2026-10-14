@@ -76,7 +76,7 @@ internal class AnalyticsVisualizationsService(
         return visualizationCollectionRepository
             .withColumnsRowsAndFilters()
             .uid(visualizationId)
-            .getInternal()
+            .suspendGet()
     }
 
     @Suppress("ComplexMethod")

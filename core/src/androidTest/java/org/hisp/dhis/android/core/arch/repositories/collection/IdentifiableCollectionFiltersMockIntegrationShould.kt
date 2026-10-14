@@ -246,21 +246,21 @@ class IdentifiableCollectionFiltersMockIntegrationShould : BaseMockIntegrationTe
         val inBetween = DateUtils.DATE_FORMAT.parse(inBetweenDate)
         val after = DateUtils.DATE_FORMAT.parse(afterDate)
 
-        val beforeDatePeriods = listOf(DatePeriod.create(before, inBetween))
+        val beforeDatePeriods = listOf(DatePeriod(before, inBetween))
         val beforeCategories = d2.categoryModule().categories()
             .byLastUpdated().inDatePeriods(beforeDatePeriods)
             .blockingGet()
         assertThat(beforeCategories.size).isEqualTo(2)
 
-        val afterDatePeriods = listOf(DatePeriod.create(inBetween, after))
+        val afterDatePeriods = listOf(DatePeriod(inBetween, after))
         val afterCategories = d2.categoryModule().categories()
             .byLastUpdated().inDatePeriods(afterDatePeriods)
             .blockingGet()
         assertThat(afterCategories.size).isEqualTo(2)
 
         val datePeriods = listOf(
-            DatePeriod.create(before, inBetween),
-            DatePeriod.create(inBetween, after),
+            DatePeriod(before, inBetween),
+            DatePeriod(inBetween, after),
         )
         val categories = d2.categoryModule().categories()
             .byLastUpdated().inDatePeriods(datePeriods).blockingGet()

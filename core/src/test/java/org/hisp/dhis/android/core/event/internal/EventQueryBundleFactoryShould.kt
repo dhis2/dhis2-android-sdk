@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.event.EventFilterCollectionRepository
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitProgramLink
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitProgramLinkStore
+import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.resource.internal.ResourceHandler
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.settings.ProgramSetting
 import org.hisp.dhis.android.core.settings.ProgramSettings
 import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerQueryFactoryCommonHelper
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.junit.Assert.fail
 import org.junit.Before
@@ -64,6 +66,7 @@ class EventQueryBundleFactoryShould {
     private val lastUpdatedManager: EventLastUpdatedManager = mock()
     private val userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore = mock()
     private val organisationUnitProgramLinkLinkStore: OrganisationUnitProgramLinkStore = mock()
+    private val organisationUnitStore: OrganisationUnitStore = mock()
     private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
     private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
 
@@ -82,7 +85,7 @@ class EventQueryBundleFactoryShould {
     private val captureOrgUnits = listOf(ou1, ou1c1, ou2)
     private val programList = listOf(p1, p2, p3)
 
-    private val params = ProgramDataDownloadParams.builder().build()
+    private val params = ProgramDataDownloadParams()
 
     // Object to test
     private lateinit var bundleFactory: EventQueryBundleFactory
@@ -95,6 +98,7 @@ class EventQueryBundleFactoryShould {
         whenever(userOrganisationUnitLinkStore.queryRootCaptureOrganisationUnitUids()).thenReturn(rootOrgUnits)
         whenever(userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(any()))
             .thenReturn(captureOrgUnits)
+        whenever(organisationUnitStore.isLeaf(any())).thenReturn(false)
 
         whenever(programSettingsObjectRepository.getInternal()).thenReturn(programSettings)
 
@@ -103,6 +107,7 @@ class EventQueryBundleFactoryShould {
         whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(emptyList())
 
         val commonHelper = TrackerQueryFactoryCommonHelper(
+            organisationUnitStore,
             userOrganisationUnitLinkStore,
             organisationUnitProgramLinkLinkStore,
         )
@@ -120,9 +125,10 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(1)
         val bundle = bundles[0]
-        assertThat(bundle.orgUnits()).isEqualTo(rootOrgUnits)
-        assertThat(bundle.commonParams().programs).isEqualTo(programList)
-        assertThat(bundle.commonParams().ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
+        assertThat(bundle.orgUnits)
+            .isEqualTo(rootOrgUnits.map { DownloadOrgunit(it, resolvedOuMode = OrganisationUnitMode.DESCENDANTS) })
+        assertThat(bundle.commonParams.programs).isEqualTo(programList)
+        assertThat(bundle.commonParams.ouMode).isEqualTo(OrganisationUnitMode.DESCENDANTS)
     }
 
     @Test
@@ -133,15 +139,15 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            when (bundle.commonParams().programs.size) {
+            when (bundle.commonParams.programs.size) {
                 1 -> {
-                    assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                    assertThat(bundle.commonParams().limit).isEqualTo(200)
+                    assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                    assertThat(bundle.commonParams.limit).isEqualTo(200)
                 }
 
                 2 -> {
-                    assertThat(bundle.commonParams().programs.contains(p2)).isTrue()
-                    assertThat(bundle.commonParams().programs.contains(p3)).isTrue()
+                    assertThat(bundle.commonParams.programs.contains(p2)).isTrue()
+                    assertThat(bundle.commonParams.programs.contains(p3)).isTrue()
                 }
 
                 else -> {
@@ -153,13 +159,15 @@ class EventQueryBundleFactoryShould {
 
     @Test
     fun single_query_if_event_filter_provided_by_user() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000)
-            .eventFilters(listOf(f1)).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+            eventFilters = listOf(f1),
+        )
         val queries = bundleFactory.getQueries(params)
         assertThat(queries.size).isEqualTo(1)
         val query = queries.first()
-        assertThat(query.eventFilters()?.size).isEqualTo(1)
-        assertThat(query.eventFilters()?.first()).isEqualTo(f1)
+        assertThat(query.eventFilters?.size).isEqualTo(1)
+        assertThat(query.eventFilters?.first()).isEqualTo(f1)
     }
 
     @Test
@@ -170,16 +178,18 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            if (bundle.commonParams().programs.size == 1) {
-                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                assertThat(bundle.commonParams().startDate).isNotNull()
+            if (bundle.commonParams.programs.size == 1) {
+                assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams.startDate).isNotNull()
             }
         }
     }
 
     @Test
     fun apply_user_defined_limit_only_to_global_if_no_program() = runTest {
-        val params = ProgramDataDownloadParams.builder().limit(5000).build()
+        val params = ProgramDataDownloadParams(
+            limit = 5000,
+        )
 
         val settings = ProgramSetting.builder().uid(p1).eventsDownload(100).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
@@ -187,18 +197,18 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
         assertThat(bundles.size).isEqualTo(2)
         for (bundle in bundles) {
-            if (bundle.commonParams().programs.size == 1) {
-                assertThat(bundle.commonParams().programs[0]).isEqualTo(p1)
-                assertThat(bundle.commonParams().limit).isEqualTo(100)
+            if (bundle.commonParams.programs.size == 1) {
+                assertThat(bundle.commonParams.programs[0]).isEqualTo(p1)
+                assertThat(bundle.commonParams.limit).isEqualTo(100)
             } else {
-                assertThat(bundle.commonParams().limit).isEqualTo(4800)
+                assertThat(bundle.commonParams.limit).isEqualTo(4800)
             }
         }
     }
 
     @Test
     fun should_create_different_queries_if_per_orgunit_in_specific() = runTest {
-        val params = ProgramDataDownloadParams.builder().build()
+        val params = ProgramDataDownloadParams()
 
         val settings = ProgramSetting.builder().uid(p1).settingDownload(LimitScope.PER_ORG_UNIT).build()
         whenever(programSettings.specificSettings()).doReturn(mapOf(p1 to settings))
@@ -212,8 +222,8 @@ class EventQueryBundleFactoryShould {
         val bundles = bundleFactory.getQueries(params)
 
         assertThat(bundles.size).isEqualTo(3)
-        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
-        assertThat(bundles.filter { it.commonParams().program == null }.size).isEqualTo(1)
+        assertThat(bundles.filter { it.commonParams.program == p1 }.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams.program == null }.size).isEqualTo(1)
     }
 
     @Test
@@ -227,15 +237,15 @@ class EventQueryBundleFactoryShould {
             ),
         )
 
-        val params = ProgramDataDownloadParams.builder()
-            .limitByOrgunit(true)
-            .build()
+        val params = ProgramDataDownloadParams(
+            limitByOrgunit = true,
+        )
 
         val limits = bundleFactory.getQueries(params)
 
         assertThat(limits.size).isEqualTo(4)
-        assertThat(limits.filter { it.commonParams().program == p1 }.size).isEqualTo(1)
-        assertThat(limits.filter { it.commonParams().program == null }.size).isEqualTo(3)
+        assertThat(limits.filter { it.commonParams.program == p1 }.size).isEqualTo(1)
+        assertThat(limits.filter { it.commonParams.program == null }.size).isEqualTo(3)
     }
 
     @Test
@@ -249,14 +259,14 @@ class EventQueryBundleFactoryShould {
             ),
         )
 
-        val params = ProgramDataDownloadParams.builder()
-            .limitByOrgunit(true)
-            .program(p1)
-            .build()
+        val params = ProgramDataDownloadParams(
+            limitByOrgunit = true,
+            program = p1,
+        )
 
         val bundles = bundleFactory.getQueries(params)
 
         assertThat(bundles.size).isEqualTo(2)
-        assertThat(bundles.filter { it.commonParams().program == p1 }.size).isEqualTo(2)
+        assertThat(bundles.filter { it.commonParams.program == p1 }.size).isEqualTo(2)
     }
 }

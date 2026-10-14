@@ -32,17 +32,17 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 internal open class LinkHandlerImpl<S, O : CoreObject>(private val store: LinkStore<O>) : LinkHandler<S, O> {
 
-    override suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: Function1<S, O>) {
+    override suspend fun handleMany(masterUid: String, items: Collection<S>?, transformer: Function1<S, O>) {
+        val transformedLinks = items?.map { transformer.invoke(beforeObjectHandled(it)) }
+        persist(masterUid, transformedLinks)
+    }
+
+    protected suspend fun persist(masterUid: String, transformedLinks: Collection<O>?) {
         store.deleteLinksForMasterUid(masterUid)
-        if (slaves != null) {
-            val preHandledCollection = slaves
-                .map { beforeObjectHandled(it) }
-                .map { transformer.invoke(it) }
+        if (transformedLinks != null) {
+            store.updateOrInsert(transformedLinks)
 
-            // TODO Previously it was store.insertIfNotExists(). Check if we should change anything
-            store.updateOrInsert(preHandledCollection)
-
-            preHandledCollection.forEach { afterObjectHandled(it) }
+            transformedLinks.forEach { afterObjectHandled(it) }
         }
     }
 

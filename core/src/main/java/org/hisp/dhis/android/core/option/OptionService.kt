@@ -29,19 +29,41 @@
 package org.hisp.dhis.android.core.option
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 
 interface OptionService {
-    fun blockingSearchForOptions(
+
+    suspend fun suspendSearchForOptions(
         optionSetUid: String,
         searchText: String? = null,
         optionToHideUids: List<String>? = null,
         optionToShowUids: List<String>? = null,
     ): List<Option>
 
+    fun blockingSearchForOptions(
+        optionSetUid: String,
+        searchText: String? = null,
+        optionToHideUids: List<String>? = null,
+        optionToShowUids: List<String>? = null,
+    ): List<Option> = runBlocking {
+        suspendSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)
+    }
+
+    @Deprecated("Use rxSearchForOptions instead", ReplaceWith("rxSearchForOptions()"))
     fun searchForOptions(
         optionSetUid: String,
         searchText: String? = null,
         optionToHideUids: List<String>? = null,
         optionToShowUids: List<String>? = null,
-    ): Single<List<Option>>
+    ): Single<List<Option>> = rxSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)
+
+    fun rxSearchForOptions(
+        optionSetUid: String,
+        searchText: String? = null,
+        optionToHideUids: List<String>? = null,
+        optionToShowUids: List<String>? = null,
+    ): Single<List<Option>> = rxSingle {
+        suspendSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)
+    }
 }

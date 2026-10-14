@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOpe
 import org.hisp.dhis.android.core.period.DatePeriod
 import org.hisp.dhis.android.core.period.Period
 import org.hisp.dhis.android.core.period.internal.InPeriodQueryHelper
-import java.util.*
+import java.util.Date
 
 abstract class DateFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
@@ -105,7 +105,9 @@ abstract class DateFilterConnector<R : BaseRepository> internal constructor(
     fun inPeriods(periods: List<Period>): R {
         val datePeriods: MutableList<DatePeriod> = ArrayList()
         for (period in periods) {
-            datePeriods.add(DatePeriod.builder().startDate(period.startDate()).endDate(period.endDate()).build())
+            if (period.startDate != null && period.endDate != null) {
+                datePeriods.add(DatePeriod(period.startDate, period.endDate))
+            }
         }
         return inDatePeriods(datePeriods)
     }

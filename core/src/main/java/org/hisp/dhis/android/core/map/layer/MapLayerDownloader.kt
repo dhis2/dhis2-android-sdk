@@ -38,7 +38,16 @@ class MapLayerDownloader internal constructor(
     private val mapLayerCallFactory: MapLayerCallFactory,
 ) : UntypedModuleDownloader {
 
+    suspend fun suspendDownloadMetadata() {
+        mapLayerCallFactory.downloadMetadata()
+    }
+
+    @Deprecated(message = "Use rxDownloadMetadata instead", ReplaceWith("rxDownloadMetadata()"))
     override fun downloadMetadata(): Completable {
-        return rxCompletable { mapLayerCallFactory.downloadMetadata() }
+        return rxCompletable { suspendDownloadMetadata() }
+    }
+
+    fun rxDownloadMetadata(): Completable {
+        return rxCompletable { suspendDownloadMetadata() }
     }
 }

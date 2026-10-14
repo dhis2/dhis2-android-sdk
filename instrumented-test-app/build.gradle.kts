@@ -29,7 +29,6 @@
 plugins {
     id("com.android.application")
     id("jacoco-conventions")
-    kotlin("android")
     alias(libs.plugins.kotlin.serialization)
 }
 

@@ -46,7 +46,7 @@ class CategoryCategoryComboLinkStoreIntegrationShould : LinkStoreAbstractIntegra
     TestDatabaseAdapterFactory.get(),
 ) {
     override fun addMasterUid(): String {
-        return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink().categoryCombo()!!
+        return CategoryCategoryComboLinkSamples.getCategoryCategoryComboLink().categoryCombo()
     }
 
     override fun buildObject(): CategoryCategoryComboLink {

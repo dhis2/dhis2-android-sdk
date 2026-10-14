@@ -36,7 +36,7 @@ object CreateCategoryComboUtils {
     const val TEST_CREATED: String = "2001-02-07T16:04:40.387"
     const val TEST_LAST_UPDATED: String = "2001-02-07T16:04:40.387"
 
-    fun create(uid: String?, isDefault: Boolean = false): CategoryCombo {
+    fun create(uid: String, isDefault: Boolean = false): CategoryCombo {
         return CategoryCombo.builder()
             .uid(uid)
             .code(TEST_CODE)

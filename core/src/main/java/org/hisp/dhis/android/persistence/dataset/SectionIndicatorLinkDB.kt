@@ -42,7 +42,7 @@ internal data class SectionIndicatorLinkDB(
 
 internal fun SectionIndicatorLink.toDB(): SectionIndicatorLinkDB {
     return SectionIndicatorLinkDB(
-        section = section()!!,
-        indicator = indicator()!!,
+        section = section(),
+        indicator = indicator(),
     )
 }

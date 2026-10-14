@@ -57,6 +57,7 @@ import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
 import org.hisp.dhis.android.core.settings.internal.SettingModuleDownloader
 import org.hisp.dhis.android.core.sms.SmsModule
 import org.hisp.dhis.android.core.sms.domain.interactor.ConfigCase
+import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.usecase.UseCaseModuleDownloader
 import org.hisp.dhis.android.core.user.User
@@ -70,6 +71,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.*
+import java.util.Date
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
@@ -78,6 +80,7 @@ class MetadataCallShould : BaseCallShould() {
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor = CoroutineAPICallExecutorMock()
     private val loginConfigDownloader: LoginConfigDownloader = mock()
     private val systemInfoDownloader: SystemInfoModuleDownloader = mock()
+    private val systemInfo: SystemInfo = mock()
     private val systemSettingDownloader: SettingModuleDownloader = mock()
     private val useCaseModuleDownloader: UseCaseModuleDownloader = mock()
     private val userDownloader: UserModuleDownloader = mock()
@@ -121,8 +124,9 @@ class MetadataCallShould : BaseCallShould() {
         systemInfoDownloader.stub {
             onBlocking { downloadWithProgressManager(any()) }.doReturn(BaseD2Progress.empty(10))
         }
+        whenever(systemInfo.serverDate).doReturn(Date())
         systemInfoDownloader.stub {
-            onBlocking { downloadMetadata() }.doReturn(Unit)
+            onBlocking { downloadAndReturn() }.doReturn(systemInfo)
         }
         useCaseModuleDownloader.stub {
             onBlocking { downloadMetadata() }.doReturn(Unit)
@@ -216,7 +220,7 @@ class MetadataCallShould : BaseCallShould() {
     @Test
     fun fail_when_system_info_call_fail() {
         systemInfoDownloader.stub {
-            onBlocking { downloadWithProgressManager(any()) }.doAnswer { throw networkError }
+            onBlocking { downloadAndReturn() }.doAnswer { throw networkError }
         }
         downloadAndAssertError()
     }
@@ -252,7 +256,7 @@ class MetadataCallShould : BaseCallShould() {
 
     @Test
     fun fail_when_program_call_fail() = runTest {
-        whenever(programDownloader.downloadMetadata()) doAnswer { throw networkError }
+        whenever(programDownloader.downloadMetadata(any())) doAnswer { throw networkError }
         downloadAndAssertError()
     }
 

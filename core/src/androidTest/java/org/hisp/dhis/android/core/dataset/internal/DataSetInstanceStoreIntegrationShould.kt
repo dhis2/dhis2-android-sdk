@@ -98,11 +98,11 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
         val period = d2.periodModule().periodHelper().blockingGetPeriodForPeriodId("202208")
 
         val categoryOption1 = d2.categoryModule().categoryOptionCombos()
-            .byCategoryComboUid().eq(dataElements[0]?.categoryCombo()?.uid())
+            .byCategoryComboUid().eq(dataElements[0].categoryCombo()?.uid())
             .one().blockingGet()!!
 
         val categoryOption2 = d2.categoryModule().categoryOptionCombos()
-            .byCategoryComboUid().eq(dataElements[1]?.categoryCombo()?.uid())
+            .byCategoryComboUid().eq(dataElements[1].categoryCombo()?.uid())
             .one().blockingGet()!!
 
         val attributeOption = d2.categoryModule().categoryOptionCombos()
@@ -117,7 +117,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
         dataValueStore.updateOrInsertWhere(
             baseBuilder
-                .dataElement(dataElements[0]?.dataElement()?.uid()!!)
+                .dataElement(dataElements[0].dataElement().uid())
                 .categoryOptionCombo(categoryOption1.uid())
                 .syncState(state1)
                 .build(),
@@ -125,7 +125,7 @@ class DataSetInstanceStoreIntegrationShould : BaseMockIntegrationTestMetadataDis
 
         dataValueStore.updateOrInsertWhere(
             baseBuilder
-                .dataElement(dataElements[1]?.dataElement()?.uid()!!)
+                .dataElement(dataElements[1].dataElement().uid())
                 .categoryOptionCombo(categoryOption2.uid())
                 .syncState(state2)
                 .build(),

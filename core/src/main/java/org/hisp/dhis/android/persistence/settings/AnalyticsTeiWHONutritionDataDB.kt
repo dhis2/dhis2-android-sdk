@@ -34,8 +34,8 @@ internal data class AnalyticsTeiWHONutritionDataDB(
     @ParentColumn val teiSetting: String,
     val chartType: String?,
     val genderAttribute: String,
-    val genderFemale: String?,
-    val genderMale: String?,
+    val genderFemale: String,
+    val genderMale: String,
 ) : EntityDB<AnalyticsTeiWHONutritionData> {
 
     override fun toDomain(): AnalyticsTeiWHONutritionData {
@@ -59,8 +59,8 @@ internal data class AnalyticsTeiWHONutritionDataDB(
 
 internal fun AnalyticsTeiWHONutritionData.toDB(): AnalyticsTeiWHONutritionDataDB {
     return AnalyticsTeiWHONutritionDataDB(
-        teiSetting = teiSetting()!!,
-        chartType = chartType()?.name,
+        teiSetting = teiSetting(),
+        chartType = chartType().name,
         genderAttribute = gender().attribute(),
         genderFemale = gender().values().female(),
         genderMale = gender().values().male(),

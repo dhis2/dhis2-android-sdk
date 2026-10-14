@@ -63,7 +63,7 @@ internal data class ProgramStageDataElementDB(
 
 internal fun ProgramStageDataElement.toDB(): ProgramStageDataElementDB {
     return ProgramStageDataElementDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

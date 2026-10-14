@@ -59,8 +59,8 @@ internal data class TrackedEntityDataValueDB(
 
 internal fun TrackedEntityDataValue.toDB(): TrackedEntityDataValueDB {
     return TrackedEntityDataValueDB(
-        event = event()!!,
-        dataElement = dataElement()!!,
+        event = event(),
+        dataElement = dataElement(),
         storedBy = storedBy(),
         value = value(),
         created = created().dateFormat(),

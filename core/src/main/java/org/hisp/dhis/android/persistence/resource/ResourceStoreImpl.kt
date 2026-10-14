@@ -52,7 +52,7 @@ internal class ResourceStoreImpl(
                 .build()
         val resourceList = selectWhere(whereClause)
 
-        return resourceList.firstOrNull()?.lastSynced()?.let {
+        return resourceList.firstOrNull()?.lastSynced?.let {
             DateUtils.DATE_FORMAT.format(it)
         }
     }

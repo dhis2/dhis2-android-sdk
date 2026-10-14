@@ -58,12 +58,21 @@ internal class AnalyticsVisualizationsRepositoryImpl(
         return updateParams { params -> params.copy(organisationUnits = orgUnits) }
     }
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     override fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
+        return rxSingle { service.evaluate(params) }
+    }
+
+    override fun rxEvaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
         return rxSingle { service.evaluate(params) }
     }
 
     override fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {
         return runBlocking { service.evaluate(params) }
+    }
+
+    override suspend fun suspendEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {
+        return service.evaluate(params)
     }
 
     private fun updateParams(

@@ -38,7 +38,6 @@ import org.hisp.dhis.android.core.common.AssignedUserMode
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventNetworkHandler
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -160,8 +159,8 @@ class TrackedEntityInstanceQueryCallShould : BaseCallShould() {
     @Test
     fun should_query_events_if_data_value_filter() = runTest {
         val events = listOf(
-            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid1"), "tei1").build(),
-            EventInternalAccessor.insertTrackedEntityInstance(Event.builder().uid("uid2"), "tei2").build(),
+            Event.builder().uid("uid1").trackedEntityInstance("tei1").build(),
+            Event.builder().uid("uid2").trackedEntityInstance("tei2").build(),
         )
         whenEventServiceQuery { events }
 

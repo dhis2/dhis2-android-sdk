@@ -57,7 +57,7 @@ internal class TEIImportSummaryShouldwithTeiConflicts : CoreObjectShould<TEIImpo
         assertThat(importSummary.conflicts).isNotNull()
         assertThat(importSummary.conflicts!!.size).isEqualTo(1)
 
-        val importConflict = importSummary.conflicts!![0]
+        val importConflict = importSummary.conflicts[0]
 
         assertThat(importConflict).isNotNull()
         assertThat(importConflict.value)

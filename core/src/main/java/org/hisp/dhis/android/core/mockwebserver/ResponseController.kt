@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.mockwebserver
 
 class ResponseController internal constructor() {
-    private var methodsMap: MutableMap<String, LinkedHashMap<String?, String>> = mutableMapOf(
+    private val methodsMap: MutableMap<String, LinkedHashMap<String?, String>> = mutableMapOf(
         GET to LinkedHashMap(),
         POST to LinkedHashMap(),
         PUT to LinkedHashMap(),
         DELETE to LinkedHashMap(),
     )
-    private var codeResponses: MutableMap<String, Int> = mutableMapOf()
-    private var contentTypeMap: MutableMap<String, String> = mutableMapOf()
+    private val codeResponses: MutableMap<String, Int> = mutableMapOf()
+    private val contentTypeMap: MutableMap<String, String> = mutableMapOf()
 
     fun populateInternalResponses() {
         // move sdk dispatcher here
@@ -48,14 +48,14 @@ class ResponseController internal constructor() {
         responseCode: Int,
         contentType: String,
     ) {
-        var resourcesMap = methodsMap[method]
+        val resourcesMap = methodsMap[method]
         resourcesMap?.put(path, responseName)
         codeResponses.put(responseName, responseCode)
         contentTypeMap.put(responseName, contentType)
     }
 
     fun getBody(method: String, currentPath: String?): String? {
-        var resourcesMap: Map<String?, String> = methodsMap[method] ?: return null
+        val resourcesMap: Map<String?, String> = methodsMap[method] ?: return null
         var filename: String? = ""
 
         val paths: List<String?> = resourcesMap.keys.toList().asReversed()

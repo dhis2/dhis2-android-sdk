@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.validation.engine.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
@@ -59,16 +57,7 @@ internal class ValidationEngineImpl(
     private val periodHelper: PeriodHelper,
     private val orgunitGroupLinkStore: OrganisationUnitOrganisationUnitGroupLinkStore,
 ) : ValidationEngine {
-    override fun validate(
-        dataSetUid: String,
-        periodId: String,
-        orgUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<ValidationResult> {
-        return Single.fromCallable { blockingValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
-    }
-
-    override fun blockingValidate(
+    override suspend fun suspendValidate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
@@ -77,14 +66,14 @@ internal class ValidationEngineImpl(
         val rules = getValidationRulesForDataSetValidation(dataSetUid)
 
         val violations = if (rules.isNotEmpty()) {
-            val constantMap = constantMap
+            val constantMap = getConstantMap()
             val valueMap = getValueMap(
                 dataSetUid,
                 attributeOptionComboUid,
                 orgUnitUid,
                 periodId,
             )
-            val orgunitGroupMap = orgunitGroupMap
+            val orgunitGroupMap = getOrgunitGroupMap()
             val organisationUnit = getOrganisationUnit(orgUnitUid)
             val period = getPeriod(periodId)
             val context = ExpressionServiceContext(valueMap, constantMap, orgunitGroupMap, PeriodHelper.getDays(period))
@@ -104,14 +93,14 @@ internal class ValidationEngineImpl(
             .build()
     }
 
-    private fun getValidationRulesForDataSetValidation(datasetUid: String): List<ValidationRule> {
+    private suspend fun getValidationRulesForDataSetValidation(datasetUid: String): List<ValidationRule> {
         return validationRuleRepository
             .byDataSetUids(listOf(datasetUid))
             .bySkipFormValidation().isFalse
-            .blockingGet()
+            .suspendGet()
     }
 
-    private fun getValueMap(
+    private suspend fun getValueMap(
         dataSetUid: String,
         attributeOptionComboUid: String,
         orgUnitUid: String,
@@ -123,26 +112,24 @@ internal class ValidationEngineImpl(
             .byOrganisationUnitUid().eq(orgUnitUid)
             .byPeriod().eq(periodId)
             .byDeleted().isFalse
-            .blockingGet()
+            .suspendGet()
         return getValueMap(dataValues)
     }
 
-    private val constantMap: Map<String, Constant>
-        get() {
-            val constants = constantRepository.blockingGet()
-            return mapByUid(constants)
-        }
-
-    private fun getOrganisationUnit(orgunitId: String): OrganisationUnit? {
-        return organisationUnitRepository.uid(orgunitId).blockingGet()
+    private suspend fun getConstantMap(): Map<String, Constant> {
+        val constants = constantRepository.suspendGet()
+        return mapByUid(constants)
     }
 
-    private val orgunitGroupMap: Map<String, Int>
-        get() = runBlocking {
-            orgunitGroupLinkStore.groupAndGetCountBy(
-                OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
-            )
-        }
+    private suspend fun getOrganisationUnit(orgunitId: String): OrganisationUnit? {
+        return organisationUnitRepository.uid(orgunitId).suspendGet()
+    }
+
+    private suspend fun getOrgunitGroupMap(): Map<String, Int> {
+        return orgunitGroupLinkStore.groupAndGetCountBy(
+            OrganisationUnitOrganisationUnitGroupLinkTableInfo.Columns.ORGANISATION_UNIT_GROUP,
+        )
+    }
 
     private fun getPeriod(periodId: String): Period {
         return periodHelper.blockingGetPeriodForPeriodId(periodId)

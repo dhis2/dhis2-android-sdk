@@ -44,8 +44,8 @@ internal data class DataElementAttributeValueLinkDB(
 
 internal fun DataElementAttributeValueLink.toDB(): DataElementAttributeValueLinkDB {
     return DataElementAttributeValueLinkDB(
-        dataElement = dataElement()!!,
-        attribute = attribute()!!,
+        dataElement = dataElement(),
+        attribute = attribute(),
         value = value(),
     )
 }

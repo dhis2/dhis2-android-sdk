@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.tracker
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.EventStatus
 import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.network.common.PayloadJson
@@ -46,7 +45,7 @@ import org.hisp.dhis.android.network.common.dto.toZonedDateDto
 @Serializable
 internal data class NewEventDTO(
     override val deleted: Boolean?,
-    val event: String?,
+    val event: String,
     val enrollment: String?,
     val createdAt: ZonedDateDTO?,
     val updatedAt: ZonedDateDTO?,
@@ -88,10 +87,10 @@ internal data class NewEventDTO(
             dueDate(scheduledAt?.toDomain())
             attributeOptionCombo(attributeOptionCombo)
             assignedUser(assignedUser?.uid)
-            trackedEntityDataValues(dataValues?.map { it.toDomain(event) })
+            trackedEntityDataValues(dataValues?.mapNotNull { it.toDomain(event) })
             notes(notes?.map { it.toDomain(event = event) })
             relationships(relationships?.map { it.toDomain() })
-            EventInternalAccessor.insertTrackedEntityInstance(this, trackedEntity)
+            trackedEntityInstance(trackedEntity)
         }.build()
     }
 }

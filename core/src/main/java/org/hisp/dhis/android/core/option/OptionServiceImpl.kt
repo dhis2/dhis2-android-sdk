@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.option
 
-import io.reactivex.Single
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.koin.core.annotation.Singleton
 
@@ -37,7 +36,7 @@ class OptionServiceImpl(
     private val optionRepository: OptionCollectionRepository,
 ) : OptionService {
 
-    override fun blockingSearchForOptions(
+    override suspend fun suspendSearchForOptions(
         optionSetUid: String,
         searchText: String?,
         optionToHideUids: List<String>?,
@@ -56,17 +55,6 @@ class OptionServiceImpl(
             repository = repository.byDisplayName().like(searchText)
         }
 
-        return repository.orderBySortOrder(RepositoryScope.OrderByDirection.ASC).blockingGet()
-    }
-
-    override fun searchForOptions(
-        optionSetUid: String,
-        searchText: String?,
-        optionToHideUids: List<String>?,
-        optionToShowUids: List<String>?,
-    ): Single<List<Option>> {
-        return Single.fromCallable {
-            blockingSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)
-        }
+        return repository.orderBySortOrder(RepositoryScope.OrderByDirection.ASC).suspendGet()
     }
 }

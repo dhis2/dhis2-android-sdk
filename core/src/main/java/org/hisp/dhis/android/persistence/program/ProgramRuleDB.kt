@@ -56,7 +56,7 @@ internal data class ProgramRuleDB(
 
 internal fun ProgramRule.toDB(): ProgramRuleDB {
     return ProgramRuleDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

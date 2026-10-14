@@ -1,48 +1,47 @@
 [versions]
-dhis2AndroidSdkVersion = "1.14.2-SNAPSHOT"
-dhis2AndroidSdkCode = "305"
+dhis2AndroidSdkVersion = "1.15.0-SNAPSHOT"
+dhis2AndroidSdkCode = "306"
 
-gradle = "8.13.2"
-kotlin = "2.2.21"
+gradle = "9.3.1"
+kotlin = "2.4.10"
 java = "17"
-ksp = "2.2.21-2.0.4"
+ksp = "2.3.11"
 ktlint = "12.1.1"
-sonarqube = "7.2.2.6593"
+sonarqube = "7.4.0.8496"
 detekt = "1.23.8"
-dokka = "1.9.20"
+dokka = "2.2.0"
 nexusPublish = "2.0.0"
-apiCompatibility = "0.17.0"
-cyclonedx = "2.1.0"
+cyclonedx = "3.4.1"
 
-targetSdkVersion = "36"
+targetSdkVersion = "37"
 minSdkVersion = "23"
 
-libraryDesugaring = "2.1.4"
+libraryDesugaring = "2.1.5"
 
 # android
-annotation = "1.9.1"
+annotation = "1.10.0"
+androidx-core = "1.19.0"
 paging = "3.3.6"
 androidx-room = "2.8.4"
 
 # java
-autoValue = "1.11.0"
 okHttp = "5.3.2"
 ktor = "3.4.0"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
 sqlCipher = "4.9.0"
 sqLite = "2.5.2"
-zip4j = "2.11.5"
+zip4j = "2.11.6"
 smsCompression = "0.2.0"
 antlrExpressionParser = "1.0.39"
-pegExpressionParser = "1.3.1"
+pegExpressionParser = "1.5.0"
 
 # Kotlin
 kotlinxDatetime = "0.7.1"
-coroutines = "1.10.2"
-koin = "3.5.6"
-koinKsp = "1.3.1"
-kotlinxSerializationJson = "1.10.0"
+coroutines = "1.11.0"
+koin = "4.2.2"
+koinPlugin = "1.0.1"
+kotlinxSerializationJson = "1.11.0"
 
 # test dependencies
 coreTesting = "2.2.0"
@@ -58,10 +57,9 @@ liveDataTesting = "1.3.0"
 # open id
 appauth = "0.11.1"
 
-nimbusJose = "9.37.3"
-
 # listenablefuture empty
 listenablefuture = "9999.0-empty-to-avoid-conflict-with-guava"
+exifinterface = "1.4.2"
 
 
 [libraries]
@@ -76,6 +74,7 @@ rx-java = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxJa
 rx-android = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxAndroid" }
 
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "annotation" }
+androidx-core = { group = "androidx.core", name = "core", version.ref = "androidx-core" }
 androidx-paging-runtime = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging" }
 androidx-paging-testing = { group = "androidx.paging", name = "paging-testing", version.ref = "paging" }
 
@@ -85,13 +84,10 @@ androidx-room-paging = { group = "androidx.room", name = "room-paging", version.
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqLite" }
 sqlcipher = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlCipher" }
 
-google-auto-value-annotation = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autoValue" }
-google-auto-value = { group = "com.google.auto.value", name = "auto-value", version.ref = "autoValue" }
 google-truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
 
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
-koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koinKsp" }
-koin-compiler = { group = "io.insert-koin", name = "koin-ksp-compiler", version.ref = "koinKsp" }
+koin-annotations = { group = "io.insert-koin", name = "koin-annotations", version.ref = "koin" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
@@ -118,8 +114,6 @@ zip4j = { group = "net.lingala.zip4j", name = "zip4j", version.ref = "zip4j" }
 
 openid-appauth = { group = "net.openid", name = "appauth", version.ref = "appauth" }
 listenablefuture-empty = { group = "com.google.guava", name = "listenablefuture", version.ref = "listenablefuture" }
-nimbus-jose-jwt = { group = "com.nimbusds", name = "nimbus-jose-jwt", version.ref = "nimbusJose" }
-
 
 junit = { group = "junit", name = "junit", version.ref = "jUnit" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
@@ -130,16 +124,18 @@ androidx-test-runner = { group = "androidx.test", name = "runner", version.ref =
 androidx-test-rules = { group = "androidx.test", name = "rules", version.ref = "testRules" }
 androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 livedata-testing-ktx = { group = "com.jraska.livedata", name = "testing-ktx", version.ref = "liveDataTesting" }
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 
 [plugins]
 cyclonedx = { id = "org.cyclonedx.bom", version.ref = "cyclonedx" }
 sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-api-compatibility = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "apiCompatibility" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc" }
 nexus-publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexusPublish" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 room = { id = "androidx.room", version.ref = "androidx-room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+koin-compiler = { id = "io.insert-koin.compiler.plugin", version.ref = "koinPlugin" }
 
 [bundles]

@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.trackedentityinstance
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.GeometryDTO
@@ -71,9 +70,9 @@ internal data class TrackedEntityInstanceDTO(
             organisationUnit(orgUnit)
             trackedEntityType(trackedEntityType)
             geometry(geometry?.toDomain())
-            trackedEntityAttributeValues(attributes?.map { it.toDomain(trackedEntityInstance) })
-            TrackedEntityInstanceInternalAccessor.insertRelationships(this, relationships?.map { it.toDomain() })
-            TrackedEntityInstanceInternalAccessor.insertEnrollments(this, enrollments?.map { it.toDomain() })
+            trackedEntityAttributeValues(attributes?.mapNotNull { it.toDomain(trackedEntityInstance) })
+            relationships(relationships?.map { it.toDomain() })
+            enrollments(enrollments?.map { it.toDomain() })
             programOwners(programOwners?.map { it.toDomain() })
         }.build()
     }
@@ -91,8 +90,8 @@ internal fun TrackedEntityInstance.toDto(): TrackedEntityInstanceDTO {
         trackedEntityType = trackedEntityType(),
         geometry = geometry()?.toDto(),
         attributes = trackedEntityAttributeValues()?.map { it.toDto() },
-        relationships = TrackedEntityInstanceInternalAccessor.accessRelationships(this)?.map { it.toDto() },
-        enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(this)?.map { it.toDto() },
+        relationships = this.relationships?.map { it.toDto() },
+        enrollments = this.enrollments?.map { it.toDto() },
         programOwners = programOwners()?.map { it.toDto() },
     )
 }

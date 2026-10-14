@@ -28,17 +28,36 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Completable
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface ReadWriteObjectRepository<M : CoreObject> : ReadOnlyObjectRepository<M> {
+    /**
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. It throws an exception if the object doesn't exist.
+     * @throws D2Error if any errors occur, including when the object doesn't exist.
+     */
+    @Throws(D2Error::class)
+    suspend fun suspendDelete()
+
     /**
      * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
      * is performed. It returns a `Completable` that completes as soon as the object is deleted in the database.
      * The `Completable` fails if the object doesn't exist.
      * @return the `Completable` which notifies the completion
      */
-    fun delete(): Completable
+    @Deprecated(message = "Use rxDelete instead", ReplaceWith("rxDelete()"))
+    fun delete(): Completable = rxDelete()
+
+    /**
+     * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * The `Completable` fails if the object doesn't exist.
+     * @return the `Completable` which notifies the completion
+     */
+    fun rxDelete(): Completable = rxCompletable { suspendDelete() }
 
     /**
      * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
@@ -47,20 +66,35 @@ interface ReadWriteObjectRepository<M : CoreObject> : ReadOnlyObjectRepository<M
      * @throws D2Error if any errors occur, including when the object doesn't exist.
      */
     @Throws(D2Error::class)
-    fun blockingDelete()
+    fun blockingDelete() = runBlocking { suspendDelete() }
 
     /**
-     * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
+     * Removes the object in scope in a suspend way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike [.suspendDelete], it doesn't throw an exception if the object doesn't exist.
+     */
+    suspend fun suspendDeleteIfExist()
+
+    /**
+     * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
      * is performed. Unlike [.delete], it doesn't throw an exception if the object doesn't exist.
      * It returns a `Completable` that completes as soon as the object is deleted in the database.
      * @return the `Completable` which notifies the completion
      */
-    fun deleteIfExist(): Completable
+    @Deprecated(message = "Use rxDeleteIfExist instead", ReplaceWith("rxDeleteIfExist()"))
+    fun deleteIfExist(): Completable = rxDeleteIfExist()
 
     /**
      * Removes the object in scope in an asynchronous way. See the implementation JavaDoc for details on how deletion
+     * is performed. Unlike [.rxDelete], it doesn't throw an exception if the object doesn't exist.
+     * It returns a `Completable` that completes as soon as the object is deleted in the database.
+     * @return the `Completable` which notifies the completion
+     */
+    fun rxDeleteIfExist(): Completable = rxCompletable { suspendDeleteIfExist() }
+
+    /**
+     * Removes the object in scope in a synchronous way. See the implementation JavaDoc for details on how deletion
      * is performed. Unlike [.blockingDelete], it doesn't throw an exception if the object doesn't exist.
      * It blocks the thread and finishes as soon as the object is deleted in the database.
      */
-    fun blockingDeleteIfExist()
+    fun blockingDeleteIfExist() = runBlocking { suspendDeleteIfExist() }
 }

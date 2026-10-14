@@ -42,9 +42,9 @@ internal data class AnalyticsPeriodBoundaryDB(
 
 internal fun AnalyticsPeriodBoundary.toDB(): AnalyticsPeriodBoundaryDB {
     return AnalyticsPeriodBoundaryDB(
-        programIndicator = programIndicator()!!,
-        boundaryTarget = boundaryTarget()!!,
-        analyticsPeriodBoundaryType = analyticsPeriodBoundaryType()?.name!!,
+        programIndicator = programIndicator(),
+        boundaryTarget = boundaryTarget(),
+        analyticsPeriodBoundaryType = analyticsPeriodBoundaryType().name,
         offsetPeriods = offsetPeriods(),
         offsetPeriodType = offsetPeriodType()?.name,
     )

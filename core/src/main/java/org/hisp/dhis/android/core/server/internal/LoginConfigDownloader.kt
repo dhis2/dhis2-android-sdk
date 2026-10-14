@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.server.internal
 
+import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class LoginConfigDownloader(
@@ -42,14 +44,15 @@ internal class LoginConfigDownloader(
     private val networkHandler: LoginConfigNetworkHandler,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
+    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : UntypedModuleDownloaderCoroutines {
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val serverUrl =
             credentialsSecureStore.getServerUrl() ?: throw IllegalArgumentException("Credentials are not set")
 
         val loginConfig =
             if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_41)) {
-                networkHandler.loginConfig()
+                coroutineAPICallExecutor.wrap { networkHandler.loginConfig() }.getOrThrow()
             } else {
                 LoginConfig.createDefault(serverUrl)
             }
@@ -61,7 +64,7 @@ internal class LoginConfigDownloader(
             } else {
                 account
             }
-        }
+        } ?: emptyList()
         databasesConfiguration?.toBuilder()
             ?.accounts(updatedAccounts)
             ?.build()

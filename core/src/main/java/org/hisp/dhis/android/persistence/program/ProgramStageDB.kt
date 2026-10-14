@@ -15,7 +15,6 @@ import org.hisp.dhis.android.persistence.common.BaseIdentifiableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseIdentifiableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(
@@ -67,12 +66,13 @@ internal data class ProgramStageDB(
     val validationStrategy: String?,
     val displayProgramStageLabel: String?,
     val displayEventLabel: String?,
+    val displayEventsLabel: String?,
 ) : EntityDB<ProgramStage>, BaseIdentifiableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): ProgramStage {
         return ProgramStage.builder().apply {
             applyBaseIdentifiableFields(this@ProgramStageDB)
-            applyStyleFields(this@ProgramStageDB)
+            style(this@ProgramStageDB.toDomainStyle())
             description(description)
             displayDescription(displayDescription)
             displayExecutionDateLabel(displayExecutionDateLabel)
@@ -100,13 +100,14 @@ internal data class ProgramStageDB(
             validationStrategy?.let { validationStrategy(ValidationStrategy.valueOf(it)) }
             displayProgramStageLabel(displayProgramStageLabel)
             displayEventLabel(displayEventLabel)
+            displayEventsLabel(displayEventsLabel)
         }.build()
     }
 }
 
 internal fun ProgramStage.toDB(): ProgramStageDB {
     return ProgramStageDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),
@@ -134,12 +135,13 @@ internal fun ProgramStage.toDB(): ProgramStageDB {
         description = description(),
         displayDescription = displayDescription(),
         featureType = featureType()?.name,
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         enableUserAssignment = enableUserAssignment(),
         displayDueDateLabel = displayDueDateLabel(),
         validationStrategy = validationStrategy()?.name,
         displayProgramStageLabel = displayProgramStageLabel(),
         displayEventLabel = displayEventLabel(),
+        displayEventsLabel = displayEventsLabel(),
     )
 }

@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.arch.call.factories.internal
 
-fun interface ListCallCoroutines<P> {
-    suspend fun download(): List<P>
+import java.util.Date
+
+internal interface ListCallCoroutines<P> {
+    suspend fun download(syncDate: Date? = null): List<P>
 }

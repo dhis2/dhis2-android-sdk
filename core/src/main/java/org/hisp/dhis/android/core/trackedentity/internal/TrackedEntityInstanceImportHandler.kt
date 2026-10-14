@@ -39,7 +39,6 @@ import org.hisp.dhis.android.core.imports.internal.TEIWebResponseHandlerSummary
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictParser
 import org.hisp.dhis.android.core.imports.internal.TrackerImportConflictStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.tracker.importer.internal.JobReportTrackedEntityHandler
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 import org.koin.core.annotation.Singleton
@@ -166,7 +165,7 @@ internal class TrackedEntityInstanceImportHandler internal constructor(
         instances: List<TrackedEntityInstance>,
     ): List<Enrollment> {
         return instances.find { it.uid() == trackedEntityInstanceUid }?.let {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it)
+            it.enrollments
         } ?: listOf()
     }
 

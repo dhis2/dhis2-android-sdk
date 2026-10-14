@@ -57,6 +57,7 @@ internal data class ProgramSettingDB(
     val eventDateDBTrimming: String?,
     val enrollmentDateDownload: String?,
     val enrollmentDateDBTrimming: String?,
+    val imageSettings: ImageSettingsDB?,
 ) : EntityDB<ProgramSetting> {
 
     override fun toDomain(): ProgramSetting {
@@ -79,6 +80,7 @@ internal data class ProgramSettingDB(
             eventDateDBTrimming?.let { eventDateDBTrimming(DownloadPeriod.valueOf(it)) }
             enrollmentDateDownload?.let { enrollmentDateDownload(DownloadPeriod.valueOf(it)) }
             enrollmentDateDBTrimming?.let { enrollmentDateDBTrimming(DownloadPeriod.valueOf(it)) }
+            imageSettings(imageSettings?.toDomain())
         }.build()
     }
 }
@@ -103,5 +105,6 @@ internal fun ProgramSetting.toDB(): ProgramSettingDB {
         eventDateDBTrimming = eventDateDBTrimming()?.name,
         enrollmentDateDownload = enrollmentDateDownload()?.name,
         enrollmentDateDBTrimming = enrollmentDateDBTrimming()?.name,
+        imageSettings = imageSettings()?.toImageSettingsDB(),
     )
 }

@@ -10,7 +10,6 @@ import org.hisp.dhis.android.persistence.common.BaseNameableObjectDB
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.common.ObjectWithStyleDB
 import org.hisp.dhis.android.persistence.common.applyBaseNameableFields
-import org.hisp.dhis.android.persistence.common.applyStyleFields
 import org.hisp.dhis.android.persistence.common.toDB
 
 @Entity(tableName = "TrackedEntityType")
@@ -30,14 +29,16 @@ internal data class TrackedEntityTypeDB(
     override val color: String?,
     override val icon: String?,
     val accessDataWrite: AccessDB?,
+    val displayTrackedEntityTypesLabel: String?,
 ) : EntityDB<TrackedEntityType>, BaseNameableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): TrackedEntityType {
         return TrackedEntityType.builder().apply {
             applyBaseNameableFields(this@TrackedEntityTypeDB)
-            applyStyleFields(this@TrackedEntityTypeDB)
+            style(this@TrackedEntityTypeDB.toDomainStyle())
             featureType(featureType?.let { FeatureType.valueOf(it) })
             accessDataWrite?.let { access(it.toDomain()) }
+            displayTrackedEntityTypesLabel(displayTrackedEntityTypesLabel)
         }.build()
     }
 }
@@ -55,8 +56,9 @@ internal fun TrackedEntityType.toDB(): TrackedEntityTypeDB {
         description = description(),
         displayDescription = displayDescription(),
         featureType = featureType()?.name,
-        color = style()?.color(),
-        icon = style()?.icon(),
+        color = style().color(),
+        icon = style().icon(),
         accessDataWrite = access().toDB(),
+        displayTrackedEntityTypesLabel = displayTrackedEntityTypesLabel(),
     )
 }

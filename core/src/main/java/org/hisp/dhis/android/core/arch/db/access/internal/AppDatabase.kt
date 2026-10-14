@@ -165,6 +165,10 @@ import org.hisp.dhis.android.persistence.period.PeriodDB
 import org.hisp.dhis.android.persistence.period.PeriodDao
 import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryDB
 import org.hisp.dhis.android.persistence.program.AnalyticsPeriodBoundaryDao
+import org.hisp.dhis.android.persistence.program.CategoryMappingDB
+import org.hisp.dhis.android.persistence.program.CategoryMappingDao
+import org.hisp.dhis.android.persistence.program.CategoryOptionMappingDB
+import org.hisp.dhis.android.persistence.program.CategoryOptionMappingDao
 import org.hisp.dhis.android.persistence.program.ProgramDB
 import org.hisp.dhis.android.persistence.program.ProgramDao
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorDB
@@ -383,6 +387,8 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         OrganisationUnitProgramLinkDB::class,
         PeriodDB::class,
         AnalyticsPeriodBoundaryDB::class,
+        CategoryMappingDB::class,
+        CategoryOptionMappingDB::class,
         ProgramDB::class,
         ProgramIndicatorDB::class,
         ProgramRuleActionDB::class,
@@ -533,6 +539,8 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun organisationUnitProgramLinkDao(): OrganisationUnitProgramLinkDao
     internal abstract fun periodDao(): PeriodDao
     internal abstract fun analyticsPeriodBoundaryDao(): AnalyticsPeriodBoundaryDao
+    internal abstract fun categoryMappingDao(): CategoryMappingDao
+    internal abstract fun categoryOptionMappingDao(): CategoryOptionMappingDao
     internal abstract fun programDao(): ProgramDao
     internal abstract fun programIndicatorDao(): ProgramIndicatorDao
     internal abstract fun programRuleActionDao(): ProgramRuleActionDao
@@ -610,6 +618,6 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
 
     companion object {
-        const val VERSION = 180
+        const val VERSION = 181
     }
 }

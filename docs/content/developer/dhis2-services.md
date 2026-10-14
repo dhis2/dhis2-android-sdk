@@ -6,22 +6,22 @@ SDK repositories give access to metadata and allow to create and modify data, bu
 
 In order to make this task easier, the SDK includes some services that evaluate pure DHIS2 business logic. They are located in their related module and usually are suffixed by `Service`. Some examples of this:
 
-```java
+```kotlin
 // Event services
 d2.eventModule().eventService()
-    | .canAddEventToEnrollment("enrollment_uid", "program_stage_uid")
-    | .getEditableStatus("event_uid")
-    | .isEditable("event_uid") 
-    | .hasDataWriteAccess("event_uid")
+    | .suspendCanAddEventToEnrollment("enrollment_uid", "program_stage_uid")
+    | .suspendGetEditableStatus("event_uid")
+    | .suspendIsEditable("event_uid")
+    | .suspendHasDataWriteAccess("event_uid")
 
 // Enrollment services
 d2.enrollmentModule().enrollmentService()
-    | .getEnrollmentAccess("tracked_entity_instance_uid", "program_uid")
-    | .isOpen("enrollment_uid")
+    | .suspendGetEnrollmentAccess("tracked_entity_instance_uid", "program_uid")
+    | .suspendIsOpen("enrollment_uid")
 
 // Tracked entity instance services
 d2.trackedEntityModule().trackedEntityInstanceService()
-    | .inheritAttributes("from_tei_uid", "to_tei_uid", "program_uid")
+    | .blockingInheritAttributes("from_tei_uid", "to_tei_uid", "program_uid")
 ```
 
 Check the javadoc documentation in the IDE to know more details about each method.
@@ -32,23 +32,23 @@ The SDK include a enum helper class called `ValueType`. This class defines all t
 
 To access the type of value you can simply access it through the methods of the valueType.
 
-```java
-    valueType.isInteger();
-    valueType.isDecimal();
-    valueType.isNumeric();
-    valueType.isBoolean();
-    valueType.isText();
-    valueType.isDate();
-    valueType.isFile();
-    valueType.isCoordinate();
-    valueType.isGeo();
-    valueType.isJson();
+```kotlin
+valueType.isInteger
+valueType.isDecimal
+valueType.isNumeric
+valueType.isBoolean
+valueType.isText
+valueType.isDate
+valueType.isFile
+valueType.isCoordinate
+valueType.isGeo
+valueType.isJson
 ```
 
 To validate a value starting from its valueType it can be done in the following way:
 
-```java
-    valueType.getValidator().validate("value");
+```kotlin
+valueType.validator.validate("value")
 ```
 
 This validator will return a `Result` which can be `Success` or `Failure`. In addition each `ValueType` will return different types of errors making it easier to identify what the problem is if the value does not pass validation.

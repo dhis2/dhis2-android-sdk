@@ -28,11 +28,7 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.ChildElementHandlerImpl
-import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
-import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionData
-import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
-import org.hisp.dhis.android.core.settings.WHONutritionComponent
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,32 +39,10 @@ internal class AnalyticsTeiWHONutritionDataHandler(
 ) : ChildElementHandlerImpl<AnalyticsTeiWHONutritionData>(store) {
 
     override suspend fun afterObjectHandled(o: AnalyticsTeiWHONutritionData) {
-        val dataElementList =
-            getDataElements(o.x(), WHONutritionComponent.X) + getDataElements(o.y(), WHONutritionComponent.Y)
+        val dataElementList = (o.x()?.dataElements() ?: emptyList()) + (o.y()?.dataElements() ?: emptyList())
+        val indicatorList = (o.x()?.indicators() ?: emptyList()) + (o.y()?.indicators() ?: emptyList())
 
-        val indicatorList =
-            getIndicators(o.x(), WHONutritionComponent.X) + getIndicators(o.y(), WHONutritionComponent.Y)
-
-        teiDataElementHandler.handleMany(o.teiSetting()!!, dataElementList) {
-            it.toBuilder().teiSetting(o.teiSetting()).build()
-        }
-
-        teiIndicatorHandler.handleMany(o.teiSetting()!!, indicatorList) {
-            it.toBuilder().teiSetting(o.teiSetting()).build()
-        }
-    }
-
-    private fun getDataElements(
-        item: AnalyticsTeiWHONutritionItem?,
-        whoComponent: WHONutritionComponent,
-    ): List<AnalyticsTeiDataElement> {
-        return item?.dataElements()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
-    }
-
-    private fun getIndicators(
-        item: AnalyticsTeiWHONutritionItem?,
-        whoComponent: WHONutritionComponent,
-    ): List<AnalyticsTeiIndicator> {
-        return item?.indicators()?.map { it.toBuilder().whoComponent(whoComponent).build() } ?: emptyList()
+        teiDataElementHandler.handleMany(o.teiSetting(), dataElementList)
+        teiIndicatorHandler.handleMany(o.teiSetting(), indicatorList)
     }
 }

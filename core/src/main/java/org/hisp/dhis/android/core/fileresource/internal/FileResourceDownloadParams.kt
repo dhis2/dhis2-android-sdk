@@ -39,6 +39,7 @@ internal data class FileResourceDownloadParams(
     val dataDomainTypes: List<FileResourceDataDomainType> = FileResourceDataDomainType.entries,
     val domainTypes: List<FileResourceDomainType> = FileResourceDomainType.entries,
     val trackedEntityUids: List<String> = emptyList(),
+    val trackedEntityAttributeUids: List<String> = emptyList(),
     val eventUids: List<String> = emptyList(),
     val programUids: List<String> = emptyList(),
     val dataSetUids: List<String> = emptyList(),

@@ -85,7 +85,7 @@ class OptionCallShould : BaseMockIntegrationTestEmptyEnqueable() {
         assertThat(option.displayName()).isEqualTo("0-14 years")
         assertThat(option.created()).isEqualTo("2014-08-18T12:39:16.000".toJavaDate())
         assertThat(option.lastUpdated()).isEqualTo("2014-08-18T12:39:16.000".toJavaDate())
-        assertThat(option.optionSet()!!.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG")
         assertThat(option.sortOrder()).isEqualTo(1)
     }
 

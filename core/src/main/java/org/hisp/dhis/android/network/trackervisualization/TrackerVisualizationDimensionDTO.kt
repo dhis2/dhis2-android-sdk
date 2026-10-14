@@ -43,17 +43,19 @@ internal data class TrackerVisualizationDimensionDTO(
     val filter: String?,
     val repetition: TrackerVisualizationDimensionRepetitionDTO?,
 ) {
-    fun toDomain(visualization: String?, position: LayoutPosition): TrackerVisualizationDimension {
-        return TrackerVisualizationDimension.builder()
-            .trackerVisualization(visualization)
-            .position(position)
-            .dimension(dimension)
-            .dimensionType(dimensionType)
-            .program(program?.toDomain())
-            .programStage(programStage?.toDomain())
-            .items(items?.map { item -> item.toDomain() })
-            .filter(filter)
-            .repetition(repetition?.toDomain())
-            .build()
+    fun toDomain(visualization: String, position: LayoutPosition): TrackerVisualizationDimension? {
+        return dimension?.let {
+            TrackerVisualizationDimension.builder()
+                .trackerVisualization(visualization)
+                .position(position)
+                .dimension(it)
+                .dimensionType(dimensionType)
+                .program(program?.toDomain())
+                .programStage(programStage?.toDomain())
+                .items(items?.map { item -> item.toDomain() })
+                .filter(filter)
+                .repetition(repetition?.toDomain())
+                .build()
+        }
     }
 }

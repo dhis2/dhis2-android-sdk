@@ -55,8 +55,7 @@ internal class ProgramStageDataElementShould : CoreObjectShould<ProgramStageData
         Truth.assertThat(programStageDataElement.uid()).isEqualTo("LfgZNmadu4W")
         Truth.assertThat(programStageDataElement.dataElement()!!.uid()).isEqualTo("aei1xRjSU2l")
         Truth.assertThat(
-            ProgramStageDataElementInternalAccessor.accessFullDataElement(programStageDataElement)
-                ?.categoryCombo(),
+            programStageDataElement.fullDataElement()?.categoryCombo(),
         ).isEqualTo(ObjectWithUid.create("p0KPaWEg3cf"))
         Truth.assertThat(programStageDataElement.allowFutureDate()).isFalse()
         Truth.assertThat(programStageDataElement.compulsory()).isFalse()

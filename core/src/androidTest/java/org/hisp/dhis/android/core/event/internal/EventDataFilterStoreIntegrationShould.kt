@@ -55,6 +55,7 @@ class EventDataFilterStoreIntegrationShould : ObjectStoreAbstractIntegrationShou
             .eq(null)
             .like(null)
             .dateFilter(null)
+            .isEmpty(null)
             .build()
     }
 }

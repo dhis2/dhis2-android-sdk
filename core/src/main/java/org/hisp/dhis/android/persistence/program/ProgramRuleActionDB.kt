@@ -133,7 +133,7 @@ internal data class ProgramRuleActionDB(
 
 internal fun ProgramRuleAction.toDB(): ProgramRuleActionDB {
     return ProgramRuleActionDB(
-        uid = uid()!!,
+        uid = uid(),
         code = code(),
         name = name(),
         displayName = displayName(),

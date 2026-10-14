@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.validation.engine
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 
 interface ValidationEngine {
     /**
@@ -40,12 +42,31 @@ interface ValidationEngine {
      * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
      * @return Validation result
      */
+    @Deprecated(message = "Use rxValidate instead", ReplaceWith("rxValidate()"))
     fun validate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<ValidationResult>
+    ): Single<ValidationResult> = rxValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
+
+    /**
+     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
+     * list of validation conflicts.
+     *
+     * @param dataSetUid DataSet uid to run the validation rules
+     * @param periodId Validation period
+     * @param orgUnitUid Organisation unit uid to run the validation rules
+     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
+     * @return Validation result
+     */
+    fun rxValidate(
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<ValidationResult> =
+        rxSingle { suspendValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
 
     /**
      * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
@@ -60,6 +81,24 @@ interface ValidationEngine {
      * @return Validation result
      */
     fun blockingValidate(
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): ValidationResult = runBlocking { suspendValidate(dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
+
+    /**
+     * Run the validation associated to a particular dataSets returning a ValidationResult. This result contains the
+     * list of validation conflicts. Important: this is a suspend method.
+     * [.validate].
+     *
+     * @param dataSetUid DataSet uid to run the validation rules
+     * @param periodId Validation period
+     * @param orgUnitUid Organisation unit uid to run the validation rules
+     * @param attributeOptionComboUid AttributeOptionCombo uid to run the validation rules
+     * @return Validation result
+     */
+    suspend fun suspendValidate(
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,

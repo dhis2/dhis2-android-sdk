@@ -38,22 +38,53 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class OpenIDConnectTokenRefresher(
     private val context: Context,
-    private val logoutHandler: OpenIDConnectLogoutHandler,
 ) {
 
-    fun blockingGetFreshToken(authState: AuthState): String {
+    /**
+     * Obtains a fresh idToken without side effects: it never closes the session, and it reports
+     * whether a failure is worth retrying. On success [authState] has been updated in place, so the
+     * caller is responsible for persisting it.
+     */
+    @Suppress("TooGenericExceptionCaught")
+    fun refresh(authState: AuthState): OpenIdRefreshResult {
         val service = AuthorizationService(context)
-        return Single.create<String> {
-            authState.performActionWithFreshTokens(service) {
-                    _: String?, idToken: String?, ex: AuthorizationException? ->
-                service.dispose()
-                if (idToken != null) {
-                    it.onSuccess(idToken)
-                } else {
-                    logoutHandler.logOut()
-                    it.onError(RuntimeException(ex))
+        return try {
+            val idToken = Single.create<String> { emitter ->
+                authState.performActionWithFreshTokens(service) {
+                        _: String?, freshIdToken: String?, ex: AuthorizationException? ->
+                    service.dispose()
+                    if (freshIdToken != null) {
+                        emitter.onSuccess(freshIdToken)
+                    } else {
+                        emitter.onError(RefreshFailure(ex))
+                    }
                 }
-            }
-        }.blockingGet()
+            }.blockingGet()
+            OpenIdRefreshResult.Success(idToken)
+        } catch (e: Exception) {
+            service.dispose()
+            if (isRejectedByProvider(e)) OpenIdRefreshResult.Invalid else OpenIdRefreshResult.Retryable
+        }
     }
+
+    /**
+     * Only a refresh token the provider explicitly rejects is unrecoverable. A token error is the
+     * provider answering the request and refusing it; anything else — offline, timeout, an outage —
+     * is transient and must leave the stored state alone so a later call can retry.
+     */
+    private fun isRejectedByProvider(error: Throwable?): Boolean {
+        var current = error
+        while (current != null) {
+            if (current is RefreshFailure) {
+                return current.authorizationException?.type == AuthorizationException.TYPE_OAUTH_TOKEN_ERROR
+            }
+            current = current.cause
+        }
+        return false
+    }
+
+    /** Carries the AppAuth failure through RxJava so it can be classified. */
+    private class RefreshFailure(
+        val authorizationException: AuthorizationException?,
+    ) : RuntimeException(authorizationException)
 }

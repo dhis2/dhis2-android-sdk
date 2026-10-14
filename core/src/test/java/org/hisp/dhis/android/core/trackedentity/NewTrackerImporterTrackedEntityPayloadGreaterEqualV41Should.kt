@@ -42,8 +42,8 @@ internal class NewTrackerImporterTrackedEntityPayloadGreaterEqualV41Should : Cor
         val trackedEntityPayloadDTO = deserialize()
         val trackedEntityPayload = trackedEntityPayloadDTO
 
-        assertThat(trackedEntityPayload.pager()?.page).isEqualTo(1)
-        assertThat(trackedEntityPayload.pager()?.pageSize).isEqualTo(50)
+        assertThat(trackedEntityPayload.pager().page).isEqualTo(1)
+        assertThat(trackedEntityPayload.pager().pageSize).isEqualTo(50)
         assertThat(trackedEntityPayload.items().size).isEqualTo(2)
     }
 }

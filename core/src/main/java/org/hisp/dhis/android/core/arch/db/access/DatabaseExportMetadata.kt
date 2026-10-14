@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.core.arch.db.access
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.AuthorizationType
 
 @Serializable
 data class DatabaseExportMetadata(
@@ -37,4 +38,5 @@ data class DatabaseExportMetadata(
     val serverUrl: String,
     val username: String,
     val encrypted: Boolean,
+    val authorizationType: AuthorizationType = AuthorizationType.BASIC,
 )

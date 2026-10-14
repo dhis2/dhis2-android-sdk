@@ -47,7 +47,7 @@ internal class SettingsAppInfoCall(
     private suspend fun fetchAppVersion(): SettingsAppVersion {
         return try {
             val info = networkHandler.settingsAppInfo()
-            SettingsAppVersion.Valid(info.dataStoreVersion(), info.androidSettingsVersion() ?: UNKNOWN)
+            SettingsAppVersion.Valid(info.dataStoreVersion, info.androidSettingsVersion ?: UNKNOWN)
         } catch (exception: D2Error) {
             when {
                 exception.httpErrorCode() == HttpURLConnection.HTTP_NOT_FOUND -> fetchV1GeneralSettings()

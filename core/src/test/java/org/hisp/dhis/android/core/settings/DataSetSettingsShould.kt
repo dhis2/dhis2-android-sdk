@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.network.settings.DataSetSettingsDTO
 import org.junit.Test
 
@@ -59,5 +60,11 @@ internal class DataSetSettingsShould : CoreObjectShould<DataSetSettingsDTO>(
             .isEqualTo(BaseIdentifiableObject.parseDate("2020-01-31T22:38:20.210Z"))
         assertThat(childHealth.periodDSDownload()).isEqualTo(10)
         assertThat(childHealth.periodDSDBTrimming()).isEqualTo(15)
+        assertThat(childHealth.imageSettings()).isEqualTo(
+            mapOf(
+                "aJK3Dfn45Ol" to mapOf("uploadQuality" to UploadQuality.DEFAULT),
+                "bJK3Dfn45Ol" to mapOf("uploadQuality" to UploadQuality.ORIGINAL),
+            ),
+        )
     }
 }

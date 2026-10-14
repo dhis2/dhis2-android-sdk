@@ -33,6 +33,7 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.dataset
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.event1
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.program
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.trackedEntityAttribute
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceRoutineSamples.trackedEntityInstance
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -72,6 +73,32 @@ internal class FileResourceDownloadCallHelperIntegrationShould : BaseFileResourc
             ),
             TestConfig(
                 params = FileResourceDownloadParams(programUids = listOf("non-existing-program")),
+                expectedSize = 0,
+            ),
+        )
+
+        configs.forEach { config ->
+            fileResourceCallHelper.getMissingTrackerAttributeValues(config.params, emptyList()).let { files ->
+                assertThat(files.size).isEqualTo(config.expectedSize)
+            }
+        }
+    }
+
+    @Test
+    fun get_missing_attributes_scoped_by_attribute() = runTest {
+        val configs = listOf(
+            TestConfig(
+                params = FileResourceDownloadParams(
+                    trackedEntityUids = listOf(trackedEntityInstance.uid()),
+                    trackedEntityAttributeUids = listOf(trackedEntityAttribute.uid()),
+                ),
+                expectedSize = 1,
+            ),
+            TestConfig(
+                params = FileResourceDownloadParams(
+                    trackedEntityUids = listOf(trackedEntityInstance.uid()),
+                    trackedEntityAttributeUids = listOf("non-existing-attribute"),
+                ),
                 expectedSize = 0,
             ),
         )

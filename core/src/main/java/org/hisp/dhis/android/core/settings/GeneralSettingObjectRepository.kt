@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -69,18 +71,35 @@ class GeneralSettingObjectRepository internal constructor(
     }
 
     fun blockingHasExperimentalFeature(featureName: String): Boolean {
-        return blockingGet()?.experimentalFeatures()?.contains(featureName) ?: false
+        return runBlocking { suspendHasExperimentalFeature(featureName) }
     }
 
+    @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(featureName)"))
     fun hasExperimentalFeature(featureName: String): Single<Boolean> {
-        return Single.fromCallable { blockingHasExperimentalFeature(featureName) }
+        return rxSingle { suspendHasExperimentalFeature(featureName) }
     }
+
+    fun rxHasExperimentalFeature(featureName: String): Single<Boolean> {
+        return rxSingle { suspendHasExperimentalFeature(featureName) }
+    }
+
+    suspend fun suspendHasExperimentalFeature(featureName: String): Boolean =
+        getInternal()?.experimentalFeatures()?.contains(featureName) ?: false
 
     fun blockingHasExperimentalFeature(feature: ExperimentalFeature): Boolean {
-        return blockingGet()?.experimentalFeatures()?.contains(feature.jsonName) ?: false
+        return runBlocking { suspendHasExperimentalFeature(feature) }
     }
 
+    @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(feature)"))
     fun hasExperimentalFeature(feature: ExperimentalFeature): Single<Boolean> {
-        return Single.fromCallable { blockingHasExperimentalFeature(feature) }
+        return rxSingle { suspendHasExperimentalFeature(feature) }
+    }
+
+    fun rxHasExperimentalFeature(feature: ExperimentalFeature): Single<Boolean> {
+        return rxSingle { suspendHasExperimentalFeature(feature) }
+    }
+
+    suspend fun suspendHasExperimentalFeature(feature: ExperimentalFeature): Boolean {
+        return getInternal()?.experimentalFeatures()?.contains(feature.jsonName) ?: false
     }
 }

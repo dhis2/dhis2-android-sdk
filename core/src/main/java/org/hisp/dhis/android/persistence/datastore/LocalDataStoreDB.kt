@@ -22,7 +22,7 @@ internal data class LocalDataStoreDB(
 
 internal fun KeyValuePair.toDB(): LocalDataStoreDB {
     return LocalDataStoreDB(
-        key = key()!!,
+        key = key(),
         value = value(),
     )
 }

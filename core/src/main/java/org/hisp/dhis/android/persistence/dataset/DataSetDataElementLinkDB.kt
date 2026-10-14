@@ -53,7 +53,7 @@ internal data class DataSetDataElementLinkDB(
 
 internal fun DataSetElement.toDB(): DataSetDataElementLinkDB {
     return DataSetDataElementLinkDB(
-        dataSet = dataSet()!!.uid(),
+        dataSet = dataSet().uid(),
         dataElement = dataElement().uid(),
         categoryCombo = categoryCombo()?.uid(),
     )

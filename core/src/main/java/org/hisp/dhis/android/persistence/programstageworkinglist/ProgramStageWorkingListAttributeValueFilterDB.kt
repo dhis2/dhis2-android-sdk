@@ -72,6 +72,7 @@ internal data class ProgramStageWorkingListAttributeValueFilterDB(
     override val inProperty: StringSetDB?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDB?,
+    override val isEmpty: Boolean?,
 ) : EntityDB<ProgramStageWorkingListAttributeValueFilter>, FilterOperatorsDB {
     override fun toDomain(): ProgramStageWorkingListAttributeValueFilter {
         return ProgramStageWorkingListAttributeValueFilter.builder()
@@ -98,5 +99,6 @@ internal fun ProgramStageWorkingListAttributeValueFilter.toDB(): ProgramStageWor
         inProperty = `in`()?.toDB(),
         like = like(),
         dateFilter = dateFilter()?.toDB(),
+        isEmpty = isEmpty,
     )
 }

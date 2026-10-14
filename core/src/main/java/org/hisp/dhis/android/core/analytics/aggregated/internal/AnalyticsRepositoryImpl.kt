@@ -62,12 +62,21 @@ internal class AnalyticsRepositoryImpl(
         return updateParams { params -> params.copy(aggregationType = aggregationType) }
     }
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     override fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
+        return rxSingle { analyticsService.evaluate(params) }
+    }
+
+    override fun rxEvaluate(): Single<Result<DimensionalResponse, AnalyticsException>> {
         return rxSingle { analyticsService.evaluate(params) }
     }
 
     override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
         return runBlocking { analyticsService.evaluate(params) }
+    }
+
+    override suspend fun suspendEvaluate(): Result<DimensionalResponse, AnalyticsException> {
+        return analyticsService.evaluate(params)
     }
 
     private fun updateParams(

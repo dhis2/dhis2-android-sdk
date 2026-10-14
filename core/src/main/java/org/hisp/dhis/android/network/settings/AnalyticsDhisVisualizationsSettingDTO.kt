@@ -29,6 +29,9 @@
 package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.DATA_SET
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.HOME
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope.PROGRAM
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsSetting
 
 @Serializable
@@ -39,9 +42,9 @@ internal data class AnalyticsDhisVisualizationsSettingDTO(
 ) {
     fun toDomain(): AnalyticsDhisVisualizationsSetting {
         return AnalyticsDhisVisualizationsSetting.builder()
-            .home(home.map { it.toDomain() })
-            .program(program.map { (key, value) -> key to value.map { it.toDomain() } }.toMap())
-            .dataSet(dataSet.map { (key, value) -> key to value.map { it.toDomain() } }.toMap())
+            .home(home.map { it.toDomain(HOME) })
+            .program(program.map { (key, value) -> key to value.map { it.toDomain(PROGRAM, key) } }.toMap())
+            .dataSet(dataSet.map { (key, value) -> key to value.map { it.toDomain(DATA_SET, key) } }.toMap())
             .build()
     }
 }

@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.fileresource
 
-internal enum class FileResourceStorageStatus {
+enum class FileResourceStorageStatus {
     NONE,
     PENDING,
     FAILED,

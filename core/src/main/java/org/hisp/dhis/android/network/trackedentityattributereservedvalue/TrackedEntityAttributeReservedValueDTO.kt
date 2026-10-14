@@ -41,14 +41,18 @@ internal data class TrackedEntityAttributeReservedValueDTO(
     val created: String?,
     val expiryDate: String?,
 ) {
-    fun toDomain(): TrackedEntityAttributeReservedValue {
-        return TrackedEntityAttributeReservedValue.builder()
-            .ownerObject(ownerObject)
-            .ownerUid(ownerUid)
-            .key(key)
-            .value(value)
-            .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .expiryDate(expiryDate?.let { DateUtils.DATE_FORMAT.parse(it) })
-            .build()
+    fun toDomain(): TrackedEntityAttributeReservedValue? {
+        return if (ownerObject != null && ownerUid != null) {
+            TrackedEntityAttributeReservedValue.builder()
+                .ownerObject(ownerObject)
+                .ownerUid(ownerUid)
+                .key(key)
+                .value(value)
+                .created(created?.let { DateUtils.DATE_FORMAT.parse(it) })
+                .expiryDate(expiryDate?.let { DateUtils.DATE_FORMAT.parse(it) })
+                .build()
+        } else {
+            null
+        }
     }
 }

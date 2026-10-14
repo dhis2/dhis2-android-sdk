@@ -41,7 +41,6 @@ import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramStore
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.core.user.UserInternalAccessor
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.hisp.dhis.android.core.user.internal.UserStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyEnqueable
@@ -71,8 +70,10 @@ class OrganisationUnitCallMockIntegrationShould : BaseMockIntegrationTestEmptyEn
 
             // Create a user with the root as assigned organisation unit (for the test):
             val userStore = koin.get<UserStore>()
-            val user = UserInternalAccessor.insertOrganisationUnits(User.builder(), organisationUnits)
-                .uid(userId).build()
+            val user = User.builder()
+                .organisationUnits(organisationUnits)
+                .uid(userId)
+                .build()
             userStore.insert(user)
 
             val categoryComboUid = "category_combo_uid"

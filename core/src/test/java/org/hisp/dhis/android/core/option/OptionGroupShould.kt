@@ -52,7 +52,7 @@ internal class OptionGroupShould : CoreObjectShould<OptionGroupDTO>(
         assertThat(optionGroup.lastUpdated()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2019-02-15T13:55:55.665"),
         )
-        assertThat(optionGroup.optionSet()!!.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(optionGroup.optionSet().uid()).isEqualTo("VQ2lai3OfVG")
         assertThat(optionGroup.options()!![0].uid()).isEqualTo("Y1ILwhy5VDY")
         assertThat(optionGroup.options()!![1].uid()).isEqualTo("egT1YqFWsVk")
     }

@@ -93,7 +93,7 @@ internal class EventFilterShould : CoreObjectShould<EventFilterDTO>(
         )
         assertThat(eventFilter.eventQueryCriteria()!!.events()).isEqualTo(listOf("event1Uid", "event2Uid"))
 
-        val dateFilter1 = eventFilter.eventQueryCriteria()!!.dataFilters()!![0]!!
+        val dateFilter1 = eventFilter.eventQueryCriteria()!!.dataFilters()!![0]
         assertThat(dateFilter1.dataItem()).isEqualTo("abcDataElementUid")
         assertThat(dateFilter1.le()).isEqualTo("20")
         assertThat(dateFilter1.ge()).isEqualTo("10")
@@ -102,19 +102,19 @@ internal class EventFilterShould : CoreObjectShould<EventFilterDTO>(
         assertThat(dateFilter1.`in`()).isEqualTo(setOf("India", "Norway"))
         assertThat(dateFilter1.like()).isEqualTo("abc")
 
-        val dateFilter2 = eventFilter.eventQueryCriteria()!!.dataFilters()!![1]!!
+        val dateFilter2 = eventFilter.eventQueryCriteria()!!.dataFilters()!![1]
         assertThat(dateFilter2.dataItem()).isEqualTo("dateDataElementUid")
         assertThat(dateFilter2.dateFilter()!!.startDate()).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2014-05-01"))
         assertThat(dateFilter2.dateFilter()!!.endDate()).isEqualTo(DateUtils.SIMPLE_DATE_FORMAT.parse("2019-03-20"))
         assertThat(dateFilter2.dateFilter()!!.type()).isEqualTo(DatePeriodType.ABSOLUTE)
 
-        val dateFilter3 = eventFilter.eventQueryCriteria()!!.dataFilters()!![2]!!
+        val dateFilter3 = eventFilter.eventQueryCriteria()!!.dataFilters()!![2]
         assertThat(dateFilter3.dataItem()).isEqualTo("anotherDateDataElementUid")
         assertThat(dateFilter3.dateFilter()!!.startBuffer()).isEqualTo(-5)
         assertThat(dateFilter3.dateFilter()!!.endBuffer()).isEqualTo(5)
         assertThat(dateFilter3.dateFilter()!!.type()).isEqualTo(DatePeriodType.RELATIVE)
 
-        val dateFilter4 = eventFilter.eventQueryCriteria()!!.dataFilters()!![3]!!
+        val dateFilter4 = eventFilter.eventQueryCriteria()!!.dataFilters()!![3]
         assertThat(dateFilter4.dataItem()).isEqualTo("yetAnotherDateDataElementUid")
         assertThat(dateFilter4.dateFilter()!!.period()).isEqualTo(RelativePeriod.LAST_WEEK)
         assertThat(dateFilter4.dateFilter()!!.type()).isEqualTo(DatePeriodType.RELATIVE)

@@ -62,8 +62,8 @@ internal data class RelationshipConstraintDB(
             .programStage(programStage?.let { ObjectWithUidDB(it).toDomain() })
             .trackerDataView(
                 TrackerDataView.builder()
-                    .attributes(trackerDataViewAttributes?.toDomain())
-                    .dataElements(trackerDataViewDataElements?.toDomain())
+                    .attributes(trackerDataViewAttributes?.toDomain() ?: emptyList())
+                    .dataElements(trackerDataViewDataElements?.toDomain() ?: emptyList())
                     .build(),
             )
             .build()

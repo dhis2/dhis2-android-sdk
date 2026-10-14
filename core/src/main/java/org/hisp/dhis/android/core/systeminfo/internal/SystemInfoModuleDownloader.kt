@@ -36,6 +36,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class SystemInfoModuleDownloader internal constructor(
     private val systemInfoCall: SystemInfoCall,
+    private val systemInfoStore: SystemInfoStore,
 ) : UntypedSuspendModuleDownloader {
 
     override suspend fun downloadMetadata() {
@@ -45,5 +46,10 @@ internal class SystemInfoModuleDownloader internal constructor(
     suspend fun downloadWithProgressManager(progressManager: D2ProgressManager): D2Progress {
         downloadMetadata()
         return progressManager.increaseProgress(SystemInfo::class.java, false)
+    }
+
+    suspend fun downloadAndReturn(): SystemInfo? {
+        downloadMetadata()
+        return systemInfoStore.selectFirst()
     }
 }

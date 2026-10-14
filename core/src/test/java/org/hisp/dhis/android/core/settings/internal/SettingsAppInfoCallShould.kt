@@ -51,10 +51,10 @@ import org.mockito.kotlin.whenever
 @RunWith(JUnit4::class)
 class SettingsAppInfoCallShould {
     private val networkHandler: SettingsNetworkHandler = mock()
-    private val settingsAppInfo = SettingsAppInfo.builder()
-        .dataStoreVersion(SettingsAppDataStoreVersion.V2_0)
-        .build()
-
+    private val settingsAppInfo = SettingsAppInfo(
+        dataStoreVersion = SettingsAppDataStoreVersion.V2_0,
+        androidSettingsVersion = null,
+    )
     private val generalSettings = GeneralSettings.builder()
         .encryptDB(true)
         .build()

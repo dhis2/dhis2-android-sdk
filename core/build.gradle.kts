@@ -1,6 +1,5 @@
-import com.google.devtools.ksp.gradle.KspTask
 import org.gradle.api.tasks.Sync
-import org.jetbrains.dokka.gradle.DokkaTask
+import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
 
 /*
  * Copyright (c) 2016, University of Oslo
@@ -32,19 +31,17 @@ import org.jetbrains.dokka.gradle.DokkaTask
 
 plugins {
     id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
     id("maven-publish-conventions")
     id("jacoco-conventions")
+    id("io.github.tjokinen.android-bcv-bridge") version "0.2.0"
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.javadoc)
     alias(libs.plugins.room)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
-    alias(libs.plugins.api.compatibility)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.koin.compiler)
 }
-
-apply(from = project.file("plugins/android-checkstyle.gradle"))
-apply(from = project.file("plugins/android-pmd.gradle"))
 
 repositories {
     mavenCentral()
@@ -73,6 +70,39 @@ tasks.configureEach {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+koinCompiler {
+    // compileSafety stays on (default). strictSafety is auto-enabled because the plugin detects
+    // koinApplication in this module, but its per-module isolation checks report false positives
+    // on this 45-module graph, so it is explicitly disabled.
+    strictSafety = false
+}
+
+// The Koin checker runs once per Kotlin compilation. Test compilations analyze test sources
+// against a partial definition index and report false "missing definition" errors, so the
+// safety checks are disabled for them; the main compilation keeps them on.
+afterEvaluate {
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>()
+        .matching { it.name.contains("UnitTest") || it.name.contains("AndroidTest") }
+        .configureEach {
+            val rewritten = pluginOptions.get().map { config ->
+                val newConfig = org.jetbrains.kotlin.gradle.plugin.CompilerPluginConfig()
+                config.allOptions().forEach { (pluginId, options) ->
+                    options.forEach { option ->
+                        val newOption =
+                            if (pluginId == "io.insert-koin.compiler.plugin" && option.key == "compileSafety") {
+                                org.jetbrains.kotlin.gradle.plugin.SubpluginOption("compileSafety", "false")
+                            } else {
+                                option
+                            }
+                        newConfig.addPluginArgument(pluginId, newOption)
+                    }
+                }
+                newConfig
+            }
+            pluginOptions.set(rewritten)
+        }
 }
 
 android {
@@ -107,17 +137,16 @@ android {
     }
 
     sourceSets {
-        sourceSets.getByName("main") {
+        getByName("main") {
             java.srcDirs("build/generated/ksp/main/kotlin")
         }
         getByName("test") {
             resources.srcDirs("src/sharedTest/resources")
         }
         getByName("androidTest") {
-            java.srcDirs("src/sharedTest/java")
             resources.srcDirs(
                 "src/sharedAndroidTest/resources",
-                layout.buildDirectory.dir("generated/sharedAndroidTest/resources"),
+                layout.buildDirectory.dir("generated/sharedAndroidTest/resources").get().asFile,
             )
         }
     }
@@ -137,6 +166,7 @@ android {
     namespace = "org.hisp.dhis.android"
     buildFeatures {
         buildConfig = true
+        resValues = true
     }
 
     publishing {
@@ -151,10 +181,25 @@ kotlin {
         freeCompilerArgs.add("-opt-in=kotlinx.serialization.ExperimentalSerializationApi")
         freeCompilerArgs.add("-opt-in=kotlin.time.ExperimentalTime")
     }
+
+    // In order to make it work, it requires the bridge plugin because of this issue
+    // https://youtrack.jetbrains.com/issue/KT-78025
+    @OptIn(ExperimentalAbiValidation::class)
+    abiValidation()
+}
+
+// AGP's built-in Kotlin support no longer syncs `android.sourceSets` with the Kotlin compilation
+// (see https://kotl.in/gradle/agp-built-in-kotlin), so the shared test sources shared between unit
+// and instrumented tests must be registered through the variant Sources API instead.
+androidComponents {
+    onVariants { variant ->
+        variant.androidTest?.sources?.kotlin?.addStaticSourceDirectory("src/sharedTest/java")
+    }
 }
 
 dependencies {
 
+    implementation(libs.androidx.exifinterface)
     coreLibraryDesugaring(libs.desugaring)
 
     ksp(project(":processor"))
@@ -166,16 +211,12 @@ dependencies {
 
     // AndroidX
     api(libs.androidx.annotation)
+    implementation(libs.androidx.core)
     api(libs.androidx.paging.runtime)
-
-    // Auto Value
-    api(libs.google.auto.value.annotation)
-    kapt(libs.google.auto.value)
 
     // Koin
     implementation(libs.koin.core)
     implementation(libs.koin.annotations)
-    ksp(libs.koin.compiler)
 
     // Square libraries
     api(libs.okhttp)
@@ -208,7 +249,6 @@ dependencies {
 
     implementation(libs.openid.appauth)
     implementation(libs.listenablefuture.empty)
-    implementation(libs.nimbus.jose.jwt)
 
     // Database
     implementation(libs.androidx.room.runtime)
@@ -249,17 +289,8 @@ class MigrationDirProvider(private val path: String) : CommandLineArgumentProvid
 
 val migrationDirPath: String = layout.projectDirectory.dir("src/main/assets/migrations")
     .asFile.absolutePath
-afterEvaluate {
-    tasks.named("kspDebugKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
-    tasks.named("kspReleaseKotlin").configure {
-        (this as KspTask).commandLineArgumentProviders.add(
-            MigrationDirProvider(migrationDirPath),
-        )
-    }
+ksp {
+    arg(MigrationDirProvider(migrationDirPath))
 }
 
 detekt {
@@ -269,35 +300,16 @@ detekt {
     buildUponDefaultConfig = false
 }
 
-tasks.withType<DokkaTask>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            perPackageOption {
-                matchingRegex.set(".*.internal.*")
-                suppress.set(true)
-            }
-        }
-    }
-    dokkaSourceSets {
-        configureEach {
-            moduleName.set("DHIS2 Android SDK")
-        }
-    }
+dokka {
+    moduleName.set("DHIS2 Android SDK")
 
-    val dokkaBaseConfiguration = """
-    {
-      "customAssets": ["${file("../assets/logo-icon.svg")}"]
+    pluginsConfiguration.html {
+        customAssets.from(file("../assets/logo-icon.svg"))
     }
-    """
-    pluginsMapConfiguration.set(
-        mapOf(
-            "org.jetbrains.dokka.base.DokkaBase" to dokkaBaseConfiguration,
-        ),
-    )
 }
 
-tasks.dokkaJavadoc.configure {
-    dependsOn("kaptReleaseKotlin")
+tasks.named("dokkaGeneratePublicationJavadoc").configure {
+    dependsOn("kspReleaseKotlin")
 }
 
 // Custom task to run code quality checks, unit tests, and instrumentation tests sequentially
@@ -309,20 +321,16 @@ tasks.register("testAll") {
         "clean",
         "ktlintFormat",
         "detekt",
-        "checkstyleDebug",
-        "pmdDebug",
         "lintDebug",
-        "apiDump",
+        "releaseApiDump",
         "testDebugUnitTest",
         "connectedDebugAndroidTest",
     )
 
     tasks.findByName("ktlintFormat")?.mustRunAfter("clean")
     tasks.findByName("detekt")?.mustRunAfter("ktlintFormat")
-    tasks.findByName("checkstyleDebug")?.mustRunAfter("detekt")
-    tasks.findByName("pmdDebug")?.mustRunAfter("checkstyleDebug")
-    tasks.findByName("lintDebug")?.mustRunAfter("pmdDebug")
-    tasks.findByName("apiDump")?.mustRunAfter("lintDebug")
-    tasks.findByName("testDebugUnitTest")?.mustRunAfter("apiDump")
+    tasks.findByName("lintDebug")?.mustRunAfter("detekt")
+    tasks.findByName("releaseApiDump")?.mustRunAfter("lintDebug")
+    tasks.findByName("testDebugUnitTest")?.mustRunAfter("releaseApiDump")
     tasks.findByName("connectedDebugAndroidTest")?.mustRunAfter("testDebugUnitTest")
 }

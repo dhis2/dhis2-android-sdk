@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.validation.internal.ValidationRuleCall
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleUidsCallCoroutines
 import org.hisp.dhis.android.persistence.dataset.DataSetOrganisationUnitLinkTableInfo
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Suppress("LongParameterList")
 @Singleton
@@ -51,7 +52,7 @@ internal class DataSetModuleDownloader(
     private val dataSetOrganisationUnitLinkStore: DataSetOrganisationUnitLinkStore,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val orgUnitDataSetUids = dataSetOrganisationUnitLinkStore
             .selectDistinctSlaves(DataSetOrganisationUnitLinkTableInfo.Columns.DATA_SET)
         val dataSets = dataSetCallFactory.create(orgUnitDataSetUids)

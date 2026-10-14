@@ -51,21 +51,21 @@ internal data class NewRelationshipItemDTO(
             .relationshipItemType(constraintType)
 
         return when {
-            trackedEntity != null ->
+            trackedEntity?.trackedEntity != null ->
                 builder.trackedEntityInstance(
                     RelationshipItemTrackedEntityInstance.builder()
                         .trackedEntityInstance(trackedEntity.trackedEntity)
                         .build(),
                 ).build()
 
-            enrollment != null ->
+            enrollment?.enrollment != null ->
                 builder.enrollment(
                     RelationshipItemEnrollment.builder()
                         .enrollment(enrollment.enrollment)
                         .build(),
                 ).build()
 
-            event != null ->
+            event?.event != null ->
                 builder.event(
                     RelationshipItemEvent.builder()
                         .event(event.event)

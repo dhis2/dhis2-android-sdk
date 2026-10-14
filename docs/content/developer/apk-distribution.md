@@ -7,14 +7,14 @@ The APK distribution app allows the definition of different versions by user gro
 
 The app can get this version by using the LatestAppVersion repository:
 
-```kt
-d2.settingModule().latestAppVersion().get()
+```kotlin
+d2.settingModule().latestAppVersion().suspendGet()
 ```
 
 This version is updated with each metadata sync. To check for updates without triggering a full metadata sync, this method can be used:
 
-```kt
-d2.settingModule().latestAppVersion().download()
+```kotlin
+d2.settingModule().latestAppVersion().suspendDownload()
 ```
 
 Once the download is completed, the version can be read from the database as usual.

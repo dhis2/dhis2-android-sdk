@@ -30,32 +30,12 @@ package org.hisp.dhis.android.core.arch.handlers.internal
 import org.hisp.dhis.android.core.arch.db.stores.internal.LinkStore
 import org.hisp.dhis.android.core.common.CoreObject
 
-internal open class ChildElementHandlerImpl<O : CoreObject>(private val store: LinkStore<O>) : ChildElementHandler<O> {
+internal open class ChildElementHandlerImpl<O : CoreObject>(
+    store: LinkStore<O>,
+) : LinkHandlerImpl<O, O>(store), ChildElementHandler<O> {
 
-    override suspend fun handleMany(masterUid: String, slaves: Collection<O>?) {
-        store.deleteLinksForMasterUid(masterUid)
-        slaves?.forEach { slave ->
-            handleInternal(slave)
-        }
-    }
-
-    private suspend fun handleInternal(s: O) {
-        val s2 = beforeObjectHandled(s)
-        store.insertIfNotExists(s2)
-        afterObjectHandled(s2)
-    }
-
-    protected open suspend fun beforeObjectHandled(o: O): O {
-        return o
-    }
-
-    protected open suspend fun afterObjectHandled(o: O) {
-        /* Method is not abstract since empty action is the default action and we don't want it to
-         * be unnecessarily written in every child.
-         */
-    }
-
-    override suspend fun resetAllLinks() {
-        store.deleteAllLinks()
+    override suspend fun handleMany(masterUid: String, items: Collection<O>?) {
+        val transformedLinks = items?.map { beforeObjectHandled(it) }
+        persist(masterUid, transformedLinks)
     }
 }

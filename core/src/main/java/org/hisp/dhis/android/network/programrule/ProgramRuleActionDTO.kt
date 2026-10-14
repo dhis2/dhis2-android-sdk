@@ -60,7 +60,7 @@ internal data class ProgramRuleActionDTO(
     val priority: Int?,
     val legendSet: ObjectWithUidDTO?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(programRuleId: String?): ProgramRuleAction {
+    fun toDomain(programRuleId: String): ProgramRuleAction {
         return ProgramRuleAction.builder()
             .applyBaseIdentifiableFields(this)
             .programRule(ObjectWithUid.create(programRuleId))

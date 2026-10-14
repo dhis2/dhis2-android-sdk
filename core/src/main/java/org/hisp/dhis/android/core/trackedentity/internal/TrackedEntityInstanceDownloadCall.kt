@@ -33,8 +33,13 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -43,14 +48,16 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryCollectionRepository
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
-@Suppress("LongParameterList")
+@Suppress("LongParameterList", "TooManyFunctions")
 internal class TrackedEntityInstanceDownloadCall(
     userOrganisationUnitLinkStore: UserOrganisationUnitLinkStore,
     systemInfoModuleDownloader: SystemInfoModuleDownloader,
@@ -59,6 +66,7 @@ internal class TrackedEntityInstanceDownloadCall(
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     databaseAdapter: DatabaseAdapter,
+    fileResourceDownloadCall: FileResourceDownloadCall,
     private val queryFactory: TrackerQueryBundleFactory,
     private val trackerCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: TrackedEntityInstancePersistenceCallFactory,
@@ -73,6 +81,7 @@ internal class TrackedEntityInstanceDownloadCall(
     organisationUnitStore,
     organisationUnitNetworkHandler,
     databaseAdapter,
+    fileResourceDownloadCall,
 ) {
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<TrackerQueryBundle> {
         return queryFactory.getQueries(params)
@@ -94,20 +103,37 @@ internal class TrackedEntityInstanceDownloadCall(
         persistenceCallFactory.persistTEIs(items, params, relatives)
     }
 
-    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle) {
-        lastUpdatedManager.update(bundle)
+    override suspend fun updateLastUpdated(bundle: TrackerQueryBundle, syncDate: Date) {
+        lastUpdatedManager.update(bundle, syncDate)
+    }
+
+    override fun getFileResourceDownloadParams(
+        items: List<TrackedEntityInstance>,
+        program: String?,
+    ): FileResourceDownloadParams {
+        return FileResourceDownloadParams(
+            domainTypes = listOf(FileResourceDomainType.DATA_VALUE),
+            dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
+            trackedEntityUids = items.map { it.uid },
+            trackedEntityAttributeUids = items
+                .flatMap { it.trackedEntityAttributeValues().orEmpty() }
+                .map { it.trackedEntityAttribute() }
+                .distinct(),
+            programUids = listOfNotNull(program),
+        )
     }
 
     override suspend fun queryByUids(
         bundle: TrackerQueryBundle,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val teiQuery = TrackerAPIQuery(
-            commonParams = bundle.commonParams(),
-            programStatus = bundle.programStatus(),
+            commonParams = bundle.commonParams,
+            programStatus = bundle.programStatus,
         )
 
         val useEntityEndpoint = teiQuery.commonParams.program != null
@@ -115,7 +141,7 @@ internal class TrackedEntityInstanceDownloadCall(
         try {
             val teisList = mutableListOf<TrackedEntityInstance>()
 
-            for (uid in bundle.commonParams().uids) {
+            for (uid in bundle.commonParams.uids) {
                 val tei = querySingleTei(uid, useEntityEndpoint, teiQuery).getOrThrow()
 
                 if (tei != null) {
@@ -133,6 +159,12 @@ internal class TrackedEntityInstanceDownloadCall(
                 )
 
                 persistItems(teisList, persistParams, relatives)
+
+                downloadFileResourcesIfEnabled(
+                    enabled = downloadFileResources,
+                    items = teisList,
+                    program = teiQuery.commonParams.program,
+                )
             }
         } catch (d2Error: D2Error) {
             result.successfulSync = false
@@ -209,15 +241,17 @@ internal class TrackedEntityInstanceDownloadCall(
     override suspend fun getQuery(
         bundle: TrackerQueryBundle,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
+        val ouMode = orgunit?.resolvedOuMode ?: bundle.commonParams.ouMode
+
         val teiUids = if (
-            bundle.trackedEntityInstanceFilters() != null ||
-            bundle.programStageWorkingLists() != null
+            bundle.trackedEntityInstanceFilters != null ||
+            bundle.programStageWorkingLists != null
         ) {
-            val filteredUids = getTeiUidsByFilter(bundle, orgunitUid) +
-                getTeiUidsByWorkingList(bundle, orgunitUid)
+            val filteredUids = getTeiUidsByFilter(bundle, orgunit?.uid, ouMode) +
+                getTeiUidsByWorkingList(bundle, orgunit?.uid, ouMode)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -226,35 +260,44 @@ internal class TrackedEntityInstanceDownloadCall(
 
         return teiUids?.let {
             TrackerAPIQuery(
-                commonParams = bundle.commonParams().copy(
+                commonParams = bundle.commonParams.copy(
                     program = program,
                     limit = limit,
+                    ouMode = ouMode,
                 ),
-                programStatus = bundle.programStatus(),
-                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-                orgUnit = orgunitUid,
+                programStatus = bundle.programStatus,
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle),
+                orgUnit = orgunit?.uid,
                 uids = teiUids.distinct(),
             )
         }
     }
 
-    private suspend fun getTeiUidsByFilter(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
-        return bundle.trackedEntityInstanceFilters()?.flatMap {
+    private suspend fun getTeiUidsByFilter(
+        bundle: TrackerQueryBundle,
+        orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
+    ): List<String> {
+        return bundle.trackedEntityInstanceFilters?.flatMap {
             teiQueryCollectionRepository
                 .byTrackedEntityInstanceFilterObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().getUidsInternal()
+                .byOrgUnitMode().eq(ouMode)
+                .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }
 
-    private suspend fun getTeiUidsByWorkingList(bundle: TrackerQueryBundle, orgunitUid: String?): List<String> {
-        return bundle.programStageWorkingLists()?.flatMap {
+    private suspend fun getTeiUidsByWorkingList(
+        bundle: TrackerQueryBundle,
+        orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
+    ): List<String> {
+        return bundle.programStageWorkingLists?.flatMap {
             teiQueryCollectionRepository
                 .byProgramStageWorkingListObject().eq(it)
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
-                .onlineOnly().getUidsInternal()
+                .byOrgUnitMode().eq(ouMode)
+                .onlineOnly().suspendGetUids()
         } ?: emptyList()
     }
 }

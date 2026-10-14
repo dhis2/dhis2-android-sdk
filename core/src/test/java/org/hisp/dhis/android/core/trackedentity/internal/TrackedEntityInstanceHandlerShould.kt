@@ -40,7 +40,6 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.relationship.internal.TEIRelationshipOrphanCleaner
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerHandler
 import org.junit.Before
 import org.junit.Test
@@ -93,10 +92,8 @@ class TrackedEntityInstanceHandlerShould {
     fun setUp() = runTest {
         whenever(trackedEntityInstance.uid()).doReturn(TEI_UID)
         whenever(trackedEntityInstance.trackedEntityType()).doReturn(TET_UID)
-        whenever(TrackedEntityInstanceInternalAccessor.accessEnrollments(trackedEntityInstance))
-            .thenReturn(listOf(enrollment))
-        whenever(TrackedEntityInstanceInternalAccessor.accessRelationships(trackedEntityInstance))
-            .thenReturn(listOf(relationship))
+        whenever(trackedEntityInstance.enrollments).thenReturn(listOf(enrollment))
+        whenever(trackedEntityInstance.relationships).thenReturn(listOf(relationship))
         whenever(trackedEntityInstance.toBuilder()).doReturn(teiBuilder)
         whenever(teiBuilder.syncState(any())).thenReturn(teiBuilder)
         whenever(teiBuilder.aggregatedSyncState(any())).thenReturn(teiBuilder)
@@ -163,7 +160,9 @@ class TrackedEntityInstanceHandlerShould {
         whenever(trackedEntityInstanceStore.updateOrInsert(any<TrackedEntityInstance>())).doReturn(HandleAction.Update)
         whenever(trackedEntityInstance.trackedEntityAttributeValues()).doReturn(
             listOf(
-                TrackedEntityAttributeValue.builder().trackedEntityAttribute("att").build(),
+                TrackedEntityAttributeValue.builder().trackedEntityAttribute(
+                    "att",
+                ).trackedEntityInstance("tei").build(),
             ),
         )
 

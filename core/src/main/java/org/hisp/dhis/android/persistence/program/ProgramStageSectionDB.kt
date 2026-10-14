@@ -47,9 +47,9 @@ internal data class ProgramStageSectionDB(
             .sortOrder(sortOrder)
             .programStage(ObjectWithUid.create(programStage))
             .renderType(
-                SectionRendering.create(
-                    desktopRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
-                    mobileRenderType?.let { SectionDeviceRendering.create(SectionRenderingType.valueOf(it)) },
+                SectionRendering(
+                    desktopRenderType?.let { SectionDeviceRendering(SectionRenderingType.valueOf(it)) },
+                    mobileRenderType?.let { SectionDeviceRendering(SectionRenderingType.valueOf(it)) },
                 ),
             )
             .description(description)
@@ -67,7 +67,7 @@ internal fun ProgramStageSection.toDB(): ProgramStageSectionDB {
         created = created().dateFormat(),
         lastUpdated = lastUpdated().dateFormat(),
         sortOrder = sortOrder(),
-        programStage = programStage()!!.uid(),
+        programStage = programStage().uid(),
         desktopRenderType = renderType()?.desktop()?.type()?.name,
         mobileRenderType = renderType()?.mobile()?.type()?.name,
         description = description(),

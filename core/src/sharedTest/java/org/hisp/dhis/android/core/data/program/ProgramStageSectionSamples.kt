@@ -42,13 +42,9 @@ object ProgramStageSectionSamples {
                 fillIdentifiableProperties(this)
                 sortOrder(1)
                 renderType(
-                    SectionRendering.create(
-                        SectionDeviceRendering.create(
-                            SectionRenderingType.SEQUENTIAL,
-                        ),
-                        SectionDeviceRendering.create(
-                            SectionRenderingType.LISTING,
-                        ),
+                    SectionRendering(
+                        SectionDeviceRendering(SectionRenderingType.SEQUENTIAL),
+                        SectionDeviceRendering(SectionRenderingType.LISTING),
                     ),
                 )
                 programStage(ObjectWithUid.create("program_stage_uid"))

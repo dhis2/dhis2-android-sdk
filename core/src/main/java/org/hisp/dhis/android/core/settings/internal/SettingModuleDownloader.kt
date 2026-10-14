@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class SettingModuleDownloader(
@@ -42,7 +43,7 @@ internal class SettingModuleDownloader(
     private val customIntentsCall: CustomIntentsCall,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         downloadFromSettingsApp()
         userSettingsCall.download()
         systemSettingCall.download()

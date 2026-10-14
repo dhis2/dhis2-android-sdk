@@ -115,10 +115,10 @@ internal class FileResourcePostCall(
         try {
             updateValue(fileResource, downloadedFileResource.uid(), value)
 
-            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid()!!, context)
+            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid(), context)
             updateFileResource(fileResource, downloadedFileResource, downloadedFile)
 
-            return downloadedFileResource.uid()!!
+            return downloadedFileResource.uid()
         } catch (e: IOException) {
             Log.v(FileResourcePostCall::class.java.canonicalName, e.message!!)
             throw D2Error.builder()
@@ -129,10 +129,8 @@ internal class FileResourcePostCall(
     }
 
     private suspend fun handleMissingFile(fileResource: FileResource, value: FileResourceValue) {
-        if (fileResource.uid() != null) {
-            updateValue(fileResource, null, value)
-            fileResourceStore.deleteIfExists(fileResource.uid()!!)
-        }
+        updateValue(fileResource, null, value)
+        fileResourceStore.deleteIfExists(fileResource.uid())
     }
 
     private suspend fun updateValue(
@@ -151,7 +149,7 @@ internal class FileResourcePostCall(
 
     private suspend fun updateAggregatedDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
+            .appendKeyStringValue(DataValueTableInfo.Columns.VALUE, fileResource.uid())
             .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
             .build()
 
@@ -173,7 +171,7 @@ internal class FileResourcePostCall(
         elementUid: String,
     ): Boolean {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid()!!)
+            .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.VALUE, fileResource.uid())
             .appendKeyStringValue(TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE, elementUid)
             .build()
 
@@ -189,7 +187,7 @@ internal class FileResourcePostCall(
 
     private suspend fun updateTrackedEntityDataValue(fileResource: FileResource, newUid: String?, elementUid: String) {
         val whereClause = WhereClauseBuilder()
-            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid()!!)
+            .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.VALUE, fileResource.uid())
             .appendKeyStringValue(TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT, elementUid)
             .build()
 

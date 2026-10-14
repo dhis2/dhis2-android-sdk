@@ -30,10 +30,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.EventInternalAccessor
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.note.Note
 import org.hisp.dhis.android.core.note.internal.NoteStore
@@ -46,7 +44,6 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramOwnerStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
@@ -152,9 +149,9 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         val missingItems = relatedItems.filterNotNull().filter { item ->
             when {
-                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid(), payload)
-                item.hasEnrollment() -> isMissingEnrollment(item.elementUid(), payload)
-                item.hasEvent() -> isMissingEvent(item.elementUid(), payload)
+                item.hasTrackedEntityInstance() -> isMissingTei(item.elementUid()!!, payload)
+                item.hasEnrollment() -> isMissingEnrollment(item.elementUid()!!, payload)
+                item.hasEvent() -> isMissingEvent(item.elementUid()!!, payload)
                 else -> false
             }
         }
@@ -164,14 +161,14 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         missingItems.forEach { item ->
             when {
-                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid())
+                item.hasTrackedEntityInstance() -> missingTeis.add(item.elementUid()!!)
                 item.hasEnrollment() -> {
-                    enrollmentStore.selectByUid(item.elementUid())?.let {
+                    enrollmentStore.selectByUid(item.elementUid()!!)?.let {
                         missingTeis.add(it.trackedEntityInstance()!!)
                     }
                 }
                 item.hasEvent() -> {
-                    eventStore.selectByUid(item.elementUid())?.let { event ->
+                    eventStore.selectByUid(item.elementUid()!!)?.let { event ->
                         if (event.enrollment() == null) {
                             missingEvents.add(event.uid())
                         } else {
@@ -211,7 +208,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
     private suspend fun isMissingEnrollment(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }
         val isIncludedInPayload = enrollments.map { it.uid() }.contains(uid)
         if (isIncludedInPayload) { return false }
@@ -224,9 +221,9 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
     private suspend fun isMissingEvent(uid: String, payload: OldTrackerImporterPayload): Boolean {
         val events = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }.flatMap {
-            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+            it.events() ?: emptyList()
         } + payload.events
 
         val isIncludedInPayload = events.map { it.uid() }.contains(uid)
@@ -254,7 +251,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
             relationships = relationshipRepository.bySyncState()
                 .`in`(State.uploadableStatesIncludingError().toList())
                 .withItems()
-                .getInternal(),
+                .suspendGet(),
         )
     }
 
@@ -267,7 +264,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
 
         val enrollments = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it) ?: emptyList()
+            it.enrollments.orEmpty()
         }
 
         val enrollmentItems = enrollments.map {
@@ -275,7 +272,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
         }
 
         val events = enrollments.flatMap {
-            EnrollmentInternalAccessor.accessEvents(it) ?: emptyList()
+            it.events() ?: emptyList()
         } + payload.events
 
         val eventItems = events.map {
@@ -302,8 +299,8 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
     ): TrackedEntityInstance {
         val enrollmentsRecreated = getEnrollments(extraData, trackedEntityInstance.uid())
         val attributeValues = extraData.attributeValueMap[trackedEntityInstance.uid()]
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(trackedEntityInstance.toBuilder(), enrollmentsRecreated)
+        return trackedEntityInstance.toBuilder()
+            .enrollments(enrollmentsRecreated)
             .trackedEntityAttributeValues(attributeValues ?: emptyList())
             .build()
     }
@@ -319,7 +316,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
             val notes = extraData.notes.filter { it.enrollment() == enrollment.uid() }
 
-            EnrollmentInternalAccessor.insertEvents(enrollment.toBuilder(), events)
+            enrollment.toBuilder().events(events)
                 .notes(notes)
                 .build()
         } ?: emptyList()
@@ -364,7 +361,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
     private suspend fun pruneNonWritableData(payload: OldTrackerImporterPayload): OldTrackerImporterPayload {
         val typeIds = payload.trackedEntityInstances.mapNotNull { it.trackedEntityType() }
         val programIds = payload.trackedEntityInstances.flatMap {
-            TrackedEntityInstanceInternalAccessor.accessEnrollments(it).mapNotNull { e -> e.program() }
+            it.enrollments.orEmpty().mapNotNull { e -> e.program() }
         }
 
         val typeAccessMap = typeIds.associateWith { trackedEntityTypeStore.selectByUid(it)?.access() }
@@ -372,7 +369,7 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
 
         val pendingEvents = mutableListOf<Event>()
         val prunedTrackedEntityInstances = payload.trackedEntityInstances.mapNotNull { tei ->
-            val enrollments = TrackedEntityInstanceInternalAccessor.accessEnrollments(tei)
+            val enrollments = tei.enrollments.orEmpty()
             val hasDataWrite = typeAccessMap[tei.trackedEntityType()]?.data()?.write() == true &&
                 enrollments.all { programAccessMap[it.program()]?.data()?.write() == true }
 
@@ -380,8 +377,8 @@ internal class OldTrackerImporterPayloadGenerator internal constructor(
                 tei
             } else if (tei.syncState() == State.SYNCED && enrollments.all { it.syncState() == State.SYNCED }) {
                 val events = enrollments
-                    .flatMap { EnrollmentInternalAccessor.accessEvents(it) }
-                    .mapNotNull { EventInternalAccessor.insertTrackedEntityInstance(it.toBuilder(), tei.uid()).build() }
+                    .flatMap { it.events().orEmpty() }
+                    .mapNotNull { it.copy(trackedEntityInstance = tei.uid()) }
                 pendingEvents.addAll(events)
                 null
             } else {

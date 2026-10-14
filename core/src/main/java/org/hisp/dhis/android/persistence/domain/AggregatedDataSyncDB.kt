@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 import org.hisp.dhis.android.core.domain.aggregated.data.internal.AggregatedDataSync
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.util.dateFormatNonNull
-import org.hisp.dhis.android.core.util.toJavaDate
+import org.hisp.dhis.android.core.util.toJavaDateNonNull
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
 
@@ -41,7 +41,7 @@ internal data class AggregatedDataSyncDB(
             .futurePeriods(futurePeriods)
             .dataElementsHash(dataElementsHash)
             .organisationUnitsHash(organisationUnitsHash)
-            .lastUpdated(lastUpdated.toJavaDate())
+            .lastUpdated(lastUpdated.toJavaDateNonNull())
             .build()
     }
 }

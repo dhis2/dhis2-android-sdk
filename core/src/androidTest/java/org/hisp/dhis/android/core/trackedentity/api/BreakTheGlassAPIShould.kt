@@ -37,7 +37,6 @@ import org.hisp.dhis.android.core.arch.helpers.UidGenerator
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.data.server.RealServerMother
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.imports.ImportStatus
@@ -45,7 +44,6 @@ import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
 import org.hisp.dhis.android.core.imports.internal.TEIWebResponse
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceInternalAccessor
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.ownership.OwnershipNetworkHandler
 import org.junit.Before
@@ -98,7 +96,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
             val response = postTrackedEntities(tei)
             assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
 
-            for (importSummary in response.response!!.importSummaries!!) {
+            for (importSummary in response.response.importSummaries!!) {
                 TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
                 TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -114,7 +112,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -122,7 +120,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -136,7 +134,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val tei = teiWithEnrollmentInSearchScope()
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -147,7 +145,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -163,7 +161,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
         val tei = teiWithEnrollmentInSearchScope()
         val response = postTrackedEntities(tei)
         assertThat(response.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response.response!!.importSummaries!!) {
+        for (importSummary in response.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(
                 importSummary,
@@ -183,7 +181,7 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
 
         val response2 = postTrackedEntities(tei)
         assertThat(response2.response!!.status).isEqualTo(ImportStatus.SUCCESS)
-        for (importSummary in response2.response!!.importSummaries!!) {
+        for (importSummary in response2.response.importSummaries!!) {
             TrackedEntityInstanceUtils.assertTei(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEnrollments(importSummary, ImportStatus.SUCCESS)
             TrackedEntityInstanceUtils.assertEvents(importSummary, ImportStatus.SUCCESS)
@@ -191,19 +189,22 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun validTei(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor
-            .insertEnrollments(TrackedEntityInstance.builder(), listOf(validEnrollment()))
-            .uid(uidGenerator.generate())
+        val teiUid = uidGenerator.generate()
+        return TrackedEntityInstance.builder()
+            .enrollments(listOf(validEnrollment()))
+            .uid(teiUid)
             .organisationUnit(captureOrgunit)
             .trackedEntityType(trackedEntityType)
             .trackedEntityAttributeValues(
                 listOf(
                     TrackedEntityAttributeValue.builder()
                         .trackedEntityAttribute(attribute1)
+                        .trackedEntityInstance(teiUid)
                         .value("Test")
                         .build(),
                     TrackedEntityAttributeValue.builder()
                         .trackedEntityAttribute(attribute2)
+                        .trackedEntityInstance(teiUid)
                         .value("TrackedEntity")
                         .build(),
                 ),
@@ -212,7 +213,8 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun validEnrollment(): Enrollment {
-        return EnrollmentInternalAccessor.insertEvents(Enrollment.builder(), listOf(validEvent()))
+        return Enrollment.builder()
+            .events(listOf(validEvent()))
             .uid(uidGenerator.generate())
             .organisationUnit(captureOrgunit)
             .program(program)
@@ -231,31 +233,31 @@ class BreakTheGlassAPIShould : BaseRealIntegrationTest() {
     }
 
     private fun teiWithEventInSearchScope(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(),
-            listOf(
-                EnrollmentInternalAccessor.insertEvents(
-                    validEnrollment().toBuilder(),
-                    listOf(
-                        validEvent().toBuilder()
-                            .organisationUnit(searchOrgunit)
-                            .build(),
-                    ),
-                )
-                    .build(),
-            ),
-        )
+        return validTei().toBuilder()
+            .enrollments(
+                listOf(
+                    validEnrollment().toBuilder()
+                        .events(
+                            listOf(
+                                validEvent().toBuilder()
+                                    .organisationUnit(searchOrgunit)
+                                    .build(),
+                            ),
+                        )
+                        .build(),
+                ),
+            )
             .build()
     }
 
     private fun teiWithEnrollmentInSearchScope(): TrackedEntityInstance {
-        return TrackedEntityInstanceInternalAccessor.insertEnrollments(
-            validTei().toBuilder(),
-            listOf(
-                EnrollmentInternalAccessor.insertEvents(validEnrollment().toBuilder(), listOf(validEvent()))
-                    .organisationUnit(searchOrgunit).build(),
-            ),
-        )
+        return validTei().toBuilder()
+            .enrollments(
+                listOf(
+                    validEnrollment().toBuilder().events(listOf(validEvent()))
+                        .organisationUnit(searchOrgunit).build(),
+                ),
+            )
             .build()
     }
 

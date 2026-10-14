@@ -129,11 +129,11 @@ internal class TrackerImporterFileResourcesPostCall internal constructor(
                 val uploadedFileResource = uploadedFileResources[fileResource.uid()]
 
                 val newUid = if (uploadedFileResource != null) {
-                    uploadedFileResource.uid()!!
+                    uploadedFileResource.uid()
                 } else {
                     val fValue = FileResourceValue.AttributeValue(attributeValue.trackedEntityAttribute!!)
                     fileResourcePostCall.uploadFileResource(fileResource, fValue)?.also {
-                        uploadedFileResources[fileResource.uid()!!] = fileResource.toBuilder().uid(it).build()
+                        uploadedFileResources[fileResource.uid()] = fileResource.toBuilder().uid(it).build()
                     }
                 }
                 newUid?.let { entityFileResources.add(it) }

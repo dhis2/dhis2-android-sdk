@@ -49,7 +49,7 @@ internal class OptionShould : CoreObjectShould<OptionDTO>("option/option.json", 
         assertThat(option.name()).isEqualTo("0-14 years")
         assertThat(option.displayName()).isEqualTo("0-14 years")
         assertThat(option.sortOrder()).isEqualTo(1)
-        assertThat(option.optionSet()?.uid()).isEqualTo("VQ2lai3OfVG")
+        assertThat(option.optionSet().uid()).isEqualTo("VQ2lai3OfVG")
         assertThat(option.style().color()).isEqualTo("#000")
         assertThat(option.style().icon()).isEqualTo("my-icon-name")
     }

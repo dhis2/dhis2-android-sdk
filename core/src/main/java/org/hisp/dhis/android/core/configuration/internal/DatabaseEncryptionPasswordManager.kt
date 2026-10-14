@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
+import org.koin.core.annotation.Singleton
 
+@Singleton
 class DatabaseEncryptionPasswordManager(
     private val secureStore: SecureStore,
     private val passwordGenerator: DatabaseEncryptionPasswordGenerator,

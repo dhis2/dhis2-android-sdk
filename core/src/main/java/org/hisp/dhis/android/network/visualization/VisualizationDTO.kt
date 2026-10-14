@@ -109,9 +109,9 @@ internal data class VisualizationDTO(
             displayDensity?.let { displayDensity(DisplayDensity.valueOf(it)) }
             digitGroupSeparator?.let { digitGroupSeparator(DigitGroupSeparator.valueOf(it)) }
             aggregationType?.let { aggregationType(AggregationType.valueOf(it)) }
-            columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
-            rows(rows.map { it.toDomain(id, LayoutPosition.ROW) })
-            filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
+            columns(columns.mapNotNull { it.toDomain(id, LayoutPosition.COLUMN) })
+            rows(rows.mapNotNull { it.toDomain(id, LayoutPosition.ROW) })
+            filters(filters.mapNotNull { it.toDomain(id, LayoutPosition.FILTER) })
         }.build()
     }
 }

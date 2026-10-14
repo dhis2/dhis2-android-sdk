@@ -122,8 +122,8 @@ internal data class Visualization36DTO(
                     .showKey(false)
                     .build(),
             )
-            .columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
-            .rows(rows.map { it.toDomain(id, LayoutPosition.ROW) })
-            .filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
+            .columns(columns.mapNotNull { it.toDomain(id, LayoutPosition.COLUMN) })
+            .rows(rows.mapNotNull { it.toDomain(id, LayoutPosition.ROW) })
+            .filters(filters.mapNotNull { it.toDomain(id, LayoutPosition.FILTER) })
             .build()
 }

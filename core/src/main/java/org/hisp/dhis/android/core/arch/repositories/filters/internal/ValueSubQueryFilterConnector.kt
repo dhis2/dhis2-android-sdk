@@ -34,6 +34,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
+@Suppress("TooManyFunctions")
 class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
     repositoryFactory: BaseRepositoryFactory<R>,
     scope: RepositoryScope,
@@ -50,7 +51,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value equal to the value provided.
+     * The eq filter checks if the given field has a value equal to the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
@@ -60,7 +61,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value lower or equal than the value provided.
+     * The le filter checks if the given field has a value lower or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
@@ -70,7 +71,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value strictly lower than the value provided.
+     * The lt filter checks if the given field has a value strictly lower than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
@@ -80,7 +81,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value strictly greater or equal than the value provided.
+     * The ge filter checks if the given field has a value strictly greater or equal than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
@@ -90,7 +91,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value strictly greater than the value provided.
+     * The gt filter checks if the given field has a value strictly greater than the value provided.
      * @param value value to compare with the target field
      * @return the new repository
      */
@@ -100,7 +101,7 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
 
     /**
      * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
-     * The like filter checks if the given field has a value included in the list provided.
+     * The in filter checks if the given field has a value included in the list provided.
      * @param values value list to compare with the target field
      * @return the new repository
      */
@@ -117,6 +118,37 @@ class ValueSubQueryFilterConnector<R : BaseRepository> internal constructor(
      */
     fun like(value: String): R {
         return inLinkTable(FilterItemOperator.LIKE, wrapValue("%$value%"))
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isNullOrBlank filter checks if the given field is null or blank.
+     * @return the new repository
+     */
+    fun isNullOrBlank(): R {
+        val whereClause = WhereClauseBuilder()
+            .appendIsNullOrValue(linkChild, "")
+            .appendKeyStringValue(dataElementColumn, dataElementId)
+            .build()
+        return inTableWhere(whereClause)
+    }
+
+    /**
+     * Returns a new repository whose scope is the one of the current repository plus the new filter being applied.
+     * The isNotNullAndIsNotBlank filter checks if the given field is not null and not blank.
+     * @return the new repository
+     */
+    fun isNotNullAndIsNotBlank(): R {
+        val whereClause = WhereClauseBuilder()
+            .appendComplexQuery(
+                WhereClauseBuilder()
+                    .appendIsNotNullValue(linkChild)
+                    .appendNotKeyStringValue(linkChild, "")
+                    .build(),
+            )
+            .appendKeyStringValue(dataElementColumn, dataElementId)
+            .build()
+        return inTableWhere(whereClause)
     }
 
     private fun inLinkTable(operator: FilterItemOperator, value: String): R {

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Handler
 import org.hisp.dhis.android.core.arch.handlers.internal.LinkHandler
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.resource.internal.Resource
+import java.util.Date
 
 @Suppress("TooManyFunctions")
 internal interface APIDownloader {
@@ -74,6 +75,7 @@ internal interface APIDownloader {
     suspend fun <P> downloadWithLastUpdated(
         handler: Handler<P>,
         resourceType: Resource.Type,
+        syncDate: Date?,
         downloader: suspend (String?) -> Payload<P>,
     ): List<P>
 

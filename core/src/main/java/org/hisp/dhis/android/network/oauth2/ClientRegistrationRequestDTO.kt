@@ -52,7 +52,7 @@ internal data class ClientRegistrationRequestDTO(
     val tokenEndpointAuthSigningAlg: String,
 
     @SerialName("scope")
-    val scope: String,
+    val scope: String?,
 
     @SerialName("jwks_uri")
     val jwksUri: String,

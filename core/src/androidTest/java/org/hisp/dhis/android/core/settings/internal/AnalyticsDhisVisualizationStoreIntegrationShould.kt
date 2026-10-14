@@ -51,9 +51,6 @@ class AnalyticsDhisVisualizationStoreIntegrationShould :
     override fun buildObjectWithNullableFields(): AnalyticsDhisVisualization {
         return buildObject().toBuilder()
             .scopeUid(null)
-            .scope(null)
-            .groupUid(null)
-            .groupName(null)
             .timestamp(null)
             .name(null)
             .build()

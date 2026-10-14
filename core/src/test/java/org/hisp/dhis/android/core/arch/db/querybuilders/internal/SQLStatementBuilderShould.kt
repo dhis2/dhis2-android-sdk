@@ -121,33 +121,33 @@ class SQLStatementBuilderShould {
         )
 
         private class TestTableInfo : TableInfo() {
-            override fun name(): String? {
+            override fun name(): String {
                 return "Test_Table"
             }
 
-            override fun columns(): CoreColumns? {
+            override fun columns(): CoreColumns {
                 return TestColumns()
             }
         }
 
         private class TestColumns : CoreColumns() {
-            override fun all(): Array<String>? {
+            override fun all(): Array<String> {
                 return arrayOf(COL_1, COL_2)
             }
         }
 
         private class TestTableInfoOrder : TableInfo() {
-            override fun name(): String? {
+            override fun name(): String {
                 return "Test_Table"
             }
 
-            override fun columns(): CoreColumns? {
+            override fun columns(): CoreColumns {
                 return TestColumnsOrder()
             }
         }
 
         private class TestColumnsOrder : CoreColumns() {
-            override fun all(): Array<String>? {
+            override fun all(): Array<String> {
                 return arrayOf(COL_1, COL_ORDER)
             }
         }

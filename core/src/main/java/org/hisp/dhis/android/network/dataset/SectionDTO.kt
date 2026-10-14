@@ -30,8 +30,8 @@ package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.Section
-import org.hisp.dhis.android.core.dataset.SectionInternalAccessor
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
@@ -50,22 +50,21 @@ internal data class SectionDTO(
     val sortOrder: Int?,
     val showRowTotals: Boolean?,
     val showColumnTotals: Boolean?,
-    val dataSet: ObjectWithUidDTO?,
     val dataElements: List<ObjectWithUidDTO> = emptyList(),
     val greyedFields: List<DataElementOperandDTO> = emptyList(),
     val indicators: List<ObjectWithUidDTO> = emptyList(),
     val disableDataElementAutoGroup: Boolean?,
     val displayOptions: String?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): Section {
+    fun toDomain(dataSetUid: String): Section {
         return Section.builder().apply {
             applyBaseIdentifiableFields(this@SectionDTO)
             description(description)
             sortOrder(sortOrder)
             showRowTotals(showRowTotals)
             showColumnTotals(showColumnTotals)
-            dataSet(dataSet?.toDomain())
-            SectionInternalAccessor.insertDataElementUids(this, dataElements.map { it.toDomain() })
+            dataSet(ObjectWithUid(dataSetUid))
+            dataElementUids(dataElements.map { it.toDomain() })
             greyedFields(greyedFields.map { it.toDomain() })
             indicators(indicators.map { Indicator.builder().uid(it.id).build() })
             disableDataElementAutoGroup(disableDataElementAutoGroup)

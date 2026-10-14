@@ -42,7 +42,7 @@ internal data class DataSetValidationRuleLinkDB(
 
 internal fun DataSetValidationRuleLink.toDB(): DataSetValidationRuleLinkDB {
     return DataSetValidationRuleLinkDB(
-        dataSet = dataSet()!!,
-        validationRule = validationRule()!!,
+        dataSet = dataSet(),
+        validationRule = validationRule(),
     )
 }

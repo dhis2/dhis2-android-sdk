@@ -60,8 +60,8 @@ internal class JobQueryCall internal constructor(
 
     fun queryPendingJobs(): Flow<D2Progress> = flow {
         val pendingJobs = trackerJobObjectStore.selectAll()
-            .sortedBy { it.lastUpdated() }
-            .groupBy { it.jobUid() }
+            .sortedBy { it.lastUpdated }
+            .groupBy { it.jobUid }
             .toList()
 
         pendingJobs.withIndex().map {

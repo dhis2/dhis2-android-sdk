@@ -37,20 +37,20 @@ internal abstract class JobReportTypeHandler(
 ) {
 
     suspend fun handleSuccess(jo: TrackerJobObject) {
-        val handleAction = handleObject(jo.objectUid(), State.SYNCED)
+        val handleAction = handleObject(jo.objectUid, State.SYNCED)
 
         if (handleAction === HandleAction.Delete) {
-            getRelatedRelationships(jo.objectUid()).forEach { relationshipStore.deleteByEntity(it) }
+            getRelatedRelationships(jo.objectUid).forEach { relationshipStore.deleteByEntity(it) }
         }
     }
 
     suspend fun handleError(jo: TrackerJobObject, errorReport: JobValidationError) {
-        handleObject(jo.objectUid(), State.ERROR)
+        handleObject(jo.objectUid, State.ERROR)
         storeConflict(errorReport)
     }
 
     suspend fun handleNotPresent(jo: TrackerJobObject) {
-        handleObject(jo.objectUid(), State.TO_UPDATE)
+        handleObject(jo.objectUid, State.TO_UPDATE)
     }
 
     internal abstract suspend fun handleObject(uid: String, state: State): HandleAction

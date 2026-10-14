@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.programstage
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
@@ -53,14 +54,14 @@ internal data class ProgramStageSectionDTO(
     val description: String?,
     val displayDescription: String?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): ProgramStageSection {
+    fun toDomain(programStageUid: String): ProgramStageSection {
         return ProgramStageSection.builder()
             .applyBaseIdentifiableFields(this)
             .sortOrder(sortOrder)
             .programIndicators(programIndicators?.map { it.toDomain() })
             .dataElements(dataElements?.map { it.toDomain() })
             .renderType(renderType?.toDomain())
-            .programStage(programStage?.toDomain())
+            .programStage(ObjectWithUid.create(programStageUid))
             .description(description)
             .displayDescription(displayDescription)
             .build()

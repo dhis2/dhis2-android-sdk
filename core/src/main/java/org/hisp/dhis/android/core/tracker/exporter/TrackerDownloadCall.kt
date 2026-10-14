@@ -39,6 +39,8 @@ import org.hisp.dhis.android.core.arch.call.D2ProgressSyncStatus
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
@@ -52,6 +54,7 @@ import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
+import java.util.Date
 import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.min
@@ -66,6 +69,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     private val organisationUnitStore: OrganisationUnitStore,
     private val organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     private val databaseAdapter: DatabaseAdapter,
+    private val fileResourceDownloadCall: FileResourceDownloadCall,
 ) {
     fun download(params: ProgramDataDownloadParams): Flow<TrackerD2Progress> = channelFlow {
         val progressManager = TrackerD2ProgressManager(null)
@@ -74,9 +78,11 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
             send(progressManager.increaseProgress(TrackedEntityInstance::class.java, true))
         } else {
             val relatives = RelationshipItemRelatives()
-            systemInfoModuleDownloader.downloadWithProgressManager(progressManager)
+            val systemInfo = systemInfoModuleDownloader.downloadAndReturn()
+            val syncDate = systemInfo?.serverDate!!
+
             coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
-                downloadInternal(params, progressManager, relatives).collect { v -> send(v) }
+                downloadInternal(params, progressManager, relatives, syncDate).collect { v -> send(v) }
                 downloadRelationships(progressManager, relatives).collect { v -> send(v) }
                 downloadMissingOrgUnits(progressManager).collect { v -> send(v) }
                 send(progressManager.complete())
@@ -88,30 +94,31 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         params: ProgramDataDownloadParams,
         progressManager: TrackerD2ProgressManager,
         relatives: RelationshipItemRelatives,
+        syncDate: Date,
     ): Flow<TrackerD2Progress> = flow {
         val bundles: List<Q> = getBundles(params)
-        val programs = bundles.flatMap { it.commonParams().programs }
+        val programs = bundles.flatMap { it.commonParams.programs }
 
         progressManager.setTotalCalls(programs.size + 2)
         progressManager.setPrograms(programs)
         emit(progressManager.getProgress())
 
         for (bundle in bundles) {
-            if (bundle.commonParams().uids.isNotEmpty()) {
-                val result = queryByUids(bundle, params.overwrite(), relatives)
+            if (bundle.commonParams.uids.isNotEmpty()) {
+                val result = queryByUids(bundle, params.overwrite, params.downloadFileResources, relatives)
 
                 result.d2Error?.let {
                     throw it
                 }
             } else {
-                val orgunitPrograms = bundle.orgUnits()
+                val orgunitPrograms = bundle.orgUnits
                     .associateWith {
-                        bundle.commonParams().programs
+                        bundle.commonParams.programs
                             .map { ItemsByProgramCount(it, 0) }
                             .toMutableList()
                     }.toMutableMap()
 
-                val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits().toMutableList())
+                val bundleResult = BundleResult(0, orgunitPrograms, bundle.orgUnits.toMutableList())
 
                 var iterationCount = 0
                 var successfulSync = true
@@ -126,7 +133,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 )
 
                 if (successfulSync) {
-                    updateLastUpdated(bundle)
+                    updateLastUpdated(bundle, syncDate)
                 }
             }
             emit(progressManager.getProgress())
@@ -143,10 +150,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
         iterationCount: Int,
     ): Boolean {
-        return params.limitByProgram() != true &&
-            bundleResult.bundleCount < bundle.commonParams().limit &&
+        return params.limitByProgram != true &&
+            bundleResult.bundleCount < bundle.commonParams.limit &&
             bundleResult.bundleOrgUnitsToDownload.isNotEmpty() &&
-            iterationCount < max(bundle.commonParams().limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
+            iterationCount < max(bundle.commonParams.limit * BUNDLE_SECURITY_FACTOR, BUNDLE_ITERATION_LIMIT)
     }
 
     @Suppress("LongParameterList")
@@ -160,17 +167,17 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         val iterationResult = IterationResult()
         val limitPerCombo = getBundleLimit(bundle, params, bundleResult)
 
-        for ((orgUnitUid, orgunitPrograms) in bundleResult.bundleOrgUnitPrograms.entries) {
-            val pendingTeis = bundle.commonParams().limit - bundleResult.bundleCount
+        for ((downloadOrgunit, orgunitPrograms) in bundleResult.bundleOrgUnitPrograms.entries) {
+            val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
             val bundleLimit = min(limitPerCombo, pendingTeis)
 
             if (bundleLimit <= 0 || orgunitPrograms.isEmpty()) {
-                bundleResult.bundleOrgUnitsToDownload -= orgUnitUid
+                bundleResult.bundleOrgUnitsToDownload -= downloadOrgunit
                 continue
             }
 
             val result = iterateBundleOrgunit(
-                orgUnitUid,
+                downloadOrgunit,
                 bundle,
                 params,
                 bundleResult,
@@ -187,7 +194,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     @Suppress("LongParameterList", "NestedBlockDepth")
     private suspend fun iterateBundleOrgunit(
-        orgUnitUid: String,
+        downloadOrgunit: DownloadOrgunit,
         bundle: Q,
         params: ProgramDataDownloadParams,
         bundleResult: BundleResult,
@@ -197,18 +204,19 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     ): IterationResult {
         val iterationResult = IterationResult()
 
-        bundleResult.bundleOrgUnitPrograms[orgUnitUid]?.let { bundlePrograms ->
+        bundleResult.bundleOrgUnitPrograms[downloadOrgunit]?.let { bundlePrograms ->
             var remainingPrograms = bundlePrograms
             for (bundleProgram in bundlePrograms) {
-                if (bundleResult.bundleCount < bundle.commonParams().limit) {
-                    val trackerQuery = getQuery(bundle, bundleProgram.program, orgUnitUid, limit)
+                if (bundleResult.bundleCount < bundle.commonParams.limit) {
+                    val trackerQuery = getQuery(bundle, bundleProgram.program, downloadOrgunit, limit)
 
                     val result = if (trackerQuery != null) {
                         getItemsForOrgUnitProgramCombination(
                             trackerQuery,
                             limit,
                             bundleProgram.itemCount,
-                            params.overwrite(),
+                            params.overwrite,
+                            params.downloadFileResources,
                             relatives,
                         )
                     } else {
@@ -233,7 +241,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                         remainingPrograms = remainingPrograms
                             .filter { it.program != bundleProgram.program }
                             .toMutableList()
-                        bundleResult.bundleOrgUnitPrograms[orgUnitUid] = remainingPrograms
+                        bundleResult.bundleOrgUnitPrograms[downloadOrgunit] = remainingPrograms
 
                         val hasOtherOrgunits = bundleResult.bundleOrgUnitPrograms.values.any { list ->
                             list.any { it.program == bundleProgram.program }
@@ -256,10 +264,10 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         bundleResult: BundleResult,
     ): Int {
         return when {
-            params.uids().isNotEmpty() -> params.uids().size
-            params.limitByProgram() != true -> {
+            params.uids.isNotEmpty() -> params.uids.size
+            params.limitByProgram != true -> {
                 val numOfCombinations = bundleResult.bundleOrgUnitPrograms.values.sumOf { it.size }
-                val pendingTeis = bundle.commonParams().limit - bundleResult.bundleCount
+                val pendingTeis = bundle.commonParams.limit - bundleResult.bundleCount
 
                 if (numOfCombinations == 0 || pendingTeis == 0) {
                     0
@@ -268,19 +276,28 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 }
             }
 
-            else -> bundle.commonParams().limit - bundleResult.bundleCount
+            else -> bundle.commonParams.limit - bundleResult.bundleCount
         }
     }
 
+    @Suppress("LongParameterList")
     private suspend fun getItemsForOrgUnitProgramCombination(
         trackerQueryBuilder: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         return try {
-            getItemsWithPaging(trackerQueryBuilder, combinationLimit, downloadedCount, overwrite, relatives)
+            getItemsWithPaging(
+                trackerQueryBuilder,
+                combinationLimit,
+                downloadedCount,
+                overwrite,
+                downloadFileResources,
+                relatives,
+            )
         } catch (ignored: D2Error) {
             // TODO Build result
             ItemsWithPagingResult(0, false, null, false)
@@ -288,11 +305,13 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
     }
 
     @Throws(D2Error::class)
+    @Suppress("LongParameterList")
     private suspend fun getItemsWithPaging(
         query: TrackerAPIQuery,
         combinationLimit: Int,
         downloadedCount: Int,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         var downloadedItemsForCombination = 0
@@ -339,6 +358,12 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
             persistItems(itemsToPersist, persistParams, relatives)
 
+            downloadFileResourcesIfEnabled(
+                enabled = downloadFileResources,
+                items = itemsToPersist,
+                program = callPage.query.commonParams.program,
+            )
+
             downloadedItemsForCombination += itemsToPersist.size
 
             if (items.size < callPage.query.pageSize) {
@@ -352,6 +377,23 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         }
 
         return ItemsWithPagingResult(downloadedItemsForCombination, true, null, exhaustedProgram)
+    }
+
+    /**
+     * Downloads the file resources linked to the items that have just been persisted, within the same download
+     * iteration. Downloading them here, and not once the whole data download has finished, is what makes the program
+     * of each item known: the tracker API needs it to resolve the files of attributes assigned to a program.
+     */
+    protected suspend fun downloadFileResourcesIfEnabled(
+        enabled: Boolean,
+        items: List<T>,
+        program: String?,
+    ) {
+        if (enabled && items.isNotEmpty()) {
+            fileResourceDownloadCall.downloadTrackerFileResources(
+                getFileResourceDownloadParams(items, program),
+            )
+        }
     }
 
     private fun getItemsToPersist(paging: Paging, pageItems: List<T>): List<T> {
@@ -405,8 +447,8 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
 
     protected class BundleResult(
         var bundleCount: Int,
-        var bundleOrgUnitPrograms: MutableMap<String, MutableList<ItemsByProgramCount>>,
-        var bundleOrgUnitsToDownload: MutableList<String?>,
+        var bundleOrgUnitPrograms: MutableMap<DownloadOrgunit, MutableList<ItemsByProgramCount>>,
+        var bundleOrgUnitsToDownload: MutableList<DownloadOrgunit?>,
     )
 
     protected class IterationResult(
@@ -429,18 +471,28 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         relatives: RelationshipItemRelatives,
     )
 
-    protected abstract suspend fun updateLastUpdated(bundle: Q)
+    protected abstract suspend fun updateLastUpdated(bundle: Q, syncDate: Date)
 
     protected abstract suspend fun queryByUids(
         bundle: Q,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult
+
+    /**
+     * Builds the params to download the file resources of [items], scoped to them and to the [program] they have been
+     * downloaded for.
+     */
+    protected abstract fun getFileResourceDownloadParams(
+        items: List<T>,
+        program: String?,
+    ): FileResourceDownloadParams
 
     protected abstract suspend fun getQuery(
         bundle: Q,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery?
 

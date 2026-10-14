@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import io.reactivex.Observable
-import kotlinx.coroutines.rx2.rxObservable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
@@ -48,7 +48,7 @@ internal class DataStoreDownloadCall(
     private val versionManager: DHISVersionManagerImpl,
 ) {
 
-    fun download(params: DataStoreDownloadParams): Observable<D2Progress> = rxObservable {
+    fun download(params: DataStoreDownloadParams): Flow<D2Progress> = channelFlow {
         coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             val namespaces = networkHandler.getNamespaces()
                 .map { filterNamespaces(params, it) }

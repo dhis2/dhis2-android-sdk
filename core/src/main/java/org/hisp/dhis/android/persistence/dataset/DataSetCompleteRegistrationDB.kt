@@ -75,9 +75,9 @@ internal data class DataSetCompleteRegistrationDB(
 
 internal fun DataSetCompleteRegistration.toDB(): DataSetCompleteRegistrationDB {
     return DataSetCompleteRegistrationDB(
-        period = period()!!,
-        dataSet = dataSet()!!,
-        organisationUnit = organisationUnit()!!,
+        period = period(),
+        dataSet = dataSet(),
+        organisationUnit = organisationUnit(),
         attributeOptionCombo = attributeOptionCombo(),
         date = date().dateFormat(),
         storedBy = storedBy(),

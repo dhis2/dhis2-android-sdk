@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
 import org.junit.Before
 import org.junit.Test
@@ -46,7 +47,7 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
 
     private val username = "username"
     private val serverUrl = "https://dhis2.org"
-    private val credentials = Credentials(username, serverUrl, "password", null)
+    private val credentials = Credentials(username, serverUrl, "password", null, null)
     private val unencryptedDbName = "un.db"
 
     private val accountUnencrypted = DatabaseAccount.builder()
@@ -56,6 +57,7 @@ class MultiUserDatabaseManagerForD2ManagerUnitShould : BaseCallShould() {
         .encrypted(false)
         .databaseCreationDate(DateUtils.DATE_FORMAT.parse(DATE))
         .lastAccessDate(DateUtils.DATE_FORMAT.parse(DATE))
+        .authorizationType(AuthorizationType.BASIC)
         .build()
 
     private val databasesConfiguration = DatabasesConfiguration.builder()

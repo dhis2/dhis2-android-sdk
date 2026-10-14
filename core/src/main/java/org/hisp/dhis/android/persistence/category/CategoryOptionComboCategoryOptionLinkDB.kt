@@ -41,7 +41,7 @@ internal data class CategoryOptionComboCategoryOptionLinkDB(
 
 internal fun CategoryOptionComboCategoryOptionLink.toDB(): CategoryOptionComboCategoryOptionLinkDB {
     return CategoryOptionComboCategoryOptionLinkDB(
-        categoryOptionCombo = categoryOptionCombo()!!,
-        categoryOption = categoryOption()!!,
+        categoryOptionCombo = categoryOptionCombo(),
+        categoryOption = categoryOption(),
     )
 }

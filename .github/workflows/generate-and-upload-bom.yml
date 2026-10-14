@@ -9,19 +9,22 @@ jobs:
     name: Create and Upload SBOM
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
       - name: Set up JDK 17
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           java-version: 17
           distribution: temurin
-          cache: 'gradle'
-      - name: Change wrapper permission
-        run: chmod +x ./gradlew
-      - name: Generste BOM
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Generate BOM
         run: ./gradlew cyclonedxBom
+
       - name: Upload SBOM to DependencyTrack
         env:
           DT_API_URL: ${{ vars.DEPENDENCYTRACK_URL }}
@@ -35,7 +38,7 @@ jobs:
               -F "autoCreate=true" \
               -F "projectName=$PROJECT_NAME" \
               -F "projectVersion=$PROJECT_VERSION" \
-              -F "bom=@build/reports/bom.json")
+              -F "bom=@build/reports/cyclonedx/bom.json")
 
           token=$(printf '%s' "$response" | jq -r '.token // empty')
           if [ -z "$token" ]; then

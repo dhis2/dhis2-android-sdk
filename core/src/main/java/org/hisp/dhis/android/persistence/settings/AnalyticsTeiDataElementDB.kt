@@ -55,7 +55,7 @@ internal data class AnalyticsTeiDataElementDB(
 
 internal fun AnalyticsTeiDataElement.toDB(): AnalyticsTeiDataElementDB {
     return AnalyticsTeiDataElementDB(
-        teiSetting = teiSetting()!!,
+        teiSetting = teiSetting(),
         whoComponent = whoComponent()?.name,
         programStage = programStage(),
         dataElement = dataElement(),

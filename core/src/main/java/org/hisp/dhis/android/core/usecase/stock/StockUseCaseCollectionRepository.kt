@@ -58,12 +58,14 @@ ReadOnlyWithUidAndTransformerCollectionRepositoryImpl(
         }
 
     fun withTransactions(): StockUseCaseCollectionRepository {
-        return cf.withChild(InternalStockUseCase.TRANSACTIONS)
+        return cf.withChild(TRANSACTIONS)
     }
 
     internal companion object {
+        private const val TRANSACTIONS = "transactions"
+
         val childrenAppenders: ChildrenAppenderGetter<InternalStockUseCase> = mapOf(
-            InternalStockUseCase.TRANSACTIONS to StockUseCaseTransactionChildrenAppender::create,
+            TRANSACTIONS to StockUseCaseTransactionChildrenAppender::create,
         )
     }
 }

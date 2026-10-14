@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualization
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
-import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
 import org.hisp.dhis.android.core.settings.AnalyticsSettings
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiData
@@ -62,7 +60,7 @@ internal object SettingsAppHelper {
     }
 
     fun getProgramSettingList(programSettings: ProgramSettings): List<ProgramSetting> {
-        return (programSettings.specificSettings().values + programSettings.globalSettings()).filterNotNull()
+        return programSettings.specificSettings().values + programSettings.globalSettings()
     }
 
     fun getFilterSettingsList(appearanceSettings: AppearanceSettings): List<FilterSetting> {
@@ -77,7 +75,7 @@ internal object SettingsAppHelper {
         return result
     }
 
-    private fun getHomeFilters(filters: MutableMap<HomeFilter, FilterSetting>) = filters.map { entry ->
+    private fun getHomeFilters(filters: Map<HomeFilter, FilterSetting>) = filters.map { entry ->
         entry.value.toBuilder()
             .scope(HomeFilter::class.simpleName!!)
             .filterType(entry.key.name)
@@ -159,73 +157,20 @@ internal object SettingsAppHelper {
     }
 
     fun getAnalyticsDhisVisualizations(analyticsSettings: AnalyticsSettings): List<AnalyticsDhisVisualization> {
-        val result = mutableListOf<AnalyticsDhisVisualization>()
+        val visualizationsSetting = analyticsSettings.dhisVisualizations
 
-        analyticsSettings.dhisVisualizations()?.let { visualizationsSetting ->
+        val homeItems = visualizationsSetting.home()
+            .flatMap { it.visualizations() }
 
-            getHomeVisualizations(visualizationsSetting.home())?.let { result.addAll(it) }
+        val programItems = visualizationsSetting.program().values
+            .flatMap { list -> list.flatMap { it.visualizations() } }
 
-            getProgramVisualizations(visualizationsSetting.program())?.let { result.addAll(it) }
+        val dataSetItems = visualizationsSetting.dataSet().values
+            .flatMap { list -> list.flatMap { it.visualizations() } }
 
-            getDataSetVisualizations(visualizationsSetting.dataSet())?.let { result.addAll(it) }
-        }
-
-        return result
+        return homeItems + programItems + dataSetItems
     }
 
-    private fun getHomeVisualizations(analyticsDhisVisualizationsGroups: List<AnalyticsDhisVisualizationsGroup>?) =
-        analyticsDhisVisualizationsGroups?.flatMap { group ->
-            group.visualizations().map { visualization ->
-                visualization.toBuilder()
-                    .groupUid(group.id())
-                    .groupName(group.name())
-                    .scope(AnalyticsDhisVisualizationScope.HOME)
-                    .build()
-            }
-        }
-
-    private fun getProgramVisualizations(programVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
-        programVisualizations?.flatMap { entry ->
-            entry.value.flatMap { group ->
-                group.visualizations().map { visualization ->
-                    visualization.toBuilder()
-                        .groupUid(group.id())
-                        .groupName(group.name())
-                        .scope(AnalyticsDhisVisualizationScope.PROGRAM)
-                        .scopeUid(entry.key)
-                        .build()
-                }
-            }
-        }
-
-    private fun getDataSetVisualizations(dataSetVisualizations: Map<String, List<AnalyticsDhisVisualizationsGroup>>?) =
-        dataSetVisualizations?.flatMap { entry ->
-            entry.value.flatMap { group ->
-                group.visualizations().map { visualization ->
-                    visualization.toBuilder()
-                        .groupUid(group.id())
-                        .groupName(group.name())
-                        .scope(AnalyticsDhisVisualizationScope.DATA_SET)
-                        .scopeUid(entry.key)
-                        .build()
-                }
-            }
-        }
-
-    @JvmStatic
-    fun buildAnalyticsTeiSettings(
-        teiSettings: List<AnalyticsTeiSetting>,
-        teiDataElements: List<AnalyticsTeiDataElement>,
-        teiIndicators: List<AnalyticsTeiIndicator>,
-        teiAttributes: List<AnalyticsTeiAttribute>,
-        teiWhoNutritionData: List<AnalyticsTeiWHONutritionData>,
-    ): List<AnalyticsTeiSetting> {
-        return teiSettings.map {
-            buildAnalyticsTeiSetting(it, teiDataElements, teiIndicators, teiAttributes, teiWhoNutritionData)
-        }
-    }
-
-    @JvmStatic
     fun buildAnalyticsTeiSetting(
         teiSetting: AnalyticsTeiSetting,
         teiDataElements: List<AnalyticsTeiDataElement>,

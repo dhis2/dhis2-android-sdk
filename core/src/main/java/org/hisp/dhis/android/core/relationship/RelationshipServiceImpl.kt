@@ -109,7 +109,7 @@ internal class RelationshipServiceImpl(
     ): Boolean = when (constraint.relationshipEntity()) {
         RelationshipEntityType.PROGRAM_INSTANCE -> {
             val programUid = constraint.program()?.uid()
-            programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
+            programRepository.uid(programUid).blockingGet()!!.access().data().write()
         }
 
         RelationshipEntityType.PROGRAM_STAGE_INSTANCE -> {
@@ -118,13 +118,13 @@ internal class RelationshipServiceImpl(
                 programStageRepository.uid(programStageUid).blockingGet()?.access()!!.data().write()
             } else {
                 val programUid = constraint.program()?.uid()
-                programRepository.uid(programUid).blockingGet()!!.access().data().write()!!
+                programRepository.uid(programUid).blockingGet()!!.access().data().write()
             }
         }
 
         RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> {
             val teTypeUid = constraint.trackedEntityType()?.uid()
-            trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()!!
+            trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()
         }
 
         else -> false

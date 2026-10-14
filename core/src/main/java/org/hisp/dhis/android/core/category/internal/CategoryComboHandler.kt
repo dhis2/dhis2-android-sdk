@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCategoryComboLink
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,7 +44,7 @@ internal class CategoryComboHandler(
 ) : IdentifiableHandlerImpl<CategoryCombo>(store) {
 
     override suspend fun afterObjectHandled(o: CategoryCombo, action: HandleAction) {
-        optionComboHandler.handleMany(CategoryComboInternalAccessor.accessCategoryOptionCombos(o))
+        optionComboHandler.handleMany(o.categoryOptionCombos())
         categoryCategoryComboLinkHandler.handleMany(
             o.uid(),
             o.categories(),
@@ -57,7 +56,7 @@ internal class CategoryComboHandler(
                 .build()
         }
         if (action === HandleAction.Update) {
-            categoryOptionCleaner.deleteOrphan(o, CategoryComboInternalAccessor.accessCategoryOptionCombos(o))
+            categoryOptionCleaner.deleteOrphan(o, o.categoryOptionCombos())
         }
     }
 }

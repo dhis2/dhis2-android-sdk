@@ -16,7 +16,7 @@ internal data class MapLayerDB(
     val uid: String,
     val name: String,
     val displayName: String,
-    val external: Boolean?,
+    val external: Boolean,
     val mapLayerPosition: String,
     val style: String?,
     val imageUrl: String,

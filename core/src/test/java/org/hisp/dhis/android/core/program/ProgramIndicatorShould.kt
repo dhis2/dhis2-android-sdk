@@ -57,7 +57,7 @@ internal class ProgramIndicatorShould : CoreObjectShould<ProgramIndicatorDTO>(
         assertThat(programIndicator.decimals()).isNull()
         assertThat(programIndicator.aggregationType()).isEqualTo(AggregationType.AVERAGE)
         assertThat(programIndicator.analyticsType()).isEqualTo(AnalyticsType.EVENT)
-        assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(5)
+        assertThat(programIndicator.analyticsPeriodBoundaries()!!.size).isEqualTo(4)
         assertThat(programIndicator.analyticsPeriodBoundaries()!![0].boundaryTarget())
             .isEqualTo("Custom boundary")
         assertThat(programIndicator.analyticsPeriodBoundaries()!![1].boundaryTarget()).isEqualTo("INCIDENT_DATE")
@@ -70,5 +70,9 @@ internal class ProgramIndicatorShould : CoreObjectShould<ProgramIndicatorDTO>(
         assertThat(programIndicator.analyticsPeriodBoundaries()!![0].analyticsPeriodBoundaryType())
             .isEqualTo(AnalyticsPeriodBoundaryType.AFTER_END_OF_REPORTING_PERIOD)
         assertThat(programIndicator.analyticsPeriodBoundaries()!![1].offsetPeriods()).isEqualTo(-3)
+
+        assertThat(programIndicator.categoryCombo().uid()).isEqualTo("bjDvmb4bfuf")
+        assertThat(programIndicator.attributeCombo().uid()).isEqualTo("bjDvmb4bfuf")
+        assertThat(programIndicator.categoryMappingIds()).isEqualTo(listOf("mapping1", "mapping2"))
     }
 }

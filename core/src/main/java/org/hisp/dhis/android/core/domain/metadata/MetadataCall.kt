@@ -29,12 +29,11 @@ package org.hisp.dhis.android.core.domain.metadata
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.attribute.Attribute
@@ -80,6 +79,7 @@ import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationMod
 import org.hisp.dhis.android.core.visualization.internal.VisualizationModuleDownloader
 import org.hisp.dhis.android.persistence.maintenance.ForeignKeyViolationTableInfo
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Suppress("LongParameterList")
 @Singleton
@@ -112,7 +112,7 @@ internal class MetadataCall(
 ) {
 
     companion object {
-        const val CALLS_COUNT = 19
+        const val CALLS_COUNT = 18
     }
 
     @Suppress("TooGenericExceptionCaught")
@@ -123,9 +123,11 @@ internal class MetadataCall(
 
         coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
             try {
-                systemInfoDownloader.downloadWithProgressManager(progressManager).also { send(it) }
+                val systemInfo = systemInfoDownloader.downloadAndReturn()
+                val syncDate = systemInfo?.serverDate!!
+
                 executeIndependentCalls(progressManager).collect { send(it) }
-                executeUserCallAndChildren(progressManager).collect { send(it) }
+                executeUserCallAndChildren(progressManager, syncDate).collect { send(it) }
             } catch (e: Exception) {
                 if (e !is D2Error && e.cause is D2Error) {
                     throw e.cause!!
@@ -158,14 +160,17 @@ internal class MetadataCall(
         emit(progressManager.increaseProgress(SmsModule::class.java, false))
     }
 
-    private fun executeUserCallAndChildren(progressManager: D2ProgressManager): Flow<D2Progress> = flow {
+    private fun executeUserCallAndChildren(
+        progressManager: D2ProgressManager,
+        syncDate: Date,
+    ): Flow<D2Progress> = flow {
         val user = userModuleDownloader.downloadMetadata()
         emit(progressManager.increaseProgress(User::class.java, false))
 
         organisationUnitModuleDownloader.downloadMetadata(user)
         emit(progressManager.increaseProgress(OrganisationUnit::class.java, false))
 
-        programDownloader.downloadMetadata()
+        programDownloader.downloadMetadata(syncDate)
         emit(progressManager.increaseProgress(Program::class.java, false))
 
         dataSetDownloader.downloadMetadata()
@@ -213,6 +218,6 @@ internal class MetadataCall(
     }
 
     fun blockingDownload() {
-        runBlocking { download().collect() }
+        download().collectAndWrapException()
     }
 }

@@ -46,7 +46,7 @@ internal data class DataElementOperandDB(
 
 internal fun DataElementOperand.toDB(): DataElementOperandDB {
     return DataElementOperandDB(
-        uid = uid()!!,
+        uid = uid(),
         dataElement = dataElement()?.uid(),
         categoryOptionCombo = categoryOptionCombo()?.uid(),
     )

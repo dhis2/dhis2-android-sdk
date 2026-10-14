@@ -31,6 +31,6 @@ import org.hisp.dhis.android.core.common.CoreObject
 
 internal interface LinkHandler<S, O : CoreObject> {
     @JvmSuppressWildcards
-    suspend fun handleMany(masterUid: String, slaves: Collection<S>?, transformer: (S) -> O)
+    suspend fun handleMany(masterUid: String, items: Collection<S>?, transformer: (S) -> O)
     suspend fun resetAllLinks()
 }

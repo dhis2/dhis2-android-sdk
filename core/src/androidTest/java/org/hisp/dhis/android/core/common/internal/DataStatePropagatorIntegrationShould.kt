@@ -31,6 +31,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
+import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.Enrollment
@@ -242,6 +243,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
             val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
                 Relationship.builder()
+                    .uid(UidGeneratorImpl().generate())
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.teiItem(teiUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
@@ -276,6 +278,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
             val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
                 Relationship.builder()
+                    .uid(UidGeneratorImpl().generate())
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.enrollmentItem(enrollmentUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
@@ -313,6 +316,7 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
 
             val relationshipUid = d2.relationshipModule().relationships().blockingAdd(
                 Relationship.builder()
+                    .uid(UidGeneratorImpl().generate())
                     .relationshipType(relationshipType)
                     .from(RelationshipHelper.eventItem(eventUid))
                     .to(RelationshipHelper.teiItem(toTeiUid))
@@ -399,7 +403,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)
 
-        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build())
+        propagator.propagateTrackedEntityDataValueUpdate(
+            TrackedEntityDataValue.builder().event(eventUid).dataElement("dataElementUid").build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(state)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(State.TO_UPDATE)
@@ -416,7 +422,9 @@ class DataStatePropagatorIntegrationShould : BaseMockIntegrationTestFullDispatch
         val enrolmentUid = createEnrollmentWithState(state, teiUid)
         val eventUid = createEventWithState(state, enrolmentUid)
 
-        propagator.propagateTrackedEntityDataValueUpdate(TrackedEntityDataValue.builder().event(eventUid).build())
+        propagator.propagateTrackedEntityDataValueUpdate(
+            TrackedEntityDataValue.builder().event(eventUid).dataElement("dataElementUid").build(),
+        )
 
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.syncState()).isEqualTo(state)
         assertThat(trackedEntityInstanceStore.selectByUid(teiUid)!!.aggregatedSyncState()).isEqualTo(state)

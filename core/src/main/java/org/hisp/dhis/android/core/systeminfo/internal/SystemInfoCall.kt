@@ -77,8 +77,7 @@ class SystemInfoCall internal constructor(
 
     private suspend fun insertOrUpdateSystemInfo(systemInfo: SystemInfo) {
         systemInfoHandler.handle(systemInfo)
-        resourceHandler.serverDate = systemInfo.serverDate()
         serverTimezoneManager.setServerTimeZone(systemInfo.serverTimeZoneId())
-        resourceHandler.handleResource(Resource.Type.SYSTEM_INFO)
+        resourceHandler.handleResource(Resource.Type.SYSTEM_INFO, systemInfo.serverDate())
     }
 }

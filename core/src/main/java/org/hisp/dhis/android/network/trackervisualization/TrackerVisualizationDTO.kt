@@ -67,8 +67,8 @@ internal data class TrackerVisualizationDTO(
             program(program?.toDomain())
             programStage(programStage?.toDomain())
             trackedEntityType(trackedEntityType?.toDomain())
-            columns(columns.map { it.toDomain(id, LayoutPosition.COLUMN) })
-            filters(filters.map { it.toDomain(id, LayoutPosition.FILTER) })
+            columns(columns.mapNotNull { it.toDomain(id, LayoutPosition.COLUMN) })
+            filters(filters.mapNotNull { it.toDomain(id, LayoutPosition.FILTER) })
             sorting(sorting.map { it.toDomain() })
         }.build()
     }

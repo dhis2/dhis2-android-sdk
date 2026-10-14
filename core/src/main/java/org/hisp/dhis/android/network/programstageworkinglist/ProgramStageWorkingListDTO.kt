@@ -51,14 +51,18 @@ internal data class ProgramStageWorkingListDTO(
     val programStage: ObjectWithUidDTO?,
     val programStageQueryCriteria: ProgramStageQueryCriteriaDTO,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): ProgramStageWorkingList {
-        return ProgramStageWorkingList.builder()
-            .applyBaseIdentifiableFields(this)
-            .description(description)
-            .program(program?.toDomain())
-            .programStage(programStage?.toDomain())
-            .programStageQueryCriteria(programStageQueryCriteria.toDomain(id))
-            .build()
+    fun toDomain(): ProgramStageWorkingList? {
+        return if (program != null && programStage != null) {
+            ProgramStageWorkingList.builder()
+                .applyBaseIdentifiableFields(this)
+                .description(description)
+                .program(program.toDomain())
+                .programStage(programStage.toDomain())
+                .programStageQueryCriteria(programStageQueryCriteria.toDomain(id))
+                .build()
+        } else {
+            null
+        }
     }
 }
 

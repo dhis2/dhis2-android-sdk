@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
 
+@Suppress("TooManyFunctions")
 @Singleton
 internal class LogInExceptions internal constructor(
     private val credentialsSecureStore: CredentialsSecureStore,
@@ -92,6 +93,113 @@ internal class LogInExceptions internal constructor(
         throw D2Error.builder()
             .errorCode(D2ErrorCode.BAD_CREDENTIALS)
             .errorDescription("Credentials do not match authenticated user. Cannot login offline.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun noActiveSessionError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+            .errorDescription("No active session")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun pinRequiresTokenBasedAccountError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.INVALID_CONFIGURATION)
+            .errorDescription("PIN can only be set for OAuth2 or OpenID Connect accounts")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun noAuthenticatedUserPersistedError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+            .errorDescription("No authenticated user persisted")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun incorrectPinError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.BAD_CREDENTIALS)
+            .errorDescription("Current PIN is incorrect")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun invalidOAuth2StateError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INVALID_STATE)
+            .errorDescription("OAuth2 state does not match the one issued for this request")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun invalidOAuth2IatError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INVALID_IAT)
+            .errorDescription("The initial access token is malformed or has expired")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun oauth2DeviceNotRegisteredError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_DEVICE_NOT_REGISTERED)
+            .errorDescription("Device not registered. Handle the enrollment response first.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun incompleteOAuth2RegistrationError(missingItem: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_INCOMPLETE_REGISTRATION)
+            .errorDescription("$missingItem not found. The device must be enrolled again.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun oauth2ResponseWithoutUsernameError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.API_RESPONSE_PROCESS_ERROR)
+            .errorDescription("The authenticated user returned by the server has no username")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun oauth2NoValidTokenError(detail: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OAUTH2_NO_VALID_TOKEN)
+            .errorDescription("$detail. The user must authorize again to reach the server.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun authenticatedUserMismatchError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.AUTHENTICATED_USER_MISMATCH)
+            .errorDescription(
+                "The authorized user does not match the account being restored. " +
+                    "The user must authorize again with the expected account.",
+            )
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun openIdConnectNoValidTokenError(detail: String): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.OPEN_ID_CONNECT_NO_VALID_TOKEN)
+            .errorDescription("$detail. The user must log in again through OpenID Connect.")
+            .errorComponent(D2ErrorComponent.SDK)
+            .build()
+    }
+
+    fun incorrectOfflineCodeError(): D2Error {
+        return D2Error.builder()
+            .errorCode(D2ErrorCode.BAD_CREDENTIALS_OFFLINE_CODE)
+            .errorDescription("Offline code do not match authenticated user. Cannot login offline.")
             .errorComponent(D2ErrorComponent.SDK)
             .build()
     }

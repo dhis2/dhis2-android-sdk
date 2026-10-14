@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.legendset.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class LegendSetModuleDownloader internal constructor(
     private val legendSetUidsSeeker: LegendSetUidsSeeker,
     private val legendSetCall: LegendSetCall,
 ) : UntypedModuleDownloaderCoroutines {
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val uids = legendSetUidsSeeker.seekUids()
         legendSetCall.download(uids)
     }

@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFi
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeCall
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitProgramLinkTableInfo
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 @Suppress("LongParameterList")
@@ -60,7 +61,7 @@ internal class ProgramModuleDownloader(
     private val programOrganisationUnitLinkStore: OrganisationUnitProgramLinkStore,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val orgUnitProgramUids = programOrganisationUnitLinkStore
             .selectDistinctSlaves(OrganisationUnitProgramLinkTableInfo.Columns.PROGRAM)
 
@@ -82,7 +83,7 @@ internal class ProgramModuleDownloader(
         )
 
         programRuleCall.download(programUids)
-        relationshipTypeCall.download()
+        relationshipTypeCall.download(syncDate)
         optionSetCall.download(optionSetUids)
         optionCall.download(optionSetUids)
         optionGroupCall.download(optionSetUids)

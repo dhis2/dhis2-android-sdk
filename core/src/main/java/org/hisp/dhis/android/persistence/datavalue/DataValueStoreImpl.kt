@@ -87,10 +87,10 @@ internal class DataValueStoreImpl(
 
     private fun uniqueWhereClauseBuilder(dataValue: DataValue): WhereClauseBuilder {
         return WhereClauseBuilder()
-            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, dataValue.dataElement()!!)
-            .appendKeyStringValue(DataValueTableInfo.Columns.PERIOD, dataValue.period()!!)
-            .appendKeyStringValue(DataValueTableInfo.Columns.ORGANISATION_UNIT, dataValue.organisationUnit()!!)
-            .appendKeyStringValue(DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo()!!)
-            .appendKeyStringValue(DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo()!!)
+            .appendKeyStringValue(DataValueTableInfo.Columns.DATA_ELEMENT, dataValue.dataElement())
+            .appendKeyStringValue(DataValueTableInfo.Columns.PERIOD, dataValue.period())
+            .appendKeyStringValue(DataValueTableInfo.Columns.ORGANISATION_UNIT, dataValue.organisationUnit())
+            .appendKeyStringValue(DataValueTableInfo.Columns.CATEGORY_OPTION_COMBO, dataValue.categoryOptionCombo())
+            .appendKeyStringValue(DataValueTableInfo.Columns.ATTRIBUTE_OPTION_COMBO, dataValue.attributeOptionCombo())
     }
 }

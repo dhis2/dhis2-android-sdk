@@ -31,6 +31,7 @@ package org.hisp.dhis.android.network.settings
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.settings.AnalyticsTeiWHONutritionItem
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 import org.hisp.dhis.android.network.settings.AnalyticsTeiDeserializers.deserializeAnalyticsTeiDataElement
 import org.hisp.dhis.android.network.settings.AnalyticsTeiDeserializers.deserializeAnalyticsTeiIndicator
 
@@ -39,10 +40,10 @@ internal data class AnalyticsTeiWHONutritionItemDTO(
     val dataElements: List<String> = emptyList(),
     @JsonNames("programIndicators") val indicators: List<String> = emptyList(),
 ) {
-    fun toDomain(): AnalyticsTeiWHONutritionItem {
+    fun toDomain(teiSetting: String, whoComponent: WHONutritionComponent): AnalyticsTeiWHONutritionItem {
         return AnalyticsTeiWHONutritionItem.builder()
-            .dataElements(dataElements.map { deserializeAnalyticsTeiDataElement(it) })
-            .indicators(indicators.map { deserializeAnalyticsTeiIndicator(it) })
+            .dataElements(dataElements.map { deserializeAnalyticsTeiDataElement(it, teiSetting, whoComponent) })
+            .indicators(indicators.map { deserializeAnalyticsTeiIndicator(it, teiSetting, whoComponent) })
             .build()
     }
 }

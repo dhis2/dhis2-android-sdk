@@ -45,15 +45,15 @@ internal class ProgramStageWorkingListShould : CoreObjectShould<ProgramStageWork
     @Test
     override fun map_from_json_string() {
         val workingListDTO = deserialize()
-        val workingList = workingListDTO.toDomain()
+        val workingList = workingListDTO.toDomain()!!
 
         assertThat(workingList.created()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))
         assertThat(workingList.lastUpdated()).isEqualTo(DateUtils.DATE_FORMAT.parse("2023-01-26T19:16:58.712"))
         assertThat(workingList.uid()).isEqualTo("NAgjOfWMXg6")
         assertThat(workingList.name()).isEqualTo("Test WL")
         assertThat(workingList.displayName()).isEqualTo("Test WL display")
-        assertThat(workingList.program()!!.uid()).isEqualTo("uy2gU8kT1jF")
-        assertThat(workingList.programStage()!!.uid()).isEqualTo("oRySG82BKE6")
+        assertThat(workingList.program().uid()).isEqualTo("uy2gU8kT1jF")
+        assertThat(workingList.programStage().uid()).isEqualTo("oRySG82BKE6")
         assertThat(workingList.description()).isEqualTo("Test WL definition")
         assertThat(workingList.programStageQueryCriteria()?.eventStatus()).isEqualTo(EventStatus.ACTIVE)
         assertThat(workingList.programStageQueryCriteria()?.eventCreatedAt()).isNotNull()

@@ -77,6 +77,10 @@ internal open class DataSetInstanceSQLStatementBuilderImpl : ReadOnlySQLStatemen
         return RoomRawQuery("SELECT $column , COUNT(*) FROM (${selectAll()}) GROUP BY $column;")
     }
 
+    override fun existsWhere(whereClause: String): RoomRawQuery {
+        return RoomRawQuery("SELECT EXISTS(SELECT 1 FROM (${selectWhere(whereClause).sql + getLimit(1)}))")
+    }
+
     override fun deleteTable(): RoomRawQuery {
         return RoomRawQuery("DELETE FROM $SELECT_CLAUSE")
     }

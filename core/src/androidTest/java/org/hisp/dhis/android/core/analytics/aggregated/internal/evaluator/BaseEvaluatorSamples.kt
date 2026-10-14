@@ -120,23 +120,39 @@ object BaseEvaluatorSamples {
         .dataDimensionType(CategoryDataDimensionType.DISAGGREGATION.name)
         .build()
 
-    val categoryOption: CategoryOption = CategoryOption.builder()
+    val categoryOption1: CategoryOption = CategoryOption.builder()
         .uid(generator.generate())
         .displayName("Category Option 1")
         .build()
 
-    val categoryCategoryOptionLink: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+    val categoryOption2: CategoryOption = CategoryOption.builder()
+        .uid(generator.generate())
+        .displayName("Category Option 2")
+        .build()
+
+    val categoryCategoryOptionLink1: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
         .category(category.uid())
-        .categoryOption(categoryOption.uid())
+        .categoryOption(categoryOption1.uid())
+        .build()
+
+    val categoryCategoryOptionLink2: CategoryCategoryOptionLink = CategoryCategoryOptionLink.builder()
+        .category(category.uid())
+        .categoryOption(categoryOption2.uid())
         .build()
 
     val categoryCombo: CategoryCombo = CategoryCombo.builder()
         .uid(generator.generate())
         .build()
 
-    val categoryOptionCombo: CategoryOptionCombo = CategoryOptionCombo.builder()
+    val categoryOptionCombo1: CategoryOptionCombo = CategoryOptionCombo.builder()
         .uid(generator.generate())
-        .displayName("Coc")
+        .displayName("Coc1")
+        .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
+        .build()
+
+    val categoryOptionCombo2: CategoryOptionCombo = CategoryOptionCombo.builder()
+        .uid(generator.generate())
+        .displayName("Coc2")
         .categoryCombo(ObjectWithUid.fromIdentifiable(categoryCombo))
         .build()
 
@@ -145,9 +161,14 @@ object BaseEvaluatorSamples {
         .categoryCombo(categoryCombo.uid())
         .build()
 
-    val categoryOptionComboCategoryOptionLink = CategoryOptionComboCategoryOptionLink.builder()
-        .categoryOption(categoryOption.uid())
-        .categoryOptionCombo(categoryOptionCombo.uid())
+    val categoryOptionComboCategoryOptionLink1 = CategoryOptionComboCategoryOptionLink.builder()
+        .categoryOption(categoryOption1.uid())
+        .categoryOptionCombo(categoryOptionCombo1.uid())
+        .build()
+
+    val categoryOptionComboCategoryOptionLink2 = CategoryOptionComboCategoryOptionLink.builder()
+        .categoryOption(categoryOption2.uid())
+        .categoryOptionCombo(categoryOptionCombo2.uid())
         .build()
 
     val optionSet = OptionSet.builder()
@@ -250,9 +271,9 @@ object BaseEvaluatorSamples {
         .build()
 
     val dataElementOperand = DataElementOperand.builder()
-        .uid("${dataElement1.uid()}.${categoryOptionCombo.uid()}")
+        .uid("${dataElement1.uid()}.${categoryOptionCombo1.uid()}")
         .dataElement(ObjectWithUid.create(dataElement1.uid()))
-        .categoryOptionCombo(ObjectWithUid.create(categoryOptionCombo.uid()))
+        .categoryOptionCombo(ObjectWithUid.create(categoryOptionCombo1.uid()))
         .build()
 
     val attribute1 = TrackedEntityAttribute.builder()

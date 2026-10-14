@@ -41,42 +41,42 @@ import org.junit.runner.RunWith
 import java.util.Date
 
 @RunWith(D2JunitRunner::class)
-class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<Resource>(
+internal class ResourceStoreIntegrationShould : ObjectWithoutUidStoreAbstractIntegrationShould<Resource>(
     ResourceStoreImpl(TestDatabaseAdapterFactory.get()),
     ResourceTableInfo.TABLE_INFO,
     TestDatabaseAdapterFactory.get(),
 ) {
 
     override fun buildObject(): Resource {
-        return ResourceSamples.getResource()
+        return ResourceSamples.resource
     }
 
     override fun buildObjectToUpdate(): Resource {
-        return ResourceSamples.getResource().toBuilder()
-            .lastSynced(Date())
-            .build()
+        return ResourceSamples.resource.copy(
+            lastSynced = Date(),
+        )
     }
 
     override fun buildObjectWithNullableFields(): Resource {
-        return buildObject().toBuilder()
-            .lastSynced(null)
-            .build()
+        return buildObject().copy(
+            lastSynced = null,
+        )
     }
 
     @Test
     fun return_last_updated() = runTest {
-        store.insert(ResourceSamples.getResource())
+        store.insert(ResourceSamples.resource)
         val lastUpdated = (store as ResourceStore).getLastUpdated(Resource.Type.PROGRAM)
 
         Truth.assertThat(lastUpdated).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT
-                .format(ResourceSamples.getResource().lastSynced()!!),
+                .format(ResourceSamples.resource.lastSynced!!),
         )
     }
 
     @Test
     fun delete_resource() = runTest {
-        store.insert(ResourceSamples.getResource())
+        store.insert(ResourceSamples.resource)
 
         val lastUpdatedBefore = (store as ResourceStore).getLastUpdated(Resource.Type.PROGRAM)
         Truth.assertThat(lastUpdatedBefore).isNotNull()

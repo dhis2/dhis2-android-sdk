@@ -8,14 +8,14 @@ A bad example, "Number of active TEIs": it would always be 1.
 
 In order to trigger the Program Indicator Engine, just execute:
 
-```java
+```kotlin
 d2.programModule()
     .programIndicatorEngine()
-    .getEnrollmentProgramIndicatorValue(<enrollment-uid>, <program-indicator-uid>);
+    .getEnrollmentProgramIndicatorValue(<enrollment-uid>, <program-indicator-uid>)
 
 d2.programModule()
     .programIndicatorEngine()
-    .getEventProgramIndicatorValue(<event-uid>, <program-indicator-uid>);
+    .getEventProgramIndicatorValue(<event-uid>, <program-indicator-uid>)
 ```
 
 If the evaluation of the "filter" component returns false, the result is null.

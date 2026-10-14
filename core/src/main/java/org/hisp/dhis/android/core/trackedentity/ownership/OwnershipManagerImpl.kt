@@ -53,6 +53,7 @@ import java.util.Date
 import kotlin.time.Instant
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class OwnershipManagerImpl(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val ownershipNetworkHandler: OwnershipNetworkHandler,
@@ -62,12 +63,24 @@ internal class OwnershipManagerImpl(
     private val clockProvider: ClockProvider,
 ) : OwnershipManager {
 
+    @Deprecated(
+        message = "Use rxBreakGlass instead",
+        ReplaceWith("rxBreakGlass(trackedEntityInstance, program, reason)"),
+    )
     override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return rxCompletable { breakGlassInternal(trackedEntityInstance, program, reason) }
+        return rxCompletable { suspendBreakGlass(trackedEntityInstance, program, reason) }
+    }
+
+    override fun rxBreakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
+        return rxCompletable { suspendBreakGlass(trackedEntityInstance, program, reason) }
     }
 
     override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        runBlocking { breakGlassInternal(trackedEntityInstance, program, reason) }
+        runBlocking { suspendBreakGlass(trackedEntityInstance, program, reason) }
+    }
+
+    override suspend fun suspendBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
+        breakGlassInternal(trackedEntityInstance, program, reason)
     }
 
     private suspend fun breakGlassInternal(trackedEntityInstance: String, program: String, reason: String) {
@@ -104,12 +117,24 @@ internal class OwnershipManagerImpl(
             )
     }
 
+    @Deprecated(
+        message = "Use rxTransfer instead",
+        ReplaceWith("rxTransfer(trackedEntityInstance, program, ownerOrgUnit)"),
+    )
     override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
-        return rxCompletable { transferInternal(trackedEntityInstance, program, ownerOrgUnit) }
+        return rxCompletable { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
+    }
+
+    override fun rxTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
+        return rxCompletable { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
     }
 
     override fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
-        runBlocking { transferInternal(trackedEntityInstance, program, ownerOrgUnit) }
+        runBlocking { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
+    }
+
+    override suspend fun suspendTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
+        transferInternal(trackedEntityInstance, program, ownerOrgUnit)
     }
 
     private suspend fun transferInternal(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {

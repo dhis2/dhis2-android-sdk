@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.fileresource.internal.toUploadQualityMap
 import org.hisp.dhis.android.core.settings.DataSetSetting
 
 @Serializable
@@ -39,6 +40,7 @@ internal data class DataSetSettingDTO(
     val lastUpdated: String?,
     val periodDSDownload: Int?,
     val periodDSDBTrimming: Int?,
+    val imageSettings: Map<String, Map<String, String>>?,
 ) {
     fun toDomain(): DataSetSetting {
         return DataSetSetting.builder()
@@ -47,6 +49,7 @@ internal data class DataSetSettingDTO(
             .lastUpdated(lastUpdated?.let { DateUtils.DATE_FORMAT.parse(it) })
             .periodDSDownload(periodDSDownload)
             .periodDSDBTrimming(periodDSDBTrimming)
+            .imageSettings(imageSettings?.toUploadQualityMap())
             .build()
     }
 }

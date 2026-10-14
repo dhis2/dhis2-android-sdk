@@ -127,8 +127,8 @@ internal class TrackedEntityInstanceQueryRepositoryScopeHelper(
     ): TrackedEntityInstanceQueryRepositoryScope {
         val builder = scope.toBuilder()
 
-        workingList.program()?.uid()?.let { builder.program(it) }
-        workingList.programStage()?.uid()?.let { builder.programStage(it) }
+        builder.program(workingList.program().uid())
+        builder.programStage(workingList.programStage().uid())
 
         workingList.programStageQueryCriteria()?.let { criteria ->
             criteria.eventStatus()?.let { builder.eventStatus(listOf(it)) }

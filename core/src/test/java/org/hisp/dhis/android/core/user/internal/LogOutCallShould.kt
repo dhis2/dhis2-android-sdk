@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.rx2.rxCompletable
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -79,7 +80,7 @@ class LogOutCallShould {
     fun clear_user_credentials() {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
         whenever(userIdStore.get()).thenReturn("user-id")
-        logOutCall.logOut().blockingAwait()
+        rxCompletable { logOutCall.logOut() }.blockingAwait()
         verify(credentialsSecureStore, times(1)).remove()
         verify(serverTimezoneManager, times(1)).clearCache()
     }
@@ -87,20 +88,20 @@ class LogOutCallShould {
     @Test
     fun clear_server_timezone_cache() {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
-        logOutCall.logOut().blockingAwait()
+        rxCompletable { logOutCall.logOut() }.blockingAwait()
         verify(serverTimezoneManager, times(1)).clearCache()
     }
 
     @Test
     fun clear_default_category_combo_cache() {
         whenever(credentialsSecureStore.get()).thenReturn(credentials)
-        logOutCall.logOut().blockingAwait()
+        rxCompletable { logOutCall.logOut() }.blockingAwait()
         verify(defaultCategoryComboManager, times(1)).clearCache()
     }
 
     @Test
     fun throw_d2_exception_if_no_authenticated_user() {
-        val testObserver = logOutCall.logOut().test()
+        val testObserver = rxCompletable { logOutCall.logOut() }.test()
         testObserver.awaitTerminalEvent()
         val d2Error = testObserver.errors()[0] as D2Error
         assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER)

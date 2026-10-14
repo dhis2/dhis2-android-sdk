@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
@@ -66,16 +67,18 @@ internal class RoomMultiUserDatabaseManager(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        authorizationType: AuthorizationType,
     ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { encrypt },
             true,
+            authorizationType,
         )
 
         if (!existing) {
-            createNew(serverUrl, username, encrypt)
+            createNew(serverUrl, username, encrypt, authorizationType)
         }
     }
 
@@ -83,22 +86,30 @@ internal class RoomMultiUserDatabaseManager(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        authorizationType: AuthorizationType,
     ) {
         val existing = loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
             true,
+            authorizationType,
         )
 
         if (!existing) {
-            createNew(serverUrl, username, encrypt)
+            createNew(serverUrl, username, encrypt, authorizationType)
         }
     }
 
-    override fun createNew(serverUrl: String, username: String, encrypt: Boolean) {
+    override fun createNew(
+        serverUrl: String,
+        username: String,
+        encrypt: Boolean,
+        authorizationType: AuthorizationType,
+    ) {
         removeExceedingAccounts()
-        val userConfiguration = addOrUpdateAccountInternal(serverUrl, username, encrypt)
+        val userConfiguration =
+            addOrUpdateAccountInternal(serverUrl, username, encrypt, authorizationType = authorizationType)
         openDatabase(userConfiguration)
     }
 
@@ -109,6 +120,7 @@ internal class RoomMultiUserDatabaseManager(
             metadata.username,
             metadata.encrypted,
             importStatus = DatabaseAccountImportStatus.PENDING_TO_IMPORT,
+            authorizationType = metadata.authorizationType,
         )
     }
 
@@ -118,15 +130,21 @@ internal class RoomMultiUserDatabaseManager(
             credentials.username,
             { encrypt },
             false,
+            credentials.authorizationType,
         )
     }
 
-    override suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
+    override suspend fun loadExistingKeepingEncryption(
+        serverUrl: String,
+        username: String,
+        authorizationType: AuthorizationType,
+    ): Boolean {
         return loadExistingChangingEncryptionIfRequired(
             serverUrl,
             username,
             { obj: DatabaseAccount -> obj.encrypted() },
             true,
+            authorizationType,
         )
     }
 
@@ -180,6 +198,7 @@ internal class RoomMultiUserDatabaseManager(
         username: String,
         encryptionExtractor: (config: DatabaseAccount) -> Boolean,
         alsoOpenWhenEncryptionDoesntChange: Boolean,
+        authorizationType: AuthorizationType,
     ): Boolean {
         val existingAccount = getAccount(serverUrl, username) ?: return false
         val encrypt = encryptionExtractor(existingAccount)
@@ -190,6 +209,7 @@ internal class RoomMultiUserDatabaseManager(
                 username,
                 encrypt,
                 loginConfig = existingAccount.loginConfig(),
+                authorizationType = authorizationType,
             )
             openDatabase(updatedAccount)
         }
@@ -218,12 +238,14 @@ internal class RoomMultiUserDatabaseManager(
         }
     }
 
+    @Suppress("LongParameterList")
     private fun addOrUpdateAccountInternal(
         serverUrl: String,
         username: String,
         encrypt: Boolean,
         loginConfig: LoginConfig? = null,
         importStatus: DatabaseAccountImportStatus? = null,
+        authorizationType: AuthorizationType,
     ): DatabaseAccount {
         val updatedAccount = configurationHelper.addOrUpdateAccount(
             databaseConfigurationSecureStore.get(),
@@ -232,6 +254,7 @@ internal class RoomMultiUserDatabaseManager(
             encrypt,
             loginConfig,
             importStatus,
+            authorizationType,
         )
         databaseConfigurationSecureStore.set(updatedAccount)
         return DatabaseConfigurationHelper.getLoggedAccount(updatedAccount, username, serverUrl)

@@ -43,4 +43,5 @@ interface ReadableStore<O> {
     suspend fun count(): Int
     suspend fun countWhere(whereClause: String): Int
     suspend fun groupAndGetCountBy(column: String): Map<String, Int>
+    suspend fun exists(whereClause: String): Boolean
 }

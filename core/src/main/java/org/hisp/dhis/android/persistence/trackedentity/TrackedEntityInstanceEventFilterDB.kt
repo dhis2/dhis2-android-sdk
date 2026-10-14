@@ -49,7 +49,7 @@ internal fun TrackedEntityInstanceEventFilter.toDB(): TrackedEntityInstanceEvent
     val eventCreatedPeriodDB = eventCreatedPeriod().toDB()
 
     return TrackedEntityInstanceEventFilterDB(
-        trackedEntityInstanceFilter = trackedEntityInstanceFilter()!!,
+        trackedEntityInstanceFilter = trackedEntityInstanceFilter(),
         programStage = programStage(),
         eventStatus = eventStatus()?.name,
         periodFrom = eventCreatedPeriodDB.periodFrom,

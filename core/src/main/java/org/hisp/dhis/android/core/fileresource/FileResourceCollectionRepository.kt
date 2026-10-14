@@ -28,13 +28,17 @@
 package org.hisp.dhis.android.core.fileresource
 
 import android.content.Context
+import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
+import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadWriteWithUidCollectionRepository
@@ -51,9 +55,12 @@ import org.hisp.dhis.android.core.common.internal.DataStatePropagator
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFile
+import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
+import org.hisp.dhis.android.core.settings.DataSetSettingsObjectRepository
+import org.hisp.dhis.android.core.settings.ProgramSettingsObjectRepository
 import org.hisp.dhis.android.persistence.fileresource.FileResourceTableInfo
 import org.koin.core.annotation.Singleton
 import java.io.File
@@ -66,6 +73,9 @@ class FileResourceCollectionRepository internal constructor(
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val context: Context,
+    private val programSettingsRepository: Lazy<ProgramSettingsObjectRepository>,
+    private val dataSetSettingsRepository: Lazy<DataSetSettingsObjectRepository>,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : ReadWriteWithUidCollectionRepositoryImpl<FileResource, File, FileResourceCollectionRepository>(
     fileResourceStore,
     childrenAppenders,
@@ -78,6 +88,9 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             context,
+            programSettingsRepository,
+            dataSetSettingsRepository,
+            dispatcher,
         )
     },
 ),
@@ -97,26 +110,31 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     @Deprecated("Check {@link #upload()}.")
-    fun blockingUpload() {
-        upload().blockingSubscribe()
+    fun blockingUpload() = Unit
+
+    override suspend fun suspendAdd(o: File): String = addFile(o, o.name)
+
+    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
+        val processedFile = when (resourceContext) {
+            is ResourceContext.ImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
+            ResourceContext.FileContext -> o
+        }
+        try {
+            addFile(processedFile, resourceName(o, processedFile))
+        } finally {
+            if (processedFile != o && !processedFile.delete()) {
+                Log.w(TAG, "Could not delete the temporary file ${processedFile.name}")
+            }
+        }
     }
 
-    override fun add(o: File): Single<String> {
-        return rxSingle { addInternal(o) }
-    }
-
-    @Throws(D2Error::class)
-    override fun blockingAdd(o: File): String {
-        return runBlocking { addInternal(o) }
-    }
-
-    override suspend fun addInternal(o: File): String = withContext(Dispatchers.IO) {
+    private suspend fun addFile(file: File, name: String): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
-            val dstFile = saveFile(o, generatedUid, context)
-            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(o.name).build()
+            val dstFile = saveFile(file, generatedUid, context)
+            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
             store.insert(fileResource)
-            fileResource.uid()!!
+            fileResource.uid()
         } catch (e: Exception) {
             throw D2Error
                 .builder()
@@ -125,6 +143,45 @@ class FileResourceCollectionRepository internal constructor(
                 .errorDescription("Unexpected exception adding file")
                 .originalException(e)
                 .build()
+        }
+    }
+
+    /**
+     * The name is taken from the original file, so that the temporary name of the processed one is not exposed to the
+     * server. The extension is taken from the processed file, because the compression may have changed the image
+     * format: the content type is derived from the name, so both must agree with the actual bytes.
+     */
+    private fun resourceName(originalFile: File, processedFile: File): String {
+        return if (processedFile.extension.equals(originalFile.extension, ignoreCase = true)) {
+            originalFile.name
+        } else {
+            "${originalFile.nameWithoutExtension}.${processedFile.extension}"
+        }
+    }
+
+    fun rxProcessAndAdd(o: File, resourceContext: ResourceContext): Single<String> =
+        rxSingle { suspendProcessAndAdd(o, resourceContext) }
+
+    fun blockingProcessAndAdd(o: File, resourceContext: ResourceContext): String =
+        runBlocking { suspendProcessAndAdd(o, resourceContext) }
+
+    private fun compressImageIfNeeded(file: File, quality: UploadQuality): File {
+        return if (quality == UploadQuality.DEFAULT) {
+            FileCompressionHelper.compressFile(file)
+        } else {
+            file
+        }
+    }
+
+    private suspend fun getQuality(resourceContext: ResourceContext.ImageContext): UploadQuality {
+        return when (resourceContext) {
+            is ResourceContext.ImageContext.ProgramImageContext ->
+                programSettingsRepository.value
+                    .getImageQualityFromProgramSettings(resourceContext.programUid, resourceContext.resourceUid)
+
+            is ResourceContext.ImageContext.DatasetImageContext ->
+                dataSetSettingsRepository.value
+                    .getImageQualityFromDataSetSetting(resourceContext.datasetUid, resourceContext.resourceUid)
         }
     }
 
@@ -174,6 +231,8 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     internal companion object {
+        private val TAG = FileResourceCollectionRepository::class.java.simpleName
         val childrenAppenders: ChildrenAppenderGetter<FileResource> = emptyMap()
+        const val DEFAULT_QUALITY = "default"
     }
 }

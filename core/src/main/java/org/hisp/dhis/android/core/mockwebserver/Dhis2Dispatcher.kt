@@ -53,10 +53,10 @@ class Dhis2Dispatcher internal constructor(
         val contentType = responseController.getContentType(fileName)
 
         try {
-            val body = fileReader.getStringFromFile(fileName)
+            val body = fileReader.getStringFromFile(checkNotNull(fileName))
             Log.i(DISPATCHER, String.format(method, path, body))
             return MockResponse()
-                .setBody(body!!)
+                .setBody(body)
                 .setResponseCode(httpCode)
                 .setHeader("Content-Type", contentType!!)
         } catch (e: IOException) {

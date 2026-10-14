@@ -43,7 +43,7 @@ class SectionIndicatorLinkStoreIntegrationShould : LinkStoreAbstractIntegrationS
 ) {
 
     override fun addMasterUid(): String {
-        return SectionIndicatorLinkSamples.getSectionIndicatorLink().section()!!
+        return SectionIndicatorLinkSamples.getSectionIndicatorLink().section()
     }
 
     override fun buildObject(): SectionIndicatorLink {

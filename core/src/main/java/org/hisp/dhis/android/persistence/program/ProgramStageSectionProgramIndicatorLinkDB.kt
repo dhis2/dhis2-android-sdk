@@ -41,7 +41,7 @@ internal data class ProgramStageSectionProgramIndicatorLinkDB(
 
 internal fun ProgramStageSectionProgramIndicatorLink.toDB(): ProgramStageSectionProgramIndicatorLinkDB {
     return ProgramStageSectionProgramIndicatorLinkDB(
-        programStageSection = programStageSection()!!,
-        programIndicator = programIndicator()!!,
+        programStageSection = programStageSection(),
+        programIndicator = programIndicator(),
     )
 }

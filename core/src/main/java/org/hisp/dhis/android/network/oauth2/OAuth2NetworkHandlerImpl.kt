@@ -32,40 +32,51 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.server.OauthConfig.Companion.REQUIRED_CODE_CHALLENGE_METHOD
+import org.hisp.dhis.android.core.server.OauthConfig.Companion.REQUIRED_RESPONSE_TYPE
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2NetworkHandler
+import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
+import org.hisp.dhis.android.network.loginconfig.LoginConfigService
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class OAuth2NetworkHandlerImpl(
     httpClient: HttpServiceClient,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
+    private val oAuth2SecureStore: OAuth2SecureStore,
 ) : OAuth2NetworkHandler {
 
     private val service = OAuth2Service(httpClient)
+    private val configService = LoginConfigService(httpClient)
 
     override fun buildAuthorizationUrl(
-        serverUrl: String,
         clientId: String,
         state: String,
         codeChallenge: String,
         scope: String,
     ): String {
-        return Uri.parse("$serverUrl/oauth2/authorize").buildUpon()
+        val authorizationEndpoint = oAuth2SecureStore.authorizationEndpoint
+            ?: error("Authorization endpoint not configured. checkServerUrl must run before OAuth login.")
+        return Uri.parse(authorizationEndpoint).buildUpon()
             .appendQueryParameter("client_id", clientId)
             .appendQueryParameter("redirect_uri", OAuth2Config.DEFAULT_REDIRECT_URI)
-            .appendQueryParameter("response_type", "code")
+            .appendQueryParameter("response_type", REQUIRED_RESPONSE_TYPE)
             .appendQueryParameter("scope", scope)
             .appendQueryParameter("state", state)
             .appendQueryParameter("code_challenge", codeChallenge)
-            .appendQueryParameter("code_challenge_method", "S256")
+            .appendQueryParameter("code_challenge_method", REQUIRED_CODE_CHALLENGE_METHOD)
             .build()
             .toString()
     }
 
+    override suspend fun getTokenEndpoint(url: String, oauthConfigPath: String): String {
+        return configService.getOauthTokenConfigFor(url, oauthConfigPath).tokenEndpoint
+    }
+
     override suspend fun exchangeCodeForToken(
-        url: String,
+        tokenEndpoint: String,
         code: String,
         redirectUri: String,
         clientId: String,
@@ -74,7 +85,7 @@ internal class OAuth2NetworkHandlerImpl(
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val response = service.exchangeCodeForToken(
-                url = url,
+                endpoint = tokenEndpoint,
                 grantType = "authorization_code",
                 code = code,
                 redirectUri = redirectUri,
@@ -90,12 +101,13 @@ internal class OAuth2NetworkHandlerImpl(
                 refreshToken = response.refreshToken,
                 expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
                 scope = response.scope,
+                tokenEndpoint = tokenEndpoint,
             )
         }
     }
 
     override suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         refreshToken: String,
         clientId: String,
         keyId: String,
@@ -103,7 +115,7 @@ internal class OAuth2NetworkHandlerImpl(
     ): Result<OAuth2State, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
             val response = service.refreshToken(
-                url = url,
+                endpoint = endpoint,
                 grantType = "refresh_token",
                 refreshToken = refreshToken,
                 clientId = clientId,
@@ -117,7 +129,13 @@ internal class OAuth2NetworkHandlerImpl(
                 refreshToken = response.refreshToken ?: refreshToken,
                 expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
                 scope = response.scope,
+                tokenEndpoint = endpoint,
             )
         }
+    }
+
+    override fun buildLogoutUrl(config: OAuth2Config): String {
+        return "${config.serverUrl}/dhis-web-commons-security/logout.action" +
+            "?redirect_uri=${config.redirectUri}"
     }
 }

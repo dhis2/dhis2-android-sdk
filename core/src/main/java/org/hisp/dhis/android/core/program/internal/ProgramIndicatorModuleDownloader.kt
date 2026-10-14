@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class ProgramIndicatorModuleDownloader(
@@ -37,7 +38,7 @@ internal class ProgramIndicatorModuleDownloader(
     private val programIndicatorUidsSeeker: ProgramIndicatorUidsSeeker,
 ) : UntypedModuleDownloaderCoroutines {
 
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val uids = programIndicatorUidsSeeker.seekUids()
         programIndicatorCall.download(uids)
     }

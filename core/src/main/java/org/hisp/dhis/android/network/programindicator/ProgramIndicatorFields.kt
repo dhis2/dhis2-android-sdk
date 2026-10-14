@@ -39,6 +39,7 @@ import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo.Colum
 internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
     const val ANALYTICS_PERIOD_BOUNDARIES = "analyticsPeriodBoundaries"
     const val LEGEND_SETS = "legendSets"
+    private const val CATEGORY_MAPPING_IDS = "categoryMappingIds"
 
     val uid = fh.uid()
     val displayInForm = fh.field("displayInForm")
@@ -56,5 +57,8 @@ internal object ProgramIndicatorFields : BaseFields<ProgramIndicator>() {
         fh.nestedField<AnalyticsPeriodBoundary>(ANALYTICS_PERIOD_BOUNDARIES)
             .with(AnalyticsPeriodBoundaryFields.allFields),
         fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+        fh.nestedFieldWithUid(Columns.CATEGORY_COMBO),
+        fh.nestedFieldWithUid(Columns.ATTRIBUTE_COMBO),
+        fh.field(CATEGORY_MAPPING_IDS),
     )
 }

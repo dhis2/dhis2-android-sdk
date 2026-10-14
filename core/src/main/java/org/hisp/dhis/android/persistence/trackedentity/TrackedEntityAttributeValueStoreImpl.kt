@@ -58,7 +58,7 @@ internal class TrackedEntityAttributeValueStoreImpl(
             "WHERE " + teiInUploadableState() + ";"
         val valueList = selectRawQuery(toPostQuery)
 
-        return valueList.filter { it.trackedEntityInstance() != null }.groupBy { it.trackedEntityInstance()!! }
+        return valueList.groupBy { it.trackedEntityInstance() }
     }
 
     private fun teiInUploadableState(): String {

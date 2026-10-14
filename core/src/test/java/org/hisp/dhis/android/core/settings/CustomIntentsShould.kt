@@ -43,8 +43,8 @@ internal class CustomIntentsShould : CoreObjectShould<CustomIntentsDTO>(
         val customIntentsDTO = deserialize()
         val customIntents = customIntentsDTO.toDomain()
 
-        assertThat(customIntents.customIntents()?.size).isEqualTo(2)
-        val firstCustomIntent = customIntents.customIntents()?.get(0)!!
+        assertThat(customIntents.customIntents().size).isEqualTo(2)
+        val firstCustomIntent = customIntents.customIntents()[0]
 
         assertThat(firstCustomIntent.uid()).isEqualTo("intent1id")
         assertThat(firstCustomIntent.name()).isEqualTo("Face recognition")

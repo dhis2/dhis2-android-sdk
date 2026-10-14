@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.configuration.internal
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.common.AuthorizationType
 
 /**
  * Interface for managing multiple user databases in the DHIS2 Android SDK.
@@ -49,6 +50,7 @@ internal interface MultiUserDatabaseManager {
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        authorizationType: AuthorizationType,
     )
 
     /**
@@ -62,6 +64,7 @@ internal interface MultiUserDatabaseManager {
         serverUrl: String,
         username: String,
         encrypt: Boolean,
+        authorizationType: AuthorizationType,
     )
 
     /**
@@ -71,7 +74,7 @@ internal interface MultiUserDatabaseManager {
      * @param username The username associated with the database
      * @param encrypt Whether the database should be encrypted
      */
-    fun createNew(serverUrl: String, username: String, encrypt: Boolean)
+    fun createNew(serverUrl: String, username: String, encrypt: Boolean, authorizationType: AuthorizationType)
 
     /**
      * Creates a new database pending to be imported.
@@ -94,9 +97,15 @@ internal interface MultiUserDatabaseManager {
      *
      * @param serverUrl The server URL associated with the database
      * @param username The username associated with the database
+     * @param authorizationType The type the caller has established for the account, which replaces
+     * the recorded one
      * @return True if the database was loaded, false otherwise
      */
-    suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean
+    suspend fun loadExistingKeepingEncryption(
+        serverUrl: String,
+        username: String,
+        authorizationType: AuthorizationType,
+    ): Boolean
 
     /**
      * Sets the maximum number of accounts that can be stored.

@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.user.oauth2.internal.keystore
 
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import com.nimbusds.jose.jwk.JWKSet
-import com.nimbusds.jose.jwk.RSAKey
+import org.hisp.dhis.android.core.user.oauth2.internal.jwt.Jwks
+import org.hisp.dhis.android.core.user.oauth2.internal.jwt.RsaPublicKeyMaterial
 import org.koin.core.annotation.Singleton
 import java.security.KeyPairGenerator
 import java.security.KeyStore
@@ -81,12 +81,12 @@ internal class KeyStoreManager {
         val publicKey = getPublicKey(keyId) as? RSAPublicKey
             ?: throw IllegalStateException("Public key not found for keyId: $keyId")
 
-        val rsaKey = RSAKey.Builder(publicKey)
-            .keyID(keyId)
-            .build()
+        val keyMaterial = RsaPublicKeyMaterial(
+            modulus = publicKey.modulus.toByteArray(),
+            publicExponent = publicKey.publicExponent.toByteArray(),
+        )
 
-        val jwkSet = JWKSet(rsaKey)
-        return jwkSet.toString()
+        return Jwks.rsaJwkSet(keyMaterial, keyId).toString()
     }
 
     fun hasKey(keyId: String): Boolean {

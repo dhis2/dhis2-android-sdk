@@ -102,6 +102,10 @@ internal open class ReadOnlySQLStatementBuilderImpl(
         )
     }
 
+    override fun existsWhere(whereClause: String): RoomRawQuery {
+        return RoomRawQuery("SELECT EXISTS(SELECT 1 FROM $tableName WHERE $whereClause LIMIT 1)")
+    }
+
     override fun deleteTable(): RoomRawQuery {
         return RoomRawQuery("DELETE FROM $tableName;")
     }

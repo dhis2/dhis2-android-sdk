@@ -50,7 +50,7 @@ object RelationshipSamples {
         .syncState(STATE)
         .deleted(DELETED)
 
-    fun get230(uid: String?, fromUid: String?, toUid: String?): Relationship {
+    fun get230(uid: String, fromUid: String, toUid: String): Relationship {
         return get230(uid, RelationshipHelper.teiItem(fromUid), RelationshipHelper.teiItem(toUid))
     }
 
@@ -63,7 +63,7 @@ object RelationshipSamples {
             .build()
     }
 
-    fun get230(uid: String?, from: RelationshipItem?, to: RelationshipItem?): Relationship {
+    fun get230(uid: String, from: RelationshipItem?, to: RelationshipItem?): Relationship {
         return commonBuilder
             .uid(uid)
             .relationshipType(TYPE)

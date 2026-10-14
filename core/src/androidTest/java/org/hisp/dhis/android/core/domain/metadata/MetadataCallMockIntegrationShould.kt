@@ -44,7 +44,6 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.sms.SmsModule
-import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.usecase.stock.StockUseCase
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestEmptyDispatcher
@@ -69,7 +68,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
         testObserver.awaitTerminalEvent()
 
-        testObserver.assertValueCount(20)
+        testObserver.assertValueCount(19)
 
         val values = testObserver.values()
 
@@ -81,7 +80,6 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
         assertThat(lastValue.isComplete).isTrue()
         assertThat(lastValue.doneCalls()).containsExactlyElementsIn(
             listOf(
-                SystemInfo::class,
                 LoginConfig::class,
                 SystemSetting::class,
                 StockUseCase::class,

@@ -32,6 +32,7 @@ import io.ktor.client.plugins.api.createClientPlugin
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient.Companion.IS_EXTERNAL_REQUEST_ATTRIBUTE_KEY
 import org.hisp.dhis.android.core.arch.api.authentication.internal.UserIdAuthenticatorHelper.Companion.AUTHORIZATION_KEY
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -57,16 +58,16 @@ internal class ParentAuthenticatorPlugin(
                         proceed(request)
                     }
 
-                    credentials?.password != null -> {
-                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
-                    }
-
-                    credentials?.openIDConnectState != null -> {
+                    credentials?.authorizationType == AuthorizationType.OPEN_ID_CONNECT -> {
                         openIDConnectAuthenticator.handleTokenCall(this, request, credentials)
                     }
 
-                    credentials?.oauth2State != null -> {
+                    credentials?.authorizationType == AuthorizationType.OAUTH2 -> {
                         oauth2Authenticator.handleTokenCall(this, request, credentials)
+                    }
+
+                    credentials?.authorizationType == AuthorizationType.BASIC && credentials.password != null -> {
+                        passwordAndCookieAuthenticator.handlePasswordCall(this, request, credentials)
                     }
 
                     else -> {

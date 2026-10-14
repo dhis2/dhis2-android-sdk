@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 internal class FileResourceService(private val client: HttpServiceClient) {
 
     suspend fun uploadFile(filePart: MultiPartFormDataContent): FileResourceResponseDTO {
@@ -90,11 +90,13 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getImageFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
+        programUid: String?,
         dimension: String,
     ): ByteArray {
         return client.get {
             url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/image")
             parameters {
+                attribute(PROGRAM, programUid)
                 dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
@@ -103,9 +105,13 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     suspend fun getFileFromTrackedEntityAttribute(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUid: String,
+        programUid: String?,
     ): ByteArray {
         return client.get {
             url("$TRACKER/$TRACKED_ENTIES/$trackedEntityInstanceUid/$ATTRIBUTES/$trackedEntityAttributeUid/file")
+            parameters {
+                attribute(PROGRAM, programUid)
+            }
         }
     }
 
@@ -155,19 +161,25 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     }
 
     suspend fun getFileFromDataValue(
+        dataSet: String?,
         dataElement: String,
         period: String,
         organisationUnit: String,
         categoryOptionCombo: String,
+        attributeCategoryCombo: String?,
+        attributeCategoryOptions: String?,
         dimension: String,
     ): ByteArray {
         return client.get {
             url("$DATA_VALUES/files")
             parameters {
+                attribute("ds", dataSet)
                 attribute("de", dataElement)
                 attribute("pe", period)
                 attribute("ou", organisationUnit)
                 attribute("co", categoryOptionCombo)
+                attribute("cc", attributeCategoryCombo)
+                attribute("cp", attributeCategoryOptions)
                 dimension.takeIf { it != DimensionSize.ORIGINAL_NAME }?.let { attribute("dimension", dimension) }
             }
         }
@@ -184,5 +196,6 @@ internal class FileResourceService(private val client: HttpServiceClient) {
         const val EVENTS = "events"
         const val TRACKER = "tracker"
         const val DATA_VALUES = "dataValues"
+        const val PROGRAM = "program"
     }
 }

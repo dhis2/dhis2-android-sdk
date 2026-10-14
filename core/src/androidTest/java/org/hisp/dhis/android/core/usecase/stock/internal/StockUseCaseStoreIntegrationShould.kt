@@ -37,11 +37,12 @@ import org.hisp.dhis.android.persistence.usecase.StockUseCaseTableInfo
 import org.junit.runner.RunWith
 
 @RunWith(D2JunitRunner::class)
-class StockUseCaseStoreIntegrationShould : IdentifiableObjectStoreAbstractIntegrationShould<InternalStockUseCase>(
-    StockUseCaseStoreImpl(TestDatabaseAdapterFactory.get()),
-    StockUseCaseTableInfo.TABLE_INFO,
-    TestDatabaseAdapterFactory.get(),
-) {
+internal class StockUseCaseStoreIntegrationShould :
+    IdentifiableObjectStoreAbstractIntegrationShould<InternalStockUseCase>(
+        StockUseCaseStoreImpl(TestDatabaseAdapterFactory.get()),
+        StockUseCaseTableInfo.TABLE_INFO,
+        TestDatabaseAdapterFactory.get(),
+    ) {
     override fun buildObject(): InternalStockUseCase {
         return get()
     }

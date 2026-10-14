@@ -1,0 +1,48 @@
+<!--
+  ~  Copyright (c) 2004-2023, University of Oslo
+  ~  All rights reserved.
+  ~
+  ~  Redistribution and use in source and binary forms, with or without
+  ~  modification, are permitted provided that the following conditions are met:
+  ~  Redistributions of source code must retain the above copyright notice, this
+  ~  list of conditions and the following disclaimer.
+  ~
+  ~  Redistributions in binary form must reproduce the above copyright notice,
+  ~  this list of conditions and the following disclaimer in the documentation
+  ~  and/or other materials provided with the distribution.
+  ~  Neither the name of the HISP project nor the names of its contributors may
+  ~  be used to endorse or promote products derived from this software without
+  ~  specific prior written permission.
+  ~
+  ~  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ~  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  ~  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ~  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  ~  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  ~  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ~  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  ~  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  ~  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<resources>
+    <!-- Tracker import errors -->
+    <string name="E1000">आपके पास का एक्सेस नहीं है %s</string>
+    <string name="E1001">आपके पास टाइप का एक्सेस नहीं है %s</string>
+    <string name="E1002">%s पहले से मौजूद है। (%s : %s)</string>
+    <string name="E1003">%s आपकी खोज सीमा के बाहर है</string>
+    <string name="E1005">%s टाइप नहीं मिला</string>
+    <string name="E1006">%s एट्रिब्यूट मौजूद नहीं है</string>
+    <string name="E1007">एट्रिब्यूट वैल्यू टाइप `%s` से मैच नहीं करता। (एरर: %s)</string>
+    <string name="E1008">प्रोग्राम स्टेज %s का किसी प्रोग्राम से कोई रेफरेंस नहीं है। प्रोग्राम स्टेज कॉन्फ़िगरेशन जाँचें</string>
+    <string name="E1009">फ़ाइल पहले ही असाइन हो चुकी है। (फ़ाइल: %s)</string>
+    <string name="E1032">%s इवेंट सर्वर पर नहीं मिला। (इवेंट: %s)</string>
+    <string name="E1063">%s सर्वर पर नहीं मिला। ( %s : %s )</string>
+    <string name="E1064">%s एट्रिब्यूट के लिए वैल्यू %s यूनिक नहीं है। (एट्रिब्यूट: %s)</string>
+    <string name="E1069">एनरोलमेंट से जुड़ा प्रोग्राम %s सर्वर पर नहीं मिला। (प्रोग्राम: %s, एनरोलमेंट: %s)</string>
+    <string name="E1081">सर्वर पर एनरोलमेंट नहीं मिला। (एनरोलमेंट: %s)</string>
+    <string name="E1084">सर्वर पर फ़ाइल रेफरेंस नहीं मिला। (फ़ाइल संसाधन: %s )</string>
+    <string name="E1100">आपके पास %s डिलीट करने की परमिशन नहीं है। (%s:%s)</string>
+    <string name="E1103">आपके पास एनरोलमेंट डिलीट करने की परमिशन नहीं है। (एनरोलमेंट: %s)</string>
+</resources>

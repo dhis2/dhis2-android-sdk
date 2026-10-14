@@ -67,6 +67,7 @@ internal class ProgramPayloadShould : CoreObjectShould<ProgramPayload>(
         val program1 = programs[1]
         assertThat(program1!!.uid()).isEqualTo("q04UBOqq3rp")
         assertThat(program1.version()).isEqualTo(1)
-        assertThat(program1.access()).isEqualTo(Access.builder().build())
+        val defaultAccess = Access.create(true, true, DataAccess(true, true))
+        assertThat(program1.access()).isEqualTo(defaultAccess)
     }
 }

@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.internal
 
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportStatus
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -39,25 +40,31 @@ internal class LogInDatabaseManager(
     private val generalSettingCall: GeneralSettingCall,
 ) {
 
-    suspend fun loadDatabaseOnline(serverUrl: String, username: String) {
+    suspend fun loadDatabaseOnline(serverUrl: String, username: String, authorizationType: AuthorizationType) {
         try {
             val isEncrypted = generalSettingCall.isDatabaseEncrypted()
             multiUserDatabaseManager.loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
                 serverUrl,
                 username,
                 isEncrypted,
+                authorizationType,
             )
         } catch (ignored: Exception) {
             multiUserDatabaseManager.loadExistingKeepingEncryptionOtherwiseCreateNew(
                 serverUrl,
                 username,
                 false,
+                authorizationType,
             )
         }
     }
 
-    suspend fun loadExistingKeepingEncryption(serverUrl: String, username: String): Boolean {
-        return multiUserDatabaseManager.loadExistingKeepingEncryption(serverUrl, username)
+    suspend fun loadExistingKeepingEncryption(credentials: Credentials): Boolean {
+        return multiUserDatabaseManager.loadExistingKeepingEncryption(
+            credentials.serverUrl,
+            credentials.username,
+            credentials.authorizationType,
+        )
     }
 
     fun isPendingToImportDB(serverUrl: String, username: String): Boolean {
@@ -67,6 +74,6 @@ internal class LogInDatabaseManager(
 
     suspend fun importDB(serverUrl: String, credentials: Credentials) {
         val existingAccount = multiUserDatabaseManager.getAccount(serverUrl, credentials.username)!!
-        multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.password!!)
+        multiUserDatabaseManager.importAndLoadDb(existingAccount, credentials.passwordOrPin!!)
     }
 }

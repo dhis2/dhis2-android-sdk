@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutine
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.resource.internal.Resource
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class RelationshipTypeCall(
@@ -40,10 +41,11 @@ internal class RelationshipTypeCall(
     private val apiDownloader: APIDownloader,
 ) : ListCallCoroutines<RelationshipType> {
     private val resourceType = Resource.Type.RELATIONSHIP_TYPE
-    override suspend fun download(): List<RelationshipType> {
+    override suspend fun download(syncDate: Date?): List<RelationshipType> {
         return apiDownloader.downloadWithLastUpdated(
             handler,
             resourceType,
+            syncDate,
             networkHandler::getRelationshipTypes,
         )
     }

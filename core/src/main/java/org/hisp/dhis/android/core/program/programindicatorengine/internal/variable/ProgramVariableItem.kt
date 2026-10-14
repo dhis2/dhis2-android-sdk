@@ -46,7 +46,7 @@ internal class ProgramVariableItem : ProgramExpressionItem() {
         return programVariable.count(ctx, visitor)
     }
 
-    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
+    override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
         val programVariable = getProgramVariable(ctx)
         return programVariable.getSql(ctx, visitor)
     }

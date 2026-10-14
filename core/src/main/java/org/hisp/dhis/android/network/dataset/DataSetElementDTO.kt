@@ -29,19 +29,19 @@
 package org.hisp.dhis.android.network.dataset
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
 internal data class DataSetElementDTO(
-    val dataSet: ObjectWithUidDTO?,
-    val dataElement: ObjectWithUidDTO?,
+    val dataElement: ObjectWithUidDTO,
     val categoryCombo: ObjectWithUidDTO?,
 ) {
-    fun toDomain(): DataSetElement {
+    fun toDomain(dataSetUid: String): DataSetElement {
         return DataSetElement.builder()
-            .dataSet(dataSet?.toDomain())
-            .dataElement(dataElement?.toDomain())
+            .dataSet(ObjectWithUid(dataSetUid))
+            .dataElement(dataElement.toDomain())
             .categoryCombo(categoryCombo?.toDomain())
             .build()
     }

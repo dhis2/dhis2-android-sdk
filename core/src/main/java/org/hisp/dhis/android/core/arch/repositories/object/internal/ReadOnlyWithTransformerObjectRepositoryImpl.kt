@@ -27,9 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import io.reactivex.Single
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -39,7 +37,7 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFromScopeBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 
-internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T>
+internal class ReadOnlyWithTransformerObjectRepositoryImpl<M, T : Any>
 internal constructor(
     private val store: ReadableStore<M>,
     private val childrenAppenders: ChildrenAppenderGetter<M>,
@@ -57,23 +55,10 @@ internal constructor(
     }
 
     /**
-     * Returns the object in an asynchronous way, returning a `Single<M>`.
-     * @return A `Single` object with the object
-     */
-    override fun get(): Single<T?> {
-        return Single.fromCallable { blockingGet() }
-    }
-
-    /**
-     * Returns the object in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.get].
+     * Returns the object in a suspend way.
      * @return the object
      */
-    override fun blockingGet(): T? {
-        return runBlocking { getInternal() }
-    }
-
-    internal suspend fun getInternal(): T? {
+    override suspend fun suspendGet(): T? {
         val item = ChildrenAppenderExecutor.appendInObject(
             getWithoutChildrenInternal(),
             childrenAppenders,
@@ -84,23 +69,10 @@ internal constructor(
     }
 
     /**
-     * Returns if the object exists in an asynchronous way, returning a `Single<Boolean>`.
-     * @return if the object exists, wrapped in a `Single`
-     */
-    override fun exists(): Single<Boolean> {
-        return rxSingle { existsInternal() }
-    }
-
-    /**
-     * Returns if the object exists in a synchronous way. Important: this is a blocking method and it should not be
-     * executed in the main thread. Consider the asynchronous version [.exists].
+     * Returns if the object exists in a suspend way.
      * @return if the object exists
      */
-    override fun blockingExists(): Boolean {
-        return runBlocking { existsInternal() }
-    }
-
-    private suspend fun existsInternal(): Boolean {
+    override suspend fun suspendExists(): Boolean {
         return getWithoutChildrenInternal() != null
     }
 }

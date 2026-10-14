@@ -141,17 +141,17 @@ class EnrollmentObjectRepository internal constructor(
     }
 
     @Throws(D2Error::class)
-    fun setAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
+    fun setAttributeOptionComboUid(attributeOptionComboUid: String): Unit {
         return runBlocking { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setAttributeOptionComboUidInternal(attributeOptionComboUid: String?): Unit {
+    internal suspend fun setAttributeOptionComboUidInternal(attributeOptionComboUid: String): Unit {
         return updateIfChangedInternal(
             attributeOptionComboUid,
             { it.attributeOptionCombo() },
         ) { enrollment: Enrollment, value ->
-            updateBuilder(enrollment).attributeOptionCombo(value).build()
+            updateBuilder(enrollment).attributeOptionCombo(value!!).build()
         }
     }
 

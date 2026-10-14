@@ -39,6 +39,7 @@ internal data class DataSetSettingDB(
     val lastUpdated: String?,
     val periodDSDownload: Int?,
     val periodDSDBTrimming: Int?,
+    val imageSettings: ImageSettingsDB?,
 ) : EntityDB<DataSetSetting> {
 
     override fun toDomain(): DataSetSetting {
@@ -48,6 +49,7 @@ internal data class DataSetSettingDB(
             .lastUpdated(lastUpdated.toJavaDate())
             .periodDSDownload(periodDSDownload)
             .periodDSDBTrimming(periodDSDBTrimming)
+            .imageSettings(imageSettings?.toDomain())
             .build()
     }
 }
@@ -59,5 +61,6 @@ internal fun DataSetSetting.toDB(): DataSetSettingDB {
         lastUpdated = lastUpdated().dateFormat(),
         periodDSDownload = periodDSDownload(),
         periodDSDBTrimming = periodDSDBTrimming(),
+        imageSettings = imageSettings()?.toImageSettingsDB(),
     )
 }

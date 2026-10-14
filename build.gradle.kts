@@ -67,8 +67,8 @@ subprojects {
         }
     }
 
-    // Kotlin Android
-    plugins.withId("org.jetbrains.kotlin.android") {
+    // Kotlin Android (AGP 9 built-in Kotlin support — see https://kotl.in/gradle/agp-built-in-kotlin)
+    plugins.withId("com.android.built-in-kotlin") {
         extensions.configure<KotlinAndroidProjectExtension> {
             jvmToolchain(jvmVersion)
             compilerOptions {
@@ -98,7 +98,6 @@ subprojects {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    apply(plugin = "org.jetbrains.dokka")
 
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("0.50.0")
@@ -142,7 +141,6 @@ sonarqube {
         property("sonar.organization", "dhis2")
         property("sonar.host.url", "https://sonarcloud.io")
         property("sonar.projectName", "dhis2-android-sdk")
-        property("sonar.java.binaries", "core/build/intermediates/javac/debug/classes")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
             "${rootProject.projectDir}/core/build/coverage-report/jacocoTestReport.xml",

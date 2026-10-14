@@ -57,15 +57,14 @@ class ResourceHandlerShould {
 
     @Test
     fun do_nothing_when_passing_null_resource() = runTest {
-        resourceHandler.setServerDate(serverDate)
-        resourceHandler.handleResource(null)
+        resourceHandler.handleResource(null, serverDate)
 
         verify(resourceStore, never()).updateOrInsertWhere(any())
     }
 
     @Test
     fun do_nothing_when_not_passing_server_date() = runTest {
-        resourceHandler.handleResource(Resource.Type.PROGRAM)
+        resourceHandler.handleResource(Resource.Type.PROGRAM, null)
 
         verify(resourceStore, never()).updateOrInsertWhere(any())
     }
@@ -74,8 +73,7 @@ class ResourceHandlerShould {
     fun invoke_update_or_insert_when_handle_resource_updatable() = runTest {
         whenever(resourceStore.updateOrInsertWhere(any())).thenReturn(HandleAction.Update)
 
-        resourceHandler.setServerDate(serverDate)
-        resourceHandler.handleResource(Resource.Type.PROGRAM)
+        resourceHandler.handleResource(Resource.Type.PROGRAM, serverDate)
 
         verify(resourceStore, times(1)).updateOrInsertWhere(any())
     }

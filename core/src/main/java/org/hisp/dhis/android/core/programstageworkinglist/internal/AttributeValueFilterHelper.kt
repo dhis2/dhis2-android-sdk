@@ -47,6 +47,7 @@ object AttributeValueFilterHelper {
                 .`in`(it.`in`())
                 .like(it.like())
                 .dateFilter(it.dateFilter())
+                .isEmpty(it.isEmpty)
                 .build()
         }
     }

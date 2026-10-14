@@ -60,7 +60,7 @@ internal class TrackedEntitySearchDataFetcherHelper(
             if (programIndicatorHeader != null) {
                 programIndicatorCollectionRepository
                     .uid(programIndicatorHeader)
-                    .getInternal()
+                    .suspendGet()
                     ?.expression()
             } else {
                 null
@@ -80,11 +80,11 @@ internal class TrackedEntitySearchDataFetcherHelper(
             val programAttributes = programTrackedEntityAttributeCollectionRepository
                 .byProgram().eq(program)
                 .orderBySortOrder(RepositoryScope.OrderByDirection.ASC)
-                .getInternal()
+                .suspendGet()
 
             val attributes = trackedEntityAttributeCollectionRepository
                 .byUid().`in`(programAttributes.mapNotNull { it.trackedEntityAttribute()?.uid() })
-                .getInternal()
+                .suspendGet()
 
             programAttributes.mapNotNull { programAttribute ->
                 val attributeUid = programAttribute.trackedEntityAttribute()!!.uid()
@@ -98,14 +98,14 @@ internal class TrackedEntitySearchDataFetcherHelper(
         } else if (trackedEntityType != null) {
             val typeAttributes = trackedEntityTypeAttributeCollectionRepository
                 .byTrackedEntityTypeUid().eq(trackedEntityType)
-                .getInternal()
+                .suspendGet()
 
             val attributes = trackedEntityAttributeCollectionRepository
-                .byUid().`in`(typeAttributes.mapNotNull { it.trackedEntityAttribute()?.uid() })
-                .getInternal()
+                .byUid().`in`(typeAttributes.map { it.trackedEntityAttribute().uid() })
+                .suspendGet()
 
             typeAttributes.mapNotNull { typeAttribute ->
-                val attributeUid = typeAttribute.trackedEntityAttribute()!!.uid()
+                val attributeUid = typeAttribute.trackedEntityAttribute().uid()
                 attributes.find { it.uid() == attributeUid }?.let { attribute ->
                     getSimpleTrackedEntityAttribute(
                         attribute = attribute,
@@ -115,7 +115,7 @@ internal class TrackedEntitySearchDataFetcherHelper(
             }
         } else {
             val attributes = trackedEntityAttributeCollectionRepository
-                .getInternal()
+                .suspendGet()
 
             attributes.map { attribute ->
                 getSimpleTrackedEntityAttribute(
@@ -141,7 +141,7 @@ internal class TrackedEntitySearchDataFetcherHelper(
     }
 
     suspend fun getTeType(uid: String): TrackedEntityType? {
-        return trackedEntityTypeCollectionRepository.uid(uid).getInternal()
+        return trackedEntityTypeCollectionRepository.uid(uid).suspendGet()
     }
 }
 

@@ -43,7 +43,7 @@ import org.mockito.kotlin.verify
 class UserAccountDisabledErrorCatcherShould {
     private lateinit var catcher: UserAccountDisabledErrorCatcher
     private lateinit var response: D2HttpResponse
-    private var accountManager: AccountManagerImpl = mock()
+    private val accountManager: AccountManagerImpl = mock()
 
     @Before
     fun setUp() {

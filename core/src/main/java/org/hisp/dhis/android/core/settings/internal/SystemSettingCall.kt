@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.ListCallCoroutines
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class SystemSettingCall(
@@ -39,7 +40,7 @@ internal class SystemSettingCall(
     private val networkHandler: SystemSettingsNetworkHandler,
 ) : ListCallCoroutines<SystemSetting> {
 
-    override suspend fun download(): List<SystemSetting> {
+    override suspend fun download(syncDate: Date?): List<SystemSetting> {
         return apiDownloader.downloadListAsCoroutine(
             handler,
             networkHandler::getSystemSettings,

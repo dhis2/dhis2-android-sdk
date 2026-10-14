@@ -9,9 +9,10 @@ on:
 
 jobs:
   api-docs:
-    uses: dhis2/workflows/.github/workflows/publish-dokka-to-github-pages.yml@a0b4d50d9606c734b785451774a325846931f1ee
+    uses: dhis2/workflows/.github/workflows/publish-dokka-to-github-pages.yml@24d1b0061f1c5b87ba84766ad58ac3d64335cc0f
     with:
       java_version: 17
+      dokka_version: 2
       gradle_args: "-PremoveSnapshotSuffix"
       gradle_module: "core"
       output_folder: "api"

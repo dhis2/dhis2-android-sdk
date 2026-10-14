@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.visualization.internal
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.TrackerVisualizationDimension
 import org.junit.Before
@@ -49,7 +50,11 @@ class TrackerVisualizationHandlerShould {
     private val collectionCleaner: TrackerVisualizationCollectionCleaner = mock()
     private val dimensionHandler: TrackerVisualizationDimensionHandler = mock()
     private val analyticsDhisVisualizationCleaner: AnalyticsDhisVisualizationCleaner = mock()
-    private val dimension: TrackerVisualizationDimension = TrackerVisualizationDimension.builder().build()
+    private val dimension: TrackerVisualizationDimension = TrackerVisualizationDimension.builder()
+        .trackerVisualization("uid1")
+        .position(LayoutPosition.COLUMN)
+        .dimension("dx")
+        .build()
     private val trackerVisualization: TrackerVisualization = mock()
 
     // object to test

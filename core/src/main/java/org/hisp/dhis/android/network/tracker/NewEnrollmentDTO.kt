@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.enrollment.EnrollmentInternalAccessor
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
@@ -83,7 +82,7 @@ internal data class NewEnrollmentDTO(
             geometry(geometry?.toDomain())
             attributeOptionCombo(attributeOptionCombo.toDomain())
             notes(notes?.map { it.toDomain(enrollment = enrollment) })
-            EnrollmentInternalAccessor.insertEvents(this, events?.map { it.toDomain() })
+            events(events?.map { it.toDomain() })
             relationships(relationships?.map { it.toDomain() })
         }.build()
     }

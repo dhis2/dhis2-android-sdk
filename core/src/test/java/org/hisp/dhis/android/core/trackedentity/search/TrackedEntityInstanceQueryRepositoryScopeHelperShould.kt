@@ -107,10 +107,16 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .eventFilters(
                 listOf(
                     TrackedEntityInstanceEventFilter.builder()
-                        .programStage(programStage1).eventStatus(EventStatus.ACTIVE).build(),
+                        .trackedEntityInstanceFilter(filterUid)
+                        .programStage(programStage1)
+                        .eventStatus(EventStatus.ACTIVE)
+                        .build(),
                     TrackedEntityInstanceEventFilter.builder()
-                        .programStage(programStage2).assignedUserMode(AssignedUserMode.CURRENT)
-                        .eventCreatedPeriod(FilterPeriod.create(-5, 2)).build(),
+                        .trackedEntityInstanceFilter(filterUid)
+                        .programStage(programStage2)
+                        .assignedUserMode(AssignedUserMode.CURRENT)
+                        .eventCreatedPeriod(FilterPeriod.create(-5, 2))
+                        .build(),
                 ),
             )
             .entityQueryCriteria(EntityQueryCriteria.builder().build())
@@ -151,7 +157,10 @@ class TrackedEntityInstanceQueryRepositoryScopeHelperShould {
             .program(ObjectWithUid.create(programId))
             .eventFilters(
                 listOf(
-                    TrackedEntityInstanceEventFilter.builder().assignedUserMode(AssignedUserMode.ANY).build(),
+                    TrackedEntityInstanceEventFilter.builder()
+                        .trackedEntityInstanceFilter(filterUid)
+                        .assignedUserMode(AssignedUserMode.ANY)
+                        .build(),
                 ),
             )
             .entityQueryCriteria(EntityQueryCriteria.builder().build())

@@ -71,6 +71,7 @@ class ServerCheckCallMockIntegrationShould : BaseMockIntegrationTest() {
         assertThat(loginConfig.selfRegistrationNoRecaptcha).isFalse()
         assertThat(loginConfig.allowAccountRecovery).isTrue()
         assertThat(loginConfig.useCustomLogoFront).isFalse()
+        assertThat(loginConfig.isOauthEnabled).isFalse()
 
         val oidcProviders = loginConfig.oidcProviders
         assertThat(oidcProviders).hasSize(2)

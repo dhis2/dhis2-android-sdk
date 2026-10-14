@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationScope
 import org.hisp.dhis.android.core.settings.AnalyticsDhisVisualizationsGroup
 
 @Serializable
@@ -37,11 +38,14 @@ internal data class AnalyticsDhisVisualizationsGroupDTO(
     val id: String,
     val visualizations: List<AnalyticsDhisVisualizationDTO>,
 ) {
-    fun toDomain(): AnalyticsDhisVisualizationsGroup {
+    fun toDomain(
+        scope: AnalyticsDhisVisualizationScope,
+        scopeUid: String? = null,
+    ): AnalyticsDhisVisualizationsGroup {
         return AnalyticsDhisVisualizationsGroup.builder()
             .name(name)
             .id(id)
-            .visualizations(visualizations.map { it.toDomain() })
+            .visualizations(visualizations.map { it.toDomain(id, name, scope, scopeUid) })
             .build()
     }
 }

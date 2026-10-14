@@ -33,9 +33,9 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
-import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceNetworkHandler
+import org.hisp.dhis.android.core.fileresource.internal.MissingAggregatedDataValue
 import org.hisp.dhis.android.core.fileresource.internal.MissingTrackerAttributeValue
 import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -76,14 +76,15 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromTrackedEntityAttribute(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
+                v.program,
                 dimension,
             )
         } else {
             service.getImageFromTrackedEntityAttribute41(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
                 dimension,
             )
         }
@@ -94,13 +95,14 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromTrackedEntityAttribute(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
+                v.program,
             )
         } else {
             service.getFileFromTrackedEntityAttribute41(
-                v.value.trackedEntityInstance()!!,
-                v.value.trackedEntityAttribute()!!,
+                v.value.trackedEntityInstance(),
+                v.value.trackedEntityAttribute(),
             )
         }
     }
@@ -108,14 +110,14 @@ internal class FileResourceNetworkHandlerImpl(
     override suspend fun getImageFromEventValue(v: TrackedEntityDataValue, dimension: String): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromEventValue(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 dimension,
             )
         } else {
             service.getFileFromEventValue41(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 dimension,
             )
         }
@@ -126,13 +128,13 @@ internal class FileResourceNetworkHandlerImpl(
     ): ByteArray {
         return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromEventValue(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
             )
         } else {
             service.getFileFromEventValue41(
-                v.event()!!,
-                v.dataElement()!!,
+                v.event(),
+                v.dataElement(),
                 DimensionSize.ORIGINAL_NAME,
             )
         }
@@ -144,12 +146,15 @@ internal class FileResourceNetworkHandlerImpl(
         return service.getCustomIcon(v.href())
     }
 
-    override suspend fun getFileFromDataValue(v: DataValue, dimension: String): ByteArray {
+    override suspend fun getFileFromDataValue(v: MissingAggregatedDataValue, dimension: String): ByteArray {
         return service.getFileFromDataValue(
-            v.dataElement()!!,
-            v.period()!!,
-            v.organisationUnit()!!,
-            v.attributeOptionCombo()!!,
+            v.value.sourceDataSet(),
+            v.value.dataElement(),
+            v.value.period(),
+            v.value.organisationUnit(),
+            v.value.categoryOptionCombo(),
+            v.attributeCategoryCombo,
+            v.attributeCategoryOptions,
             dimension,
         )
     }

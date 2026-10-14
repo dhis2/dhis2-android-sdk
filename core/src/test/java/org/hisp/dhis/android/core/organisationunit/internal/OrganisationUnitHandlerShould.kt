@@ -70,7 +70,7 @@ class OrganisationUnitHandlerShould {
             organisationUnitGroupHandler,
             organisationUnitGroupLinkHandler,
         )
-        whenever(user.uid()).doReturn("test_user_uid")
+        whenever(user.uid).doReturn("test_user_uid")
         whenever(program.uid()).doReturn(programUid)
         whenever(organisationUnitGroup.uid()).doReturn("test_organisation_unit_group_uid")
         val organisationUnitGroups = listOf(organisationUnitGroup)

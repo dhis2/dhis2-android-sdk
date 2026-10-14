@@ -36,7 +36,7 @@ internal class WhereClauseFromScopeBuilder(private val builder: WhereClauseBuild
             return "1"
         }
         for (item in scope.filters()) {
-            builder.appendKeyOperatorValue(item.key(), item.operator().sqlOperator, item.value())
+            builder.appendComplexQuery(item.operator().getSqlCondition(item.key(), item.value() ?: ""))
         }
         for (item in scope.complexFilters()) {
             builder.appendComplexQuery(item.whereQuery())

@@ -34,7 +34,6 @@ import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyOneObjectRe
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
-import org.hisp.dhis.android.core.category.CategoryComboInternalAccessor.accessCategoryOptionCombos
 import org.hisp.dhis.android.core.category.CategoryOptionCombo
 import org.junit.Before
 import org.junit.Test
@@ -66,7 +65,7 @@ class DefaultCategoryComboManagerShould {
         whenever(categoryCombo.uid()).doReturn(comboUid)
         whenever(categoryOptionCombo.uid()).doReturn(optionComboUid)
         whenever(category.uid()).doReturn(categoryUid)
-        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categoryOptionCombos()).doReturn(listOf(categoryOptionCombo))
         whenever(categoryCombo.categories()).doReturn(listOf(category))
         whenever(categoryComboCollectionRepository.byIsDefault()).doReturn(filterConnector)
         whenever(filterConnector.eq(true)).doReturn(categoryComboCollectionRepository)
@@ -164,7 +163,7 @@ class DefaultCategoryComboManagerShould {
 
     @Test
     fun handle_null_category_option_combos() {
-        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(null)
+        whenever(categoryCombo.categoryOptionCombos()).doReturn(null)
         whenever(categoryCombo.categories()).doReturn(listOf(category))
 
         manager.setDefaults(categoryCombo)
@@ -176,7 +175,7 @@ class DefaultCategoryComboManagerShould {
 
     @Test
     fun handle_null_categories() {
-        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categoryOptionCombos()).doReturn(listOf(categoryOptionCombo))
         whenever(categoryCombo.categories()).doReturn(null)
 
         manager.setDefaults(categoryCombo)
@@ -188,7 +187,7 @@ class DefaultCategoryComboManagerShould {
 
     @Test
     fun handle_empty_category_option_combos() {
-        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(emptyList())
+        whenever(categoryCombo.categoryOptionCombos()).doReturn(emptyList())
         whenever(categoryCombo.categories()).doReturn(listOf(category))
 
         manager.setDefaults(categoryCombo)
@@ -200,7 +199,7 @@ class DefaultCategoryComboManagerShould {
 
     @Test
     fun handle_empty_categories() {
-        whenever(accessCategoryOptionCombos(categoryCombo)).doReturn(listOf(categoryOptionCombo))
+        whenever(categoryCombo.categoryOptionCombos()).doReturn(listOf(categoryOptionCombo))
         whenever(categoryCombo.categories()).doReturn(emptyList())
 
         manager.setDefaults(categoryCombo)

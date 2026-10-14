@@ -29,20 +29,30 @@ package org.hisp.dhis.android.core.user.oauth2.internal
 
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
 internal interface OAuth2NetworkHandler {
     fun buildAuthorizationUrl(
-        serverUrl: String,
         clientId: String,
         state: String,
         codeChallenge: String,
         scope: String,
     ): String
 
+    /**
+     * Reads the `token_endpoint` advertised by the server discovery document. It must be resolved
+     * before the client assertion is signed, so that the assertion audience and the endpoint the
+     * request is actually posted to cannot diverge.
+     */
+    suspend fun getTokenEndpoint(
+        url: String,
+        oauthConfigPath: String = DEFAULT_OAUTH_CONFIG_PATH,
+    ): String
+
     @Suppress("LongParameterList")
     suspend fun exchangeCodeForToken(
-        url: String,
+        tokenEndpoint: String,
         code: String,
         redirectUri: String,
         clientId: String,
@@ -51,10 +61,16 @@ internal interface OAuth2NetworkHandler {
     ): Result<OAuth2State, D2Error>
 
     suspend fun refreshToken(
-        url: String,
+        endpoint: String,
         refreshToken: String,
         clientId: String,
         keyId: String,
         clientAssertion: String,
     ): Result<OAuth2State, D2Error>
+
+    fun buildLogoutUrl(config: OAuth2Config): String
+
+    companion object {
+        const val DEFAULT_OAUTH_CONFIG_PATH = "/.well-known/oauth-authorization-server"
+    }
 }

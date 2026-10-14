@@ -33,28 +33,29 @@ In order to start using the SDK, the first step is to initialize a `D2` object. 
 
 The minimum configuration that needs to be passed to the `D2Manager` is the following: 
 
-```java
-D2Configuration configuration = D2Configuration.builder()
+```kotlin
+val configuration = D2Configuration.builder()
     .context(context)
-    .build();
+    .build()
 ```
 
 Using the configuration you can instantiate `D2`.
 
-```java
-Single<D2> d2Single = D2Manager.instantiateD2(configuration);
+```kotlin
+// Coroutines
+val d2 = D2Manager.suspendInstantiateD2(configuration)
+
+// RxJava
+val d2Single: Single<D2> = D2Manager.rxInstantiateD2(configuration)
+
+// Blocking. Must not be called from the main thread.
+val d2 = D2Manager.blockingInstantiateD2(configuration)
 ```
 
-Once the Single is completed, you can access D2 with the following method:
+Once instantiated, you can access D2 anywhere with the following method:
 
-```java
-D2 d2 = D2Manager.getD2();
-```
-
-If you are not using RxJava, you can instantiate `D2` in a blocking way:
-
-```java
-D2 d2 = D2Manager.blockingInstantiateD2(configuration);
+```kotlin
+val d2 = D2Manager.getD2()
 ```
 
 The object `D2Configuration` has a lot of fields to configure the behavior of the SDK.
@@ -89,18 +90,18 @@ dependencies {
 
 After adding the `play-services-safetynet` dependency just create a method that you can used to install the security provider
 
-```java
-public static void initialize(Context context){
+```kotlin
+fun initialize(context: Context) {
     try {
         // ....
-        ProviderInstaller.installIfNeeded(context.getApplicationContext());
+        ProviderInstaller.installIfNeeded(context.applicationContext)
         // ....
-    } catch (GooglePlayServicesRepairableException e) {
-        Log.e(TAG, e.toString());
-    } catch (GooglePlayServicesNotAvailableException e) {
-        Log.e(TAG, e.toString());
-    } catch (NoSuchAlgorithmException e) {
-        Log.e(TAG, e.toString());
+    } catch (e: GooglePlayServicesRepairableException) {
+        Log.e(TAG, e.toString())
+    } catch (e: GooglePlayServicesNotAvailableException) {
+        Log.e(TAG, e.toString())
+    } catch (e: NoSuchAlgorithmException) {
+        Log.e(TAG, e.toString())
     }
 }
 ```
@@ -120,14 +121,12 @@ dependencies {
 
 Setting up conscrypt is similar to the Google’s provider like in the following code :
 
-```java
-public static void initialize(){
+```kotlin
+fun initialize() {
     try {
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
-    } catch(Exception e) {
-        Log.e(TAG, e.toString());
-    } catch (NoSuchAlgorithmException e) {
-        Log.e(TAG, e.toString());
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+    } catch (e: Exception) {
+        Log.e(TAG, e.toString())
     }
 }
 ```

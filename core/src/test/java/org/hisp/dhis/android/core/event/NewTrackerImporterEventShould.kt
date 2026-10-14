@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.event.EventInternalAccessor.accessTrackedEntityInstance
 import org.hisp.dhis.android.network.tracker.NewEventDTO
 import org.junit.Test
 
@@ -51,7 +50,7 @@ internal class NewTrackerImporterEventShould : CoreObjectShould<NewEventDTO>(
         assertThat(event.program()).isEqualTo("IpHINAT79UW")
         assertThat(event.programStage()).isEqualTo("A03MvHHogjR")
         assertThat(event.enrollment()).isEqualTo("KpknKHptul0")
-        assertThat(accessTrackedEntityInstance(event)).isEqualTo("SBjuNw0Xtkn")
+        assertThat(event.trackedEntityInstance()).isEqualTo("SBjuNw0Xtkn")
         assertThat(event.geometry()!!.type()).isEqualTo(FeatureType.POINT)
         assertThat(event.geometry()!!.coordinates()).isEqualTo("[-11.618041992187502,9.508486893003065]")
         assertThat(event.deleted()).isFalse()

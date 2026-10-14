@@ -53,7 +53,7 @@ internal class CategoryComboShould : CoreObjectShould<CategoryComboDTO>(
         )
         assertThat(combo.name()).isEqualTo("Births")
         assertThat(combo.displayName()).isEqualTo("Births")
-        assertThat(combo.isDefault()).isFalse()
+        assertThat(combo.isDefault).isFalse()
 
         val categories = combo.categories()
 

@@ -30,13 +30,14 @@ package org.hisp.dhis.android.core.attribute.internal
 
 import org.hisp.dhis.android.core.arch.modules.internal.UntypedModuleDownloaderCoroutines
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Singleton
 internal class AttributeModuleDownloader internal constructor(
     private val attributesUidsSeeker: AttributeUidsSeeker,
     private val attributeCall: AttributeCall,
 ) : UntypedModuleDownloaderCoroutines {
-    override suspend fun downloadMetadata() {
+    override suspend fun downloadMetadata(syncDate: Date?) {
         val uids = attributesUidsSeeker.seekUids()
         attributeCall.download(uids)
     }

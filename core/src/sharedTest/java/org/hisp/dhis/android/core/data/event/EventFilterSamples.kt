@@ -61,7 +61,7 @@ internal object EventFilterSamples {
                     .order("dueDate:asc,createdDate:desc")
                     .displayColumnOrder(listOf("eventDate", "status", "assignedUser", "qrur9Dvnyt5", "oZg33kd9taw"))
                     .events(listOf("event1Uid", "event2Uid"))
-                    .eventStatus(EventStatus.ACTIVE)
+                    .status(EventStatus.ACTIVE)
                     .eventDate(
                         DateFilterPeriod.builder()
                             .startDate(getSimpleDate("2014-05-01"))

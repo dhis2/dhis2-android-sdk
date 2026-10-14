@@ -28,6 +28,10 @@
 package org.hisp.dhis.android.testapp.datastore
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -84,5 +88,46 @@ class DataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
             .blockingGet()
 
         assertThat(dataStoreEntries.size).isEqualTo(3)
+    }
+
+    /**
+     * The tests above only count rows, which is why ANDROSDK-2376 stayed green for as long as it
+     * did: an entry stored as `JsonWrapper(json={...})` is still a row, and is still non-null. The
+     * tests below pin the downloaded value itself, end to end through the real download pipeline
+     * the full dispatcher runs — response deserialization, [
+     * org.hisp.dhis.android.network.datastore.DataStoreEntryDTO.toDomain] and the store.
+     */
+    @Test
+    fun download_the_json_object_value_of_an_entry() {
+        val value = d2.dataStoreModule().dataStore()
+            .value("capture", "settings")
+            .blockingGet()!!
+            .value()
+
+        assertThat(value).isEqualTo("""{"skipMigration":true}""")
+    }
+
+    @Test
+    fun download_a_json_array_value_that_parses_back_as_json() {
+        val value = d2.dataStoreModule().dataStore()
+            .value("capture", "summary")
+            .blockingGet()!!
+            .value()!!
+
+        assertThat(value).doesNotContain("JsonWrapper")
+
+        val parsed = KotlinxJsonParser.instance.parseToJsonElement(value).jsonArray
+        assertThat(parsed).hasSize(4)
+        assertThat(parsed[0].jsonObject["id"]!!.jsonPrimitive.content).isEqualTo("fKHBpN5v8Sj")
+    }
+
+    @Test
+    fun download_an_empty_json_object_value() {
+        val value = d2.dataStoreModule().dataStore()
+            .value("scorecard", "savedObjects")
+            .blockingGet()!!
+            .value()
+
+        assertThat(value).isEqualTo("{}")
     }
 }

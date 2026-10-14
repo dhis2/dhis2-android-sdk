@@ -33,8 +33,8 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class LatestAppVersionComparator {
     val comparator: Comparator<in ApkDistributionVersion> = Comparator { v1, v2 ->
-        val partsV1 = v1.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
-        val partsV2 = v2.version?.split(".")?.map { it.toIntOrNull() ?: 0 } ?: emptyList()
+        val partsV1 = v1.version.split(".").map { it.toIntOrNull() ?: 0 }
+        val partsV2 = v2.version.split(".").map { it.toIntOrNull() ?: 0 }
         var result = 0
         val maxLength = maxOf(partsV1.size, partsV2.size)
         for (i in 0 until maxLength) {

@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.period.internal
 
 import com.google.common.truth.Truth.assertThat
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
@@ -46,13 +45,11 @@ class PeriodHelperIntegrationShould : BaseMockIntegrationTestEmptyDispatcher() {
     fun should_not_crash_when_creating_same_period() = runTest {
         val date = Date()
 
-        val s1 = Single.fromCallable {
-            d2.periodModule().periodHelper().getPeriodForPeriodTypeAndDate(PeriodType.Daily, date)
-        }.subscribeOn(Schedulers.io())
+        val s1 = d2.periodModule().periodHelper().getPeriodForPeriodTypeAndDate(PeriodType.Daily, date)
+            .subscribeOn(Schedulers.io())
 
-        val s2 = Single.fromCallable {
-            d2.periodModule().periodHelper().getPeriodForPeriodTypeAndDate(PeriodType.Daily, date)
-        }.subscribeOn(Schedulers.io())
+        val s2 = d2.periodModule().periodHelper().getPeriodForPeriodTypeAndDate(PeriodType.Daily, date)
+            .subscribeOn(Schedulers.io())
 
         s1.mergeWith(s2).blockingSubscribe()
 

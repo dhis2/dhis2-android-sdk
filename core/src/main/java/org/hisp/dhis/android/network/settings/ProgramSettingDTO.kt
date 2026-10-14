@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.settings
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
+import org.hisp.dhis.android.core.fileresource.internal.toUploadQualityMap
 import org.hisp.dhis.android.core.settings.DownloadPeriod
 import org.hisp.dhis.android.core.settings.EnrollmentScope
 import org.hisp.dhis.android.core.settings.LimitScope
@@ -56,6 +57,7 @@ internal data class ProgramSettingDTO(
     val eventDateDBTrimming: String?,
     val enrollmentDateDownload: String?,
     val enrollmentDateDBTrimming: String?,
+    val imageSettings: Map<String, Map<String, String>>?,
 ) {
     fun toDomain(): ProgramSetting {
         return ProgramSetting.builder()
@@ -77,6 +79,7 @@ internal data class ProgramSettingDTO(
             .eventDateDBTrimming(eventDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
             .enrollmentDateDownload(enrollmentDateDownload?.let { DownloadPeriod.valueOf(it) })
             .enrollmentDateDBTrimming(enrollmentDateDBTrimming?.let { DownloadPeriod.valueOf(it) })
+            .imageSettings(imageSettings?.toUploadQualityMap())
             .build()
     }
 }

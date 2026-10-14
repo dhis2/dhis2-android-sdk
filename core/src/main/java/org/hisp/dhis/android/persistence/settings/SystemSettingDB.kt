@@ -14,7 +14,7 @@ internal data class SystemSettingDB(
 
     override fun toDomain(): SystemSetting {
         return SystemSetting.builder().apply {
-            key.let { key(SystemSetting.SystemSettingKey.valueOf(it)) }
+            key(SystemSetting.SystemSettingKey.valueOf(key))
             value(value)
         }.build()
     }
@@ -22,7 +22,7 @@ internal data class SystemSettingDB(
 
 internal fun SystemSetting.toDB(): SystemSettingDB {
     return SystemSettingDB(
-        key = key()?.name!!,
+        key = key().name,
         value = value(),
     )
 }

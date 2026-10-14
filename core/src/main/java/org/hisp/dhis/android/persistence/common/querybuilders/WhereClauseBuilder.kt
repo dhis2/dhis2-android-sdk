@@ -137,12 +137,12 @@ internal class WhereClauseBuilder {
         column: String,
         value: Any,
         logicGate: String,
-        eq: String,
+        operator: String,
         end: String,
     ): WhereClauseBuilder {
         val andOpt = if (addOperator) logicGate else ""
         addOperator = true
-        whereClause.append(andOpt).append(column).append(eq).append(value).append(end)
+        whereClause.append(andOpt).append(column).append(operator).append(value).append(end)
         return this
     }
 
@@ -165,6 +165,14 @@ internal class WhereClauseBuilder {
         val andOpt = if (addOperator) AND else ""
         addOperator = true
         whereClause.append(andOpt).append(EXISTS).append(PARENTHESES_START).append(subQuery).append(PARENTHESES_END)
+        return this
+    }
+
+    fun appendNotExistsSubQuery(subQuery: String?): WhereClauseBuilder {
+        val andOpt = if (addOperator) AND else ""
+        addOperator = true
+        whereClause.append(andOpt).append(NOT_EXISTS).append(PARENTHESES_START).append(subQuery)
+            .append(PARENTHESES_END)
         return this
     }
 
@@ -193,6 +201,7 @@ internal class WhereClauseBuilder {
         private const val PARENTHESES_START = "("
         private const val PARENTHESES_END = ")"
         private const val EXISTS = " EXISTS "
+        private const val NOT_EXISTS = " NOT EXISTS "
         private const val EQ_NUMBER = " = "
         private const val AND = " AND "
         private const val OR = " OR "

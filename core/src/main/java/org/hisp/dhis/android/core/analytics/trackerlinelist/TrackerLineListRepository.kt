@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 
+@Suppress("TooManyFunctions")
 interface TrackerLineListRepository {
 
     fun withEventOutput(programStageId: String): TrackerLineListRepository
@@ -51,7 +52,12 @@ interface TrackerLineListRepository {
 
     fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository
 
+    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
     fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
 
+    fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
+
     fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+
+    suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
 }

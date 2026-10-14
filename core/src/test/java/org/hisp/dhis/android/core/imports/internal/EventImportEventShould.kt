@@ -56,7 +56,7 @@ internal class EventImportEventShould : CoreObjectShould<EventImportSummariesDTO
         assertThat(importEvent.importSummaries).isNotNull()
         assertThat(importEvent.importSummaries!!.size).isEqualTo(2)
 
-        val importSummary = importEvent.importSummaries!![0]
+        val importSummary = importEvent.importSummaries[0]
         assertThat(importSummary).isNotNull()
         assertThat(importSummary.reference).isEqualTo("xqpUvfxT4PZ")
         assertThat(importSummary.responseType).isEqualTo("ImportSummary")

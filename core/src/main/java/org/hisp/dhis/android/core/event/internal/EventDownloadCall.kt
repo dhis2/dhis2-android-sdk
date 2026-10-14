@@ -34,7 +34,13 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandler
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.search.EventQueryCollectionRepository
+import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceElementType
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCall
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadParams
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
@@ -42,10 +48,12 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipDownloadAndP
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelatives
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.internal.TrackerParentCallFactory
+import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
+import java.util.Date
 
 @Suppress("LongParameterList")
 @Singleton
@@ -57,6 +65,7 @@ internal class EventDownloadCall internal constructor(
     organisationUnitStore: OrganisationUnitStore,
     organisationUnitNetworkHandler: OrganisationUnitNetworkHandler,
     databaseAdapter: DatabaseAdapter,
+    fileResourceDownloadCall: FileResourceDownloadCall,
     private val eventQueryBundleFactory: EventQueryBundleFactory,
     private val trackerParentCallFactory: TrackerParentCallFactory,
     private val persistenceCallFactory: EventPersistenceCallFactory,
@@ -70,6 +79,7 @@ internal class EventDownloadCall internal constructor(
     organisationUnitStore,
     organisationUnitNetworkHandler,
     databaseAdapter,
+    fileResourceDownloadCall,
 ) {
 
     override suspend fun getBundles(params: ProgramDataDownloadParams): List<EventQueryBundle> {
@@ -90,23 +100,41 @@ internal class EventDownloadCall internal constructor(
         persistenceCallFactory.persistEvents(items, relatives)
     }
 
-    override suspend fun updateLastUpdated(bundle: EventQueryBundle) {
-        lastUpdatedManager.update(bundle)
+    override suspend fun updateLastUpdated(bundle: EventQueryBundle, syncDate: Date) {
+        lastUpdatedManager.update(bundle, syncDate)
+    }
+
+    /**
+     * Events only carry data values, so the tracked entity attributes are left out: filtering by event uid does not
+     * restrict the attribute values and every pending attribute in the database would be downloaded.
+     */
+    override fun getFileResourceDownloadParams(
+        items: List<Event>,
+        program: String?,
+    ): FileResourceDownloadParams {
+        return FileResourceDownloadParams(
+            domainTypes = listOf(FileResourceDomainType.DATA_VALUE),
+            dataDomainTypes = listOf(FileResourceDataDomainType.TRACKER),
+            elementTypes = listOf(FileResourceElementType.DATA_ELEMENT),
+            eventUids = items.map { it.uid },
+            programUids = listOfNotNull(program),
+        )
     }
 
     override suspend fun queryByUids(
         bundle: EventQueryBundle,
         overwrite: Boolean,
+        downloadFileResources: Boolean,
         relatives: RelationshipItemRelatives,
     ): ItemsWithPagingResult {
         val result = ItemsWithPagingResult(0, true, null, false)
 
         val eventQuery = TrackerAPIQuery(
-            commonParams = bundle.commonParams().copy(
-                program = bundle.commonParams().program,
-                limit = bundle.commonParams().uids.size,
+            commonParams = bundle.commonParams.copy(
+                program = bundle.commonParams.program,
+                limit = bundle.commonParams.uids.size,
             ),
-            uids = bundle.commonParams().uids,
+            uids = bundle.commonParams.uids,
         )
 
         try {
@@ -122,6 +150,12 @@ internal class EventDownloadCall internal constructor(
 
             persistItems(items, params = persistParams, relatives)
 
+            downloadFileResourcesIfEnabled(
+                enabled = downloadFileResources,
+                items = items,
+                program = eventQuery.commonParams.program,
+            )
+
             result.count += items.size
         } catch (d2Error: D2Error) {
             result.successfulSync = false
@@ -136,11 +170,13 @@ internal class EventDownloadCall internal constructor(
     override suspend fun getQuery(
         bundle: EventQueryBundle,
         program: String?,
-        orgunitUid: String?,
+        orgunit: DownloadOrgunit?,
         limit: Int,
     ): TrackerAPIQuery? {
-        val eventUids = if (bundle.eventFilters() != null) {
-            val filteredUids = getEventUidsByFilters(bundle, orgunitUid)
+        val ouMode = orgunit?.resolvedOuMode ?: bundle.commonParams.ouMode
+
+        val eventUids = if (bundle.eventFilters != null) {
+            val filteredUids = getEventUidsByFilters(bundle, orgunit?.uid, ouMode)
 
             filteredUids.takeIf { it.isNotEmpty() }
         } else {
@@ -149,12 +185,13 @@ internal class EventDownloadCall internal constructor(
 
         return eventUids?.let {
             TrackerAPIQuery(
-                commonParams = bundle.commonParams().copy(
+                commonParams = bundle.commonParams.copy(
                     program = program,
                     limit = limit,
+                    ouMode = ouMode,
                 ),
-                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle.commonParams()),
-                orgUnit = orgunitUid,
+                lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle),
+                orgUnit = orgunit?.uid,
                 uids = eventUids.distinct(),
             )
         }
@@ -163,11 +200,12 @@ internal class EventDownloadCall internal constructor(
     private suspend fun getEventUidsByFilters(
         bundle: EventQueryBundle,
         orgunitUid: String?,
+        ouMode: OrganisationUnitMode,
     ): List<String> {
-        return bundle.eventFilters()?.flatMap {
+        return bundle.eventFilters?.flatMap {
             eventQueryCollectionRepository
                 .byOrgUnits().eq(orgunitUid)
-                .byOrgUnitMode().eq(bundle.commonParams().ouMode)
+                .byOrgUnitMode().eq(ouMode)
                 .byEventFilterObject().eq(it)
                 .onlineOnly().getDataFetcher().getUids()
         } ?: emptyList()

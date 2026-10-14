@@ -2,7 +2,7 @@
 
 Settings are downloaded on every metadata synchronization. There are different kinds of settings:
 
-```java
+```kotlin
 d2.settingModule()
 ```
 
@@ -20,7 +20,7 @@ This SDK downloads this configuration in every metadata synchronization and pers
 
 ### General settings { #android_sdk_general_settings }
 
-```java
+```kotlin
 d2.settingModule().generalSetting()
 ```
 
@@ -37,7 +37,7 @@ It gives additional information about app settings:
 
 ### Synchronization settings { #android_sdk_synchronization_settings }
 
-```java
+```kotlin
 d2.settingModule().synchronizationSettings()
 ```
 
@@ -47,10 +47,11 @@ If offers additional parameters to control metadata/data synchronization.
 - **TrackerImporterVersion:** version of the tracker importer: *V1* refers to the legacy tracker importer (`/api/trackedEntityInstances` endpoint); *V2* refers to the importer introduced in 2.37 (`/api/tracker` endpoint).
 - **ProgramSettings:** this section controls the program data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all programs. Additionally it allows to set specific settings for particular programs. All these parameters are consumed by the SDK and used in the synchronization process.
 - **DataSetsSettings:** this section controls the aggregated data synchronization parameters. It has a section to define global or default parameters to be used in the synchronization of all dataSets. Additionally it allows to set specific setting for particular dataSets. All these parameters are consumed by the SDK and used in the synchronization process.
+- **ImageSettings:** `ProgramSetting` and `DataSetSetting` include an `imageSettings()` map that defines the **upload quality** of the images captured for a given data element or tracked entity attribute. The map is keyed by the item uid, and the SDK consumes it automatically when adding a file resource. See [Image compression](#android_sdk_image_compression).
 
 ### Appearance settings { #android_sdk_appearance_settings }
 
-```java
+```kotlin
 d2.settingModule().appearanceSettings()
 ```
 
@@ -70,7 +71,7 @@ Most of the settings refer to visual components so they are usually consumed by 
 
 ### Analytic settings { #android_sdk_analytic_settings }
 
-```java
+```kotlin
 d2.settingModule().analyticsSetting()
 
 d2.settingModule().analyticsSetting().teis()
@@ -91,7 +92,7 @@ These settings refer to visual components so they must be consumed by the app.
 
 ### Custom intents { #android_sdk_custom_intents }
 
-```java
+```kotlin
 d2.settingModule().customIntents()
 
 d2.settingModule().customIntentService()
@@ -108,14 +109,13 @@ Each custom intent configuration includes:
 
 The SDK provides a `CustomIntentService` to evaluate request parameters based on the current context:
 
-```java
+```kotlin
 // Get custom intents
-List<CustomIntent> intents = d2.settingModule().customIntents()
-    .blockingGet();
+val intents = d2.settingModule().customIntents().suspendGet()
 
 // Evaluate parameters for a specific context (optionally with orgunit)
-CustomIntentContext context = new CustomIntentContext("orgunitUid");
+val context = CustomIntentContext("orgunitUid")
 
-Map<String, Object> params = d2.settingModule().customIntentService()
-    .blockingEvaluateRequestParams(customIntent, context);
+val params = d2.settingModule().customIntentService()
+    .suspendEvaluateRequestParams(customIntent, context)
 ```

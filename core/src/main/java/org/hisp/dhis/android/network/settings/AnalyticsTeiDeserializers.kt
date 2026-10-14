@@ -32,28 +32,62 @@ import kotlinx.serialization.SerializationException
 import org.hisp.dhis.android.core.settings.AnalyticsTeiAttribute
 import org.hisp.dhis.android.core.settings.AnalyticsTeiDataElement
 import org.hisp.dhis.android.core.settings.AnalyticsTeiIndicator
+import org.hisp.dhis.android.core.settings.WHONutritionComponent
 
 internal object AnalyticsTeiDeserializers {
 
-    fun deserializeAnalyticsTeiAttribute(string: String): AnalyticsTeiAttribute {
-        return AnalyticsTeiAttribute.builder().attribute(string).build()
+    fun deserializeAnalyticsTeiAttribute(string: String, settingId: String): AnalyticsTeiAttribute {
+        return AnalyticsTeiAttribute.builder()
+            .teiSetting(settingId)
+            .attribute(string)
+            .build()
     }
 
-    fun deserializeAnalyticsTeiDataElement(string: String): AnalyticsTeiDataElement {
+    fun deserializeAnalyticsTeiDataElement(
+        string: String,
+        settingId: String,
+        whoComponent: WHONutritionComponent? = null,
+    ): AnalyticsTeiDataElement {
         val tokens = string.split(".")
         return when (tokens.size) {
-            1 -> AnalyticsTeiDataElement.builder().dataElement(tokens.first()).build()
-            2 -> AnalyticsTeiDataElement.builder().programStage(tokens.first()).dataElement(tokens.last()).build()
+            1 -> AnalyticsTeiDataElement.builder()
+                .teiSetting(settingId)
+                .dataElement(tokens.first())
+                .whoComponent(whoComponent)
+                .build()
+
+            2 -> AnalyticsTeiDataElement.builder()
+                .teiSetting(settingId)
+                .programStage(tokens.first())
+                .dataElement(tokens.last())
+                .whoComponent(whoComponent)
+                .build()
+
             else -> throw SerializationException("Unparseable DataElement: $string")
         }
     }
 
-    fun deserializeAnalyticsTeiIndicator(string: String): AnalyticsTeiIndicator {
+    fun deserializeAnalyticsTeiIndicator(
+        string: String,
+        settingId: String,
+        whoComponent: WHONutritionComponent? = null,
+    ): AnalyticsTeiIndicator {
         val tokens = string.split(".")
 
         return when (tokens.size) {
-            1 -> AnalyticsTeiIndicator.builder().indicator(tokens.first()).build()
-            2 -> AnalyticsTeiIndicator.builder().programStage(tokens.first()).indicator(tokens.last()).build()
+            1 -> AnalyticsTeiIndicator.builder()
+                .teiSetting(settingId)
+                .indicator(tokens.first())
+                .whoComponent(whoComponent)
+                .build()
+
+            2 -> AnalyticsTeiIndicator.builder()
+                .teiSetting(settingId)
+                .programStage(tokens.first())
+                .indicator(tokens.last())
+                .whoComponent(whoComponent)
+                .build()
+
             else -> throw SerializationException("Unparseable Indicator: $string")
         }
     }

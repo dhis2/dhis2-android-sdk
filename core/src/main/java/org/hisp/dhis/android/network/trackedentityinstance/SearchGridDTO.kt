@@ -50,7 +50,7 @@ internal data class SearchGridDTO(
                 .lastUpdated(DateUtils.SPACE_DATE_FORMAT.parse(row[2]))
                 .organisationUnit(row[3])
                 .trackedEntityType(row[5])
-                .trackedEntityAttributeValues(getAttributes(headers, row))
+                .trackedEntityAttributeValues(getAttributes(headers, row, row[0]))
                 .build()
         }
     }
@@ -58,12 +58,14 @@ internal data class SearchGridDTO(
     private fun getAttributes(
         headers: List<SearchGridHeaderDTO>,
         row: List<String>,
+        trackedEntityInstance: String,
     ): List<TrackedEntityAttributeValue> {
         val attributeIndexes = row.indices.drop(NON_ATTRIBUTE_LENGTH)
 
         return attributeIndexes.map { index ->
             TrackedEntityAttributeValue.builder()
                 .trackedEntityAttribute(headers[index].name)
+                .trackedEntityInstance(trackedEntityInstance)
                 .value(row[index])
                 .build()
         }

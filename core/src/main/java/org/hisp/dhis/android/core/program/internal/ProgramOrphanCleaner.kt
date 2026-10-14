@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.cleaners.internal.ParentOrphanCleaner
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.core.program.ProgramInternalAccessor
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -39,11 +38,11 @@ internal class ProgramOrphanCleaner(
     private val programSectionCleaner: ProgramSectionOrphanCleaner,
 ) : ParentOrphanCleaner<Program> {
     override suspend fun deleteOrphan(parent: Program?) {
-        programRuleVariableCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramRuleVariables(parent))
+        programRuleVariableCleaner.deleteOrphan(parent, parent?.programRuleVariables())
         programTrackedEntityAttributeCleaner.deleteOrphan(
             parent,
-            ProgramInternalAccessor.accessProgramTrackedEntityAttributes(parent),
+            parent?.programTrackedEntityAttributes(),
         )
-        programSectionCleaner.deleteOrphan(parent, ProgramInternalAccessor.accessProgramSections(parent))
+        programSectionCleaner.deleteOrphan(parent, parent?.programSections())
     }
 }

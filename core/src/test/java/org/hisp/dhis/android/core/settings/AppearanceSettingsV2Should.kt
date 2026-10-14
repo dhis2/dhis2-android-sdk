@@ -103,7 +103,7 @@ internal class AppearanceSettingsV2Should : CoreObjectShould<AppearanceSettingsD
 
         // Compatibility backwards
         val completionSpinnerSetting = appearanceSettings.completionSpinner()
-        assertThat(completionSpinnerSetting!!.globalSettings()!!.uid()).isNull()
+        assertThat(completionSpinnerSetting.globalSettings()!!.uid()).isNull()
 
         val specificCompletionSpinnerList = completionSpinnerSetting.specificSettings()
         val specificCompletionSpinner = specificCompletionSpinnerList!!["IpHINAT79UW"]!!

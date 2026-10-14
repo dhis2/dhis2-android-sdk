@@ -48,6 +48,6 @@ internal class ProgramStageWorkingListNetworkHandlerImpl(
             ProgramStageWorkingListFields.allFields,
             false,
         )
-        return apiPayload.mapItems(ProgramStageWorkingListDTO::toDomain)
+        return apiPayload.mapNotNullItems(ProgramStageWorkingListDTO::toDomain)
     }
 }

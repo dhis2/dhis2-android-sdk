@@ -93,7 +93,6 @@ import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.core.resource.internal.Resource
 import org.hisp.dhis.android.core.settings.DataSetSetting
 import org.hisp.dhis.android.core.settings.GeneralSettings
 import org.hisp.dhis.android.core.settings.LatestAppVersion
@@ -121,7 +120,6 @@ import org.hisp.dhis.android.core.user.UserGroup
 import org.hisp.dhis.android.core.user.UserOrganisationUnitLink
 import org.hisp.dhis.android.core.user.UserRole
 import org.hisp.dhis.android.core.validation.ValidationRule
-import org.hisp.dhis.android.core.visualization.CategoryDimension
 import org.hisp.dhis.android.core.visualization.Visualization
 
 internal val domainClasses = listOf(
@@ -133,7 +131,6 @@ internal val domainClasses = listOf(
     CategoryCategoryComboLink::class.java,
     CategoryCategoryOptionLink::class.java,
     CategoryCombo::class.java,
-    CategoryDimension::class.java,
     CategoryOption::class.java,
     CategoryOptionCombo::class.java,
     Configuration::class.java,
@@ -195,7 +192,6 @@ internal val domainClasses = listOf(
     RelationshipConstraint::class.java,
     RelationshipItem::class.java,
     RelationshipType::class.java,
-    Resource::class.java,
     ReservedValueSetting::class.java,
     Section::class.java,
     SectionDataElementLink::class.java,

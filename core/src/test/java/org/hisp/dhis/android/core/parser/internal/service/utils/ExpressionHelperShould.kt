@@ -92,6 +92,9 @@ class ExpressionHelperShould {
 
     private fun dv(dataElementId: String, categoryOptionComboId: String, value: String): DataValue {
         return DataValue.builder()
+            .period("2023-01")
+            .organisationUnit("orgUnitId")
+            .attributeOptionCombo("attributeOptionComboId")
             .dataElement(dataElementId)
             .categoryOptionCombo(categoryOptionComboId)
             .value(value)

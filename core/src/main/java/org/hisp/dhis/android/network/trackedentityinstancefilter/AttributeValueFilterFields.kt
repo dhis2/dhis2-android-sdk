@@ -34,6 +34,7 @@ import org.hisp.dhis.android.persistence.trackedentity.AttributeValueFilterTable
 
 internal object AttributeValueFilterFields : BaseFields<AttributeValueFilter>() {
     private const val API_IN = "in"
+    private const val API_IS_EMPTY = "null"
 
     val allFields = Fields.from(
         fh.field(Columns.ATTRIBUTE),
@@ -47,5 +48,6 @@ internal object AttributeValueFilterFields : BaseFields<AttributeValueFilter>() 
         fh.field(API_IN),
         fh.field(Columns.LIKE),
         fh.field(Columns.DATE_FILTER),
+        fh.field(API_IS_EMPTY),
     )
 }

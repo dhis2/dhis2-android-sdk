@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.imports
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.D2Progress
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.tracker.importer.internal.JobQueryCall
 import org.koin.core.annotation.Singleton
 
@@ -38,11 +40,20 @@ import org.koin.core.annotation.Singleton
 class TrackerJobManager internal constructor(
     private val jobQueryCall: JobQueryCall,
 ) {
+    fun flowResumePendingJobs(): Flow<D2Progress> {
+        return jobQueryCall.queryPendingJobs()
+    }
+
+    @Deprecated(message = "Use rxResumePendingJobs instead", ReplaceWith("rxResumePendingJobs()"))
     fun resumePendingJobs(): Observable<D2Progress> {
-        return jobQueryCall.queryPendingJobs().asObservable()
+        return flowResumePendingJobs().asObservable()
+    }
+
+    fun rxResumePendingJobs(): Observable<D2Progress> {
+        return flowResumePendingJobs().asObservable()
     }
 
     fun blockingResumePendingJobs() {
-        resumePendingJobs().blockingSubscribe()
+        flowResumePendingJobs().collectAndWrapException()
     }
 }

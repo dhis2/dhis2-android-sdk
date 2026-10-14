@@ -38,7 +38,7 @@ object CreateTrackedEntityUtils {
     const val TEST_DESCRIPTION: String = "test_description"
     const val TEST_DISPLAY_DESCRIPTION: String = "test_display_description"
 
-    fun create(uid: String?): TrackedEntityType {
+    fun create(uid: String): TrackedEntityType {
         return TrackedEntityType.builder()
             .uid(uid)
             .code(TEST_CODE)

@@ -29,24 +29,33 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import net.openid.appauth.AuthState
 import org.hisp.dhis.android.core.arch.helpers.UserHelper
+import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.user.oauth2.OAuth2State
 
-data class Credentials(
+internal data class Credentials(
     val username: String,
     val serverUrl: String,
     val password: String?,
+    val pin: String?,
     val openIDConnectState: AuthState?,
     val oauth2State: OAuth2State? = null,
+    val authorizationType: AuthorizationType = impliedAuthorizationType(openIDConnectState, oauth2State),
 ) {
+
+    val passwordOrPin: String?
+        get() = password ?: pin
+
     fun getHash(): String? {
-        return password?.let { UserHelper.md5(username, it) }
+        return passwordOrPin?.let { UserHelper.md5(username, it) }
     }
 
     override fun equals(other: Any?) =
         (other is Credentials) &&
             username == other.username &&
+            pin == other.pin &&
             password == other.password &&
             serverUrl == other.serverUrl &&
+            authorizationType == other.authorizationType &&
             openIDConnectState?.jsonSerializeString() == other.openIDConnectState?.jsonSerializeString() &&
             oauth2State?.jsonSerializeString() == other.oauth2State?.jsonSerializeString()
 
@@ -54,8 +63,21 @@ data class Credentials(
         var result = username.hashCode()
         result = 31 * result + serverUrl.hashCode()
         result = 31 * result + (password?.hashCode() ?: 0)
+        result = 31 * result + (pin?.hashCode() ?: 0)
+        result = 31 * result + authorizationType.hashCode()
         result = 31 * result + (openIDConnectState?.jsonSerializeString()?.hashCode() ?: 0)
         result = 31 * result + (oauth2State?.jsonSerializeString()?.hashCode() ?: 0)
         return result
+    }
+
+    companion object {
+        fun impliedAuthorizationType(
+            openIDConnectState: AuthState?,
+            oauth2State: OAuth2State?,
+        ): AuthorizationType = when {
+            openIDConnectState != null -> AuthorizationType.OPEN_ID_CONNECT
+            oauth2State != null -> AuthorizationType.OAUTH2
+            else -> AuthorizationType.BASIC
+        }
     }
 }

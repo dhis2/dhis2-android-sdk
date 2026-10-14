@@ -15,9 +15,9 @@ internal data class AnalyticsDhisVisualizationDB(
     val id: Int = 0,
     val uid: String,
     val scopeUid: String?,
-    val scope: String?,
-    val groupUid: String?,
-    val groupName: String?,
+    val scope: String,
+    val groupUid: String,
+    val groupName: String,
     val timestamp: String?,
     val name: String?,
     val type: String,
@@ -27,7 +27,7 @@ internal data class AnalyticsDhisVisualizationDB(
         return AnalyticsDhisVisualization.builder().apply {
             uid(uid)
             scopeUid(scopeUid)
-            scope?.let { scope(AnalyticsDhisVisualizationScope.valueOf(it)) }
+            scope(AnalyticsDhisVisualizationScope.valueOf(scope))
             groupUid(groupUid)
             groupName(groupName)
             timestamp(timestamp)
@@ -41,7 +41,7 @@ internal fun AnalyticsDhisVisualization.toDB(): AnalyticsDhisVisualizationDB {
     return AnalyticsDhisVisualizationDB(
         uid = uid(),
         scopeUid = scopeUid(),
-        scope = scope()?.name,
+        scope = scope().name,
         groupUid = groupUid(),
         groupName = groupName(),
         timestamp = timestamp(),

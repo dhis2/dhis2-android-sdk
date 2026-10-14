@@ -124,7 +124,9 @@ tasks.register("jacocoReport", JacocoReport::class) {
         // DHIS2 Android SDK fields
         "**/*AutoValue_*.*",
         // Room-generated DAO classes (generated code not meaningful to cover)
-        "**/*Dao_Impl*.*"
+        "**/*Dao_Impl*.*",
+        // Analytics mock responses (static sample data, not production logic)
+        "**/analytics/aggregated/mock/**"
     )
 
     val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {

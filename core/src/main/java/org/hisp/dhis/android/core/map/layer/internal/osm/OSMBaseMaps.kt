@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.osm
 
+import org.hisp.dhis.android.core.map.layer.MapService
+
 object OSMBaseMaps {
     val list: List<OSMBaseMap> = listOf(
         OSMBaseMap(
@@ -39,6 +41,7 @@ object OSMBaseMaps {
             attribution = "&copy; <a href =\"https://openfreemap.org/\">OpenFreeMap " +
                     "<a href =\"https://www.openmaptiles.org/\">OpenMapTiles "+
                     "Data from <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a>",
+            mapService = MapService.VECTOR_STYLE,
         ),
         OSMBaseMap(
             id = "openStreetMap",
@@ -47,6 +50,7 @@ object OSMBaseMaps {
             subdomains = listOf("a", "b", "c", "d"),
             subdomainPlaceholder = "{s}",
             attribution = "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors\n",
+            mapService = MapService.XYZ,
         ),
     )
 }

@@ -158,6 +158,18 @@ class EventServiceShould {
     }
 
     @Test
+    fun `Should return non editable status if event does not exist`() = runTest {
+        whenever(eventRepository.uid(any()).suspendGet()) doReturn null
+
+        val status = eventService.blockingGetEditableStatus("nonExistingEventUid")
+
+        assertThat(status is EventEditableStatus.NonEditable).isTrue()
+        assertThat((status as EventEditableStatus.NonEditable).reason)
+            .isEquivalentAccordingToCompareTo(EventNonEditableReason.EVENT_NOT_FOUND)
+        assertFalse(eventService.blockingIsEditable("nonExistingEventUid"))
+    }
+
+    @Test
     fun `Should return editable when owner orgunit is in capture scope after transfer`() = runTest {
         whenever(programStage.access()) doReturn writeDataAccess
         whenever(event.organisationUnit()) doReturn "OU2"

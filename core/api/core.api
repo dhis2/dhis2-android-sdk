@@ -11822,21 +11822,23 @@ public final class org/hisp/dhis/android/core/map/layer/MapService : java/lang/E
 }
 
 public final class org/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
 	public final fun component5 ()Ljava/util/List;
 	public final fun component6 ()Ljava/lang/String;
-	public final fun component7 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;
+	public final fun component7 ()Lorg/hisp/dhis/android/core/map/layer/MapService;
+	public final fun component8 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Ljava/lang/String;)Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;Lorg/hisp/dhis/android/core/map/layer/MapService;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/map/layer/internal/osm/OSMBaseMap;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttribution ()Ljava/lang/String;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getImageUrl ()Ljava/lang/String;
+	public final fun getMapService ()Lorg/hisp/dhis/android/core/map/layer/MapService;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getStyle ()Ljava/lang/String;
 	public final fun getSubdomainPlaceholder ()Ljava/lang/String;

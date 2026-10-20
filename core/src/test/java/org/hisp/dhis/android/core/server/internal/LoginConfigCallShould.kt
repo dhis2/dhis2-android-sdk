@@ -129,12 +129,26 @@ class LoginConfigCallShould {
     }
 
     @Test
-    fun marks_oauth_disabled_without_fetching_config_when_server_version_is_lower_than_2_43() = runTest {
+    fun marks_oauth_enabled_when_server_version_is_min_oauth_patch_version() = runTest {
+        networkHandler.stub {
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample(apiVersion = "2.42.7")
+            onBlocking { oauthConfigFor(any(), any()) } doReturn oauthConfigSample()
+        }
+
+        val result = call.checkServerUrl(NORMALIZED_URL)
+
+        assertThat(result).isInstanceOf(Result.Success::class.java)
+        val loginConfig = (result as Result.Success<LoginConfig, D2Error>).value
+        assertThat(loginConfig.isOauthEnabled).isTrue()
+    }
+
+    @Test
+    fun marks_oauth_disabled_without_fetching_config_when_server_version_is_lower_than_2_42_7() = runTest {
         oauth2SecureStore.authorizationEndpoint = "stale-auth"
         oauth2SecureStore.jwksUri = "stale-jwks"
 
         networkHandler.stub {
-            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample(apiVersion = "2.42.1")
+            onBlocking { loginConfigFor(NORMALIZED_URL) } doReturn loginConfigSample(apiVersion = "2.42.6")
             onBlocking { oauthConfigFor(any(), any()) } doReturn oauthConfigSample()
         }
 

@@ -19899,6 +19899,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 	public static final field V2_41_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_42_1 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static final field V2_42_7 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static final field V2_43_0 Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public final fun getMajorVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
@@ -19912,6 +19913,7 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion : java
 public final class org/hisp/dhis/android/core/systeminfo/DHISPatchVersion$Companion {
 	public final fun getValue (Ljava/lang/String;Ljava/lang/Boolean;)Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
 	public static synthetic fun getValue$default (Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion$Companion;Ljava/lang/String;Ljava/lang/Boolean;ILjava/lang/Object;)Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public final fun isGreaterOrEqualThanPatch (Ljava/lang/String;Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;)Z
 	public final fun isGreaterThanPatch (Ljava/lang/String;Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;)Z
 }
 

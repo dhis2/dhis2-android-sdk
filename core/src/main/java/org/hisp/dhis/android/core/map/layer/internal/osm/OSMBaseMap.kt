@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.core.map.layer.internal.osm
 
+import org.hisp.dhis.android.core.map.layer.MapService
+
 data class OSMBaseMap(
     val id: String,
     val name: String,
@@ -35,5 +37,6 @@ data class OSMBaseMap(
     val imageUrl: String,
     val subdomains: List<String>? = null,
     val subdomainPlaceholder: String? = null,
+    val mapService: MapService,
     val attribution: String,
 )

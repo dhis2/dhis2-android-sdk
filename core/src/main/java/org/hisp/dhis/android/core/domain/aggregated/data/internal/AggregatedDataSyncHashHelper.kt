@@ -27,15 +27,28 @@
  */
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
+import org.hisp.dhis.android.core.dataelement.internal.DataElementStore
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class AggregatedDataSyncHashHelper {
-    fun getDataSetDataElementsHash(dataSet: DataSet): Int {
-        return dataSet.dataSetElements()!!
-            .map { it.dataElement().uid() }
-            .toSet()
-            .hashCode()
+internal class AggregatedDataSyncHashHelper(
+    private val dataElementStore: DataElementStore,
+) {
+    suspend fun getDataSetDataElementsHash(dataSet: DataSet): Int {
+        val dataSetElements = dataSet.dataSetElements()!!
+        val dataElementUids = dataSetElements.map { it.dataElement().uid() }
+        val dataElementCategoryCombos = if (dataElementUids.isEmpty()) {
+            emptyMap()
+        } else {
+            dataElementStore.selectByUids(dataElementUids).associate { it.uid() to it.categoryCombo().uid() }
+        }
+
+        val dataElementDisaggregations = dataSetElements.map {
+            val dataElementUid = it.dataElement().uid()
+            dataElementUid to (it.categoryCombo()?.uid() ?: dataElementCategoryCombos[dataElementUid])
+        }.toSet()
+
+        return Pair(dataSet.categoryCombo().uid(), dataElementDisaggregations).hashCode()
     }
 }

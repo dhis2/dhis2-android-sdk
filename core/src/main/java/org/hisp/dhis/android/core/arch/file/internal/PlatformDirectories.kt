@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,24 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+package org.hisp.dhis.android.core.arch.file.internal
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)
+import okio.Path
+
+/**
+ * Platform locations where the SDK stores its files and databases.
+ */
+internal interface PlatformDirectories {
+    val filesDir: Path
+    val cacheDir: Path
+
+    fun databasePath(databaseName: String): Path
+
+    fun databaseList(): List<String>
+
+    /**
+     * Deletes the database and its companion files (journal, WAL, etc.).
+     */
+    fun deleteDatabase(databaseName: String): Boolean
+}

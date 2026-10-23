@@ -221,6 +221,7 @@ dependencies {
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)
+    implementation(libs.okio)
 
     // Ktor
     api(libs.ktor)
@@ -268,6 +269,7 @@ dependencies {
     testImplementation(libs.equalsverifier)
     testImplementation(libs.androidx.test.runner)
     testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okio.fakefilesystem)
 
     // Android test dependencies
     androidTestImplementation(libs.mockito.core)

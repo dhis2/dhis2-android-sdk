@@ -29,11 +29,11 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
+import okio.IOException
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.common.Coordinates
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.common.Geometry
-import java.io.IOException
 
 object CoordinateHelper {
     /**

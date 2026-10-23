@@ -26,6 +26,7 @@ androidx-room = "2.8.4"
 
 # java
 okHttp = "5.3.2"
+okio = "3.16.4"
 ktor = "3.4.0"
 rxJava = "2.2.21"
 rxAndroid = "2.1.1"
@@ -92,6 +93,8 @@ koin-annotations = { group = "io.insert-koin", name = "koin-annotations", versio
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okHttp" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okHttp" }
 okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "okHttp" }
+okio = { group = "com.squareup.okio", name = "okio", version.ref = "okio" }
+okio-fakefilesystem = { group = "com.squareup.okio", name = "okio-fakefilesystem", version.ref = "okio" }
 
 ktor = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }

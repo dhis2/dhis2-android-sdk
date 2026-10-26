@@ -27,12 +27,13 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.content.Context
 import android.util.Log
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
+import okio.IOException
+import okio.Path
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
@@ -47,8 +48,6 @@ import org.hisp.dhis.android.persistence.datavalue.DataValueTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityAttributeValueTableInfo
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityDataValueTableInfo
 import org.koin.core.annotation.Singleton
-import java.io.File
-import java.io.IOException
 
 @Singleton
 internal class FileResourcePostCall(
@@ -60,7 +59,7 @@ internal class FileResourcePostCall(
     private val fileResourceStore: FileResourceStore,
     private val fileResourceHandler: FileResourceHandler,
     private val pingCall: PingCall,
-    private val context: Context,
+    private val fileResourceFiles: FileResourceFiles,
 ) {
 
     private var alreadyPinged = false
@@ -72,7 +71,7 @@ internal class FileResourcePostCall(
             alreadyPinged = true
         }
 
-        val file = FileResourceUtil.getFile(fileResource)
+        val file = fileResourceFiles.getFile(fileResource)
 
         return if (file != null) {
             val fileName = fileResource.name() ?: file.name
@@ -87,14 +86,14 @@ internal class FileResourcePostCall(
         }
     }
 
-    private fun getFilePart(file: File, fileName: String): MultiPartFormDataContent {
+    private fun getFilePart(file: Path, fileName: String): MultiPartFormDataContent {
         val type = FileResourceUtil.getContentTypeFromName(file.name, defaultType = "image/*")
 
         return MultiPartFormDataContent(
             formData {
                 append(
                     key = "file",
-                    value = file.readBytes(),
+                    value = fileResourceFiles.readBytes(file),
                     headers = Headers.build {
                         append(HttpHeaders.ContentDisposition, "filename=\"$fileName\"")
                         append(HttpHeaders.ContentType, type)
@@ -107,13 +106,13 @@ internal class FileResourcePostCall(
     private suspend fun handleResponse(
         downloadedFileResource: FileResource,
         fileResource: FileResource,
-        file: File,
+        file: Path,
         value: FileResourceValue,
     ): String {
         try {
             updateValue(fileResource, downloadedFileResource.uid(), value)
 
-            val downloadedFile = FileResourceUtil.renameFile(file, downloadedFileResource.uid(), context)
+            val downloadedFile = fileResourceFiles.renameFile(file, downloadedFileResource.uid())
             updateFileResource(fileResource, downloadedFileResource, downloadedFile)
 
             return downloadedFileResource.uid()
@@ -201,13 +200,13 @@ internal class FileResourcePostCall(
     private suspend fun updateFileResource(
         fileResource: FileResource,
         downloadedFileResource: FileResource,
-        file: File,
+        file: Path,
     ) {
         fileResourceStore.deleteByEntity(fileResource)
         fileResourceHandler.handle(
             downloadedFileResource.toBuilder()
                 .syncState(State.UPLOADING)
-                .path(file.absolutePath)
+                .path(file.toString())
                 .build(),
         )
     }

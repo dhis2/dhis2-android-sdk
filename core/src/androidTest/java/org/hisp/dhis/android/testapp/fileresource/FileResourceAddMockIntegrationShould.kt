@@ -31,6 +31,8 @@ import android.graphics.Bitmap
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.Path.Companion.toOkioPath
+import okio.source
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileCacheResourceDirectory
@@ -38,8 +40,8 @@ import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFi
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.writeInputStream
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -226,7 +228,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
         val inputStream: InputStream = RandomGeneratedInputStream(1024)
         val context = InstrumentationRegistry.getInstrumentation().context
         val destinationFile = File(getFileResourceDirectory(context), "file1.png")
-        return writeInputStream(inputStream, destinationFile, 1024)
+        return koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile.toOkioPath()).toFile()
     }
 
     /**

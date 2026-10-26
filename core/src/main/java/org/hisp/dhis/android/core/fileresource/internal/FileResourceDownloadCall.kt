@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -62,7 +61,7 @@ internal class FileResourceDownloadCall(
     private val handler: FileResourceHandler,
     private val fileResourceRoutine: FileResourceRoutine,
     private val synchronizationSettingsStore: SynchronizationSettingStore,
-    private val context: Context,
+    private val fileResourceFiles: FileResourceFiles,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) {
 
@@ -298,8 +297,8 @@ internal class FileResourceDownloadCall(
             ) {
                 val responseByteArray = coroutineAPICallExecutor.wrap { download(value, scalingDimension) }.getOrThrow()
                 responseByteArray?.let {
-                    val file = FileResourceUtil.saveFileFromResponse(it, fileResource, context)
-                    fileResource.toBuilder().path(file.absolutePath).build()
+                    val file = fileResourceFiles.saveFileFromResponse(it, fileResource)
+                    fileResource.toBuilder().path(file.toString()).build()
                 }
             } else {
                 null

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.arch
 
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.api.internal.APIClientDIModule
 import org.hisp.dhis.android.core.arch.db.access.internal.DatabaseDIModule
 import org.hisp.dhis.android.core.arch.db.stores.StoreDIModule
@@ -35,6 +36,7 @@ import org.hisp.dhis.android.core.arch.json.internal.JSONSerializationDIModule
 import org.hisp.dhis.android.core.arch.repositories.di.internal.RepositoriesDIModule
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
+import org.koin.core.annotation.Singleton
 
 @Module(
     includes = [
@@ -46,4 +48,9 @@ import org.koin.core.annotation.Module
     ],
 )
 @ComponentScan
-internal class ArchDIModule
+internal class ArchDIModule {
+    @Singleton
+    fun fileSystem(): FileSystem {
+        return FileSystem.SYSTEM
+    }
+}

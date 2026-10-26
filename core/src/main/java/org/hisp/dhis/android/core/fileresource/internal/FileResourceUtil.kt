@@ -29,14 +29,29 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
+import io.ktor.http.ContentType
+import io.ktor.http.fromFilePath
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.FileResource
 import java.io.*
-import java.net.URLConnection
 
 @Suppress("TooManyFunctions")
 internal object FileResourceUtil {
+
+    // Extensions whose content type in Ktor differs from Android's MimeTypeMap, kept to avoid behaviour changes.
+    private val contentTypeOverrides = mapOf(
+        "amr" to "audio/amr",
+        "bmp" to "image/x-ms-bmp",
+        "csv" to "text/comma-separated-values",
+        "m4a" to "audio/mpeg",
+        "opus" to "audio/ogg",
+        "ppt" to "application/vnd.ms-powerpoint",
+        "rtf" to "text/rtf",
+        "wav" to "audio/x-wav",
+        "xls" to "application/vnd.ms-excel",
+        "xml" to "text/xml",
+    )
 
     fun getFile(fileResource: FileResource): File? {
         val file = fileResource.path()?.let { File(it) }
@@ -122,8 +137,13 @@ internal object FileResourceUtil {
     }
 
     @JvmStatic
-    fun getContentTypeFromName(name: String): String {
-        return URLConnection.guessContentTypeFromName(name) ?: "application/octet-stream"
+    fun getContentTypeFromName(
+        name: String,
+        defaultType: String = ContentType.Application.OctetStream.toString(),
+    ): String {
+        return getExtension(name)?.lowercase()?.let { contentTypeOverrides[it] }
+            ?: ContentType.fromFilePath(name).firstOrNull()?.toString()
+            ?: defaultType
     }
 
     private fun generateFileName(fileName: String, extension: String?): String {

@@ -49,10 +49,4 @@ internal class DatabaseRenamer(private val context: Context) {
         val toFile = File(fromFile.parentFile, to)
         return fromFile.renameTo(toFile)
     }
-
-    fun copyDatabase(from: String, to: String): File {
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.copyTo(toFile)
-    }
 }

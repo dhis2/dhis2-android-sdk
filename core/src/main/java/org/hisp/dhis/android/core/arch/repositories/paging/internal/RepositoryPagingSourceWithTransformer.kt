@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import okio.IOException
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
@@ -39,7 +40,6 @@ import org.hisp.dhis.android.core.arch.repositories.scope.internal.WhereClauseFr
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.persistence.common.querybuilders.OrderByClauseBuilder
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
-import java.io.IOException
 
 internal class RepositoryPagingSourceWithTransformer<M : CoreObject, T : Any> internal constructor(
     private val store: ReadableStore<M>,

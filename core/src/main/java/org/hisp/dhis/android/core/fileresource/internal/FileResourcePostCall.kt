@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import android.content.Context
 import android.util.Log
-import android.webkit.MimeTypeMap
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
@@ -89,8 +88,7 @@ internal class FileResourcePostCall(
     }
 
     private fun getFilePart(file: File, fileName: String): MultiPartFormDataContent {
-        val extension = MimeTypeMap.getFileExtensionFromUrl(file.path)
-        val type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "image/*"
+        val type = FileResourceUtil.getContentTypeFromName(file.name, defaultType = "image/*")
 
         return MultiPartFormDataContent(
             formData {

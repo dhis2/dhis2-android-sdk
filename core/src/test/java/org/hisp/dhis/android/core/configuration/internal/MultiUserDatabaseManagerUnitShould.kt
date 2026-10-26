@@ -98,6 +98,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
             databaseManager,
             passwordManager,
             databaseExport,
+            mock(),
         )
     }
 

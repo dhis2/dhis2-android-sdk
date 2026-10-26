@@ -33,7 +33,6 @@ import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -43,6 +42,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationIn
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.deleteIfExists
@@ -61,6 +61,7 @@ internal class RoomMultiUserDatabaseManager(
     private val databaseManager: RoomDatabaseManager,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val databaseExport: BaseDatabaseExport,
+    private val fileResourceDirectories: FileResourceDirectories,
 ) : MultiUserDatabaseManager {
 
     override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(
@@ -305,7 +306,7 @@ internal class RoomMultiUserDatabaseManager(
 
             databaseConfigurationSecureStore.set(updatedConfiguration)
             exceedingAccounts.forEach {
-                FileResourceDirectoryHelper.deleteFileResourceDirectories(context, it)
+                fileResourceDirectories.deleteFileResourceDirectories(it)
                 val databaseName = it.databaseName()
                 if (databaseManager.databaseExists(databaseName)) {
                     databaseManager.deleteDatabase(databaseName, it.encrypted())

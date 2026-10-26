@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.dataelement.internal.DataElementEndpointCallFa
 import org.hisp.dhis.android.core.dataset.internal.DataSetEndpointCallFactory
 import org.hisp.dhis.android.core.domain.aggregated.internal.AggregatedModuleImpl
 import org.hisp.dhis.android.core.domain.metadata.internal.MetadataModuleImpl
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDownloadCallHelper
 import org.hisp.dhis.android.core.option.internal.OptionCall
 import org.hisp.dhis.android.core.option.internal.OptionSetCall
@@ -66,6 +67,7 @@ internal class D2DIComponent(
     val multiUserDatabaseManagerForD2Manager: MultiUserDatabaseManagerForD2Manager,
     val credentialsSecureStore: CredentialsSecureStore,
     val appContext: Context,
+    val fileResourceDirectories: FileResourceDirectories,
 
     @get:VisibleForTesting
     val httpServiceClient: HttpServiceClient,

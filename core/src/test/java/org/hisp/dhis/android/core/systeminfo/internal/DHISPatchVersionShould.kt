@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.systeminfo.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion.Companion.isGreaterOrEqualThanPatch
 import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion.Companion.isGreaterThanPatch
 import org.junit.Test
 
@@ -44,5 +45,21 @@ class DHISPatchVersionShould {
 
         assertThat(isGreaterThanPatch("2.42.3-SNAPSHOT", DHISPatchVersion.V2_42_1)).isTrue()
         assertThat(isGreaterThanPatch("2.42-SNAPSHOT", DHISPatchVersion.V2_41_0)).isTrue()
+    }
+
+    @Test
+    fun compare_if_greater_or_equal_than_patch() {
+        assertThat(isGreaterOrEqualThanPatch("2.42.6", DHISPatchVersion.V2_42_7)).isFalse()
+        assertThat(isGreaterOrEqualThanPatch("2.42.7", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("2.42.8", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("2.42.10", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("2.41.9", DHISPatchVersion.V2_42_7)).isFalse()
+        assertThat(isGreaterOrEqualThanPatch("2.43.0", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("2.43", DHISPatchVersion.V2_42_7)).isTrue()
+
+        assertThat(isGreaterOrEqualThanPatch("2.42.7-SNAPSHOT", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("2.42-SNAPSHOT", DHISPatchVersion.V2_42_7)).isFalse()
+        assertThat(isGreaterOrEqualThanPatch("2.42.7.1", DHISPatchVersion.V2_42_7)).isTrue()
+        assertThat(isGreaterOrEqualThanPatch("invalid", DHISPatchVersion.V2_42_7)).isFalse()
     }
 }

@@ -72,6 +72,7 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
 
     V2_42_0(DHISVersion.V2_42, "2.42.0", SMSVersion.V2),
     V2_42_1(DHISVersion.V2_42, "2.42.1", SMSVersion.V2),
+    V2_42_7(DHISVersion.V2_42, "2.42.7", SMSVersion.V2),
 
     V2_43_0(DHISVersion.V2_43, "2.43.0", SMSVersion.V2),
 
@@ -86,17 +87,21 @@ enum class DHISPatchVersion(val majorVersion: DHISVersion, val strValue: String,
         }
 
         fun isGreaterThanPatch(thisVersionStr: String, otherPatchVersion: DHISPatchVersion): Boolean {
-            val majorVersion = DHISVersion.getValue(thisVersionStr)
+            return comparePatch(thisVersionStr, otherPatchVersion)?.let { it > 0 } ?: false
+        }
 
-            return when {
-                majorVersion == null -> false
-                majorVersion > otherPatchVersion.majorVersion -> true
-                majorVersion < otherPatchVersion.majorVersion -> false
-                else -> {
-                    val thisMinorNumber = getMinorNumber(thisVersionStr)
-                    val otherMinorNumber = getMinorNumber(otherPatchVersion.strValue)
-                    thisMinorNumber > otherMinorNumber
-                }
+        fun isGreaterOrEqualThanPatch(thisVersionStr: String, otherPatchVersion: DHISPatchVersion): Boolean {
+            return comparePatch(thisVersionStr, otherPatchVersion)?.let { it >= 0 } ?: false
+        }
+
+        private fun comparePatch(thisVersionStr: String, otherPatchVersion: DHISPatchVersion): Int? {
+            val majorVersion = DHISVersion.getValue(thisVersionStr) ?: return null
+            val majorComparison = majorVersion.compareTo(otherPatchVersion.majorVersion)
+
+            return if (majorComparison != 0) {
+                majorComparison
+            } else {
+                getMinorNumber(thisVersionStr).compareTo(getMinorNumber(otherPatchVersion.strValue))
             }
         }
 

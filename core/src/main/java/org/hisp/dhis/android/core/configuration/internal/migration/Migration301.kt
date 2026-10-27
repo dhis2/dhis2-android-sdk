@@ -27,8 +27,11 @@
  */
 package org.hisp.dhis.android.core.configuration.internal.migration
 
-import android.content.Context
 import android.util.Log
+import okio.FileSystem
+import okio.IOException
+import okio.Path
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport
@@ -36,7 +39,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportSt
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseRenamer
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import java.io.File
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 
 /**
  * Migration to add hash suffix to database names for guaranteed uniqueness.
@@ -51,7 +54,8 @@ import java.io.File
  * The hash suffix ensures each unique URL+username combination has its own database.
  */
 internal class Migration301(
-    private val context: Context,
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val nameGenerator: DatabaseNameGenerator,
     private val databaseRenamer: DatabaseRenamer,
@@ -116,15 +120,15 @@ internal class Migration301(
      * Returns true if the database existed and was renamed, false otherwise.
      */
     private fun renameDatabaseFile(oldDbName: String, newDbName: String): Boolean {
-        val oldDbFile = context.getDatabasePath(oldDbName)
-        val newDbFile = context.getDatabasePath(newDbName)
+        val oldDbFile = platformDirectories.databasePath(oldDbName)
+        val newDbFile = platformDirectories.databasePath(newDbName)
 
         return when {
-            !oldDbFile.exists() -> {
+            !fileSystem.exists(oldDbFile) -> {
                 Log.d(TAG, "Database file doesn't exist: $oldDbName")
                 false
             }
-            newDbFile.exists() -> {
+            fileSystem.exists(newDbFile) -> {
                 Log.e(TAG, "Target database already exists, skipping rename: $newDbName")
                 false
             }
@@ -137,23 +141,17 @@ internal class Migration301(
     }
 
     private fun renameFileResourceDirectories(oldDbName: String, newDbName: String) {
-        val oldSubfolder = oldDbName.removeSuffix(DatabaseNameGenerator.DB_SUFFIX)
-        val newSubfolder = newDbName.removeSuffix(DatabaseNameGenerator.DB_SUFFIX)
+        val oldSubfolder = FileResourceDirectories.subfolderName(oldDbName)
+        val newSubfolder = FileResourceDirectories.subfolderName(newDbName)
 
-        val oldResourcesDir = File(context.filesDir, "sdk_resources/$oldSubfolder")
-        val newResourcesDir = File(context.filesDir, "sdk_resources/$newSubfolder")
-
-        if (oldResourcesDir.exists()) {
-            val success = oldResourcesDir.renameTo(newResourcesDir)
-            require(success) { "Failed to rename resources directory from $oldSubfolder to $newSubfolder" }
+        val resourcesDir = platformDirectories.filesDir / FileResourceDirectories.FILES_DIR
+        renameIfExists(resourcesDir / oldSubfolder, resourcesDir / newSubfolder) {
+            "Failed to rename resources directory from $oldSubfolder to $newSubfolder"
         }
 
-        val oldCacheDir = File(context.cacheDir, "sdk_cache_resources/$oldSubfolder")
-        val newCacheDir = File(context.cacheDir, "sdk_cache_resources/$newSubfolder")
-
-        if (oldCacheDir.exists()) {
-            val success = oldCacheDir.renameTo(newCacheDir)
-            require(success) { "Failed to rename cache directory from $oldSubfolder to $newSubfolder" }
+        val cacheDir = platformDirectories.cacheDir / FileResourceDirectories.CACHE_DIR
+        renameIfExists(cacheDir / oldSubfolder, cacheDir / newSubfolder) {
+            "Failed to rename cache directory from $oldSubfolder to $newSubfolder"
         }
     }
 
@@ -173,17 +171,26 @@ internal class Migration301(
             val oldProtectedName = "$oldDbName.protected"
             val newProtectedName = "$newDbName.protected"
 
-            val oldProtectedFile = context.getDatabasePath(oldProtectedName)
-            val newProtectedFile = context.getDatabasePath(newProtectedName)
-
-            if (oldProtectedFile.exists()) {
-                val success = oldProtectedFile.renameTo(newProtectedFile)
-                require(success) { "Failed to rename protected database from $oldProtectedName to $newProtectedName" }
+            renameIfExists(
+                platformDirectories.databasePath(oldProtectedName),
+                platformDirectories.databasePath(newProtectedName),
+            ) {
+                "Failed to rename protected database from $oldProtectedName to $newProtectedName"
             }
 
             importDB.toBuilder()
                 .protectedDbName(newProtectedName)
                 .build()
+        }
+    }
+
+    private fun renameIfExists(from: Path, to: Path, errorMessage: () -> String) {
+        if (fileSystem.exists(from)) {
+            try {
+                fileSystem.atomicMove(from, to)
+            } catch (e: IOException) {
+                throw IllegalArgumentException(errorMessage(), e)
+            }
         }
     }
 

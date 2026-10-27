@@ -31,8 +31,10 @@ import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl
@@ -66,7 +68,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
     private val chunkedSecureStore = ChunkedSecureStore(secureStore)
 
     private val nameGenerator = DatabaseNameGenerator()
-    private val renamer = DatabaseRenamer(context)
+    private val platformDirectories = AndroidPlatformDirectories(context)
+    private val renamer = DatabaseRenamer(FileSystem.SYSTEM, platformDirectories)
     private val storeRegistry = KoinStoreRegistry()
     private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
@@ -93,6 +96,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         migration = DatabaseConfigurationMigration(
             context,
+            FileSystem.SYSTEM,
+            platformDirectories,
             databasesConfigurationStore,
             credentialsSecureStore,
             insecureStore,

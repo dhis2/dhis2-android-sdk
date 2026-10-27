@@ -27,26 +27,37 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import android.content.Context
+import okio.FileSystem
+import okio.IOException
+import okio.Path
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.koin.core.annotation.Singleton
-import java.io.File
 
 @Singleton
-internal class DatabaseRenamer(private val context: Context) {
+internal class DatabaseRenamer(
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
+) {
 
     fun renameDatabase(from: String, to: String): Boolean {
         val suffixes = listOf("-shm", "-wal", "-lck", "-journal")
         for (suffix in suffixes) {
-            val fromFile = context.getDatabasePath(from + suffix)
-            val toFile = File(fromFile.parentFile, to + suffix)
+            val fromFile = platformDirectories.databasePath(from + suffix)
 
-            if (fromFile.exists()) {
-                fromFile.renameTo(toFile)
+            if (fileSystem.exists(fromFile)) {
+                move(fromFile, platformDirectories.databasePath(to + suffix))
             }
         }
 
-        val fromFile = context.getDatabasePath(from)
-        val toFile = File(fromFile.parentFile, to)
-        return fromFile.renameTo(toFile)
+        return move(platformDirectories.databasePath(from), platformDirectories.databasePath(to))
+    }
+
+    private fun move(from: Path, to: Path): Boolean {
+        return try {
+            fileSystem.atomicMove(from, to)
+            true
+        } catch (_: IOException) {
+            false
+        }
     }
 }

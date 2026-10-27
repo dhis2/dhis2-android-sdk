@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import android.content.Context
 import com.google.common.truth.Truth.assertThat
+import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.file.internal.FakePlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.common.AuthorizationType
@@ -38,11 +39,11 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHe
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectStateSecureStore
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -54,8 +55,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.io.File
-import java.nio.file.Files
 
 @RunWith(JUnit4::class)
 class AccountManagerImplShould {
@@ -65,36 +64,29 @@ class AccountManagerImplShould {
     private val databaseManager: DatabaseManager = mock()
     private val credentialsSecureStore: CredentialsSecureStore = mock()
     private val logOutCall: LogOutCall = mock()
-    private val context: Context = mock()
     private val databaseConfigurationHelper: DatabaseConfigurationHelper = mock()
     private val oauth2StateSecureStore: OAuth2StateSecureStore = mock()
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore = mock()
 
-    private lateinit var tempDir: File
+    private val fileSystem = FakeFileSystem()
+    private val fileResourceDirectories =
+        FileResourceDirectories(fileSystem, FakePlatformDirectories(fileSystem), mock())
+
     private lateinit var accountManager: AccountManagerImpl
 
     @Before
     fun setUp() {
-        tempDir = Files.createTempDirectory("account-manager-test-").toFile()
-        whenever(context.filesDir).thenReturn(tempDir)
-        whenever(context.cacheDir).thenReturn(tempDir)
-
         accountManager = AccountManagerImpl(
             databasesConfigurationStore,
             multiUserDatabaseManager,
             databaseManager,
             credentialsSecureStore,
             logOutCall,
-            context,
+            fileResourceDirectories,
             databaseConfigurationHelper,
             oauth2StateSecureStore,
             openIDConnectStateSecureStore,
         )
-    }
-
-    @After
-    fun tearDown() {
-        tempDir.deleteRecursively()
     }
 
     @Test

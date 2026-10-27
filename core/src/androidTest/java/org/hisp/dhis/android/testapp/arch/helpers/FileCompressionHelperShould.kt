@@ -36,7 +36,7 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -230,9 +230,8 @@ class FileCompressionHelperShould {
         private const val CLOSENESS_RATIO = 0.7
 
         private fun directory() =
-            FileResourceDirectoryHelper.getRootFileResourceDirectory(
-                InstrumentationRegistry.getInstrumentation().context,
-            )
+            File(InstrumentationRegistry.getInstrumentation().context.filesDir, FileResourceDirectories.FILES_DIR)
+                .apply { mkdirs() }
 
         /**
          * Builds a high-entropy bitmap whose pixels vary per position, so that the encoded file does not collapse to a

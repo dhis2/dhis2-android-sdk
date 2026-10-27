@@ -31,9 +31,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration301
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Before
@@ -277,6 +277,6 @@ class Migration301IntegrationShould {
             }
         }
 
-        FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
+        File(context.filesDir, FileResourceDirectories.FILES_DIR).deleteRecursively()
     }
 }

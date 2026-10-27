@@ -33,10 +33,10 @@ import android.database.SQLException
 import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
 import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
 import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
@@ -65,10 +65,10 @@ internal class Migration260(
     }
 
     private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
-        val accountSubFolder = FileResourceDirectoryHelper.getSubfolderName(databaseAdapter.getDatabaseName())
+        val accountSubFolder = FileResourceDirectories.subfolderName(databaseAdapter.getDatabaseName())
 
-        val rootResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
-        val dstResources = FileResourceDirectoryHelper.getFileResourceDirectory(context, accountSubFolder)
+        val rootResources = File(context.filesDir, FileResourceDirectories.FILES_DIR)
+        val dstResources = File(rootResources, accountSubFolder).also { it.mkdirs() }
 
         rootResources.listFiles()
             ?.filter { it.isFile }
@@ -83,8 +83,8 @@ internal class Migration260(
         }
         fileResources.forEach {
             val newPath = it.path()?.replace(
-                oldValue = FileResourceDirectoryHelper.FilesDir,
-                newValue = FileResourceDirectoryHelper.FilesDir + "/" + accountSubFolder,
+                oldValue = FileResourceDirectories.FILES_DIR,
+                newValue = FileResourceDirectories.FILES_DIR + "/" + accountSubFolder,
             ) ?: ""
             val newFileResource = it.toBuilder().path(newPath).build()
             fileResourcesStore.updateOrInsert(newFileResource)

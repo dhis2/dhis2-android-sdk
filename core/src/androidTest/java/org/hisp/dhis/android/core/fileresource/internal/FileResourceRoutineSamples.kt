@@ -33,7 +33,6 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.common.AggregationType
@@ -215,7 +214,7 @@ object FileResourceRoutineSamples {
 
     private fun getFile(fileName: String): File {
         val context = InstrumentationRegistry.getInstrumentation().context
-        val root = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        val root = File(context.filesDir, FileResourceDirectories.FILES_DIR).apply { mkdirs() }
         return File(root, fileName).apply {
             createNewFile()
         }

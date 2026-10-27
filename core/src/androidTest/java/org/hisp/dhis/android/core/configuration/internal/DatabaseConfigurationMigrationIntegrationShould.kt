@@ -33,7 +33,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl
@@ -42,6 +41,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
@@ -101,7 +101,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             databaseManager,
         )
 
-        FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
+        File(context.filesDir, FileResourceDirectories.FILES_DIR).deleteRecursively()
     }
 
     @After
@@ -176,7 +176,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         DatabaseConfigurationInsecureStoreOld[insecureStore].set(oldDatabaseConfiguration)
 
-        val rootSdkResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        val rootSdkResources = File(context.filesDir, FileResourceDirectories.FILES_DIR).apply { mkdirs() }
         File(rootSdkResources, "sample.txt").createNewFile()
 
         migration.apply()

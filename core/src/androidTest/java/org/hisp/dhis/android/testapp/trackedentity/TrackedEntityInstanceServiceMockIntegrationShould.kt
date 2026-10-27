@@ -30,10 +30,13 @@ package org.hisp.dhis.android.testapp.trackedentity
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
+import okio.Path.Companion.toOkioPath
+import okio.source
+import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.enrollment.EnrollmentCreateProjection
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.writeInputStream
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceCreateProjection
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -96,6 +99,6 @@ class TrackedEntityInstanceServiceMockIntegrationShould : BaseMockIntegrationTes
         val inputStream: InputStream = RandomGeneratedInputStream(1024L)
         val context: Context = InstrumentationRegistry.getInstrumentation().context
         val destinationFile = File(getFileResourceDirectory(context), "$fileName.png")
-        return writeInputStream(inputStream, destinationFile, 1024L)
+        return koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile.toOkioPath()).toFile()
     }
 }

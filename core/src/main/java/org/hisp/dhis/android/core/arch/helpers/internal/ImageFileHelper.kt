@@ -36,7 +36,6 @@ import android.util.Log
 import androidx.core.graphics.scale
 import androidx.exifinterface.media.ExifInterface
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import java.io.File
 import java.io.IOException
 
@@ -134,14 +133,13 @@ internal object ImageFileHelper {
     @Suppress("TooGenericExceptionCaught")
     fun getCacheDirectory(): File? {
         return if (D2Manager.isD2Instantiated()) {
-            D2Manager.getD2().context().let {
-                try {
-                    FileResourceDirectoryHelper.getFileCacheResourceDirectory(it)
-                } catch (e: RuntimeException) {
-                    Log.w(TAG, "Could not resolve the account cache directory", e)
-                    FileResourceDirectoryHelper.getRootFileCacheResourceDirectory(it)
-                }
-            }
+            val directories = D2Manager.getD2().d2DIComponent.fileResourceDirectories
+            try {
+                directories.fileCacheResourceDirectory()
+            } catch (e: RuntimeException) {
+                Log.w(TAG, "Could not resolve the account cache directory", e)
+                directories.rootFileCacheResourceDirectory()
+            }.toFile()
         } else {
             null
         }

@@ -28,12 +28,10 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -41,6 +39,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHe
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -58,7 +57,7 @@ internal class AccountManagerImpl(
     private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
-    private val context: Context,
+    private val fileResourceDirectories: FileResourceDirectories,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
@@ -146,7 +145,7 @@ internal class AccountManagerImpl(
             val updatedConfiguration = DatabaseConfigurationHelper.removeAccount(configuration, listOf(loggedAccount))
             databasesConfigurationStore.set(updatedConfiguration)
 
-            FileResourceDirectoryHelper.deleteFileResourceDirectories(context, loggedAccount)
+            fileResourceDirectories.deleteFileResourceDirectories(loggedAccount)
             databaseManager.deleteDatabase(loggedAccount.databaseName(), loggedAccount.encrypted())
             oauth2StateSecureStore.remove(credentials.serverUrl, credentials.username)
             openIDConnectStateSecureStore.remove(credentials.serverUrl, credentials.username)

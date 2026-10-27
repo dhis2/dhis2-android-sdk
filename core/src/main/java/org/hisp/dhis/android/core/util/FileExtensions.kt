@@ -28,6 +28,9 @@
 
 package org.hisp.dhis.android.core.util
 
+import okio.FileSystem
+import okio.IOException
+import okio.Path
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -43,5 +46,18 @@ internal fun File.deleteIfExists() {
                 .errorCode(D2ErrorCode.UNEXPECTED)
                 .build()
         }
+    }
+}
+
+internal fun FileSystem.deleteIfExists(path: Path) {
+    try {
+        delete(path, mustExist = false)
+    } catch (e: IOException) {
+        throw D2Error.builder()
+            .errorComponent(D2ErrorComponent.SDK)
+            .errorDescription("File $path exists and cannot be deleted")
+            .errorCode(D2ErrorCode.UNEXPECTED)
+            .originalException(e)
+            .build()
     }
 }

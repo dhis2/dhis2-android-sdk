@@ -29,14 +29,11 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import java.io.File
 
+@Suppress("UnusedParameter")
 object FileResourceDirectoryHelper {
-
-    internal const val FilesDir = "sdk_resources"
-    internal const val CacheDir = "sdk_cache_resources"
 
     /**
      * This method returns a [File] object whose path points to the Sdk resources directory where the Sdk will
@@ -47,24 +44,7 @@ object FileResourceDirectoryHelper {
      */
     @JvmStatic
     fun getFileResourceDirectory(context: Context): File {
-        return getFileResourceDirectory(context, getSubfolderName())
-    }
-
-    internal fun getRootFileResourceDirectory(context: Context): File {
-        return getFileResourceDirectory(context, null)
-    }
-
-    internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
-        val childPath = subfolder?.let { "$FilesDir/$it" } ?: FilesDir
-        val file = File(context.filesDir, childPath)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    internal fun deleteRootFileResourceDirectory(context: Context) {
-        getRootFileResourceDirectory(context).deleteRecursively()
+        return directories().fileResourceDirectory().toFile()
     }
 
     /**
@@ -81,34 +61,10 @@ object FileResourceDirectoryHelper {
      */
     @JvmStatic
     fun getFileCacheResourceDirectory(context: Context): File {
-        return getFileCacheResourceDirectory(context, getSubfolderName())
+        return directories().fileCacheResourceDirectory().toFile()
     }
 
-    internal fun getRootFileCacheResourceDirectory(context: Context): File {
-        return getFileCacheResourceDirectory(context, null)
-    }
-
-    private fun getFileCacheResourceDirectory(context: Context, subfolder: String?): File {
-        val childPath = subfolder?.let { "$CacheDir/$it" } ?: CacheDir
-        val file = File(context.cacheDir, childPath)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    internal fun getSubfolderName(databaseName: String): String {
-        return databaseName.removeSuffix(DatabaseNameGenerator.DB_SUFFIX)
-    }
-
-    internal fun deleteFileResourceDirectories(context: Context, databaseAccount: DatabaseAccount) {
-        val resourcesName = getSubfolderName(databaseAccount.databaseName())
-        getFileResourceDirectory(context, resourcesName).deleteRecursively()
-        getFileCacheResourceDirectory(context, resourcesName).deleteRecursively()
-    }
-
-    private fun getSubfolderName(): String {
-        val dbName = D2Manager.getD2().databaseAdapter().getDatabaseName()
-        return getSubfolderName(dbName)
+    private fun directories(): FileResourceDirectories {
+        return D2Manager.getD2().d2DIComponent.fileResourceDirectories
     }
 }

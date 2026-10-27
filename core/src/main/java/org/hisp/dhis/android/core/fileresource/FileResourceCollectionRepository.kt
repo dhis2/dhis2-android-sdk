@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource
 
-import android.content.Context
 import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -36,6 +35,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
+import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
@@ -52,9 +52,9 @@ import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeHelper.withUidFilterItem
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceProjectionTransformer
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.saveFile
 import org.hisp.dhis.android.core.fileresource.internal.UploadQuality
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -72,7 +72,7 @@ class FileResourceCollectionRepository internal constructor(
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
-    private val context: Context,
+    private val fileResourceFiles: FileResourceFiles,
     private val programSettingsRepository: Lazy<ProgramSettingsObjectRepository>,
     private val dataSetSettingsRepository: Lazy<DataSetSettingsObjectRepository>,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -87,7 +87,7 @@ class FileResourceCollectionRepository internal constructor(
             s,
             transformer,
             dataStatePropagator,
-            context,
+            fileResourceFiles,
             programSettingsRepository,
             dataSetSettingsRepository,
             dispatcher,
@@ -131,7 +131,7 @@ class FileResourceCollectionRepository internal constructor(
     private suspend fun addFile(file: File, name: String): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
-            val dstFile = saveFile(file, generatedUid, context)
+            val dstFile = fileResourceFiles.saveFile(file.toOkioPath(), generatedUid).toFile()
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
             store.insert(fileResource)
             fileResource.uid()

@@ -34,7 +34,7 @@ import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -115,7 +115,7 @@ class FileResizerHelperShould {
         private fun getFile(compressFormat: CompressFormat, bitmap: Bitmap): File {
             val context = InstrumentationRegistry.getInstrumentation().context
             val imageFile = File(
-                FileResourceDirectoryHelper.getRootFileResourceDirectory(context),
+                File(context.filesDir, FileResourceDirectories.FILES_DIR).apply { mkdirs() },
                 "image." +
                     compressFormat.name.lowercase(Locale.getDefault()),
             )

@@ -34,20 +34,6 @@ import okio.Path
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import java.io.File
-
-internal fun File.deleteIfExists() {
-    if (exists()) {
-        val deleted = delete()
-        if (!deleted) {
-            throw D2Error.builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorDescription("File $path exists and cannot be deleted")
-                .errorCode(D2ErrorCode.UNEXPECTED)
-                .build()
-        }
-    }
-}
 
 internal fun FileSystem.deleteIfExists(path: Path) {
     try {
@@ -60,4 +46,16 @@ internal fun FileSystem.deleteIfExists(path: Path) {
             .originalException(e)
             .build()
     }
+}
+
+/**
+ * Copies [source] to [target], creating the parent directories of [target] if needed. Like [java.io.File.copyTo], it
+ * fails if [target] already exists unless [overwrite] is true.
+ */
+internal fun FileSystem.copyTo(source: Path, target: Path, overwrite: Boolean = false) {
+    if (!overwrite && exists(target)) {
+        throw IOException("The destination file already exists: $target")
+    }
+    target.parent?.let { createDirectories(it) }
+    copy(source, target)
 }

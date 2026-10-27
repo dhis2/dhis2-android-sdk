@@ -31,7 +31,6 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -217,6 +216,6 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
         d2.userModule().accountManager().deleteCurrentAccount()
 
-        exportedFile.deleteIfExists()
+        exportedFile.delete()
     }
 }

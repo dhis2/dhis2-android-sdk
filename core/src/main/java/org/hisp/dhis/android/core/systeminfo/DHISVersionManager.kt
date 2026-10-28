@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.systeminfo
 
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
+@Suppress("TooManyFunctions")
 interface DHISVersionManager {
     fun getVersion(): DHISVersion = runBlockingOnIO { suspendGetVersion() }
 

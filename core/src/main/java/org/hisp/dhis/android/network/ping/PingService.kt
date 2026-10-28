@@ -30,14 +30,14 @@ package org.hisp.dhis.android.network.ping
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 
 internal class PingService(
     private val client: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManagerImpl,
+    private val dhisVersionManager: DHISVersionManager,
 ) {
     suspend fun getPing(): HttpResponse {
-        return if (dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40)) {
+        return if (dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_40)) {
             client.get {
                 url("ping")
                 excludeCredentials()

@@ -80,7 +80,7 @@ internal class FileResourceDownloadCallHelperShould {
 
     @Before
     fun setUp() = runTest {
-        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(any())).doReturn(true)
+        whenever(dhisVersionManager.suspendIsGreaterOrEqualThan(any())).doReturn(true)
         whenever(trackedEntityAttributeStore.selectWhere(any())).doReturn(listOf(imageAttribute))
         whenever(trackedEntityInstanceStore.selectUidsWhere(any())).doReturn(listOf(TEI_UID))
         whenever(trackedEntityAttributeValueStore.selectWhere(any())).doReturn(listOf(attributeValue))

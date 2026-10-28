@@ -27,8 +27,18 @@
  */
 package org.hisp.dhis.android.core.systeminfo
 
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
+
 interface DHISVersionManager {
-    fun getVersion(): DHISVersion
+    fun getVersion(): DHISVersion = runBlockingOnIO { suspendGetVersion() }
+
+    /**
+     * Suspending version of [getVersion].
+     *
+     * @see getVersion
+     */
+    suspend fun suspendGetVersion(): DHISVersion
+
     fun getPatchVersion(): DHISPatchVersion?
     fun getSmsVersion(): SMSVersion?
     fun getBypassVersion(): Boolean?
@@ -47,7 +57,14 @@ interface DHISVersionManager {
      * @param version Version to compare to
      * @return True if current version is strictly greater than the parameter.
      */
-    fun isGreaterThan(version: DHISVersion): Boolean
+    fun isGreaterThan(version: DHISVersion): Boolean = runBlockingOnIO { suspendIsGreaterThan(version) }
+
+    /**
+     * Suspending version of [isGreaterThan].
+     *
+     * @see isGreaterThan
+     */
+    suspend fun suspendIsGreaterThan(version: DHISVersion): Boolean
 
     /**
      * Check if the current version is greater or equal than the parameter.
@@ -55,7 +72,14 @@ interface DHISVersionManager {
      * @param version Version to compare to
      * @return True if current version is greater or equal than the parameter.
      */
-    fun isGreaterOrEqualThan(version: DHISVersion): Boolean
+    fun isGreaterOrEqualThan(version: DHISVersion): Boolean = runBlockingOnIO { suspendIsGreaterOrEqualThan(version) }
+
+    /**
+     * Suspending version of [isGreaterOrEqualThan].
+     *
+     * @see isGreaterOrEqualThan
+     */
+    suspend fun suspendIsGreaterOrEqualThan(version: DHISVersion): Boolean
 
     fun setBypassVersion(bypassDHIS2VersionCheck: Boolean?)
 }

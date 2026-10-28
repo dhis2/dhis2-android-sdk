@@ -47,11 +47,7 @@ internal class DHISVersionManagerImpl internal constructor(
     private var smsVersion: SMSVersion? = null
     private var bypassDHIS2Version: Boolean? = null
 
-    override fun getVersion(): DHISVersion {
-        return runBlockingOnIO { getVersionInternal() }
-    }
-
-    internal suspend fun getVersionInternal(): DHISVersion {
+    override suspend fun suspendGetVersion(): DHISVersion {
         return version
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
@@ -96,23 +92,15 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
-        return version === getVersionInternal()
+        return version === suspendGetVersion()
     }
 
-    override fun isGreaterThan(version: DHISVersion): Boolean {
-        return runBlockingOnIO { isGreaterThanInternal(version) }
+    override suspend fun suspendIsGreaterThan(version: DHISVersion): Boolean {
+        return version < suspendGetVersion()
     }
 
-    internal suspend fun isGreaterThanInternal(version: DHISVersion): Boolean {
-        return version < getVersionInternal()
-    }
-
-    override fun isGreaterOrEqualThan(version: DHISVersion): Boolean {
-        return runBlockingOnIO { isGreaterOrEqualThanInternal(version) }
-    }
-
-    internal suspend fun isGreaterOrEqualThanInternal(version: DHISVersion): Boolean {
-        return version <= getVersionInternal()
+    override suspend fun suspendIsGreaterOrEqualThan(version: DHISVersion): Boolean {
+        return version <= suspendGetVersion()
     }
 
     internal fun setVersion(versionStr: String) {

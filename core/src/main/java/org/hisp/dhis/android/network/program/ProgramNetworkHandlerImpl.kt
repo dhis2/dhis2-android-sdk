@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
@@ -42,7 +42,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class ProgramNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManagerImpl,
+    private val dhisVersionManager: DHISVersionManager,
     private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : ProgramNetworkHandler {
     private val service = ProgramService(httpServiceClient)
@@ -59,7 +59,7 @@ internal class ProgramNetworkHandlerImpl(
     }
 
     private suspend fun getFields(): Fields<Program> {
-        return if (dhisVersionManager.isGreaterThanInternal(DHISVersion.V2_34)) {
+        return if (dhisVersionManager.suspendIsGreaterThan(DHISVersion.V2_34)) {
             ProgramFields.allFields
         } else {
             ProgramFields.allFieldsBefore35

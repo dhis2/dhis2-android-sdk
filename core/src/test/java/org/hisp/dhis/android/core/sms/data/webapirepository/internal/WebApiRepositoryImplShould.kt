@@ -80,7 +80,7 @@ class WebApiRepositoryImplShould {
 
     @Test
     fun `Include users query if version lower than 2_35`() = runTest {
-        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_35)) doReturn false
+        whenever(dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_35)) doReturn false
         whenever(metadataService.getMetadataFields(any(), any(), any(), any(), any(), any(), any()))
             .thenReturn(metadataIdsDTO)
 
@@ -99,7 +99,7 @@ class WebApiRepositoryImplShould {
 
     @Test
     fun `Exclude users if version greater or equal to 2_35`() = runTest {
-        whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_35)) doReturn true
+        whenever(dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_35)) doReturn true
         whenever(metadataService.getMetadataFields(any(), any(), any(), anyOrNull(), any(), any(), any()))
             .thenReturn(metadataIdsDTO)
 

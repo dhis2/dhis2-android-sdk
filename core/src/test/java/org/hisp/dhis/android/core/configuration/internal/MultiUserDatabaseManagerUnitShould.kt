@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.android.core.configuration.internal
 
-import android.content.Context
 import kotlinx.coroutines.test.runTest
+import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.file.internal.FakePlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.common.BaseCallShould
@@ -45,7 +46,7 @@ import org.mockito.kotlin.*
 @RunWith(JUnit4::class)
 class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
 
-    private val context: Context = mock()
+    private val fileSystem = FakeFileSystem()
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore = mock()
     private val configurationHelper: DatabaseConfigurationHelper = mock()
     private val databaseExport: BaseDatabaseExport = mock()
@@ -91,7 +92,8 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
     override fun setUp() {
         super.setUp()
         manager = RoomMultiUserDatabaseManager(
-            context,
+            fileSystem,
+            FakePlatformDirectories(fileSystem),
             databaseAdapter,
             databaseConfigurationSecureStore,
             configurationHelper,

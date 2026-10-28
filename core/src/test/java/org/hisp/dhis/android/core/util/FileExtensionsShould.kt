@@ -29,6 +29,8 @@
 package org.hisp.dhis.android.core.util
 
 import com.google.common.truth.Truth.assertThat
+import okio.IOException
+import okio.Path
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -69,5 +71,46 @@ class FileExtensionsShould {
 
         assertThat(error.errorCode()).isEqualTo(D2ErrorCode.UNEXPECTED)
         assertThat(fileSystem.exists(directory)).isTrue()
+    }
+
+    @Test
+    fun copy_a_file_creating_the_target_directories() {
+        val source = writeFile(directory / "source.txt", "content")
+        val target = "/app/databases/target.txt".toPath()
+
+        fileSystem.copyTo(source, target)
+
+        assertThat(readFile(target)).isEqualTo("content")
+        assertThat(fileSystem.exists(source)).isTrue()
+    }
+
+    @Test
+    fun not_overwrite_an_existing_file_by_default() {
+        val source = writeFile(directory / "source.txt", "content")
+        val target = writeFile(directory / "target.txt", "existing")
+
+        assertThrows(IOException::class.java) { fileSystem.copyTo(source, target) }
+
+        assertThat(readFile(target)).isEqualTo("existing")
+    }
+
+    @Test
+    fun overwrite_an_existing_file_when_requested() {
+        val source = writeFile(directory / "source.txt", "content")
+        val target = writeFile(directory / "target.txt", "existing")
+
+        fileSystem.copyTo(source, target, overwrite = true)
+
+        assertThat(readFile(target)).isEqualTo("content")
+    }
+
+    private fun writeFile(path: Path, content: String): Path {
+        fileSystem.createDirectories(path.parent!!)
+        fileSystem.write(path) { writeUtf8(content) }
+        return path
+    }
+
+    private fun readFile(path: Path): String {
+        return fileSystem.read(path) { readUtf8() }
     }
 }

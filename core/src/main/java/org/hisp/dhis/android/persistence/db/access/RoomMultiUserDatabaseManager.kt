@@ -28,11 +28,12 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
-import android.content.Context
 import android.util.Log
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -45,6 +46,7 @@ import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManage
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.util.CipherUtil
+import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
 
@@ -54,7 +56,8 @@ import org.koin.core.annotation.Singleton
 @Singleton
 @Suppress("TooManyFunctions")
 internal class RoomMultiUserDatabaseManager(
-    private val context: Context,
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
     private val databaseAdapter: DatabaseAdapter,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val configurationHelper: DatabaseConfigurationHelper,
@@ -160,17 +163,17 @@ internal class RoomMultiUserDatabaseManager(
 
     @Suppress("TooGenericExceptionCaught")
     override suspend fun importAndLoadDb(account: DatabaseAccount, password: String) {
-        val protectedDbPath = context.getDatabasePath(account.importDB()!!.protectedDbName())
-        val dbPath = context.getDatabasePath(account.databaseName())
-        val tempDbPath = context.filesDir.resolve("temp.db").also { it.deleteIfExists() }
+        val protectedDbPath = platformDirectories.databasePath(account.importDB()!!.protectedDbName())
+        val dbPath = platformDirectories.databasePath(account.databaseName())
+        val tempDbPath = (platformDirectories.filesDir / "temp.db").also { fileSystem.deleteIfExists(it) }
         try {
-            CipherUtil.extractEncryptedZipFile(protectedDbPath, tempDbPath, password)
-            protectedDbPath.deleteIfExists()
+            CipherUtil.extractEncryptedZipFile(protectedDbPath.toFile(), tempDbPath.toFile(), password)
+            fileSystem.deleteIfExists(protectedDbPath)
 
             if (account.encrypted()) {
-                databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath, targetFile = dbPath)
+                databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath.toFile(), targetFile = dbPath.toFile())
             } else {
-                tempDbPath.copyTo(dbPath, overwrite = true)
+                fileSystem.copyTo(tempDbPath, dbPath, overwrite = true)
             }
             openDatabase(account)
             val importedAccount = account.toBuilder()
@@ -182,10 +185,10 @@ internal class RoomMultiUserDatabaseManager(
                 .build()
             addOrUpdatedAccountInternal(importedAccount)
         } catch (e: Exception) {
-            dbPath.deleteIfExists()
+            fileSystem.deleteIfExists(dbPath)
             throw e
         } finally {
-            tempDbPath.deleteIfExists()
+            fileSystem.deleteIfExists(tempDbPath)
         }
     }
 

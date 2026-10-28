@@ -30,6 +30,8 @@ package org.hisp.dhis.android.core.configuration.internal
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration301
@@ -46,14 +48,16 @@ class Migration301IntegrationShould {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val databaseConfigurationStore = DatabaseConfigurationInsecureStoreImpl(InMemoryUnsecureStore())
     private val nameGenerator = DatabaseNameGenerator()
-    private val renamer = DatabaseRenamer(context)
+    private val platformDirectories = AndroidPlatformDirectories(context)
+    private val renamer = DatabaseRenamer(FileSystem.SYSTEM, platformDirectories)
 
     private lateinit var migration: Migration301
 
     @Before
     fun setUp() {
         migration = Migration301(
-            context,
+            FileSystem.SYSTEM,
+            platformDirectories,
             databaseConfigurationStore,
             nameGenerator,
             renamer,

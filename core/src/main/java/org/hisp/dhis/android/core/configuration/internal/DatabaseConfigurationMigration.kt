@@ -30,9 +30,11 @@ package org.hisp.dhis.android.core.configuration.internal
 import android.content.Context
 import android.database.SQLException
 import androidx.sqlite.db.SimpleSQLiteQuery
+import okio.FileSystem
 import org.hisp.dhis.android.BuildConfig
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
@@ -45,6 +47,8 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DatabaseConfigurationMigration(
     private val context: Context,
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
     private val databaseConfigurationStore: DatabaseConfigurationInsecureStore,
     private val credentialsStore: CredentialsSecureStore,
     private val insecureStore: InsecureStore,
@@ -55,7 +59,7 @@ internal class DatabaseConfigurationMigration(
     @Suppress("TooGenericExceptionCaught")
     suspend fun apply() {
         var existingVersionCode: Long? = null
-        val oldDatabaseExist = context.databaseList().contains(OLD_DBNAME)
+        val oldDatabaseExist = platformDirectories.databaseList().contains(OLD_DBNAME)
 
         if (oldDatabaseExist) {
             // This is the initial database in the SDK, named like OLD_DBNAME.
@@ -66,7 +70,7 @@ internal class DatabaseConfigurationMigration(
             credentialsStore.remove()
 
             if (username == null || serverUrl == null) {
-                context.deleteDatabase(OLD_DBNAME)
+                platformDirectories.deleteDatabase(OLD_DBNAME)
             } else {
                 val databaseName = nameGenerator.getDatabaseName(serverUrl, username, false)
                 renamer.renameDatabase(OLD_DBNAME, databaseName)
@@ -95,11 +99,11 @@ internal class DatabaseConfigurationMigration(
         }
 
         runMigrationIfNeeded(existingVersionCode, Migration260.VERSION) {
-            Migration260(context, databaseConfigurationStore, databaseManager).apply()
+            Migration260(context, fileSystem, platformDirectories, databaseConfigurationStore, databaseManager).apply()
         }
 
         runMigrationIfNeeded(existingVersionCode, Migration301.VERSION) {
-            Migration301(context, databaseConfigurationStore, nameGenerator, renamer).apply()
+            Migration301(fileSystem, platformDirectories, databaseConfigurationStore, nameGenerator, renamer).apply()
         }
     }
 

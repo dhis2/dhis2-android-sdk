@@ -31,8 +31,11 @@ package org.hisp.dhis.android.core.configuration.internal.migration
 import android.content.Context
 import android.database.SQLException
 import android.util.Log
+import okio.FileSystem
+import okio.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -40,10 +43,11 @@ import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
 import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
 import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
-import java.io.File
 
 internal class Migration260(
     private val context: Context,
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
     private val databaseConfigurationStore: ObjectKeyValueStore<DatabasesConfiguration>,
     private val databaseManager: DatabaseManager,
 ) {
@@ -67,12 +71,13 @@ internal class Migration260(
     private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
         val accountSubFolder = FileResourceDirectories.subfolderName(databaseAdapter.getDatabaseName())
 
-        val rootResources = File(context.filesDir, FileResourceDirectories.FILES_DIR)
-        val dstResources = File(rootResources, accountSubFolder).also { it.mkdirs() }
+        val rootResources = platformDirectories.filesDir / FileResourceDirectories.FILES_DIR
+        val dstResources = rootResources / accountSubFolder
+        ignoringFailure { fileSystem.createDirectories(dstResources) }
 
-        rootResources.listFiles()
-            ?.filter { it.isFile }
-            ?.forEach { file -> file.renameTo(File(dstResources, file.name)) }
+        fileSystem.listOrNull(rootResources)
+            ?.filter { fileSystem.metadataOrNull(it)?.isRegularFile == true }
+            ?.forEach { file -> ignoringFailure { fileSystem.atomicMove(file, dstResources / file.name) } }
 
         val fileResourcesStore = FileResourceStoreImpl(databaseAdapter)
         val fileResources = try {
@@ -128,6 +133,14 @@ internal class Migration260(
             Log.e("MIGRATION", "Couldn't migrate sms settings")
         } finally {
             smsPrefs.edit().clear().apply()
+        }
+    }
+
+    private fun ignoringFailure(operation: () -> Unit) {
+        try {
+            operation()
+        } catch (e: IOException) {
+            Log.w("MIGRATION", "Couldn't migrate file resources", e)
         }
     }
 

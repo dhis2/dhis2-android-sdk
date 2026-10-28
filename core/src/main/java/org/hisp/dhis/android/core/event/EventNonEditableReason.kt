@@ -35,4 +35,5 @@ enum class EventNonEditableReason {
     NO_CATEGORY_COMBO_ACCESS,
     ENROLLMENT_IS_NOT_OPEN,
     ORGUNIT_IS_NOT_IN_USER_SCOPE,
+    EVENT_NOT_FOUND,
 }

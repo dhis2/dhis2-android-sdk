@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.note.Note
+import org.hisp.dhis.android.core.note.internal.NoteStore
 import org.hisp.dhis.android.core.relationship.Relationship
 import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -44,6 +46,7 @@ internal class TrackerPostStateManager internal constructor(
     private val eventStore: EventStore,
     private val relationshipStore: RelationshipStore,
     private val fileResourceStore: FileResourceStore,
+    private val noteStore: NoteStore,
     private val h: StatePersistorHelper,
 ) {
 
@@ -69,6 +72,7 @@ internal class TrackerPostStateManager internal constructor(
         val eventMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val relationshipMap: MutableMap<State, MutableList<String>> = mutableMapOf()
         val fileResourceMap: MutableMap<State, MutableList<String>> = mutableMapOf()
+        val noteMap: MutableMap<State, MutableList<String>> = mutableMapOf()
 
         trackedEntityInstances.forEach { instance ->
             h.addState(teiMap, instance, forcedState)
@@ -93,10 +97,32 @@ internal class TrackerPostStateManager internal constructor(
             }
         }
 
+        getNotes(trackedEntityInstances, events).forEach { h.addState(noteMap, it, forcedState) }
+
         h.persistStates(teiMap, trackedEntityInstanceStore)
         h.persistStates(enrollmentMap, enrollmentStore)
         h.persistStates(eventMap, eventStore)
         h.persistStates(relationshipMap, relationshipStore)
         h.persistStates(fileResourceMap, fileResourceStore)
+        h.persistStates(noteMap, noteStore)
+    }
+
+    suspend fun restoreUploadingNotes(
+        trackedEntityInstances: List<TrackedEntityInstance> = emptyList(),
+        events: List<Event> = emptyList(),
+    ) {
+        getNotes(trackedEntityInstances, events).forEach {
+            noteStore.setSyncStateIfUploading(it.uid(), State.TO_POST)
+        }
+    }
+
+    private fun getNotes(
+        trackedEntityInstances: List<TrackedEntityInstance>,
+        events: List<Event>,
+    ): List<Note> {
+        val enrollments = trackedEntityInstances.flatMap { it.enrollments.orEmpty() }
+        val allEvents = enrollments.flatMap { it.events().orEmpty() } + events
+
+        return enrollments.flatMap { it.notes().orEmpty() } + allEvents.flatMap { it.notes().orEmpty() }
     }
 }

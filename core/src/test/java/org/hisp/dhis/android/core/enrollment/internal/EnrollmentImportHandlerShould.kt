@@ -122,6 +122,45 @@ class EnrollmentImportHandlerShould {
     }
 
     @Test
+    fun handle_enrollment_notes_as_synced_when_enrollment_import_summary_is_success() = runTest {
+        val summary = createSummary(ImportStatus.SUCCESS, enrollmentUid)
+
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(summary), enrollments, teiState)
+
+        verify(jobReportEnrollmentHandler, times(1)).handleEnrollmentNotes(enrollmentUid, State.SYNCED)
+    }
+
+    @Test
+    fun handle_enrollment_notes_as_synced_when_enrollment_was_modified_during_upload() = runTest {
+        whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.SYNCED)).thenReturn(HandleAction.NoAction)
+        val summary = createSummary(ImportStatus.SUCCESS, enrollmentUid)
+
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(summary), enrollments, teiState)
+
+        verify(jobReportEnrollmentHandler, times(1)).handleEnrollmentNotes(enrollmentUid, State.SYNCED)
+    }
+
+    @Test
+    fun handle_enrollment_notes_as_error_when_enrollment_import_summary_is_error() = runTest {
+        whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.ERROR)).thenReturn(HandleAction.Update)
+        val summary = createSummary(ImportStatus.ERROR, enrollmentUid)
+
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(summary), enrollments, teiState)
+
+        verify(jobReportEnrollmentHandler, times(1)).handleEnrollmentNotes(enrollmentUid, State.ERROR)
+    }
+
+    @Test
+    fun not_handle_enrollment_notes_when_enrollment_is_deleted() = runTest {
+        whenever(enrollmentStore.setSyncStateOrDelete(enrollmentUid, State.SYNCED)).thenReturn(HandleAction.Delete)
+        val summary = createSummary(ImportStatus.SUCCESS, enrollmentUid)
+
+        enrollmentImportHandler.handleEnrollmentImportSummary(listOf(summary), enrollments, teiState)
+
+        verify(jobReportEnrollmentHandler, never()).handleEnrollmentNotes(any(), any())
+    }
+
+    @Test
     fun invoke_set_state_and_handle_event_import_summaries_when_enrollment_is_success_and_event_is_imported() =
         runTest {
             val eventSummary = EventImportSummary(

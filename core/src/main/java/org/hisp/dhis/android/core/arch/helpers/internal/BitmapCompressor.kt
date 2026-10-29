@@ -30,7 +30,7 @@ package org.hisp.dhis.android.core.arch.helpers.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-    import java.io.ByteArrayOutputStream
+import java.io.ByteArrayOutputStream
 import kotlin.math.sqrt
 
 /**

@@ -171,6 +171,52 @@ class DataSetIndicatorEvaluatorShould {
         ).isEqualTo(0.0)
     }
 
+    @Test
+    fun evaluate_nan_numerator() {
+        whenever(indicator.numerator()) doReturn "#{$diItem1} / #{$diItem2}"
+        whenever(indicator.denominator()) doReturn "1"
+
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0,
+                diObject2 to 0.0,
+            ),
+        )
+
+        assertThat(
+            evaluator.evaluate(indicator, indicatorType, context),
+        ).isEqualTo(0.0)
+    }
+
+    @Test
+    fun evaluate_nan_numerator_with_missing_values() {
+        whenever(indicator.numerator()) doReturn "#{$diItem1} / (#{$diItem1} * #{$diItem2})"
+        whenever(indicator.denominator()) doReturn "1"
+
+        val context = getContextForValueMap(mapOf())
+
+        assertThat(
+            evaluator.evaluate(indicator, indicatorType, context),
+        ).isEqualTo(0.0)
+    }
+
+    @Test
+    fun evaluate_nan_denominator() {
+        whenever(indicator.numerator()) doReturn "#{$diItem1}"
+        whenever(indicator.denominator()) doReturn "#{$diItem1} / #{$diItem2}"
+
+        val context = getContextForValueMap(
+            mapOf(
+                diObject1 to 10.0,
+                diObject2 to 0.0,
+            ),
+        )
+
+        assertThat(
+            evaluator.evaluate(indicator, indicatorType, context),
+        ).isEqualTo(0.0)
+    }
+
     private fun getContextForValueMap(valueMap: Map<DimensionalItemObject, Double>): ExpressionServiceContext {
         return ExpressionServiceContext(valueMap, constantMap, orgunitGroupMap, days)
     }

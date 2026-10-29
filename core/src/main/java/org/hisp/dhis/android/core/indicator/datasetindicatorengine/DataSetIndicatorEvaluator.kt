@@ -47,17 +47,22 @@ internal class DataSetIndicatorEvaluator(private val expressionService: Expressi
             indicator.numerator(),
             context,
             MissingValueStrategy.NEVER_SKIP,
-        ) as Double
+        ) as Double?
 
         val denominator = expressionService.getExpressionValue(
             indicator.denominator(),
             context,
             MissingValueStrategy.NEVER_SKIP,
-        ) as Double
+        ) as Double?
 
-        val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
-        val value = (expressionService.getExpressionValue(formula) ?: 0.0) as Double
+        // ExpressionService returns null when the expression evaluates to NaN (e.g. a division by zero)
+        return if (numerator == null || denominator == null) {
+            ParserUtils.DOUBLE_VALUE_IF_NULL
+        } else {
+            val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
+            val value = (expressionService.getExpressionValue(formula) ?: 0.0) as Double
 
-        return ParserUtils.getRounded(value, indicator.decimals() ?: 2)
+            ParserUtils.getRounded(value, indicator.decimals() ?: 2)
+        }
     }
 }

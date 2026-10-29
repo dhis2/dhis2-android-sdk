@@ -29,15 +29,13 @@
 package org.hisp.dhis.android.network.constant
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ConstantService(private val client: HttpServiceClient) {
-    suspend fun getConstants(fields: Fields<Constant>, paging: Boolean): ConstantPayload {
+    suspend fun getConstants(paging: Boolean): ConstantPayload {
         return client.get {
             url("constants")
             parameters {
-                fields(fields)
+                fields<ConstantDTO>()
                 paging(paging)
             }
         }

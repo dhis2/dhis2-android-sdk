@@ -27,14 +27,21 @@
  */
 package org.hisp.dhis.android.network.constant
 
-import org.hisp.dhis.android.core.constant.Constant
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.persistence.constant.ConstantTableInfo
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.arch.api.ParametersBuilder
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 
-internal object ConstantFields : BaseFields<Constant>() {
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-        fh.field(ConstantTableInfo.Columns.VALUE),
-    )
+@RunWith(JUnit4::class)
+internal class ConstantDTOShould {
+
+    @Test
+    fun request_the_same_fields_as_the_hand_written_definition() {
+        val parameters = ParametersBuilder(mutableListOf()).apply { fields<ConstantDTO>() }.parameters
+
+        assertThat(parameters).containsExactly(
+            "fields" to "id,code,name,displayName,created,lastUpdated,deleted,value",
+        )
+    }
 }

@@ -60,7 +60,7 @@ internal class DataSetIndicatorEvaluator(private val expressionService: Expressi
             ParserUtils.DOUBLE_VALUE_IF_NULL
         } else {
             val formula = "$numerator * ${indicatorType.factor() ?: 1} / $denominator"
-            val value = (expressionService.getExpressionValue(formula) ?: 0.0) as Double
+            val value = expressionService.getExpressionValue(formula) as Double? ?: 0.0
 
             ParserUtils.getRounded(value, indicator.decimals() ?: 2)
         }

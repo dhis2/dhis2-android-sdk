@@ -40,16 +40,12 @@ import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
-import org.hisp.dhis.android.network.customicon.CustomIconFields
-import org.hisp.dhis.android.network.dataapproval.DataApprovalFields
 import org.hisp.dhis.android.network.dataelement.DataElementFields
 import org.hisp.dhis.android.network.dataset.DataElementOperandFields
 import org.hisp.dhis.android.network.dataset.DataInputPeriodFields
 import org.hisp.dhis.android.network.dataset.DataSetElementFields
 import org.hisp.dhis.android.network.dataset.DataSetFields
 import org.hisp.dhis.android.network.dataset.SectionFields
-import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationFields
-import org.hisp.dhis.android.network.datavalue.DataValueFields
 import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
@@ -64,12 +60,9 @@ import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields
 import org.hisp.dhis.android.network.legendset.LegendFields
 import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.note.NoteFields
-import org.hisp.dhis.android.network.option.OptionFields
-import org.hisp.dhis.android.network.optiongroup.OptionGroupFields
 import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
-import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelFields
 import org.hisp.dhis.android.network.program.ProgramFields
 import org.hisp.dhis.android.network.program.ProgramRuleVariableFields
 import org.hisp.dhis.android.network.program.ProgramSectionFields
@@ -93,7 +86,6 @@ import org.hisp.dhis.android.network.relationship.RelationshipItemTrackedEntityI
 import org.hisp.dhis.android.network.relationshiptype.RelationshipConstraintFields
 import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeFields
 import org.hisp.dhis.android.network.relationshiptype.TrackerDataViewFields
-import org.hisp.dhis.android.network.systeminfo.SystemInfoFields
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityAttributeValueFields
@@ -122,9 +114,6 @@ import org.hisp.dhis.android.network.user.UserCredentialsFields
 import org.hisp.dhis.android.network.user.UserFields
 import org.hisp.dhis.android.network.user.UserGroupFields
 import org.hisp.dhis.android.network.user.UserRoleFields
-import org.hisp.dhis.android.network.usersettings.UserSettingsFields
-import org.hisp.dhis.android.network.validationrule.ValidationRuleExpressionFields
-import org.hisp.dhis.android.network.validationrule.ValidationRuleFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionFields
 import org.hisp.dhis.android.network.visualization.VisualizationDimensionItemFields
 import org.hisp.dhis.android.network.visualization.VisualizationFields
@@ -176,16 +165,12 @@ class FieldsStringGenerationShould {
         CategoryFields,
         CategoryOptionComboFields,
         CategoryOptionFields,
-        CustomIconFields,
         DataAccessFields,
-        DataApprovalFields,
         DataElementFields,
         DataElementOperandFields,
         DataInputPeriodFields,
-        DataSetCompleteRegistrationFields,
         DataSetElementFields,
         DataSetFields,
-        DataValueFields,
         DateFilterPeriodFields,
         EnrollmentFields,
         EntityQueryCriteriaFields,
@@ -213,12 +198,9 @@ class FieldsStringGenerationShould {
         NewTrackedEntityInstanceFields,
         NoteFields,
         ObjectStyleFields,
-        OptionFields,
-        OptionGroupFields,
         OptionSetFields,
         OrganisationUnitFields,
         OrganisationUnitGroupFields,
-        OrganisationUnitLevelFields,
         ProgramFields,
         ProgramIndicatorFields,
         ProgramRuleActionFields,
@@ -241,7 +223,6 @@ class FieldsStringGenerationShould {
         RelationshipItemTrackedEntityInstanceFields,
         RelationshipTypeFields,
         SectionFields,
-        SystemInfoFields,
         SystemSettingsFields,
         TrackedEntityAttributeFields,
         TrackedEntityAttributeValueFields,
@@ -259,9 +240,6 @@ class FieldsStringGenerationShould {
         UserFields,
         UserGroupFields,
         UserRoleFields,
-        UserSettingsFields,
-        ValidationRuleExpressionFields,
-        ValidationRuleFields,
         VisualizationDimensionFields,
         VisualizationDimensionItemFields,
         VisualizationFields,

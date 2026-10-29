@@ -42,7 +42,7 @@ internal class OptionGroupNetworkHandlerImpl(
 
     override suspend fun getOptionGroups(optionGroupUids: Set<String>): PayloadJson<OptionGroup> {
         val optionSetUidsFilterStr = "optionSet." + OptionSetFields.uid.`in`(optionGroupUids).generateString()
-        val apiPayload = service.getOptionGroups(OptionGroupFields.allFields, optionSetUidsFilterStr, false)
+        val apiPayload = service.getOptionGroups(optionSetUidsFilterStr, false)
         return apiPayload.mapItems(OptionGroupDTO::toDomain)
     }
 }

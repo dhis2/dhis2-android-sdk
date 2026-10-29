@@ -29,8 +29,6 @@ package org.hisp.dhis.android.network.datasetcompleteregistration
 
 import io.ktor.client.statement.HttpResponse
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.dataset.DataSetCompleteRegistration
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryDTO
 import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponseDTO
 
@@ -38,7 +36,6 @@ import org.hisp.dhis.android.network.datavalue.DataValueImportSummaryWebResponse
 internal class DataSetCompleteRegistrationService(private val client: HttpServiceClient) {
 
     suspend fun getDataSetCompleteRegistrations(
-        fields: Fields<DataSetCompleteRegistration>,
         lastUpdated: String?,
         dataSetUids: String,
         periodIds: String,
@@ -49,7 +46,7 @@ internal class DataSetCompleteRegistrationService(private val client: HttpServic
         return client.get {
             url("completeDataSetRegistrations")
             parameters {
-                fields(fields)
+                fields<DataSetCompleteRegistrationDTO>()
                 attribute("lastUpdated", lastUpdated)
                 attribute("dataSet", dataSetUids)
                 attribute("period", periodIds)

@@ -56,7 +56,7 @@ class PingImplShould {
     @Before
     fun setUp() {
         runTest {
-            whenever(dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40)).doReturn(true)
+            whenever(dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_40)).doReturn(true)
         }
     }
 

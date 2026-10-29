@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.settings.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentContext
@@ -69,7 +69,7 @@ internal class CustomIntentServiceImpl(
         customIntent: CustomIntent,
         context: CustomIntentContext,
     ): Map<String, Any?> {
-        return runBlocking { suspendEvaluateRequestParams(customIntent, context) }
+        return runBlockingOnIO { suspendEvaluateRequestParams(customIntent, context) }
     }
 
     override suspend fun suspendEvaluateRequestParams(

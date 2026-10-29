@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSMetadataId
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.smscompression.SMSConsts

@@ -50,6 +50,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
@@ -99,6 +100,7 @@ class EventServiceShould {
         whenever(enrollmentRepository.uid(any()).suspendGet()) doReturn enrollment
         whenever(programRepository.uid(any()).suspendGet()) doReturn program
         whenever(programStageRepository.uid(any()).suspendGet()) doReturn programStage
+        whenever(eventDateUtils.isEventExpired(any(), any(), anyOrNull(), any())) doReturn false
 
         whenever(event.uid()) doReturn eventUid
         whenever(event.eventDate()) doReturn firstJanuary

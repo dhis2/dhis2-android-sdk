@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.SqliteDriverFactoryImpl
 
 object TestDatabaseAdapterFactory {
     private val storeRegistry = KoinStoreRegistry()
@@ -56,7 +57,7 @@ object TestDatabaseAdapterFactory {
         val context = InstrumentationRegistry.getInstrumentation().context
         val SecureStore = InMemorySecureStore()
         val passwordManager = DatabaseEncryptionPasswordManager.create(SecureStore)
-        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
 
         databaseManager.createInMemoryDatabase()
         databaseAdapter.setForeignKeyConstraintsEnabled(false)

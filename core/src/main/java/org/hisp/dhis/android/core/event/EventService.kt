@@ -28,7 +28,7 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import kotlinx.coroutines.rx2.rxSingle
 
 @Suppress("TooManyFunctions")
@@ -112,7 +112,7 @@ interface EventService {
      *
      * @see getEditableStatus
      */
-    fun blockingGetEditableStatus(eventUid: String): EventEditableStatus = runBlocking {
+    fun blockingGetEditableStatus(eventUid: String): EventEditableStatus = runBlockingOnIO {
         suspendGetEditableStatus(eventUid)
     }
 

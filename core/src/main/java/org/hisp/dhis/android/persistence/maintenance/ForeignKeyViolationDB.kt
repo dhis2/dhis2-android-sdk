@@ -1,8 +1,8 @@
 package org.hisp.dhis.android.persistence.maintenance
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.hisp.dhis.android.core.util.dateFormat
 import org.hisp.dhis.android.core.util.toJavaDate

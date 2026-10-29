@@ -28,12 +28,11 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.Dao
-import androidx.room.Query
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
-import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteQuery
+import androidx.room3.Dao
+import androidx.room3.Query
+import androidx.room3.RawQuery
+import androidx.room3.RoomRawQuery
+import androidx.room3.ColumnTypeConverters
 import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration133DataValue
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.SchemaRow
@@ -42,29 +41,29 @@ import org.hisp.dhis.android.persistence.common.SchemaRow
 internal interface D2Dao {
 
     @RawQuery
-    fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    fun stringListRawQuery(query: SupportSQLiteQuery): List<String>
+    suspend fun stringListRawQuery(query: RoomRawQuery): List<String>
 
     @RawQuery
-    fun stringRawQuery(query: RoomRawQuery): String
+    suspend fun stringRawQuery(query: RoomRawQuery): String
 
     @RawQuery
-    fun queryStringValue(query: SupportSQLiteQuery): String?
+    suspend fun queryStringValue(query: RoomRawQuery): String?
 
-    @TypeConverters(StateTypeConverter::class)
+    @ColumnTypeConverters(StateTypeConverter::class)
     @RawQuery
-    fun getTypedSyncStates(query: SupportSQLiteQuery): List<State>
+    suspend fun getTypedSyncStates(query: RoomRawQuery): List<State>
 
     @RawQuery
-    fun getCodeMigration133DataValue(query: SupportSQLiteQuery): List<DatabaseCodeMigration133DataValue>
+    suspend fun getCodeMigration133DataValue(query: RoomRawQuery): List<DatabaseCodeMigration133DataValue>
 
     @Query("SELECT name, sql FROM sqlite_master ORDER BY name")
-    fun getSchemaRows(): List<SchemaRow>
+    suspend fun getSchemaRows(): List<SchemaRow>
 
     @RawQuery
-    fun getTableInfo(query: SupportSQLiteQuery): List<PragmaTableInfoRow>
+    suspend fun getTableInfo(query: RoomRawQuery): List<PragmaTableInfoRow>
 }
 
 internal data class PragmaTableInfoRow(

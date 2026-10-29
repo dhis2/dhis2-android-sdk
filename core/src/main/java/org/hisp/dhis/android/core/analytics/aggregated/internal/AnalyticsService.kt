@@ -29,10 +29,12 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import android.database.sqlite.SQLiteException
+import androidx.room3.useReaderConnection
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.Dimension
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.antlr.ParserException
 import org.koin.core.annotation.Singleton
@@ -42,6 +44,7 @@ internal class AnalyticsService(
     private val analyticsServiceDimensionHelper: AnalyticsServiceDimensionHelper,
     private val analyticsServiceMetadataHelper: AnalyticsServiceMetadataHelper,
     private val analyticsServiceEvaluatorHelper: AnalyticsServiceEvaluatorHelper,
+    private val databaseAdapter: DatabaseAdapter,
 ) {
 
     suspend fun evaluate(params: AnalyticsRepositoryParams): Result<DimensionalResponse, AnalyticsException> {
@@ -64,8 +67,11 @@ internal class AnalyticsService(
 
             val metadata = analyticsServiceMetadataHelper.getMetadata(evaluationItems)
 
-            val values = evaluationItems.map {
-                analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
+            // One reader connection for the whole fan-out instead of one per evaluation item.
+            val values = databaseAdapter.getCurrentDatabase().useReaderConnection {
+                evaluationItems.map {
+                    analyticsServiceEvaluatorHelper.evaluate(it, metadata, params.analyticsLegendStrategy)
+                }
             }
 
             val legends = values.filter { it.legend != null }.map { it.legend!! }

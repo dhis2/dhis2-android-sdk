@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -46,7 +46,7 @@ internal constructor(
 ) : ReadOnlyObjectRepository<T> {
 
     fun blockingGetWithoutChildren(): M? {
-        return runBlocking { getWithoutChildrenInternal() }
+        return runBlockingOnIO { getWithoutChildrenInternal() }
     }
 
     private suspend fun getWithoutChildrenInternal(): M? {

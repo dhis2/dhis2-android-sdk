@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.category
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
@@ -39,7 +39,7 @@ class CategoryOptionComboService(
 ) {
 
     fun blockingHasAccess(categoryOptionComboUid: String, date: Date?, orgUnitUid: String? = null): Boolean {
-        return runBlocking { suspendHasAccess(categoryOptionComboUid, date, orgUnitUid) }
+        return runBlockingOnIO { suspendHasAccess(categoryOptionComboUid, date, orgUnitUid) }
     }
 
     @Deprecated(message = "Use rxHasAccess instead", ReplaceWith("rxHasAccess(categoryOptionComboUid, date)"))
@@ -77,7 +77,7 @@ class CategoryOptionComboService(
         categoryOptionComboUid: String,
         orgUnitUid: String?,
     ): Boolean {
-        return runBlocking { suspendIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) }
+        return runBlockingOnIO { suspendIsAssignedToOrgUnit(categoryOptionComboUid, orgUnitUid) }
     }
 
     suspend fun suspendIsAssignedToOrgUnit(

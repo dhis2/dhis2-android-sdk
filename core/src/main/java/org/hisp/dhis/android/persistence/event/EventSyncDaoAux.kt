@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.event.EventSyncTableInfo.Columns
 import org.hisp.dhis.android.processor.GenerateDaoQueries
@@ -44,7 +44,7 @@ internal interface EventSyncDaoAux : ObjectDao<EventSyncDB> {
             OR (${Columns.WORKING_LISTS_HASH} IS NULL AND :workingListsHash IS NULL))
     """,
     )
-    fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int, workingListsHash: Int?): Int
+    suspend fun deleteByProgram(programUid: String, organisationUnitIdsHash: Int, workingListsHash: Int?): Int
 
     @Query(
         """
@@ -55,5 +55,5 @@ internal interface EventSyncDaoAux : ObjectDao<EventSyncDB> {
             OR (${Columns.WORKING_LISTS_HASH} IS NULL AND :workingListsHash IS NULL))
     """,
     )
-    fun deleteByNullProgram(organisationUnitIdsHash: Int, workingListsHash: Int?): Int
+    suspend fun deleteByNullProgram(organisationUnitIdsHash: Int, workingListsHash: Int?): Int
 }

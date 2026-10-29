@@ -205,8 +205,8 @@ class DataValuePostCallShould {
     }
 
     private suspend fun givenVersion(isV39Plus: Boolean, isV38Plus: Boolean) {
-        whenever(versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_39)).thenReturn(isV39Plus)
-        whenever(versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)).thenReturn(isV38Plus)
+        whenever(versionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_39)).thenReturn(isV39Plus)
+        whenever(versionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)).thenReturn(isV38Plus)
     }
 
     private suspend fun givenFileResourceReturns(dataValues: List<DataValue>) {

@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.processors
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
 import com.google.devtools.ksp.getDeclaredProperties
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies

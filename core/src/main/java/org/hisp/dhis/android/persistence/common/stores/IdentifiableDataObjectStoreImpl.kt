@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.stores
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.stores.internal.StoreWithState
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.common.DataObject

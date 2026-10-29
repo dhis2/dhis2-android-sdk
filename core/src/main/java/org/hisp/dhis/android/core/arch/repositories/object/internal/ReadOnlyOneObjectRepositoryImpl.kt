@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -43,7 +43,7 @@ open class ReadOnlyOneObjectRepositoryImpl<M : Any, R : ReadOnlyObjectRepository
 ) : ReadOnlyObjectRepositoryImpl<M, R>(childrenAppenders, scope, repositoryFactory) {
 
     override fun blockingGetWithoutChildren(): M? {
-        return runBlocking { getWithoutChildrenInternal() }
+        return runBlockingOnIO { getWithoutChildrenInternal() }
     }
 
     override suspend fun getWithoutChildrenInternal(): M? {

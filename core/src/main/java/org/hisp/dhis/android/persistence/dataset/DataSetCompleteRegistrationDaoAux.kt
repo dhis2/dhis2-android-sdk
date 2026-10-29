@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
@@ -49,7 +49,7 @@ internal interface DataSetCompleteRegistrationDaoAux : ObjectDao<DataSetComplete
           AND ${DataSetCompleteRegistrationTableInfo.Columns.SYNC_STATE} = :syncedStateValue
     """,
     )
-    fun removeNotPresentAndSynced(
+    suspend fun removeNotPresentAndSynced(
         dataSetUids: Collection<String>,
         periodIds: Collection<String>,
         orgUnitPathQuery: String, // pass this as  "%$rootOrgunitUid%"

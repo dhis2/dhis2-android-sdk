@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSOngoingSubmission
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.hisp.dhis.android.persistence.common.EntityDB

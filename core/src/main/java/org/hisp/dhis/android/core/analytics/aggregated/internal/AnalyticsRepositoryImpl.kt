@@ -29,7 +29,6 @@
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionalResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.AggregationType
 import org.koin.core.annotation.Singleton
 
@@ -72,7 +72,7 @@ internal class AnalyticsRepositoryImpl(
     }
 
     override fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> {
-        return runBlocking { analyticsService.evaluate(params) }
+        return runBlockingOnIO { analyticsService.evaluate(params) }
     }
 
     override suspend fun suspendEvaluate(): Result<DimensionalResponse, AnalyticsException> {

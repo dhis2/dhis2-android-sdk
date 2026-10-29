@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 
@@ -70,5 +70,5 @@ interface ReadOnlyWithUidCollectionRepository<M : ObjectWithUidInterface> : Read
      *
      * @return List of uids
      */
-    fun blockingGetUids(): List<String> = runBlocking { suspendGetUids() }
+    fun blockingGetUids(): List<String> = runBlockingOnIO { suspendGetUids() }
 }

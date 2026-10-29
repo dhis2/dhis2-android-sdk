@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datavalue
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -37,8 +38,10 @@ import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.util.Date
 
+@Suppress("LongParameterList")
 class DataValueObjectRepository internal constructor(
     store: DataValueStore,
+    private val databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<DataValue>,
     scope: RepositoryScope,
     private val period: String,
@@ -49,11 +52,13 @@ class DataValueObjectRepository internal constructor(
     private val sourceDataSet: String? = null,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         DataValueObjectRepository(
             store,
+            databaseAdapter,
             childrenAppenders,
             s,
             period,
@@ -90,11 +95,13 @@ class DataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override suspend fun suspendDelete() {
-        getWithoutChildrenInternal()?.let { dataValue ->
-            if (dataValue.syncState() === State.TO_POST) {
-                super.suspendDelete(dataValue)
-            } else {
-                setObject(dataValue.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+        databaseAdapter.withTransaction {
+            getWithoutChildrenInternal()?.let { dataValue ->
+                if (dataValue.syncState() === State.TO_POST) {
+                    super.suspendDelete(dataValue)
+                } else {
+                    setObject(dataValue.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+                }
             }
         }
     }

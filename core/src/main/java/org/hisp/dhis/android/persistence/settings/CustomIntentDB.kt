@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentRequest
 import org.hisp.dhis.android.core.settings.CustomIntentResponse

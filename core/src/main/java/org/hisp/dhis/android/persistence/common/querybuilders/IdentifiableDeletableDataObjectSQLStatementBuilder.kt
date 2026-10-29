@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 
 internal interface IdentifiableDeletableDataObjectSQLStatementBuilder : IdentifiableDataObjectSQLStatementBuilder {
     fun setDeleted(uid: String): RoomRawQuery

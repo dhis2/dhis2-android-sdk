@@ -34,7 +34,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -43,6 +42,7 @@ import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -74,7 +74,7 @@ internal class OpenIDConnectHandlerImpl(
     }
 
     override fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
-        return runBlocking { suspendLogIn(config) }
+        return runBlockingOnIO { suspendLogIn(config) }
     }
 
     private suspend fun suspendLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
@@ -98,7 +98,7 @@ internal class OpenIDConnectHandlerImpl(
         intent: Intent?,
         requestCode: Int,
     ): User {
-        return runBlocking { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
+        return runBlockingOnIO { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
     }
 
     @Suppress("TooGenericExceptionThrown")

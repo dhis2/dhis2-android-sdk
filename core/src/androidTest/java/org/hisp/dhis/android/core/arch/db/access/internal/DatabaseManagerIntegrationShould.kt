@@ -27,7 +27,8 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
+import androidx.room3.useWriterConnection
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -37,6 +38,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.SqliteDriverFactoryImpl
 import org.junit.AfterClass
 import org.junit.Test
 
@@ -136,9 +138,9 @@ class DatabaseManagerIntegrationShould {
 
         // Perform a write operation to ensure the database is fully functional
         val database = databaseAdapter.getCurrentDatabase()
-        database.runInTransaction {
-            // Execute a simple query to verify write capability
-            database.openHelper.writableDatabase.execSQL("PRAGMA user_version = 1")
+        database.useWriterConnection { transactor ->
+            // Execute a simple statement to verify write capability
+            transactor.usePrepared("PRAGMA user_version = 1") { it.step() }
         }
 
         // Verify we can read after write
@@ -162,7 +164,8 @@ class DatabaseManagerIntegrationShould {
             val storeRegistry = KoinStoreRegistry()
             val databaseAdapter = RoomDatabaseAdapter(storeRegistry)
             val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
-            databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+            databaseManager =
+                RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
         }
 
         @AfterClass

@@ -1,9 +1,9 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.util.dateFormat

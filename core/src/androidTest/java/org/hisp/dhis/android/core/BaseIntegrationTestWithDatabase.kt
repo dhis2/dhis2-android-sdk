@@ -28,12 +28,14 @@
 package org.hisp.dhis.android.core
 
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseManager
+import org.hisp.dhis.android.persistence.db.access.SqliteDriverFactoryImpl
 import org.junit.After
 import org.junit.Before
 import java.io.IOException
@@ -47,13 +49,13 @@ abstract class BaseIntegrationTestWithDatabase {
     open fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
-        val roomDatabaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager)
+        val roomDatabaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
 
         roomDatabaseManager.createOrOpenUnencryptedDatabase("dbName")
     }
 
     @After
-    open fun tearDown() {
+    open fun tearDown() = runBlocking {
         databaseAdapter.getCurrentDatabase().clearAllTables()
         databaseAdapter.deactivate()
     }

@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import androidx.sqlite.execSQL
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
 import org.junit.Assert
 import org.junit.Test
@@ -37,12 +38,12 @@ import org.junit.Test
 class DatabaseSQLiteConnectionMigrationShould {
 
     @Test
-    fun apply_all_migrations_using_SQLiteConnection() {
+    fun apply_all_migrations_using_SQLiteConnection() = runTest {
         val driver = BundledSQLiteDriver()
         val connection = driver.open(":memory:")
 
         connection.use { conn ->
-            if (ALL_MIGRATIONS.isEmpty()) return
+            if (ALL_MIGRATIONS.isEmpty()) return@runTest
 
             var currentVersion = ALL_MIGRATIONS.first().startVersion
             conn.execSQL("PRAGMA user_version = $currentVersion;")

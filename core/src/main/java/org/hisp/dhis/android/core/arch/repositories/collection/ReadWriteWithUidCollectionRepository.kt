@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.common.ObjectWithUidInterface
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -78,5 +78,5 @@ interface ReadWriteWithUidCollectionRepository<M, O> :
      * @return the UID
      */
     @Throws(D2Error::class)
-    fun blockingAdd(o: O): String = runBlocking { suspendAdd(o) }
+    fun blockingAdd(o: O): String = runBlockingOnIO { suspendAdd(o) }
 }

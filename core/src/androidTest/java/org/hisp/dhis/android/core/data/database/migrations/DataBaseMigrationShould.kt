@@ -31,9 +31,11 @@ import android.content.Context
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
+import androidx.sqlite.driver.SupportSQLiteConnection
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
 import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
@@ -111,7 +113,7 @@ class DataBaseMigrationShould {
             if (migration.startVersion == currentDbVersion && migration.endVersion <= targetVersion) {
                 db.beginTransaction()
                 try {
-                    migration.migrate(db)
+                    runBlocking { migration.migrate(SupportSQLiteConnection(db)) }
                     db.execSQL("PRAGMA user_version = ${migration.endVersion};")
                     db.setTransactionSuccessful()
                     currentDbVersion = migration.endVersion
@@ -192,7 +194,7 @@ class DataBaseMigrationShould {
         val migration = ALL_MIGRATIONS.first { it.endVersion == endVersion }
         db.beginTransaction()
         try {
-            migration.migrate(db)
+            runBlocking { migration.migrate(SupportSQLiteConnection(db)) }
             db.execSQL("PRAGMA user_version = ${migration.endVersion};")
             db.setTransactionSuccessful()
         } finally {

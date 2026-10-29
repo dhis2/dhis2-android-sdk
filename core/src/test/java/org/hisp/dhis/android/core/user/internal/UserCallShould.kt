@@ -94,9 +94,6 @@ class UserCallShould : BaseCallShould() {
             Assert.fail("Exception was not thrown")
         } catch (ex: Exception) {
             // verify that handlers was not touched
-            verify(databaseAdapter, never()).beginNewTransaction()
-            verify(transaction, never()).setSuccessful()
-            verify(transaction, never()).end()
             verify(userHandler, never()).handle(user)
         }
     }
@@ -109,9 +106,6 @@ class UserCallShould : BaseCallShould() {
             Assert.fail("Call should't succeed")
         } catch (d2Exception: D2Error) {
             // verify that database was not touched
-            verify(databaseAdapter, never()).beginNewTransaction()
-            verify(transaction, never()).setSuccessful()
-            verify(transaction, never()).end()
             verify(userHandler, never()).handle(user)
         }
     }

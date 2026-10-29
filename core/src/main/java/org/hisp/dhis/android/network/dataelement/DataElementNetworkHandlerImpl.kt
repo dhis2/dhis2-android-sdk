@@ -29,6 +29,7 @@ package org.hisp.dhis.android.network.dataelement
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementNetworkHandler
 import org.hisp.dhis.android.network.common.fields.AccessFields
@@ -37,6 +38,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class DataElementNetworkHandlerImpl(
     httpClient: HttpServiceClient,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : DataElementNetworkHandler {
     private val service = DataElementService(httpClient)
 
@@ -49,6 +51,7 @@ internal class DataElementNetworkHandlerImpl(
             accessReadFilter,
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(DataElementDTO::toDomain)
     }
 }

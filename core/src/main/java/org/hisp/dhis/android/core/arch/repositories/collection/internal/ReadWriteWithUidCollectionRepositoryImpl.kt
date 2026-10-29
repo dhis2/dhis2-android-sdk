@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.collection.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
@@ -43,6 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollectionRepository<M>>internal constructor(
     store: IdentifiableObjectStore<M>,
+    private val databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     @JvmField protected val transformer: Transformer<P, M>,
@@ -68,8 +70,10 @@ abstract class ReadWriteWithUidCollectionRepositoryImpl<M, P, R : ReadOnlyCollec
     override suspend fun suspendAdd(o: P): String {
         val obj = transformer.transform(o)
         return try {
-            store.insert(obj)
-            propagateState(obj, HandleAction.Insert)
+            databaseAdapter.withTransaction {
+                store.insert(obj)
+                propagateState(obj, HandleAction.Insert)
+            }
             obj.uid()
         } catch (e: Exception) {
             throw D2Error

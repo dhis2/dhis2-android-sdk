@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.common.objectstyle.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.common.NameableWithStyleColumns
 import org.hisp.dhis.android.core.utils.integration.mock.TestDatabaseAdapterFactory
@@ -47,13 +47,13 @@ class TablesWithStyleShould {
     @Test
     fun check_content_of_styled_tables() = runTest {
         val tableList = d2Dao.stringListRawQuery(
-            SimpleSQLiteQuery("SELECT name FROM sqlite_master WHERE type='table'"),
+            RoomRawQuery("SELECT name FROM sqlite_master WHERE type='table'"),
         )
 
         val tablesWithStyle = tableList
             .filterNot { excludedTables.contains(it) }
             .filter { table ->
-                val tableInfoRows = d2Dao.getTableInfo(SimpleSQLiteQuery("PRAGMA table_info('$table')"))
+                val tableInfoRows = d2Dao.getTableInfo(RoomRawQuery("PRAGMA table_info('$table')"))
                 val columns = tableInfoRows.map { it.name }
                 columns.contains(NameableWithStyleColumns.ICON)
             }

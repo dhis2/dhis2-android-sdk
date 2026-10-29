@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.settings
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.internal.GeneralSettingCall
@@ -71,7 +71,7 @@ class GeneralSettingObjectRepository internal constructor(
     }
 
     fun blockingHasExperimentalFeature(featureName: String): Boolean {
-        return runBlocking { suspendHasExperimentalFeature(featureName) }
+        return runBlockingOnIO { suspendHasExperimentalFeature(featureName) }
     }
 
     @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(featureName)"))
@@ -87,7 +87,7 @@ class GeneralSettingObjectRepository internal constructor(
         getInternal()?.experimentalFeatures()?.contains(featureName) ?: false
 
     fun blockingHasExperimentalFeature(feature: ExperimentalFeature): Boolean {
-        return runBlocking { suspendHasExperimentalFeature(feature) }
+        return runBlockingOnIO { suspendHasExperimentalFeature(feature) }
     }
 
     @Deprecated(message = "Use rxHasExperimentalFeature instead", ReplaceWith("rxHasExperimentalFeature(feature)"))

@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.relationship
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType

@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.systeminfo
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface Ping {
@@ -41,7 +41,7 @@ interface Ping {
 
     @Suppress("TooGenericExceptionThrown")
     @Throws(D2Error::class)
-    fun blockingGet(): String = runBlocking {
+    fun blockingGet(): String = runBlockingOnIO {
         try {
             suspendGet()
         } catch (e: D2Error) {

@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.TypeConverter
+import androidx.room3.ColumnTypeConverter
 import org.hisp.dhis.android.core.common.State
 
 internal class StateTypeConverter {
-    @TypeConverter
+    @ColumnTypeConverter
     fun fromState(state: State?): String? {
         return state?.name
     }
 
-    @TypeConverter
+    @ColumnTypeConverter
     fun toState(name: String?): State? {
         return name?.let { enumName ->
             try {

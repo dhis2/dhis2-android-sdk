@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.DataColumns
 import org.hisp.dhis.android.core.common.State
@@ -63,7 +63,7 @@ internal object AccountManagerHelper {
 
     suspend fun getSyncState(databaseAdapter: DatabaseAdapter): State {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
-        val query = SimpleSQLiteQuery(syncStateQueryString)
+        val query = RoomRawQuery(syncStateQueryString)
         val stateList = d2Dao.getTypedSyncStates(query)
         val uniqueStates = stateList.toSet()
         return reduceSyncState(uniqueStates)

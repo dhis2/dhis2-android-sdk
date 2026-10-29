@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`
 
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.CoreObject
 import org.hisp.dhis.android.core.maintenance.D2Error
 
@@ -67,5 +67,5 @@ interface ReadWriteValueObjectRepository<M : CoreObject> : ReadWriteObjectReposi
      * @param value the value to set
      */
     @Throws(D2Error::class)
-    fun blockingSet(value: String?) = runBlocking { suspendSet(value) }
+    fun blockingSet(value: String?) = runBlockingOnIO { suspendSet(value) }
 }

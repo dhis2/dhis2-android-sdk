@@ -31,9 +31,9 @@ package org.hisp.dhis.android.core.user.internal
 import android.content.Context
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -66,7 +66,7 @@ internal class AccountManagerImpl(
     private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
 
     override fun getAccounts(): List<DatabaseAccount> {
-        return runBlocking { getAccountsInternal() }
+        return runBlockingOnIO { getAccountsInternal() }
     }
 
     suspend fun getAccountsInternal(): List<DatabaseAccount> {
@@ -75,7 +75,7 @@ internal class AccountManagerImpl(
     }
 
     override fun getCurrentAccount(): DatabaseAccount? {
-        return runBlocking { getCurrentAccountInternal() }
+        return runBlockingOnIO { getCurrentAccountInternal() }
     }
 
     suspend fun getCurrentAccountInternal(): DatabaseAccount? {
@@ -135,7 +135,7 @@ internal class AccountManagerImpl(
     @Throws(D2Error::class)
     private fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
         accountDeletionSubject.onNext(deletionReason)
-        runBlocking { logOutCall.logOut() }
+        runBlockingOnIO { logOutCall.logOut() }
         val configuration = databasesConfigurationStore.get()
         if (configuration != null) {
             val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(

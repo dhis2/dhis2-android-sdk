@@ -28,9 +28,9 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import androidx.room.Database
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room3.Database
+import androidx.room3.RoomDatabase
+import androidx.room3.ColumnTypeConverters
 import org.hisp.dhis.android.persistence.attribute.AttributeDB
 import org.hisp.dhis.android.persistence.attribute.AttributeDao
 import org.hisp.dhis.android.persistence.attribute.DataElementAttributeValueLinkDB
@@ -468,7 +468,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
     version = AppDatabase.VERSION,
     exportSchema = true,
 )
-@TypeConverters(AccessDBTypeConverter::class)
+@ColumnTypeConverters(AccessDBTypeConverter::class)
 @Suppress("TooManyFunctions")
 abstract class AppDatabase : RoomDatabase() {
     internal abstract fun d2Dao(): D2Dao

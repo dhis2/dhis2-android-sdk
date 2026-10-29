@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.dataset
 
 import android.util.Log
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -81,7 +81,7 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
     }
 
     fun blockingSet() {
-        runBlocking { suspendSet() }
+        runBlockingOnIO { suspendSet() }
     }
 
     suspend fun suspendSet() {

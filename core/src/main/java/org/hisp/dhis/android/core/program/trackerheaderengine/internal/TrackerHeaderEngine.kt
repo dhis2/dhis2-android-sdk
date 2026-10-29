@@ -37,6 +37,7 @@ import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorItemMetadata
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.koin.core.annotation.Singleton
@@ -67,12 +68,21 @@ internal class TrackerHeaderEngine(
             attributeValues = attributeValueMap,
         )
 
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(context.programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+            programStageStore,
+            context.events.keys,
+        )
+
         val executor = ProgramIndicatorExecutor(
             constantMap(),
             context,
             dataElementStore,
             trackedEntityAttributeStore,
             programStageStore,
+            itemMetadata,
         )
 
         return executor.getProgramIndicatorValue(context.programIndicator)

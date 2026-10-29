@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.maintenance
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableObjectStore
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByParentUid
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramRule
@@ -42,12 +42,12 @@ class PerformanceHintsService internal constructor(
     private val programRulesPerProgramThreshold: Int,
 ) {
     fun areThereExcessiveOrganisationUnits(): Boolean {
-        return runBlocking { organisationUnitStore.count() > organisationUnitThreshold }
+        return runBlockingOnIO { organisationUnitStore.count() > organisationUnitThreshold }
     }
 
     val programsWithExcessiveProgramRules: List<Program?>
         get() {
-            return runBlocking {
+            return runBlockingOnIO {
                 val programRules = programRuleStore.selectAll()
 
                 val rulesMap: Map<String, List<ProgramRule>> =

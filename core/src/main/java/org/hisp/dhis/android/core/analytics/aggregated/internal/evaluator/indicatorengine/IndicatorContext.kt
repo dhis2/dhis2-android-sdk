@@ -48,4 +48,5 @@ internal data class IndicatorContext(
     val eventDataItemEvaluator: AnalyticsEvaluator,
     val evaluationItem: AnalyticsServiceEvaluationItem,
     val contextMetadata: Map<String, MetadataItem>,
+    val itemValues: IndicatorItemValues = IndicatorItemValues(),
 )

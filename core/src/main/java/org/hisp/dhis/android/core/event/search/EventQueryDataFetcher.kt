@@ -34,7 +34,7 @@ import androidx.paging.PagedList
 import androidx.paging.Pager
 import androidx.paging.PagingData
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryMode
 import org.hisp.dhis.android.core.event.Event
@@ -114,7 +114,7 @@ internal class EventQueryDataFetcher(
     }
 
     private fun getOfflineRepository(): EventCollectionRepository {
-        return runBlocking { offlineAdapter.getCollectionRepository(scope) }
+        return runBlockingOnIO { offlineAdapter.getCollectionRepository(scope) }
     }
 
     private suspend fun getOfflineRepositoryInternal(): EventCollectionRepository {

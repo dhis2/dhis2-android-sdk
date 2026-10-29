@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -44,6 +45,7 @@ import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 
 abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRepository<M>> internal constructor(
     store: IdentifiableDeletableDataObjectStore<M>,
+    private val databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<M>,
     scope: RepositoryScope,
     repositoryFactory: ObjectRepositoryFactory<R>,
@@ -57,16 +59,18 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
      */
     @Throws(D2Error::class)
     override suspend fun suspendDelete() {
-        val obj = suspendGet()
-        if (obj === null) {
-            throw D2Error
-                .builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
-                .errorDescription("Tried to delete non existing object")
-                .build()
-        } else {
-            deleteObject(obj)
+        databaseAdapter.withTransaction {
+            val obj = suspendGet()
+            if (obj === null) {
+                throw D2Error
+                    .builder()
+                    .errorComponent(D2ErrorComponent.SDK)
+                    .errorCode(D2ErrorCode.CANT_DELETE_NON_EXISTING_OBJECT)
+                    .errorDescription("Tried to delete non existing object")
+                    .build()
+            } else {
+                deleteObject(obj)
+            }
         }
     }
 
@@ -84,21 +88,27 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
 
     @Throws(D2Error::class)
     override suspend fun updateObject(m: M): Unit {
-        super.updateObject(m)
-        propagateState(m, HandleAction.Update)
+        databaseAdapter.withTransaction { updateAndPropagate(m) }
         return Unit()
     }
 
-    protected suspend inline fun <V> updateIfChangedInternal(
+    private suspend fun updateAndPropagate(m: M) {
+        super.updateObject(m)
+        propagateState(m, HandleAction.Update)
+    }
+
+    protected suspend fun <V> updateIfChangedInternal(
         newValue: V?,
         propertyGetter: (M) -> V?,
-        crossinline updater: suspend (M, V?) -> M,
+        updater: suspend (M, V?) -> M,
     ): Unit {
-        val obj = getWithoutChildrenInternal() as M
-        val currentValue = propertyGetter(obj)
+        databaseAdapter.withTransaction {
+            val obj = getWithoutChildrenInternal() as M
+            val currentValue = propertyGetter(obj)
 
-        if (currentValue != newValue) {
-            updateObject(updater(obj, newValue))
+            if (currentValue != newValue) {
+                updateAndPropagate(updater(obj, newValue))
+            }
         }
         return Unit()
     }

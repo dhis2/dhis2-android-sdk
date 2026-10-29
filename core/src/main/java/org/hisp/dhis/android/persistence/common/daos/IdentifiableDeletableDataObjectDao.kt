@@ -28,8 +28,8 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
+import androidx.room3.RawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.persistence.common.EntityDB
 
@@ -38,5 +38,5 @@ internal interface IdentifiableDeletableDataObjectDao<P : EntityDB<*>> :
     IdentifiableDeletableDataObjectDaoQueryFallbacks {
 
     @RawQuery
-    fun stateListRawQuery(query: RoomRawQuery): List<State>
+    suspend fun stateListRawQuery(query: RoomRawQuery): List<State>
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.dataset.DataSetElement
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore

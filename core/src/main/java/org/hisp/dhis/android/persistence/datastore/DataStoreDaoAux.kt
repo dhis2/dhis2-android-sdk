@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.datastore
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -40,7 +40,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
         WHERE ${DataStoreTableInfo.Columns.NAMESPACE} = :namespace 
         AND `${DataStoreTableInfo.Columns.KEY}` = :key;""",
     )
-    fun setSyncState(state: String, namespace: String, key: String)
+    suspend fun setSyncState(state: String, namespace: String, key: String)
 
     @Query(
         """UPDATE DataStore 
@@ -49,7 +49,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
         AND `${DataStoreTableInfo.Columns.KEY}` = :key 
         AND ${DataStoreTableInfo.Columns.SYNC_STATE} = 'UPLOADING';""",
     )
-    fun setStateIfUploading(state: String, namespace: String, key: String)
+    suspend fun setStateIfUploading(state: String, namespace: String, key: String)
 
     @Query(
         """
@@ -58,7 +58,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
           AND ${DataStoreTableInfo.Columns.SYNC_STATE} IN (:syncStates) 
     """,
     )
-    fun deleteByNamespaceAndSyncStates(
+    suspend fun deleteByNamespaceAndSyncStates(
         namespace: String,
         syncStates: List<String>,
     ): Int
@@ -71,7 +71,7 @@ internal interface DataStoreDaoAux : ObjectDao<DataStoreDB> {
           AND `${DataStoreTableInfo.Columns.KEY}` NOT IN (:keysToKeep) 
     """,
     )
-    fun deleteByNamespaceSyncStatesAndNotInKeys(
+    suspend fun deleteByNamespaceSyncStatesAndNotInKeys(
         namespace: String,
         syncStates: List<String>,
         keysToKeep: List<String>,

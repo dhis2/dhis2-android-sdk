@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -37,17 +38,20 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipStore
 
 internal class RelationshipObjectRepository(
     store: RelationshipStore,
+    databaseAdapter: DatabaseAdapter,
     uid: String?,
     childrenAppenders: ChildrenAppenderGetter<Relationship>,
     scope: RepositoryScope,
     private val trackerDataManager: TrackerDataManager,
 ) : ReadWriteWithUidDataObjectRepositoryImpl<Relationship, RelationshipObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s: RepositoryScope ->
         RelationshipObjectRepository(
             store,
+            databaseAdapter,
             uid,
             childrenAppenders,
             s,

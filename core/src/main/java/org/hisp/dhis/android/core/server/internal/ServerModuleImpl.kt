@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.server.internal
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.server.ServerModule
@@ -50,7 +50,7 @@ internal class ServerModuleImpl(
     }
 
     override fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {
-        return runBlocking { loginConfigCall.checkServerUrl(serverUrl) }
+        return runBlockingOnIO { loginConfigCall.checkServerUrl(serverUrl) }
     }
 
     override suspend fun suspendCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> {

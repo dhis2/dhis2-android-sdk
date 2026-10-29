@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.datastore.KeyValuePair
 import org.hisp.dhis.android.persistence.common.EntityDB
 

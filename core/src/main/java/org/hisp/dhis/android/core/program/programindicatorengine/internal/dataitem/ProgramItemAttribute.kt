@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine.internal.dataitem
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemId
 import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalItemType
@@ -94,7 +94,7 @@ internal class ProgramItemAttribute : ProgramExpressionItem() {
     }
 
     private fun getAttribute(visitor: CommonExpressionVisitor, uid: String): TrackedEntityAttribute {
-        return runBlocking {
+        return visitor.itemMetadata.trackedEntityAttributes[uid] ?: runBlockingOnIO {
             visitor.trackedEntityAttributeStore!!.selectByUid(uid)
                 ?: throw IllegalArgumentException("Attribute $uid does not exist.")
         }

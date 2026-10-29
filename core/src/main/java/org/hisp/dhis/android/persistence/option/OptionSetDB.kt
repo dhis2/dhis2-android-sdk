@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.option
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.util.dateFormat

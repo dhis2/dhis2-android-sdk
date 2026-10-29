@@ -1,8 +1,8 @@
 package org.hisp.dhis.android.persistence.settings
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.ColumnInfo
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.settings.ProgramConfigurationSetting
 import org.hisp.dhis.android.core.settings.ProgramItemHeader
 import org.hisp.dhis.android.persistence.common.EntityDB

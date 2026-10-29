@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,37 +25,21 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import androidx.room.RoomDatabase
-import org.hisp.dhis.android.persistence.db.access.RoomTransaction
-import org.junit.Before
-import org.junit.Test
-import org.mockito.Mockito
-import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.mock
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-class TransactionImplShould {
-    var roomDatabase: RoomDatabase = mock()
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-    private var transaction: RoomTransaction = mock()
-
-    @Before
-    fun setUp() {
-        MockitoAnnotations.openMocks(this)
-
-        transaction = RoomTransaction(roomDatabase)
-    }
-
-    @Test
-    fun verify_transaction_is_successful_when_transaction_is_set_as_successful() {
-        transaction.setSuccessful()
-        Mockito.verify(roomDatabase).setTransactionSuccessful()
-    }
-
-    @Test
-    fun verify_transaction_is_end_when_transaction_is_set_as_end() {
-        transaction.end()
-        Mockito.verify(roomDatabase).endTransaction()
-    }
+/**
+ * Blocks the calling thread until [block] completes, running [block] on [Dispatchers.IO].
+ *
+ * Use it instead of a plain `runBlocking` to bridge blocking APIs to suspend code that touches the
+ * database. Room 3 DAO functions start with `withContext(Dispatchers.IO)`; with a plain
+ * `runBlocking` every DAO call inside [block] would switch from the calling thread to an IO thread
+ * and back, whereas here only the entry and the exit switch.
+ */
+internal fun <T> runBlockingOnIO(block: suspend CoroutineScope.() -> T): T {
+    return runBlocking(Dispatchers.IO, block)
 }

@@ -29,12 +29,9 @@
 package org.hisp.dhis.android.network.option
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.option.Option
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class OptionService(val client: HttpServiceClient) {
     suspend fun getOptions(
-        fields: Fields<Option>,
         optionSetUidsFilterString: String,
         paging: Boolean,
         page: Int,
@@ -43,7 +40,7 @@ internal class OptionService(val client: HttpServiceClient) {
         return client.get {
             url("options")
             parameters {
-                fields(fields)
+                fields<OptionDTO>()
                 attribute("filter", optionSetUidsFilterString)
                 paging(paging)
                 page(page)

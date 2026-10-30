@@ -60,7 +60,6 @@ internal class DataSetCompleteRegistrationNetworkHandlerImpl(
         partition: DataSetCompleteRegistrationPartition,
     ): List<DataSetCompleteRegistration> {
         val dataSetCompleteRegistrations = service.getDataSetCompleteRegistrations(
-            fields = DataSetCompleteRegistrationFields.allFields,
             lastUpdated = lastUpdated,
             dataSetUids = commaSeparatedCollectionValues(partition[0]),
             periodIds = commaSeparatedCollectionValues(partition[1]),

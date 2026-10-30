@@ -35,12 +35,12 @@ import android.graphics.Matrix
 import android.util.Log
 import androidx.core.graphics.scale
 import androidx.exifinterface.media.ExifInterface
-import org.hisp.dhis.android.core.D2Manager
-import java.io.File
-import java.io.IOException
+import okio.IOException
+import okio.Path
 
 /**
- * Image decoding primitives shared by the helpers that transform image files before uploading them.
+ * Image decoding primitives used by [AndroidImageProcessor] to transform image files before uploading them. The
+ * platform decoders read from a file system path, so the [Path]s are handed to them as they are.
  *
  * Decoding is always subsampled and never trusts the file extension: the image header is read first, which gives both
  * the real mime type and the dimensions needed to bound the memory used by the working bitmap.
@@ -65,8 +65,8 @@ internal object ImageFileHelper {
      * @return The mime type reported by the platform decoder, or null if the file is not an image this platform can
      * decode.
      */
-    fun decodeMimeType(file: File): String? {
-        return decodeBounds(file)?.outMimeType
+    fun decodeMimeType(path: Path): String? {
+        return decodeBounds(path)?.outMimeType
     }
 
     /**
@@ -76,17 +76,17 @@ internal object ImageFileHelper {
      * @return The decoded bitmap, or null if the file is not a decodable image or there is not enough memory for it.
      */
     @Suppress("ReturnCount")
-    fun decodeBitmap(file: File, maxDimensionPx: Int): Bitmap? {
-        val bounds = decodeBounds(file) ?: return null
+    fun decodeBitmap(path: Path, maxDimensionPx: Int): Bitmap? {
+        val bounds = decodeBounds(path) ?: return null
         var sampleSize = computeSampleSize(bounds, maxDimensionPx)
 
         while (sampleSize <= MAX_SAMPLE_SIZE) {
             try {
                 val options = BitmapFactory.Options().apply { inSampleSize = sampleSize }
-                val bitmap = BitmapFactory.decodeFile(file.absolutePath, options)
-                return bitmap?.let { applyExifRotation(file, it) }
+                val bitmap = BitmapFactory.decodeFile(path.toString(), options)
+                return bitmap?.let { applyExifRotation(path, it) }
             } catch (e: OutOfMemoryError) {
-                Log.w(TAG, "Not enough memory to decode ${file.name} with sample size $sampleSize", e)
+                Log.w(TAG, "Not enough memory to decode ${path.name} with sample size $sampleSize", e)
                 sampleSize *= SAMPLE_SIZE_STEP
             }
         }
@@ -126,28 +126,9 @@ internal object ImageFileHelper {
         return source.scale(width, height)
     }
 
-    /**
-     * The directory where the volatile results of transforming an image should be written, or null if the Sdk is not
-     * initialized yet.
-     */
-    @Suppress("TooGenericExceptionCaught")
-    fun getCacheDirectory(): File? {
-        return if (D2Manager.isD2Instantiated()) {
-            val directories = D2Manager.getD2().d2DIComponent.fileResourceDirectories
-            try {
-                directories.fileCacheResourceDirectory()
-            } catch (e: RuntimeException) {
-                Log.w(TAG, "Could not resolve the account cache directory", e)
-                directories.rootFileCacheResourceDirectory()
-            }.toFile()
-        } else {
-            null
-        }
-    }
-
-    private fun decodeBounds(file: File): BitmapFactory.Options? {
+    private fun decodeBounds(path: Path): BitmapFactory.Options? {
         val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(file.absolutePath, options)
+        BitmapFactory.decodeFile(path.toString(), options)
         return options.takeIf { it.outWidth > 0 && it.outHeight > 0 }
     }
 
@@ -168,8 +149,8 @@ internal object ImageFileHelper {
      * Bake the EXIF orientation into the pixels. Re-encoding the bitmap drops the metadata, so an image that was only
      * upright thanks to its EXIF tag would otherwise be uploaded rotated.
      */
-    private fun applyExifRotation(file: File, bitmap: Bitmap): Bitmap {
-        val degrees = readExifRotation(file)
+    private fun applyExifRotation(path: Path, bitmap: Bitmap): Bitmap {
+        val degrees = readExifRotation(path)
         if (degrees == NO_ROTATION) {
             return bitmap
         }
@@ -188,9 +169,9 @@ internal object ImageFileHelper {
      * them with the platform class would silently report them as not rotated.
      */
     @Suppress("TooGenericExceptionCaught")
-    private fun readExifRotation(file: File): Float {
+    private fun readExifRotation(path: Path): Float {
         return try {
-            val orientation = ExifInterface(file.absolutePath)
+            val orientation = ExifInterface(path.toString())
                 .getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
             when (orientation) {
                 ExifInterface.ORIENTATION_ROTATE_90 -> ROTATION_90
@@ -199,10 +180,10 @@ internal object ImageFileHelper {
                 else -> NO_ROTATION
             }
         } catch (e: IOException) {
-            Log.w(TAG, "Could not read the EXIF orientation of ${file.name}", e)
+            Log.w(TAG, "Could not read the EXIF orientation of ${path.name}", e)
             NO_ROTATION
         } catch (e: RuntimeException) {
-            Log.w(TAG, "Could not read the EXIF orientation of ${file.name}", e)
+            Log.w(TAG, "Could not read the EXIF orientation of ${path.name}", e)
             NO_ROTATION
         }
     }

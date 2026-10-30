@@ -30,6 +30,8 @@ package org.hisp.dhis.android.network.categorycombo
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.internal.CategoryComboNetworkHandler
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.persistence.category.CategoryComboTableInfo
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
@@ -41,8 +43,7 @@ internal class CategoryComboNetworkHandlerImpl(
 
     override suspend fun getCategoryCombos(categoryComboUids: Set<String>): PayloadJson<CategoryCombo> {
         val apiPayload = service.getCategoryCombos(
-            CategoryComboFields.allFields,
-            CategoryComboFields.uid.`in`(categoryComboUids),
+            Field.uid<CategoryCombo>().`in`(categoryComboUids),
             paging = false,
         )
         return apiPayload.mapItems(CategoryComboDTO::toDomain)
@@ -50,8 +51,7 @@ internal class CategoryComboNetworkHandlerImpl(
 
     override suspend fun getDefaultCategoryCombo(): CategoryCombo? {
         val apiPayload = service.getCategoryCombos(
-            CategoryComboFields.allFields,
-            CategoryComboFields.isDefault.eq(true),
+            Field.create<CategoryCombo>(CategoryComboTableInfo.Columns.IS_DEFAULT).eq(true),
             paging = false,
         )
         return apiPayload.items.find { it.isDefault == true }?.toDomain()

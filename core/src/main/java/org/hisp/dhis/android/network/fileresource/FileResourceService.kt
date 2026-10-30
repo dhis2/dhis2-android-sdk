@@ -31,7 +31,6 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 @Suppress("TooManyFunctions", "LongParameterList")
@@ -51,14 +50,13 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     }
 
     suspend fun getFileResources(
-        fields: Fields<FileResource>,
         fileResources: Filter<FileResource>,
         paging: Boolean,
     ): FileResourcePayload {
         return client.get {
             url(FILE_RESOURCES)
             parameters {
-                fields(fields)
+                fields<FileResourceDTO>()
                 filter(fileResources)
                 paging(paging)
             }

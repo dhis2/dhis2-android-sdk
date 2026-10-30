@@ -29,12 +29,10 @@ package org.hisp.dhis.android.network.indicatortype
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.indicator.IndicatorType
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class IndicatorTypeService(private val client: HttpServiceClient) {
     suspend fun getIndicatorTypes(
-        fields: Fields<IndicatorType>,
         lastUpdated: Filter<IndicatorType>?,
         uids: Filter<IndicatorType>,
         paging: Boolean,
@@ -42,7 +40,7 @@ internal class IndicatorTypeService(private val client: HttpServiceClient) {
         return client.get {
             url("indicatorTypes")
             parameters {
-                fields(fields)
+                fields<IndicatorTypeDTO>()
                 filter(lastUpdated)
                 filter(uids)
                 paging(paging)

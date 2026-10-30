@@ -29,20 +29,18 @@ package org.hisp.dhis.android.network.expressiondimensionitem
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ExpressionDimensionItemService(private val client: HttpServiceClient) {
 
     suspend fun getExpressionDimensionItems(
         uids: Filter<ExpressionDimensionItem>,
-        fields: Fields<ExpressionDimensionItem>,
         paging: Boolean,
     ): ExpressionDimensionItemPayload {
         return client.get {
             url("expressionDimensionItems")
             parameters {
-                fields(fields)
+                fields<ExpressionDimensionItemDTO>()
                 filter(uids)
                 paging(paging)
             }

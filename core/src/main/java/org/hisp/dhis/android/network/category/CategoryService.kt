@@ -29,20 +29,18 @@ package org.hisp.dhis.android.network.category
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.Category
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class CategoryService(private val client: HttpServiceClient) {
 
     suspend fun getCategories(
-        fields: Fields<Category>,
         uids: Filter<Category>,
         paging: Boolean,
     ): CategoryPayload {
         return client.get {
             url("categories")
             parameters {
-                fields(fields)
+                fields<CategoryDTO>()
                 filter(uids)
                 paging(paging)
             }

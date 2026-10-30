@@ -29,19 +29,17 @@ package org.hisp.dhis.android.network.categorycombo
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryCombo
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class CategoryComboService(private val client: HttpServiceClient) {
     suspend fun getCategoryCombos(
-        fields: Fields<CategoryCombo>,
         filter: Filter<CategoryCombo>,
         paging: Boolean,
     ): CategoryComboPayload {
         return client.get {
             url("categoryCombos")
             parameters {
-                fields(fields)
+                fields<CategoryComboDTO>()
                 filter(filter)
                 paging(paging)
             }

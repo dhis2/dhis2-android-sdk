@@ -30,12 +30,10 @@ package org.hisp.dhis.android.network.programindicator
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.program.ProgramIndicator
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ProgramIndicatorService(private val client: HttpServiceClient) {
     suspend fun getProgramIndicator(
-        fields: Fields<ProgramIndicator>,
         displayInForm: Filter<ProgramIndicator>?,
         program: String?,
         uids: Filter<ProgramIndicator>?,
@@ -44,7 +42,7 @@ internal class ProgramIndicatorService(private val client: HttpServiceClient) {
         return client.get {
             url("programIndicators")
             parameters {
-                fields(fields)
+                fields<ProgramIndicatorDTO>()
                 filter(displayInForm)
                 attribute("filter", program)
                 filter(uids)

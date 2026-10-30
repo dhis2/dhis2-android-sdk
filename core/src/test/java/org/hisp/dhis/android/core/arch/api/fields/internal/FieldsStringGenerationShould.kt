@@ -40,7 +40,6 @@ import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
-import org.hisp.dhis.android.network.constant.ConstantFields
 import org.hisp.dhis.android.network.customicon.CustomIconFields
 import org.hisp.dhis.android.network.dataapproval.DataApprovalFields
 import org.hisp.dhis.android.network.dataelement.DataElementFields
@@ -177,7 +176,6 @@ class FieldsStringGenerationShould {
         CategoryFields,
         CategoryOptionComboFields,
         CategoryOptionFields,
-        ConstantFields,
         CustomIconFields,
         DataAccessFields,
         DataApprovalFields,

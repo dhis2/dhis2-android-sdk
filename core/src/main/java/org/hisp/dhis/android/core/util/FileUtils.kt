@@ -33,7 +33,6 @@ import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
-import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 @Suppress("NestedBlockDepth")
@@ -70,35 +69,25 @@ internal object FileUtils {
         }
     }
 
-    fun unzipFiles(zipFile: File, unzipDirectory: File) {
-        val buffer = ByteArray(bufferSize)
-
-        val zip = ZipFile(zipFile)
-        val enum = zip.entries()
-        while (enum.hasMoreElements()) {
-            val entry = enum.nextElement()
-            val entryName = entry.name
-            val fis = FileInputStream(zip.name)
-            val zis = ZipInputStream(fis)
-
-            while (true) {
-                val nextEntry = zis.nextEntry ?: break
-                if (nextEntry.name == entryName) {
-                    val fout = FileOutputStream(File(unzipDirectory, nextEntry.name))
-                    while (true) {
-                        val len = zis.read(buffer)
-                        if (len <= 0) break
-                        fout.write(buffer, 0, len)
+    /**
+     * Extract the entries of [zipFile] named in [entryNames] into [unzipDirectory]. Any other entry, and every
+     * directory entry, is ignored, so an archive cannot leave unexpected files behind.
+     *
+     * @throws java.util.zip.ZipException if [zipFile] is not a zip file.
+     * @throws IllegalArgumentException if one of [entryNames] resolves outside [unzipDirectory].
+     */
+    fun unzipFiles(zipFile: File, unzipDirectory: File, entryNames: Set<String>) {
+        val directory = unzipDirectory.canonicalFile
+        ZipFile(zipFile).use { zip ->
+            zip.entries().asSequence()
+                .filter { entry -> !entry.isDirectory && entry.name in entryNames }
+                .forEach { entry ->
+                    val target = File(directory, entry.name).canonicalFile
+                    require(target.path.startsWith(directory.path + File.separator)) {
+                        "Zip entry ${entry.name} resolves outside ${directory.path}"
                     }
-
-                    zis.closeEntry()
-                    fout.close()
+                    zip.getInputStream(entry).use { input -> FileOutputStream(target).use { input.copyTo(it) } }
                 }
-            }
-
-            zis.close()
-            fis.close()
         }
-        zip.close()
     }
 }

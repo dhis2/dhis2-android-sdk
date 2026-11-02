@@ -85,7 +85,7 @@ internal class DatabaseImportExportImpl(
         val importDatabaseFile = workingFile(ExportDatabaseProtected)
 
         return try {
-            FileUtils.unzipFiles(file, getWorkingDir().toFile())
+            FileUtils.unzipFiles(file, getWorkingDir().toFile(), setOf(ExportMetadata, ExportDatabaseProtected))
 
             if (!fileSystem.exists(importMetadataFile) || !fileSystem.exists(importDatabaseFile)) {
                 throw d2ErrorBuilder

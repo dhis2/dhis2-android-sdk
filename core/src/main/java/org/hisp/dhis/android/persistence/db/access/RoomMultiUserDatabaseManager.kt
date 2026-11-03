@@ -33,6 +33,7 @@ import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.file.internal.ArchiveHelper
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.AuthorizationType
@@ -45,7 +46,6 @@ import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
 import org.hisp.dhis.android.core.server.LoginConfig
-import org.hisp.dhis.android.core.util.CipherUtil
 import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.koin.core.annotation.Singleton
@@ -54,10 +54,11 @@ import org.koin.core.annotation.Singleton
  * Room-based implementation of MultiUserDatabaseManager
  */
 @Singleton
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LongParameterList")
 internal class RoomMultiUserDatabaseManager(
     private val fileSystem: FileSystem,
     private val platformDirectories: PlatformDirectories,
+    private val archiveHelper: ArchiveHelper,
     private val databaseAdapter: DatabaseAdapter,
     private val databaseConfigurationSecureStore: DatabaseConfigurationInsecureStore,
     private val configurationHelper: DatabaseConfigurationHelper,
@@ -167,7 +168,7 @@ internal class RoomMultiUserDatabaseManager(
         val dbPath = platformDirectories.databasePath(account.databaseName())
         val tempDbPath = (platformDirectories.filesDir / "temp.db").also { fileSystem.deleteIfExists(it) }
         try {
-            CipherUtil.extractEncryptedZipFile(protectedDbPath.toFile(), tempDbPath.toFile(), password)
+            archiveHelper.extractEncrypted(protectedDbPath, tempDbPath, password)
             fileSystem.deleteIfExists(protectedDbPath)
 
             if (account.encrypted()) {

@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import okio.FileSystem
 import okio.Path
+import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
+import org.hisp.dhis.android.core.arch.file.internal.ArchiveHelper
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
@@ -42,8 +44,6 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.UserModule
-import org.hisp.dhis.android.core.util.CipherUtil
-import org.hisp.dhis.android.core.util.FileUtils
 import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormatNonNull
@@ -55,6 +55,7 @@ import java.util.Date
 internal class DatabaseImportExportImpl(
     private val fileSystem: FileSystem,
     private val platformDirectories: PlatformDirectories,
+    private val archiveHelper: ArchiveHelper,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
@@ -85,7 +86,7 @@ internal class DatabaseImportExportImpl(
         val importDatabaseFile = workingFile(ExportDatabaseProtected)
 
         return try {
-            FileUtils.unzipFiles(file, getWorkingDir().toFile(), setOf(ExportMetadata, ExportDatabaseProtected))
+            archiveHelper.unzip(file.toOkioPath(), getWorkingDir(), setOf(ExportMetadata, ExportDatabaseProtected))
 
             if (!fileSystem.exists(importMetadataFile) || !fileSystem.exists(importDatabaseFile)) {
                 throw d2ErrorBuilder
@@ -166,9 +167,9 @@ internal class DatabaseImportExportImpl(
             fileSystem.copyTo(databaseFile, copiedDatabase)
         }
 
-        CipherUtil.createEncryptedZipFile(
-            input = copiedDatabase.toFile(),
-            output = protectedDatabase.toFile(),
+        archiveHelper.createEncrypted(
+            file = copiedDatabase,
+            zipFile = protectedDatabase,
             password = credentials.passwordOrPin!!,
         )
 
@@ -188,9 +189,9 @@ internal class DatabaseImportExportImpl(
         val zipName = credentials.username + '-' + getCurrentTimeAndDate() + '-' + ExportZip
         val zipFile = workingFile(zipName)
 
-        FileUtils.zipFiles(
-            files = listOf(exportMetadataFile.toFile(), protectedDatabase.toFile()),
-            zipFile = zipFile.toFile(),
+        archiveHelper.zip(
+            files = listOf(exportMetadataFile, protectedDatabase),
+            zipFile = zipFile,
         )
 
         fileSystem.deleteIfExists(exportMetadataFile)

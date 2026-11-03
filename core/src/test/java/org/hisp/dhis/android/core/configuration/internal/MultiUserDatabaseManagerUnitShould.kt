@@ -94,6 +94,7 @@ class MultiUserDatabaseManagerUnitShould : BaseCallShould() {
         manager = RoomMultiUserDatabaseManager(
             fileSystem,
             FakePlatformDirectories(fileSystem),
+            mock(),
             databaseAdapter,
             databaseConfigurationSecureStore,
             configurationHelper,

@@ -29,14 +29,12 @@ package org.hisp.dhis.android.network.eventfilter
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.event.EventFilter
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class EventFilterService(private val client: HttpServiceClient) {
     suspend fun getEventFilters(
         uids: Filter<EventFilter>,
         accessDataReadFilter: String,
-        fields: Fields<EventFilter>,
         paging: Boolean,
     ): EventFilterPayload {
         return client.get {
@@ -44,7 +42,7 @@ internal class EventFilterService(private val client: HttpServiceClient) {
             parameters {
                 filter(uids)
                 attribute("filter", accessDataReadFilter)
-                fields(fields)
+                fields<EventFilterDTO>()
                 paging(paging)
             }
         }

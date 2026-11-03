@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.systemsettings
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.settings.SystemSetting
 import org.hisp.dhis.android.core.settings.internal.SystemSettingsNetworkHandler
-import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields.allFields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,17 +39,17 @@ internal class SystemSettingsNetworkHandlerImpl(
 ) : SystemSettingsNetworkHandler {
     private val service = SystemSettingsService(httpServiceClient)
     override suspend fun getSystemSettings(): List<SystemSetting> {
-        val apiPayload = service.getSystemSettings(allFields)
+        val apiPayload = service.getSystemSettings()
         return apiPayload.toDomainSplitted()
     }
 
     override suspend fun getBingApiKey(): SystemSetting {
-        val apiPayload = service.getSystemSettings(SystemSettingsFields.bingApiKey)
-        return apiPayload.toDomainBingMapsApiKey()
+        val apiPayload = service.getBingMapsApiKey()
+        return apiPayload.toDomain()
     }
 
     override suspend fun getAzureApiKey(): SystemSetting {
-        val apiPayload = service.getSystemSettings(SystemSettingsFields.azureApiKey)
-        return apiPayload.toDomainAzureMapsApiKey()
+        val apiPayload = service.getAzureMapsApiKey()
+        return apiPayload.toDomain()
     }
 }

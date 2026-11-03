@@ -25,20 +25,17 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.trackedentityinstancefilter
 
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceEventFilter
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceEventFilterTableInfo.Columns
+package org.hisp.dhis.android.network.systemsettings
 
-internal object TrackedEntityInstanceEventFilterFields : BaseFields<TrackedEntityInstanceEventFilter>() {
-    private const val EVENT_CREATED_PERIOD = "eventCreatedPeriod"
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.core.settings.SystemSetting
+import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
+import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO.Companion.buildSetting
 
-    val allFields = Fields.from(
-        fh.field(Columns.PROGRAM_STAGE),
-        fh.field(Columns.EVENT_STATUS),
-        fh.field(EVENT_CREATED_PERIOD),
-        fh.field(Columns.ASSIGNED_USER_MODE),
-    )
+@Serializable
+internal data class AzureMapsApiKeyDTO(
+    val keyAzureMapsApiKey: String?,
+) {
+    fun toDomain(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyAzureMapsApiKey)
 }

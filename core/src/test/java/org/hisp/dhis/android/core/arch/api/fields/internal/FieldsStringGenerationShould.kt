@@ -48,7 +48,6 @@ import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
 import org.hisp.dhis.android.network.eventfilter.EventDataFilterFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.eventfilter.EventQueryCriteriaFields
-import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerFields
 import org.hisp.dhis.android.network.note.NoteFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
@@ -56,8 +55,6 @@ import org.hisp.dhis.android.network.program.ProgramFields
 import org.hisp.dhis.android.network.program.ProgramRuleVariableFields
 import org.hisp.dhis.android.network.program.ProgramSectionFields
 import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstage.ProgramStageSectionFields
@@ -94,9 +91,6 @@ import org.hisp.dhis.android.network.tracker.NewRelationshipItemTrackedEntityIns
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields
 import org.hisp.dhis.android.network.user.UserCredentialsFields
 import org.hisp.dhis.android.network.user.UserFields
 import org.hisp.dhis.android.network.user.UserGroupFields
@@ -160,7 +154,6 @@ class FieldsStringGenerationShould {
         EventFields,
         EventFilterFields,
         EventQueryCriteriaFields,
-        ExternalMapLayerFields,
         NewEnrollmentFields,
         NewEventFields,
         NewNoteFields,
@@ -177,8 +170,6 @@ class FieldsStringGenerationShould {
         OrganisationUnitFields,
         OrganisationUnitGroupFields,
         ProgramFields,
-        ProgramRuleActionFields,
-        ProgramRuleFields,
         ProgramRuleVariableFields,
         ProgramSectionFields,
         ProgramStageDataElementFields,
@@ -207,9 +198,6 @@ class FieldsStringGenerationShould {
         TrackedEntityTypeAttributeFields,
         TrackedEntityTypeFields,
         TrackerDataViewFields,
-        TrackerVisualizationDimensionFields,
-        TrackerVisualizationDimensionRepetitionFields,
-        TrackerVisualizationFields,
         UserCredentialsFields,
         UserFields,
         UserGroupFields,

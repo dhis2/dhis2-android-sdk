@@ -38,6 +38,7 @@ import org.hisp.dhis.android.network.dataapproval.DataApprovalDTO
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
 import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
+import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerDTO
 import org.hisp.dhis.android.network.fileresource.FileResourceDTO
 import org.hisp.dhis.android.network.indicator.IndicatorDTO
 import org.hisp.dhis.android.network.indicatortype.IndicatorTypeDTO
@@ -47,7 +48,9 @@ import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
 import org.hisp.dhis.android.network.optionset.OptionSetDTO
 import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
+import org.hisp.dhis.android.network.programrule.ProgramRuleDTO
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
+import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
 import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.junit.Test
@@ -75,6 +78,7 @@ internal class DTOFieldsShould {
         "DataSetCompleteRegistrationDTO" to fieldsOf<DataSetCompleteRegistrationDTO>(),
         "DataValueDTO" to fieldsOf<DataValueDTO>(),
         "ExpressionDimensionItemDTO" to fieldsOf<ExpressionDimensionItemDTO>(),
+        "ExternalMapLayerDTO" to fieldsOf<ExternalMapLayerDTO>(),
         "FileResourceDTO" to fieldsOf<FileResourceDTO>(),
         "IndicatorDTO" to fieldsOf<IndicatorDTO>(),
         "IndicatorTypeDTO" to fieldsOf<IndicatorTypeDTO>(),
@@ -84,7 +88,9 @@ internal class DTOFieldsShould {
         "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
         "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
         "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
+        "ProgramRuleDTO" to fieldsOf<ProgramRuleDTO>(),
         "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
+        "TrackerVisualizationDTO" to fieldsOf<TrackerVisualizationDTO>(),
         "UserSettingsDTO" to fieldsOf<UserSettingsDTO>(),
         "ValidationRuleDTO" to fieldsOf<ValidationRuleDTO>(),
     )
@@ -115,6 +121,8 @@ internal class DTOFieldsShould {
             "deleted,dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo,value,storedBy," +
             "created,lastUpdated,comment,followup",
         "ExpressionDimensionItemDTO" to "id,code,name,displayName,created,lastUpdated,deleted,expression",
+        "ExternalMapLayerDTO" to
+            "id,name,displayName,mapLayerPosition,url,code,mapService,imageFormat,layers,attribution",
         "FileResourceDTO" to "id,name,created,lastUpdated,contentType,contentLength,domain,storageStatus",
         "IndicatorDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
@@ -135,7 +143,17 @@ internal class DTOFieldsShould {
             "program[id],analyticsType,analyticsPeriodBoundaries[boundaryTarget," +
             "analyticsPeriodBoundaryType,offsetPeriods,offsetPeriodType],legendSets[id],categoryCombo[id]," +
             "attributeCombo[id],categoryMappingIds",
+        "ProgramRuleDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,priority,condition,program[id],programStage[id]," +
+            "programRuleActions[id,code,name,displayName,created,lastUpdated,deleted,data,content,location," +
+            "trackedEntityAttribute[id],programIndicator[id],programStageSection[id],programRuleActionType," +
+            "programStage[id],dataElement[id],option[id],optionGroup[id],displayContent,priority,legendSet[id]]",
         "SystemInfoDTO" to "serverDate,dateFormat,version,contextPath,systemName,serverTimeZoneId",
+        "TrackerVisualizationDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,description,displayDescription,type,outputType," +
+            "program[id],programStage[id],trackedEntityType[id],columns[dimension,dimensionType,program[id]," +
+            "programStage[id],items[id],filter,repetition[indexes]],filters[dimension,dimensionType,program[id]," +
+            "programStage[id],items[id],filter,repetition[indexes]],sorting[dimension,direction]",
         "UserSettingsDTO" to "keyUiLocale,keyDbLocale",
         "ValidationRuleDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +

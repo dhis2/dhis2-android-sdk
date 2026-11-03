@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,8 +64,7 @@ internal class FileResourceNetworkHandlerImpl(
         query: UidsQuery,
     ): Payload<FileResource> {
         val apiPayload = service.getFileResources(
-            FileResourceFields.allFields,
-            FileResourceFields.uid.`in`(query.uids),
+            Field.uid<FileResource>().`in`(query.uids),
             false,
         )
         return apiPayload.mapItems(FileResourceDTO::toDomain)

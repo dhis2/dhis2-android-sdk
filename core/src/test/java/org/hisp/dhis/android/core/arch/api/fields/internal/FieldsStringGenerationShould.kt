@@ -28,11 +28,7 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.network.attribute.AttributeFields
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
-import org.hisp.dhis.android.network.category.CategoryFields
-import org.hisp.dhis.android.network.category.CategoryOptionComboFields
-import org.hisp.dhis.android.network.categorycombo.CategoryComboFields
 import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
@@ -52,23 +48,14 @@ import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
 import org.hisp.dhis.android.network.eventfilter.EventDataFilterFields
 import org.hisp.dhis.android.network.eventfilter.EventFilterFields
 import org.hisp.dhis.android.network.eventfilter.EventQueryCriteriaFields
-import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemFields
 import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerFields
-import org.hisp.dhis.android.network.fileresource.FileResourceFields
-import org.hisp.dhis.android.network.indicator.IndicatorFields
-import org.hisp.dhis.android.network.indicatortype.IndicatorTypeFields
-import org.hisp.dhis.android.network.legendset.LegendFields
-import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.network.note.NoteFields
-import org.hisp.dhis.android.network.optionset.OptionSetFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
 import org.hisp.dhis.android.network.program.ProgramFields
 import org.hisp.dhis.android.network.program.ProgramRuleVariableFields
 import org.hisp.dhis.android.network.program.ProgramSectionFields
 import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeFields
-import org.hisp.dhis.android.network.programindicator.AnalyticsPeriodBoundaryFields
-import org.hisp.dhis.android.network.programindicator.ProgramIndicatorFields
 import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
 import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementFields
@@ -157,13 +144,8 @@ class FieldsStringGenerationShould {
 
     private val fieldsClasses = listOf(
         AccessFields,
-        AnalyticsPeriodBoundaryFields,
-        AttributeFields,
         AttributeValueFilterFields,
         AttributeValueFields,
-        CategoryComboFields,
-        CategoryFields,
-        CategoryOptionComboFields,
         CategoryOptionFields,
         DataAccessFields,
         DataElementFields,
@@ -178,13 +160,7 @@ class FieldsStringGenerationShould {
         EventFields,
         EventFilterFields,
         EventQueryCriteriaFields,
-        ExpressionDimensionItemFields,
         ExternalMapLayerFields,
-        FileResourceFields,
-        IndicatorFields,
-        IndicatorTypeFields,
-        LegendFields,
-        LegendSetFields,
         NewEnrollmentFields,
         NewEventFields,
         NewNoteFields,
@@ -198,11 +174,9 @@ class FieldsStringGenerationShould {
         NewTrackedEntityInstanceFields,
         NoteFields,
         ObjectStyleFields,
-        OptionSetFields,
         OrganisationUnitFields,
         OrganisationUnitGroupFields,
         ProgramFields,
-        ProgramIndicatorFields,
         ProgramRuleActionFields,
         ProgramRuleFields,
         ProgramRuleVariableFields,

@@ -32,13 +32,11 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.legendset.LegendSet
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.BaseFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
-import org.hisp.dhis.android.network.legendset.LegendSetFields
 import org.hisp.dhis.android.persistence.dataelement.DataElementTableInfo.Columns
 
 internal object DataElementFields : BaseFields<DataElement>() {
@@ -63,7 +61,7 @@ internal object DataElementFields : BaseFields<DataElement>() {
         fh.field(Columns.FIELD_MASK),
         fh.nestedField<ObjectStyle>(STYLE).with(ObjectStyleFields.allFields),
         fh.nestedField<Access>(ACCESS).with(AccessFields.read),
-        fh.nestedField<LegendSet>(LEGEND_SETS).with(LegendSetFields.uid),
+        fh.nestedFieldWithUid(LEGEND_SETS),
         fh.nestedField<AttributeValue>(ATTRIBUTE_VALUES).with(AttributeValueFields.allFields),
     )
 }

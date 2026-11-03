@@ -29,14 +29,24 @@ package org.hisp.dhis.android.network.common.fields
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.api.ParametersBuilder
+import org.hisp.dhis.android.network.attribute.AttributeDTO
+import org.hisp.dhis.android.network.category.CategoryDTO
+import org.hisp.dhis.android.network.categorycombo.CategoryComboDTO
 import org.hisp.dhis.android.network.constant.ConstantDTO
 import org.hisp.dhis.android.network.customicon.CustomIconDTO
 import org.hisp.dhis.android.network.dataapproval.DataApprovalDTO
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
+import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
+import org.hisp.dhis.android.network.fileresource.FileResourceDTO
+import org.hisp.dhis.android.network.indicator.IndicatorDTO
+import org.hisp.dhis.android.network.indicatortype.IndicatorTypeDTO
+import org.hisp.dhis.android.network.legendset.LegendSetDTO
 import org.hisp.dhis.android.network.option.OptionDTO
 import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
+import org.hisp.dhis.android.network.optionset.OptionSetDTO
 import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
+import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
 import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
@@ -55,42 +65,87 @@ internal class DTOFieldsShould {
         return ParametersBuilder(mutableListOf()).apply { fields<DTO>() }.parameters.single().second
     }
 
+    private val requestedFields = mapOf(
+        "AttributeDTO" to fieldsOf<AttributeDTO>(),
+        "CategoryComboDTO" to fieldsOf<CategoryComboDTO>(),
+        "CategoryDTO" to fieldsOf<CategoryDTO>(),
+        "ConstantDTO" to fieldsOf<ConstantDTO>(),
+        "CustomIconDTO" to fieldsOf<CustomIconDTO>(),
+        "DataApprovalDTO" to fieldsOf<DataApprovalDTO>(),
+        "DataSetCompleteRegistrationDTO" to fieldsOf<DataSetCompleteRegistrationDTO>(),
+        "DataValueDTO" to fieldsOf<DataValueDTO>(),
+        "ExpressionDimensionItemDTO" to fieldsOf<ExpressionDimensionItemDTO>(),
+        "FileResourceDTO" to fieldsOf<FileResourceDTO>(),
+        "IndicatorDTO" to fieldsOf<IndicatorDTO>(),
+        "IndicatorTypeDTO" to fieldsOf<IndicatorTypeDTO>(),
+        "LegendSetDTO" to fieldsOf<LegendSetDTO>(),
+        "OptionDTO" to fieldsOf<OptionDTO>(),
+        "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
+        "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
+        "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
+        "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
+        "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
+        "UserSettingsDTO" to fieldsOf<UserSettingsDTO>(),
+        "ValidationRuleDTO" to fieldsOf<ValidationRuleDTO>(),
+    )
+
+    private val expectedFields = mapOf(
+        "AttributeDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,valueType,unique,mandatory,indicatorAttribute,indicatorGroupAttribute," +
+            "userGroupAttribute,dataElementAttribute,constantAttribute,categoryOptionAttribute," +
+            "optionSetAttribute,sqlViewAttribute,legendSetAttribute,trackedEntityAttributeAttribute," +
+            "organisationUnitAttribute,dataSetAttribute,documentAttribute,validationRuleGroupAttribute," +
+            "dataElementGroupAttribute,sectionAttribute,trackedEntityTypeAttribute,userAttribute," +
+            "categoryOptionGroupAttribute,programStageAttribute,programAttribute,categoryAttribute," +
+            "categoryOptionComboAttribute,categoryOptionGroupSetAttribute,validationRuleAttribute," +
+            "programIndicatorAttribute,organisationUnitGroupAttribute,dataElementGroupSetAttribute," +
+            "organisationUnitGroupSetAttribute,optionAttribute",
+        "CategoryComboDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,isDefault,categories[id]," +
+            "categoryOptionCombos[id,code,name,displayName,created,lastUpdated,deleted,categoryOptions[id]]",
+        "CategoryDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,dataDimensionType,categoryOptions[id]",
+        "ConstantDTO" to "id,code,name,displayName,created,lastUpdated,deleted,value",
+        "CustomIconDTO" to "key,href,fileResource[id]",
+        "DataApprovalDTO" to "wf,ou,pe,aoc,state",
+        "DataSetCompleteRegistrationDTO" to
+            "period,dataSet,organisationUnit,attributeOptionCombo,date,storedBy,completed",
+        "DataValueDTO" to
+            "deleted,dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo,value,storedBy," +
+            "created,lastUpdated,comment,followup",
+        "ExpressionDimensionItemDTO" to "id,code,name,displayName,created,lastUpdated,deleted,expression",
+        "FileResourceDTO" to "id,name,created,lastUpdated,contentType,contentLength,domain,storageStatus",
+        "IndicatorDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,annualized,indicatorType[id],numerator,numeratorDescription,denominator," +
+            "denominatorDescription,url,decimals,legendSets[id],style[color,icon]",
+        "IndicatorTypeDTO" to "id,code,name,displayName,created,lastUpdated,deleted,number,factor",
+        "LegendSetDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,symbolizer,legends[id,code,name," +
+            "displayName,created,lastUpdated,deleted,startValue,endValue,color]",
+        "OptionDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,sortOrder,optionSet[id],style[color,icon]",
+        "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",
+        "OptionSetDTO" to "id,code,name,displayName,created,lastUpdated,deleted,version,valueType",
+        "OrganisationUnitLevelDTO" to "id,code,name,displayName,created,lastUpdated,deleted,level",
+        "ProgramIndicatorDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,displayInForm,expression,dimensionItem,filter,decimals,aggregationType," +
+            "program[id],analyticsType,analyticsPeriodBoundaries[boundaryTarget," +
+            "analyticsPeriodBoundaryType,offsetPeriods,offsetPeriodType],legendSets[id],categoryCombo[id]," +
+            "attributeCombo[id],categoryMappingIds",
+        "SystemInfoDTO" to "serverDate,dateFormat,version,contextPath,systemName,serverTimeZoneId",
+        "UserSettingsDTO" to "keyUiLocale,keyDbLocale",
+        "ValidationRuleDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,instruction,importance,operator,periodType,skipFormValidation," +
+            "leftSide[expression,description,missingValueStrategy],rightSide[expression,description," +
+            "missingValueStrategy],organisationUnitLevels",
+    )
+
     @Test
     fun request_the_expected_fields_for_each_dto() {
-        val fields = mapOf(
-            "ConstantDTO" to fieldsOf<ConstantDTO>(),
-            "CustomIconDTO" to fieldsOf<CustomIconDTO>(),
-            "DataApprovalDTO" to fieldsOf<DataApprovalDTO>(),
-            "DataSetCompleteRegistrationDTO" to fieldsOf<DataSetCompleteRegistrationDTO>(),
-            "DataValueDTO" to fieldsOf<DataValueDTO>(),
-            "OptionDTO" to fieldsOf<OptionDTO>(),
-            "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
-            "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
-            "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
-            "UserSettingsDTO" to fieldsOf<UserSettingsDTO>(),
-            "ValidationRuleDTO" to fieldsOf<ValidationRuleDTO>(),
-        )
-
-        assertThat(fields).containsExactlyEntriesIn(
-            mapOf(
-                "ConstantDTO" to "id,code,name,displayName,created,lastUpdated,deleted,value",
-                "CustomIconDTO" to "key,href,fileResource[id]",
-                "DataApprovalDTO" to "wf,ou,pe,aoc,state",
-                "DataSetCompleteRegistrationDTO" to
-                    "period,dataSet,organisationUnit,attributeOptionCombo,date,storedBy,completed",
-                "DataValueDTO" to "deleted,dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo," +
-                    "value,storedBy,created,lastUpdated,comment,followup",
-                "OptionDTO" to
-                    "id,code,name,displayName,created,lastUpdated,deleted,sortOrder,optionSet[id],style[color,icon]",
-                "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",
-                "OrganisationUnitLevelDTO" to "id,code,name,displayName,created,lastUpdated,deleted,level",
-                "SystemInfoDTO" to "serverDate,dateFormat,version,contextPath,systemName,serverTimeZoneId",
-                "UserSettingsDTO" to "keyUiLocale,keyDbLocale",
-                "ValidationRuleDTO" to "id,code,name,displayName,created,lastUpdated,deleted,shortName," +
-                    "displayShortName,description,displayDescription,instruction,importance,operator,periodType," +
-                    "skipFormValidation,leftSide[expression,description,missingValueStrategy]," +
-                    "rightSide[expression,description,missingValueStrategy],organisationUnitLevels",
-            ),
-        )
+        assertThat(requestedFields).containsExactlyEntriesIn(expectedFields)
     }
 }

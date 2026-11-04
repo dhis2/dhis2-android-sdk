@@ -29,11 +29,9 @@ package org.hisp.dhis.android.network.programstage
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.program.ProgramStage
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ProgramStageService(private val client: HttpServiceClient) {
     suspend fun getProgramStages(
-        fields: Fields<ProgramStage>,
         programUidsFilterString: String,
         accessDataReadFilter: String,
         paging: Boolean,
@@ -41,7 +39,7 @@ internal class ProgramStageService(private val client: HttpServiceClient) {
         return client.get {
             url("programStages")
             parameters {
-                fields(fields)
+                fields<ProgramStageDTO>()
                 attribute("filter", programUidsFilterString)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

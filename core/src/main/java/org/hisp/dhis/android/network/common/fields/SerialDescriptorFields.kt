@@ -32,8 +32,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
-import kotlinx.serialization.descriptors.elementDescriptors
-import kotlinx.serialization.descriptors.elementNames
+import kotlinx.serialization.json.JsonNames
 
 /**
  * Builds the `fields` request parameter out of the structure of a DTO, so that the DTO is the only place
@@ -50,9 +49,19 @@ private fun SerialDescriptor.fieldsString(path: List<String>): String {
     val currentPath = path + nonNullSerialName()
     require(nonNullSerialName() !in path) { "Cyclic DTO reference: ${currentPath.joinToString(" -> ")}" }
 
-    return elementNames.zip(elementDescriptors.toList()) { name, descriptor ->
-        descriptor.fieldString(name, currentPath)
+    return (0 until elementsCount).flatMap { index ->
+        requestedNames(index).map { name -> getElementDescriptor(index).fieldString(name, currentPath) }
     }.joinToString(",")
+}
+
+/**
+ * Alternative names declared with `@JsonNames` are requested too, so the DTO gets the value whichever name the
+ * server version uses.
+ */
+@OptIn(ExperimentalSerializationApi::class)
+private fun SerialDescriptor.requestedNames(index: Int): List<String> {
+    val alternativeNames = getElementAnnotations(index).filterIsInstance<JsonNames>().flatMap { it.names.toList() }
+    return listOf(getElementName(index)) + alternativeNames
 }
 
 @OptIn(ExperimentalSerializationApi::class)

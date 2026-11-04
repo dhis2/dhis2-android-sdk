@@ -28,26 +28,16 @@
 package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.network.attribute.AttributeValueFields
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
-import org.hisp.dhis.android.network.dataelement.DataElementFields
 import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
 import org.hisp.dhis.android.network.note.NoteFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
-import org.hisp.dhis.android.network.program.ProgramFields
-import org.hisp.dhis.android.network.program.ProgramRuleVariableFields
-import org.hisp.dhis.android.network.program.ProgramSectionFields
-import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeFields
-import org.hisp.dhis.android.network.programstage.ProgramStageDataElementFields
-import org.hisp.dhis.android.network.programstage.ProgramStageFields
-import org.hisp.dhis.android.network.programstage.ProgramStageSectionFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEnrollmentFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEventFields
@@ -110,9 +100,7 @@ class FieldsStringGenerationShould {
 
     private val fieldsClasses = listOf(
         AccessFields,
-        AttributeValueFields,
         DataAccessFields,
-        DataElementFields,
         EnrollmentFields,
         EventFields,
         NewEnrollmentFields,
@@ -127,16 +115,8 @@ class FieldsStringGenerationShould {
         NewTrackedEntityDataValueFields,
         NewTrackedEntityInstanceFields,
         NoteFields,
-        ObjectStyleFields,
         OrganisationUnitFields,
         OrganisationUnitGroupFields,
-        ProgramFields,
-        ProgramRuleVariableFields,
-        ProgramSectionFields,
-        ProgramStageDataElementFields,
-        ProgramStageFields,
-        ProgramStageSectionFields,
-        ProgramTrackedEntityAttributeFields,
         RelationshipFields,
         RelationshipItemEnrollmentFields,
         RelationshipItemEventFields,

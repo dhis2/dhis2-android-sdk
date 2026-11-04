@@ -28,10 +28,12 @@
 package org.hisp.dhis.android.network.common.fields
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNames
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -66,6 +68,13 @@ internal class SerialDescriptorFieldsShould {
         val coordinates: JsonElement?,
     )
 
+    @OptIn(ExperimentalSerializationApi::class)
+    @Serializable
+    private data class AliasedDTO(
+        val id: String,
+        @JsonNames("legacyReferences", "oldReferences") val references: List<ReferenceDTO>?,
+    )
+
     @Serializable
     private data class NodeDTO(val id: String, val parent: NodeDTO?)
 
@@ -78,6 +87,13 @@ internal class SerialDescriptorFieldsShould {
     fun expand_nested_dtos_and_request_value_classes_and_json_whole() {
         assertThat(fieldsOf(SampleDTO.serializer())).isEqualTo(
             "id,displayName,type,count,reference[id],children[id,parent[id]],tags,created,coordinates",
+        )
+    }
+
+    @Test
+    fun request_alternative_json_names_too() {
+        assertThat(fieldsOf(AliasedDTO.serializer())).isEqualTo(
+            "id,references[id],legacyReferences[id],oldReferences[id]",
         )
     }
 

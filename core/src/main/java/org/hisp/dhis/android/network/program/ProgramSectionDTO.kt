@@ -31,12 +31,12 @@ package org.hisp.dhis.android.network.program
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.program.ProgramSection
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
 import org.hisp.dhis.android.network.programstage.SectionRenderingDTO
-import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
 
 @Serializable
 internal data class ProgramSectionDTO(
@@ -50,8 +50,8 @@ internal data class ProgramSectionDTO(
     val style: ObjectWithStyleDTO?,
     val description: String?,
     val program: ObjectWithUidDTO?,
-    @JsonNames(ProgramSectionFields.ATTRIBUTES)
-    val trackedEntityAttributes: List<TrackedEntityAttributeDTO>?,
+    @JsonNames(LEGACY_ATTRIBUTES)
+    val trackedEntityAttributes: List<ObjectWithUidDTO>?,
     val sortOrder: Int?,
     val formName: String?,
     val renderType: SectionRenderingDTO?,
@@ -62,10 +62,15 @@ internal data class ProgramSectionDTO(
             style?.let { style(it.toDomain()) }
             description(description)
             program(program?.toDomain())
-            attributes(trackedEntityAttributes?.map { it.toDomain() })
+            attributes(trackedEntityAttributes?.map { TrackedEntityAttribute.builder().uid(it.id).build() })
             sortOrder(sortOrder)
             formName(formName)
             renderType(renderType?.toDomain())
         }.build()
+    }
+
+    companion object {
+        // Name used by servers before 2.33. Remove when 2.32 is no longer supported.
+        private const val LEGACY_ATTRIBUTES = "programTrackedEntityAttribute"
     }
 }

@@ -30,12 +30,12 @@ package org.hisp.dhis.android.network.programstage
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.common.ObjectWithUid
+import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-import org.hisp.dhis.android.network.dataelement.DataElementDTO
-import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 
 @Serializable
 internal data class ProgramStageSectionDTO(
@@ -47,10 +47,9 @@ internal data class ProgramStageSectionDTO(
     override val lastUpdated: String?,
     override val deleted: Boolean?,
     val sortOrder: Int?,
-    val programIndicators: List<ProgramIndicatorDTO>?,
-    val dataElements: List<DataElementDTO>?,
+    val programIndicators: List<ObjectWithUidDTO>?,
+    val dataElements: List<ObjectWithUidDTO>?,
     val renderType: SectionRenderingDTO?,
-    val programStage: ObjectWithUidDTO?,
     val description: String?,
     val displayDescription: String?,
 ) : BaseIdentifiableObjectDTO {
@@ -58,8 +57,8 @@ internal data class ProgramStageSectionDTO(
         return ProgramStageSection.builder()
             .applyBaseIdentifiableFields(this)
             .sortOrder(sortOrder)
-            .programIndicators(programIndicators?.map { it.toDomain() })
-            .dataElements(dataElements?.map { it.toDomain() })
+            .programIndicators(programIndicators?.map { ProgramIndicator.builder().uid(it.id).build() })
+            .dataElements(dataElements?.map { DataElement.builder().uid(it.id).build() })
             .renderType(renderType?.toDomain())
             .programStage(ObjectWithUid.create(programStageUid))
             .description(description)

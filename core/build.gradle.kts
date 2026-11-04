@@ -68,7 +68,7 @@ tasks.configureEach {
     }
 }
 
-room {
+room3 {
     schemaDirectory("$projectDir/schemas")
 }
 
@@ -252,7 +252,6 @@ dependencies {
 
     // Database
     implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.sqlite.bundled)
     api(libs.sqlcipher)
@@ -281,6 +280,10 @@ dependencies {
     }
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.paging.testing)
+
+    // Bridges a driver-backed RoomDatabase back to SupportSQLiteDatabase. Only the
+    // migration/schema instrumented tests need it; production code must stay driver-only.
+    androidTestImplementation(libs.androidx.room.sqlite.wrapper)
 }
 
 class MigrationDirProvider(private val path: String) : CommandLineArgumentProvider {

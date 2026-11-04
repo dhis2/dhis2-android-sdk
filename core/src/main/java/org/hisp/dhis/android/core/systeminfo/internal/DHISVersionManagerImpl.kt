@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -47,11 +47,7 @@ internal class DHISVersionManagerImpl internal constructor(
     private var smsVersion: SMSVersion? = null
     private var bypassDHIS2Version: Boolean? = null
 
-    override fun getVersion(): DHISVersion {
-        return runBlocking { getVersionInternal() }
-    }
-
-    internal suspend fun getVersionInternal(): DHISVersion {
+    override suspend fun suspendGetVersion(): DHISVersion {
         return version
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { DHISVersion.getValue(it, getBypassVersion()) }
@@ -65,7 +61,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun getPatchVersion(): DHISPatchVersion? {
-        return runBlocking { getPatchVersionInternal() }
+        return runBlockingOnIO { getPatchVersionInternal() }
     }
 
     internal suspend fun getPatchVersionInternal(): DHISPatchVersion? {
@@ -76,7 +72,7 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun getSmsVersion(): SMSVersion? {
-        return runBlocking { getSmsVersionInternal() }
+        return runBlockingOnIO { getSmsVersionInternal() }
     }
 
     internal suspend fun getSmsVersionInternal(): SMSVersion? {
@@ -92,27 +88,19 @@ internal class DHISVersionManagerImpl internal constructor(
     }
 
     override fun isVersion(version: DHISVersion): Boolean {
-        return runBlocking { isVersionInternal(version) }
+        return runBlockingOnIO { isVersionInternal(version) }
     }
 
     internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
-        return version === getVersionInternal()
+        return version === suspendGetVersion()
     }
 
-    override fun isGreaterThan(version: DHISVersion): Boolean {
-        return runBlocking { isGreaterThanInternal(version) }
+    override suspend fun suspendIsGreaterThan(version: DHISVersion): Boolean {
+        return version < suspendGetVersion()
     }
 
-    internal suspend fun isGreaterThanInternal(version: DHISVersion): Boolean {
-        return version < getVersionInternal()
-    }
-
-    override fun isGreaterOrEqualThan(version: DHISVersion): Boolean {
-        return runBlocking { isGreaterOrEqualThanInternal(version) }
-    }
-
-    internal suspend fun isGreaterOrEqualThanInternal(version: DHISVersion): Boolean {
-        return version <= getVersionInternal()
+    override suspend fun suspendIsGreaterOrEqualThan(version: DHISVersion): Boolean {
+        return version <= suspendGetVersion()
     }
 
     internal fun setVersion(versionStr: String) {

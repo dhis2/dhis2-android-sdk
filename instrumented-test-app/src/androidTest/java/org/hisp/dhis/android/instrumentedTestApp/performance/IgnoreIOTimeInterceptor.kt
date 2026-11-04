@@ -53,5 +53,12 @@ class IgnoreIOTimeInterceptor : Interceptor {
 }
 
 object NetworkTimeTracker {
+    @Volatile
     var totalNetworkTime = 0L
+
+    fun reset() {
+        synchronized(this) {
+            totalNetworkTime = 0L
+        }
+    }
 }

@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.uidseeker.internal
 
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 
 internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter) {
@@ -37,7 +37,7 @@ internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter)
     suspend fun readSingleColumnResults(query: String): Set<String> {
         return try {
             val dao = databaseAdapter.getCurrentDatabase().d2Dao()
-            val sqliteQuery = SimpleSQLiteQuery(query)
+            val sqliteQuery = RoomRawQuery(query)
             val resultsList: List<String> = dao.stringListRawQuery(sqliteQuery)
             resultsList.toSet()
         } catch (e: Exception) {

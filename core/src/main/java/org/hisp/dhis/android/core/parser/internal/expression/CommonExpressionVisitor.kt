@@ -40,6 +40,7 @@ import org.hisp.dhis.android.core.parser.internal.service.dataitem.DimensionalIt
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorContext
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorExecutor
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorItemMetadata
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.antlr.AntlrExpressionVisitor
@@ -80,6 +81,7 @@ internal class CommonExpressionVisitor(
     val programIndicatorContext: ProgramIndicatorContext? = scope.programIndicatorContext
     val programIndicatorExecutor: ProgramIndicatorExecutor? = scope.programIndicatorExecutor
     val programIndicatorSQLContext: ProgramIndicatorSQLContext? = scope.programIndicatorSQLContext
+    val itemMetadata: ProgramIndicatorItemMetadata = scope.itemMetadata
     val indicatorContext: IndicatorContext? = scope.indicatorContext
 
     /**

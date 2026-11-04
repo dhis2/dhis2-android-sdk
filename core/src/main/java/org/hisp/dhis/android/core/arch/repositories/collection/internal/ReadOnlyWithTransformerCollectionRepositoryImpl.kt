@@ -36,9 +36,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyCollectionRepository
@@ -67,7 +67,7 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
 ) : BaseRepositoryImpl<R>(scope, cf), ReadOnlyCollectionRepository<T> {
 
     fun blockingGetWithoutChildren(): List<M> {
-        return runBlocking { getWithoutChildrenInternal() }
+        return runBlockingOnIO { getWithoutChildrenInternal() }
     }
 
     suspend fun getWithoutChildrenInternal(): List<M> {

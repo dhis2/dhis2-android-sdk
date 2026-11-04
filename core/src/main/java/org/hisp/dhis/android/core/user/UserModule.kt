@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.user
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Handler
 import org.hisp.dhis.android.core.user.openid.OpenIDConnectHandler
 
@@ -52,20 +52,20 @@ interface UserModule {
         rxSingle { suspendLogIn(username, password, serverUrl) }
 
     fun blockingLogIn(username: String, password: String, serverUrl: String): User =
-        runBlocking { suspendLogIn(username, password, serverUrl) }
+        runBlockingOnIO { suspendLogIn(username, password, serverUrl) }
 
     suspend fun suspendLogIn(username: String, password: String, serverUrl: String): User
 
     @Deprecated(message = "Use rxLogOut instead", ReplaceWith("rxLogOut()"))
     fun logOut(): Completable = rxLogOut()
     fun rxLogOut(): Completable = rxCompletable { suspendLogOut() }
-    fun blockingLogOut() = runBlocking { suspendLogOut() }
+    fun blockingLogOut() = runBlockingOnIO { suspendLogOut() }
     suspend fun suspendLogOut()
 
     @Deprecated(message = "Use rxIsLogged instead", ReplaceWith("rxIsLogged()"))
     fun isLogged(): Single<Boolean> = rxIsLogged()
     fun rxIsLogged(): Single<Boolean> = rxSingle { suspendIsLogged() }
-    fun blockingIsLogged(): Boolean = runBlocking { suspendIsLogged() }
+    fun blockingIsLogged(): Boolean = runBlockingOnIO { suspendIsLogged() }
     suspend fun suspendIsLogged(): Boolean
 
     fun openIdHandler(): OpenIDConnectHandler

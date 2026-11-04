@@ -43,7 +43,7 @@ internal class AggregatedDataSyncLastUpdatedCalculator(
 ) {
 
     @Suppress("ComplexCondition")
-    fun getLastUpdated(
+    suspend fun getLastUpdated(
         syncValue: AggregatedDataSync?,
         dataSet: DataSet,
         pastPeriods: Int,

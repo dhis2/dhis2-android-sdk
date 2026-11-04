@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
+import androidx.room3.useReaderConnection
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
@@ -68,18 +69,21 @@ internal class TrackerLineListService(
             val metadata = metadataHelper.getMetadata(evaluatedParams)
             val context = TrackerLineListContext(metadata, databaseAdapter)
 
-            val sqlClause = when (evaluatedParams.outputType) {
-                TrackerLineListOutputType.EVENT ->
-                    getEventSqlClause(evaluatedParams, context)
+            // One reader connection for building the query and running it.
+            val values = databaseAdapter.getCurrentDatabase().useReaderConnection {
+                val sqlClause = when (evaluatedParams.outputType) {
+                    TrackerLineListOutputType.EVENT ->
+                        getEventSqlClause(evaluatedParams, context)
 
-                TrackerLineListOutputType.ENROLLMENT ->
-                    getEnrollmentSqlClause(evaluatedParams, context)
+                    TrackerLineListOutputType.ENROLLMENT ->
+                        getEnrollmentSqlClause(evaluatedParams, context)
 
-                TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE ->
-                    getTrackedEntityInstanceSqlClause(evaluatedParams, context)
+                    TrackerLineListOutputType.TRACKED_ENTITY_INSTANCE ->
+                        getTrackedEntityInstanceSqlClause(evaluatedParams, context)
+                }
+
+                fetchDataWithD2Dao(sqlClause, evaluatedParams, databaseAdapter)
             }
-
-            val values = fetchDataWithD2Dao(sqlClause, evaluatedParams, databaseAdapter)
 
             Result.Success(
                 TrackerLineListResponse(

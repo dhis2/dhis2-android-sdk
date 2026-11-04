@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.PeriodsFilterConnector
@@ -106,7 +106,7 @@ internal class EventLineListRepositoryImpl(
     }
 
     override fun blockingEvaluate(): List<LineListResponse> {
-        return runBlocking { eventLineListService.evaluate(eventLineListParams) }
+        return runBlockingOnIO { eventLineListService.evaluate(eventLineListParams) }
     }
 
     override suspend fun suspendEvaluate(): List<LineListResponse> {

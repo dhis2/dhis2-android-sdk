@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.legendset
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.legendset.DataElementLegendSetLink
 import org.hisp.dhis.android.persistence.common.EntityDB
 import org.hisp.dhis.android.persistence.dataelement.DataElementDB

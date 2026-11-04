@@ -28,20 +28,20 @@
 
 package org.hisp.dhis.android.persistence.common.daos
 
-import androidx.room.RawQuery
-import androidx.room.RoomRawQuery
+import androidx.room3.RawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.persistence.common.EntityDB
 
 internal interface ReadableDao<P : EntityDB<*>> {
 
     @RawQuery
-    fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
+    suspend fun objectListRawQuery(sqlRawQuery: RoomRawQuery): List<P>
 
     @RawQuery
-    fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
+    suspend fun intRawQuery(sqlRawQuery: RoomRawQuery): Int
 
     @RawQuery
-    fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
+    suspend fun groupCountListRawQuery(sqlRawQuery: RoomRawQuery): List<GroupCount>
 }
 
 internal data class GroupCount(

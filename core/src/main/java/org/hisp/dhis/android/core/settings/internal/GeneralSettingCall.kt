@@ -31,7 +31,7 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallEx
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.settings.GeneralSettings
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,7 +40,7 @@ internal class GeneralSettingCall(
     private val networkHandler: SettingsNetworkHandler,
     private val appVersionManager: SettingsAppInfoManager,
     coroutineAPICallExecutor: CoroutineAPICallExecutor,
-    private val versionManager: DHISVersionManagerImpl,
+    private val versionManager: DHISVersionManager,
 ) : BaseSettingCall<GeneralSettings>(coroutineAPICallExecutor) {
 
     private var cachedValue: GeneralSettings? = null

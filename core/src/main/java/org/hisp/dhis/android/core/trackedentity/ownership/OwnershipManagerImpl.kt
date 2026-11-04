@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.ktor.http.HttpStatusCode
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
@@ -38,6 +37,7 @@ import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -76,7 +76,7 @@ internal class OwnershipManagerImpl(
     }
 
     override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        runBlocking { suspendBreakGlass(trackedEntityInstance, program, reason) }
+        runBlockingOnIO { suspendBreakGlass(trackedEntityInstance, program, reason) }
     }
 
     override suspend fun suspendBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
@@ -130,7 +130,7 @@ internal class OwnershipManagerImpl(
     }
 
     override fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
-        runBlocking { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
+        runBlockingOnIO { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
     }
 
     override suspend fun suspendTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {

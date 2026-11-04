@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.common.querybuilders
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.stores.projections.internal.LinkTableChildProjection
 
 @Suppress("TooManyFunctions")

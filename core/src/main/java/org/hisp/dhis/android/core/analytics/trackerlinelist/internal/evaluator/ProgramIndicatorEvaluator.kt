@@ -44,6 +44,7 @@ import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItemMetho
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorItemIdsCollector
+import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorItemMetadata
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorParserUtils
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.ProgramIndicatorSQLContext
 import org.hisp.dhis.android.core.program.programindicatorengine.internal.literal.ProgramIndicatorSQLLiteral
@@ -70,7 +71,12 @@ internal class ProgramIndicatorEvaluator(
         val collector = ProgramIndicatorItemIdsCollector()
         Parser.listen(programIndicator.expression(), collector)
 
-        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context)
+        val itemMetadata = ProgramIndicatorItemMetadata.load(
+            ProgramIndicatorItemMetadata.expressionsOf(programIndicator),
+            dataElementStore,
+            trackedEntityAttributeStore,
+        )
+        val sqlVisitor = newVisitor(ParserUtils.ITEM_GET_SQL, context, itemMetadata)
         sqlVisitor.itemIds = collector.itemIds.toMutableSet()
         sqlVisitor.setExpressionLiteral(ProgramIndicatorSQLLiteral())
 
@@ -106,6 +112,7 @@ internal class ProgramIndicatorEvaluator(
     private suspend fun newVisitor(
         itemMethod: ExpressionItemMethod,
         context: ProgramIndicatorSQLContext,
+        itemMetadata: ProgramIndicatorItemMetadata,
     ): CommonExpressionVisitor {
         return CommonExpressionVisitor(
             CommonExpressionVisitorScope.ProgramSQLIndicator(
@@ -115,6 +122,7 @@ internal class ProgramIndicatorEvaluator(
                 programIndicatorSQLContext = context,
                 dataElementStore = dataElementStore,
                 trackedEntityAttributeStore = trackedEntityAttributeStore,
+                itemMetadata = itemMetadata,
             ),
         )
     }

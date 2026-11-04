@@ -33,7 +33,6 @@ import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
-import org.hisp.dhis.android.persistence.db.access.RoomTransaction
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -103,68 +102,12 @@ class RoomDatabaseAdapterShould {
         Assert.assertEquals("", roomDatabaseAdapter.getDatabaseName())
     }
 
-    @Test
-    fun `beginNewTransaction should begin transaction on database and return RoomTransaction`() {
-        roomDatabaseAdapter.activate(database, "testDb")
-        doNothing().`when`(database).beginTransaction()
-
-        val transaction = roomDatabaseAdapter.beginNewTransaction()
-
-        verify(database, times(1)).beginTransaction()
-        Assert.assertNotNull(transaction)
-        Assert.assertTrue(transaction is RoomTransaction)
-    }
-
+    // withTransaction delegates to RoomDatabase.withWriteTransaction, an extension function that
+    // needs a real connection pool, so only the readiness guard is unit-testable here. The
+    // commit/rollback behaviour is covered by the instrumented tests.
     @Test(expected = IllegalStateException::class)
-    fun `beginNewTransaction should throw IllegalStateException if not ready`() {
-        roomDatabaseAdapter.beginNewTransaction()
-    }
-
-    @Test
-    fun `setTransactionSuccessful should call setTransactionSuccessful on database`() {
-        roomDatabaseAdapter.activate(database, "testDb")
-        doNothing().`when`(database).setTransactionSuccessful()
-
-        roomDatabaseAdapter.setTransactionSuccessful()
-
-        verify(database, times(1)).setTransactionSuccessful()
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `setTransactionSuccessful should throw IllegalStateException if not ready`() {
-        roomDatabaseAdapter.setTransactionSuccessful()
-    }
-
-    @Test
-    fun `runInTransaction should call runInTransaction on database`() {
-        roomDatabaseAdapter.activate(database, "testDb")
-        val runnable = mock<Runnable>()
-        doNothing().`when`(database).runInTransaction(runnable)
-
-        roomDatabaseAdapter.runInTransaction(runnable)
-
-        verify(database, times(1)).runInTransaction(runnable)
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `runInTransaction should throw IllegalStateException if not ready`() {
-        val runnable = mock<Runnable>()
-        roomDatabaseAdapter.runInTransaction(runnable)
-    }
-
-    @Test
-    fun `endTransaction should call endTransaction on database`() {
-        roomDatabaseAdapter.activate(database, "testDb")
-        doNothing().`when`(database).endTransaction()
-
-        roomDatabaseAdapter.endTransaction()
-
-        verify(database, times(1)).endTransaction()
-    }
-
-    @Test(expected = IllegalStateException::class)
-    fun `endTransaction should throw IllegalStateException if not ready`() {
-        roomDatabaseAdapter.endTransaction()
+    fun `withTransaction should throw IllegalStateException if not ready`() = runTest {
+        roomDatabaseAdapter.withTransaction { }
     }
 
     @Test
@@ -186,7 +129,7 @@ class RoomDatabaseAdapterShould {
     }
 
     @Test(expected = IllegalStateException::class)
-    fun `getVersion should throw IllegalStateException if not ready`() {
+    fun `getVersion should throw IllegalStateException if not ready`() = runTest {
         roomDatabaseAdapter.getVersion()
     }
 

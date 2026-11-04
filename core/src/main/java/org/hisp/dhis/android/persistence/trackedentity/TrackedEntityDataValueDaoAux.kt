@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.program.ProgramStageDataElementTableInfo
@@ -42,7 +42,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
         SET ${TrackedEntityDataValueTableInfo.Columns.SYNC_STATE} = :state 
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :uid;""",
     )
-    fun setSyncStateByEvent(uid: String, state: String)
+    suspend fun setSyncStateByEvent(uid: String, state: String)
 
     @Query(
         """
@@ -51,7 +51,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} NOT IN (:dataElementUids)
     """,
     )
-    fun deleteByEventAndNotInDataElements(
+    suspend fun deleteByEventAndNotInDataElements(
         eventUid: String,
         dataElementUids: List<String>,
     ): Int
@@ -63,7 +63,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.DATA_ELEMENT} = :dataElementUid
     """,
     )
-    fun deleteByEventAndDataElement(
+    suspend fun deleteByEventAndDataElement(
         eventUid: String,
         dataElementUid: String,
     ): Int
@@ -74,7 +74,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
         WHERE ${TrackedEntityDataValueTableInfo.Columns.EVENT} = :eventUid
     """,
     )
-    fun deleteByEvent(eventUid: String): Int
+    suspend fun deleteByEvent(eventUid: String): Int
 
     @Query(
         """
@@ -83,7 +83,7 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           AND ${TrackedEntityDataValueTableInfo.Columns.VALUE} IS NULL 
     """,
     )
-    fun removeDeletedDataValuesByEvent(
+    suspend fun removeDeletedDataValuesByEvent(
         eventUid: String,
     ): Int
 
@@ -101,5 +101,5 @@ internal interface TrackedEntityDataValueDaoAux : ObjectDao<TrackedEntityDataVal
           )
     """,
     )
-    fun removeUnassignedDataValuesByEvent(eventUid: String): Int
+    suspend fun removeUnassignedDataValuesByEvent(eventUid: String): Int
 }

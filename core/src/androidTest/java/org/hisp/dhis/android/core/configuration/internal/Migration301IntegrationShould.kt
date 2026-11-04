@@ -278,5 +278,6 @@ class Migration301IntegrationShould {
         }
 
         FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
+        FileResourceDirectoryHelper.getRootFileCacheResourceDirectory(context).deleteRecursively()
     }
 }

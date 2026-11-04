@@ -135,7 +135,7 @@ internal class DatabaseImportExportImpl(
         val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
         val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
 
-        if (!userModule.blockingIsLogged()) {
+        if (!userModule.suspendIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log in to export database")
                 .errorCode(D2ErrorCode.DATABASE_EXPORT_LOGIN_FIRST)

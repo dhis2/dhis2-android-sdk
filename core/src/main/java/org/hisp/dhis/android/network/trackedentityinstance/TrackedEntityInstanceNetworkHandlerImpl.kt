@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceNetworkHandler
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
@@ -55,7 +55,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class TrackedEntityInstanceNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val dhisVersionManager: DHISVersionManagerImpl,
+    private val dhisVersionManager: DHISVersionManager,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : TrackedEntityInstanceNetworkHandler {
     private val service = TrackedEntityInstanceService(httpClient)
@@ -150,7 +150,7 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
         return if (query.eventStatus == null) {
             null
         } else if (
-            !dhisVersionManager.isGreaterThanInternal(DHISVersion.V2_33) &&
+            !dhisVersionManager.suspendIsGreaterThan(DHISVersion.V2_33) &&
             query.eventStatus == EventStatus.ACTIVE
         ) {
             EventStatus.VISITED.toString()

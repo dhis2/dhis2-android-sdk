@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.indicatorengine
 
-import androidx.sqlite.db.SimpleSQLiteQuery
 import org.hisp.dhis.android.core.analytics.aggregated.MetadataItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.AnalyticsServiceEvaluationItem
 import org.hisp.dhis.android.core.analytics.aggregated.internal.evaluator.analyticexpressionengine.AnalyticExpressionEngineFactory
@@ -36,6 +35,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeStore
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.persistence.db.access.queryScalarAsString
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -50,10 +50,8 @@ internal class IndicatorSQLEngine(
         contextEvaluationItem: AnalyticsServiceEvaluationItem,
         contextMetadata: Map<String, MetadataItem>,
     ): String? {
-        val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
         val sqlQuery = getSql(indicator, contextEvaluationItem, contextMetadata)
-        val roomQuery = SimpleSQLiteQuery(sqlQuery)
-        val valueStr = d2Dao.queryStringValue(roomQuery)
+        val valueStr = databaseAdapter.getCurrentDatabase().queryScalarAsString(sqlQuery)
 
         return AnalyticExpressionParserUtils.roundValue(valueStr, indicator.decimals())
     }

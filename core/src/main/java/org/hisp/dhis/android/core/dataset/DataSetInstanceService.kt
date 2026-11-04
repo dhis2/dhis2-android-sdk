@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.dataset
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 
 @Suppress("TooManyFunctions")
@@ -166,7 +166,7 @@ interface DataSetInstanceService {
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): DataSetCompletionStatus = runBlocking {
+    ): DataSetCompletionStatus = runBlockingOnIO {
         suspendGetCompletionStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
     }
 
@@ -181,9 +181,8 @@ interface DataSetInstanceService {
         suspendGetValidationRulesConfiguration(dataSetUid)
     }
 
-    fun blockingGetValidationRulesConfiguration(dataSetUid: String): DataSetValidationRulesConfiguration = runBlocking {
-        suspendGetValidationRulesConfiguration(dataSetUid)
-    }
+    fun blockingGetValidationRulesConfiguration(dataSetUid: String): DataSetValidationRulesConfiguration =
+        runBlockingOnIO { suspendGetValidationRulesConfiguration(dataSetUid) }
 
     suspend fun suspendGetValidationRulesConfiguration(dataSetUid: String): DataSetValidationRulesConfiguration
 }

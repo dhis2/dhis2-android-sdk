@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.icon.internal.CustomIconStore
 import org.hisp.dhis.android.core.program.internal.ProgramTrackedEntityAttributeStore
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeStore
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeValueStore
@@ -76,7 +76,7 @@ internal class FileResourceDownloadCallHelper(
     private val customIconStore: CustomIconStore,
     private val categoryOptionComboStore: CategoryOptionComboStore,
     private val categoryOptionComboCategoryOptionLinkStore: CategoryOptionComboCategoryOptionLinkStore,
-    private val dhisVersionManager: DHISVersionManagerImpl,
+    private val dhisVersionManager: DHISVersionManager,
 ) {
 
     suspend fun getMissingTrackerAttributeValues(
@@ -84,7 +84,7 @@ internal class FileResourceDownloadCallHelper(
         existingFileResources: List<String>,
     ): List<MissingTrackerAttributeValue> {
         val fileTypes = params.valueTypes.filter { type ->
-            dhisVersionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_40) || type == FileResourceValueType.IMAGE
+            dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_40) || type == FileResourceValueType.IMAGE
         }
 
         val attributesWhereClause = WhereClauseBuilder()

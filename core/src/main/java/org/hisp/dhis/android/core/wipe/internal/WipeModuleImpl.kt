@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutorInterface
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
@@ -39,7 +39,7 @@ internal class WipeModuleImpl(
 ) : WipeModule {
     @Throws(D2Error::class)
     override fun wipeEverything() {
-        return runBlocking {
+        return runBlockingOnIO {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeMetadataInternal()
                 wipeDataInternal()
@@ -49,7 +49,7 @@ internal class WipeModuleImpl(
 
     @Throws(D2Error::class)
     override fun wipeMetadata() {
-        return runBlocking {
+        return runBlockingOnIO {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeMetadataInternal()
             }
@@ -58,7 +58,7 @@ internal class WipeModuleImpl(
 
     @Throws(D2Error::class)
     override fun wipeData() {
-        return runBlocking {
+        return runBlockingOnIO {
             d2CallExecutor.executeD2CallTransactionally {
                 wipeDataInternal()
             }

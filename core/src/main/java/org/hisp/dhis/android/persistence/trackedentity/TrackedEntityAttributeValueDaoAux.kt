@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.persistence.program.ProgramTrackedEntityAttributeTableInfo
 import org.hisp.dhis.android.processor.GenerateDaoQueries
@@ -40,7 +40,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         SET ${TrackedEntityAttributeValueTableInfo.Columns.SYNC_STATE} = :state 
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :uid""",
     )
-    fun setSyncStateByInstance(state: String, uid: String)
+    suspend fun setSyncStateByInstance(state: String, uid: String)
 
     @Query(
         """UPDATE TrackedEntityAttributeValue 
@@ -48,7 +48,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
         WHERE ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_INSTANCE} = :teiUid
           AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)""",
     )
-    fun setSyncStateByAttributes(state: String, teiUid: String, attributeUids: List<String>)
+    suspend fun setSyncStateByAttributes(state: String, teiUid: String, attributeUids: List<String>)
 
     @Query(
         """
@@ -58,7 +58,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
             NOT IN (:trackedEntityAttributeUids)
     """,
     )
-    fun deleteByInstanceAndNotInAttributes(
+    suspend fun deleteByInstanceAndNotInAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
     ): Int
@@ -76,7 +76,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           )
     """,
     )
-    fun deleteByInstanceAndNotInProgramAttributes(
+    suspend fun deleteByInstanceAndNotInProgramAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         programUid: String,
@@ -99,7 +99,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           )
     """,
     )
-    fun deleteByInstanceAndNotInAccessibleAttributes(
+    suspend fun deleteByInstanceAndNotInAccessibleAttributes(
         trackedEntityInstanceUid: String,
         trackedEntityAttributeUids: List<String>,
         programUids: List<String>,
@@ -114,7 +114,7 @@ internal interface TrackedEntityAttributeValueDaoAux : ObjectDao<TrackedEntityAt
           AND ${TrackedEntityAttributeValueTableInfo.Columns.TRACKED_ENTITY_ATTRIBUTE} IN (:attributeUids)
     """,
     )
-    fun removeDeletedAttributeValuesByInstanceAndAttributes(
+    suspend fun removeDeletedAttributeValuesByInstanceAndAttributes(
         trackedEntityInstanceUid: String,
         attributeUids: List<String>,
     ): Int

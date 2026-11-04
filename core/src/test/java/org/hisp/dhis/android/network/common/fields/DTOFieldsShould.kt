@@ -54,6 +54,7 @@ import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevel
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.hisp.dhis.android.network.programrule.ProgramRuleDTO
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListDTO
+import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeDTO
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
 import org.hisp.dhis.android.network.systemsettings.AzureMapsApiKeyDTO
 import org.hisp.dhis.android.network.systemsettings.BingMapsApiKeyDTO
@@ -110,6 +111,7 @@ internal class DTOFieldsShould {
         "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
         "ProgramRuleDTO" to fieldsOf<ProgramRuleDTO>(),
         "ProgramStageWorkingListDTO" to fieldsOf<ProgramStageWorkingListDTO>(),
+        "RelationshipTypeDTO" to fieldsOf<RelationshipTypeDTO>(),
         "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
         "SystemSettingsDTO" to fieldsOf<SystemSettingsDTO>(),
         "TrackedEntityAttributeDTO" to fieldsOf<TrackedEntityAttributeDTO>(),
@@ -215,6 +217,12 @@ internal class DTOFieldsShould {
             "dataFilters[le,ge,gt,lt,eq,in,like,dateFilter[startBuffer,endBuffer,startDate,endDate,period,type]," +
             "null,dataItem],attributeValueFilters[le,ge,gt,lt,eq,in,like,dateFilter[startBuffer,endBuffer," +
             "startDate,endDate,period,type],null,attribute,ew,sw]]",
+        "RelationshipTypeDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,bIsToA,aIsToB,fromToName,toFromName," +
+            "fromConstraint[relationshipEntity,trackedEntityType[id],program[id],programStage[id]," +
+            "trackerDataView[attributes,dataElements]],toConstraint[relationshipEntity,trackedEntityType[id]," +
+            "program[id],programStage[id],trackerDataView[attributes,dataElements]],bidirectional,access[read," +
+            "write,data[read,write]]",
         "SystemInfoDTO" to "serverDate,dateFormat,version,contextPath,systemName,serverTimeZoneId",
         "SystemSettingsDTO" to
             "keyFlag,keyStyle,keyCustomColorMobile,keyDefaultBaseMap,analyticsFinancialYearStart," +
@@ -272,7 +280,6 @@ internal class DTOFieldsShould {
             "legend[set[id],showKey,strategy,style],displayDensity,digitGroupSeparator,aggregationType," +
             "columns[id,items[dimensionItem,dimensionItemType]],rows[id,items[dimensionItem,dimensionItemType]]," +
             "filters[id,items[dimensionItem,dimensionItemType]]",
-
     )
 
     @Test

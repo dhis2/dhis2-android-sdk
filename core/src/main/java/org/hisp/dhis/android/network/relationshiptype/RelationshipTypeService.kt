@@ -29,12 +29,10 @@ package org.hisp.dhis.android.network.relationshiptype
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.relationship.RelationshipType
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class RelationshipTypeService(private val client: HttpServiceClient) {
     suspend fun getRelationshipTypes(
-        fields: Fields<RelationshipType>,
         lastUpdated: Filter<RelationshipType>?,
         accessDataReadFilter: String,
         paging: Boolean,
@@ -42,7 +40,7 @@ internal class RelationshipTypeService(private val client: HttpServiceClient) {
         return client.get {
             url("relationshipTypes")
             parameters {
-                fields(fields)
+                fields<RelationshipTypeDTO>()
                 filter(lastUpdated)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

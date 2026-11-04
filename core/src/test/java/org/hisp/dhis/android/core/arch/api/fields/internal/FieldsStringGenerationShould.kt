@@ -53,9 +53,6 @@ import org.hisp.dhis.android.network.relationship.RelationshipItemEnrollmentFiel
 import org.hisp.dhis.android.network.relationship.RelationshipItemEventFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.relationshiptype.RelationshipConstraintFields
-import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeFields
-import org.hisp.dhis.android.network.relationshiptype.TrackerDataViewFields
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceFields
 import org.hisp.dhis.android.network.tracker.NewEnrollmentFields
@@ -140,17 +137,14 @@ class FieldsStringGenerationShould {
         ProgramStageFields,
         ProgramStageSectionFields,
         ProgramTrackedEntityAttributeFields,
-        RelationshipConstraintFields,
         RelationshipFields,
         RelationshipItemEnrollmentFields,
         RelationshipItemEventFields,
         RelationshipItemFields,
         RelationshipItemTrackedEntityInstanceFields,
-        RelationshipTypeFields,
         TrackedEntityAttributeValueFields,
         TrackedEntityDataValueFields,
         TrackedEntityInstanceFields,
-        TrackerDataViewFields,
         UserCredentialsFields,
         UserFields,
         UserGroupFields,

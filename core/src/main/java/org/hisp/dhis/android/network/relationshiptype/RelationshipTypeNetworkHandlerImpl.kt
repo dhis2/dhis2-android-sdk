@@ -30,9 +30,11 @@ package org.hisp.dhis.android.network.relationshiptype
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeNetworkHandler
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,11 +42,12 @@ internal class RelationshipTypeNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
 ) : RelationshipTypeNetworkHandler {
     private val service: RelationshipTypeService = RelationshipTypeService(httpServiceClient)
+    private val lastUpdatedField = Field.create<RelationshipType>(BaseIdentifiableObject.LAST_UPDATED)
+
     override suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType> {
         val accessDataFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         val apiPayload = service.getRelationshipTypes(
-            RelationshipTypeFields.allFields,
-            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { RelationshipTypeFields.lastUpdated.gt(it) },
+            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { lastUpdatedField.gt(it) },
             accessDataFilter,
             false,
         )

@@ -30,14 +30,11 @@ package org.hisp.dhis.android.network.relationshiptype
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.relationship.RelationshipConstraint
-import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 @Serializable
 internal data class RelationshipConstraintDTO(
-    val relationshipType: ObjectWithUidDTO?,
-    val constraintType: String?,
     val relationshipEntity: String?,
     val trackedEntityType: ObjectWithUidDTO?,
     val program: ObjectWithUidDTO?,
@@ -46,8 +43,6 @@ internal data class RelationshipConstraintDTO(
 ) {
     fun toDomain(): RelationshipConstraint {
         return RelationshipConstraint.builder()
-            .relationshipType(relationshipType?.toDomain())
-            .constraintType(constraintType?.let { RelationshipConstraintType.valueOf(it) })
             .relationshipEntity(relationshipEntity?.let { RelationshipEntityType.valueOf(it) })
             .trackedEntityType(trackedEntityType?.toDomain())
             .program(program?.toDomain())

@@ -54,7 +54,7 @@ internal class SqliteDriverFactoryImpl : SqliteDriverFactory {
 
     override fun create(password: String?): SQLiteDriver {
         return if (password == null) {
-            BundledSQLiteDriver()
+            ColumnNameCachingSQLiteDriver(BundledSQLiteDriver())
         } else {
             NativeLibraryLoader.loadSQLCipher()
             CompiledWriteSQLCipherDriver(

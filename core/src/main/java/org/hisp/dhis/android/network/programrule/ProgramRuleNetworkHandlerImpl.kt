@@ -44,7 +44,6 @@ internal class ProgramRuleNetworkHandlerImpl(
         val programUidsFilterStr =
             "program." + ObjectWithUid.uid.`in`(programUids).generateString()
         val apiPayload = service.getProgramRules(
-            ProgramRuleFields.allFields,
             programUidsFilterStr,
             false,
         )

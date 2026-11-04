@@ -43,8 +43,8 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
         parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString())
     }
 
-    internal fun <T> keys(keys: Fields<T>) {
-        parameters.add("key" to keys.generateString())
+    internal inline fun <reified DTO> keys() {
+        parameters.add("key" to serializer<DTO>().descriptor.toFieldsString())
     }
 
     internal fun <T> filter(filter: Filter<T>?) {

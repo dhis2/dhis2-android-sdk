@@ -69,7 +69,6 @@ internal class VisualizationNetworkHandlerImpl(
     private suspend fun getVisualization(uid: String, accessFilter: String): Visualization {
         return service.getSingleVisualization(
             uid = uid,
-            fields = VisualizationFields.allFields,
             accessFilter = accessFilter,
             paging = false,
         ).toDomain()
@@ -78,7 +77,6 @@ internal class VisualizationNetworkHandlerImpl(
     private suspend fun getVisualization36(uid: String, accessFilter: String): Visualization {
         return service.getSingleVisualizations36(
             uid = uid,
-            fields = VisualizationFields.allFieldsAPI36,
             accessFilter = accessFilter,
             paging = false,
         ).toDomain()

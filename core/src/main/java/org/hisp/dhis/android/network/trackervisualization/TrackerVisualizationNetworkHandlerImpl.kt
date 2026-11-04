@@ -53,7 +53,6 @@ internal class TrackerVisualizationNetworkHandlerImpl(
                     try {
                         service.getSingleTrackerVisualization(
                             visualizationUid,
-                            TrackerVisualizationFields.allFields,
                             accessFilter = accessFilter,
                             paging = false,
                         ).toDomain()

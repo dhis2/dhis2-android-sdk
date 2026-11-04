@@ -29,20 +29,18 @@
 package org.hisp.dhis.android.network.externalmaplayer
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ExternalMapLayerService(private val client: HttpServiceClient) {
 
     suspend fun getExternalMapLayers(
-        fields: Fields<ExternalMapLayerDTO>,
         mapLayerPosition: Filter<ExternalMapLayerDTO>,
         paging: Boolean,
     ): ExternalMapLayerPayload {
         return client.get {
             url("externalMapLayers")
             parameters {
-                fields(fields)
+                fields<ExternalMapLayerDTO>()
                 filter(mapLayerPosition)
                 paging(paging)
             }

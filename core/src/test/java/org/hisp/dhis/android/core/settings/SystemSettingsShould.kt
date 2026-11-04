@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.settings
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.settings.SystemSetting.SystemSettingKey
+import org.hisp.dhis.android.network.systemsettings.BingMapsApiKeyDTO
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.junit.Test
 
@@ -53,7 +54,8 @@ internal class SystemSettingsShould : CoreObjectShould<SystemSettingsDTO>(
         assertThat(settingsSplitted[3].key()).isEqualTo(SystemSettingKey.DEFAULT_BASE_MAP)
         assertThat(settingsSplitted[3].value()).isEqualTo("keyDefaultBaseMap")
 
-        val settingsBingMaps = settingsDTO.toDomainBingMapsApiKey()
+        val bingMapsDTO = deserializePath("settings/system_settings.json", BingMapsApiKeyDTO.serializer())
+        val settingsBingMaps = bingMapsDTO.toDomain()
         assertThat(settingsBingMaps.key()).isEqualTo(SystemSettingKey.BING_BASE_MAP)
         assertThat(settingsBingMaps.value()).isEqualTo("keyBingMapsApiKey")
     }

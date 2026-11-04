@@ -44,7 +44,6 @@ internal class CategoryOptionNetworkHandlerImpl(
 
     override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): PayloadJson<CategoryOption> {
         val apiPayload = service.getCategoryOptions(
-            CategoryOptionFields.allFields,
             "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
             "access.data." + DataAccessFields.read.eq(true).generateString(),
             paging = false,

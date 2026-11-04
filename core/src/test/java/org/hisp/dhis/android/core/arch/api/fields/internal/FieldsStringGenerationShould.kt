@@ -29,26 +29,15 @@ package org.hisp.dhis.android.core.arch.api.fields.internal
 
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.network.attribute.AttributeValueFields
-import org.hisp.dhis.android.network.categoryoption.CategoryOptionFields
 import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.DateFilterPeriodFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.ObjectStyleFields
 import org.hisp.dhis.android.network.common.fields.Property
 import org.hisp.dhis.android.network.dataelement.DataElementFields
-import org.hisp.dhis.android.network.dataset.DataElementOperandFields
-import org.hisp.dhis.android.network.dataset.DataInputPeriodFields
-import org.hisp.dhis.android.network.dataset.DataSetElementFields
-import org.hisp.dhis.android.network.dataset.DataSetFields
-import org.hisp.dhis.android.network.dataset.SectionFields
 import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
-import org.hisp.dhis.android.network.eventfilter.EventDataFilterFields
-import org.hisp.dhis.android.network.eventfilter.EventFilterFields
-import org.hisp.dhis.android.network.eventfilter.EventQueryCriteriaFields
-import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerFields
 import org.hisp.dhis.android.network.note.NoteFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
@@ -56,33 +45,16 @@ import org.hisp.dhis.android.network.program.ProgramFields
 import org.hisp.dhis.android.network.program.ProgramRuleVariableFields
 import org.hisp.dhis.android.network.program.ProgramSectionFields
 import org.hisp.dhis.android.network.program.ProgramTrackedEntityAttributeFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleActionFields
-import org.hisp.dhis.android.network.programrule.ProgramRuleFields
 import org.hisp.dhis.android.network.programstage.ProgramStageDataElementFields
 import org.hisp.dhis.android.network.programstage.ProgramStageFields
 import org.hisp.dhis.android.network.programstage.ProgramStageSectionFields
-import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageQueryCriteriaFields
-import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListAttributeValueFilterFields
-import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListEventDataFilterFields
-import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEnrollmentFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEventFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.relationshiptype.RelationshipConstraintFields
-import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeFields
-import org.hisp.dhis.android.network.relationshiptype.TrackerDataViewFields
-import org.hisp.dhis.android.network.systemsettings.SystemSettingsFields
-import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeFields
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceFields
-import org.hisp.dhis.android.network.trackedentityinstancefilter.AttributeValueFilterFields
-import org.hisp.dhis.android.network.trackedentityinstancefilter.EntityQueryCriteriaFields
-import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceEventFilterFields
-import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterFields
-import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeAttributeFields
-import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeFields
 import org.hisp.dhis.android.network.tracker.NewEnrollmentFields
 import org.hisp.dhis.android.network.tracker.NewEventFields
 import org.hisp.dhis.android.network.tracker.NewNoteFields
@@ -94,16 +66,10 @@ import org.hisp.dhis.android.network.tracker.NewRelationshipItemTrackedEntityIns
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDimensionRepetitionFields
-import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationFields
 import org.hisp.dhis.android.network.user.UserCredentialsFields
 import org.hisp.dhis.android.network.user.UserFields
 import org.hisp.dhis.android.network.user.UserGroupFields
 import org.hisp.dhis.android.network.user.UserRoleFields
-import org.hisp.dhis.android.network.visualization.VisualizationDimensionFields
-import org.hisp.dhis.android.network.visualization.VisualizationDimensionItemFields
-import org.hisp.dhis.android.network.visualization.VisualizationFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -144,23 +110,11 @@ class FieldsStringGenerationShould {
 
     private val fieldsClasses = listOf(
         AccessFields,
-        AttributeValueFilterFields,
         AttributeValueFields,
-        CategoryOptionFields,
         DataAccessFields,
         DataElementFields,
-        DataElementOperandFields,
-        DataInputPeriodFields,
-        DataSetElementFields,
-        DataSetFields,
-        DateFilterPeriodFields,
         EnrollmentFields,
-        EntityQueryCriteriaFields,
-        EventDataFilterFields,
         EventFields,
-        EventFilterFields,
-        EventQueryCriteriaFields,
-        ExternalMapLayerFields,
         NewEnrollmentFields,
         NewEventFields,
         NewNoteFields,
@@ -177,45 +131,23 @@ class FieldsStringGenerationShould {
         OrganisationUnitFields,
         OrganisationUnitGroupFields,
         ProgramFields,
-        ProgramRuleActionFields,
-        ProgramRuleFields,
         ProgramRuleVariableFields,
         ProgramSectionFields,
         ProgramStageDataElementFields,
         ProgramStageFields,
-        ProgramStageQueryCriteriaFields,
         ProgramStageSectionFields,
-        ProgramStageWorkingListAttributeValueFilterFields,
-        ProgramStageWorkingListEventDataFilterFields,
-        ProgramStageWorkingListFields,
         ProgramTrackedEntityAttributeFields,
-        RelationshipConstraintFields,
         RelationshipFields,
         RelationshipItemEnrollmentFields,
         RelationshipItemEventFields,
         RelationshipItemFields,
         RelationshipItemTrackedEntityInstanceFields,
-        RelationshipTypeFields,
-        SectionFields,
-        SystemSettingsFields,
-        TrackedEntityAttributeFields,
         TrackedEntityAttributeValueFields,
         TrackedEntityDataValueFields,
-        TrackedEntityInstanceEventFilterFields,
         TrackedEntityInstanceFields,
-        TrackedEntityInstanceFilterFields,
-        TrackedEntityTypeAttributeFields,
-        TrackedEntityTypeFields,
-        TrackerDataViewFields,
-        TrackerVisualizationDimensionFields,
-        TrackerVisualizationDimensionRepetitionFields,
-        TrackerVisualizationFields,
         UserCredentialsFields,
         UserFields,
         UserGroupFields,
         UserRoleFields,
-        VisualizationDimensionFields,
-        VisualizationDimensionItemFields,
-        VisualizationFields,
     )
 }

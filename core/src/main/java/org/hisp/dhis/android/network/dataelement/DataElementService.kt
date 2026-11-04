@@ -29,12 +29,10 @@ package org.hisp.dhis.android.network.dataelement
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class DataElementService(private val client: HttpServiceClient) {
     suspend fun getDataElements(
-        fields: Fields<DataElement>,
         uids: Filter<DataElement>,
         lastUpdated: Filter<DataElement>?,
         accessReadFilter: String,
@@ -43,7 +41,7 @@ internal class DataElementService(private val client: HttpServiceClient) {
         return client.get {
             url("dataElements")
             parameters {
-                fields(fields)
+                fields<DataElementDTO>()
                 filter(uids)
                 filter(lastUpdated)
                 attribute("filter", accessReadFilter)

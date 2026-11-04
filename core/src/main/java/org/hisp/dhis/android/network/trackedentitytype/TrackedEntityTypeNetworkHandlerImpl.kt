@@ -33,6 +33,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeNetworkHandler
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -47,8 +48,7 @@ internal class TrackedEntityTypeNetworkHandlerImpl(
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
 
         val apiPayload = service.getTrackedEntityTypes(
-            TrackedEntityTypeFields.allFields,
-            TrackedEntityTypeFields.uid.`in`(uids),
+            Field.uid<TrackedEntityType>().`in`(uids),
             accessDataReadFilter,
             false,
         )

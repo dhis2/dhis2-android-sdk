@@ -1810,7 +1810,9 @@ public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetad
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseImportExport {
 	public abstract fun exportLoggedUserDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun exportLoggedUserDatabaseToPath (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun importDatabase (Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public abstract fun importDatabase (Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/Transaction {
@@ -1833,13 +1835,6 @@ public final class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabas
 	public fun createAutoMigrations (Ljava/util/Map;)Ljava/util/List;
 	public synthetic fun createOpenDelegate ()Landroidx/room/RoomOpenDelegateMarker;
 	public fun getRequiredAutoMigrationSpecClasses ()Ljava/util/Set;
-}
-
-public abstract interface class org/hisp/dhis/android/core/arch/db/access/internal/BaseDatabaseExport {
-	public abstract fun decrypt (Ljava/lang/String;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun decryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encrypt (Ljava/lang/String;Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun encryptAndCopyTo (Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;Ljava/io/File;Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/arch/db/access/internal/OrgHispDhisAndroidCoreArchDbAccessInternalDatabaseDIModuleModuleKt {
@@ -10155,7 +10150,11 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceBuilder$C
 
 public final class org/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository {
 	public static final field DEFAULT_QUALITY Ljava/lang/String;
+	public fun blockingAdd (Ljava/io/File;)Ljava/lang/String;
+	public synthetic fun blockingAdd (Ljava/lang/Object;)Ljava/lang/String;
+	public final fun blockingAdd (Lokio/Path;)Ljava/lang/String;
 	public final fun blockingProcessAndAdd (Ljava/io/File;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;)Ljava/lang/String;
+	public final fun blockingProcessAndAdd (Lokio/Path;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;)Ljava/lang/String;
 	public final fun blockingUpload ()V
 	public final fun byContentLength ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/LongFilterConnector;
 	public final fun byContentType ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
@@ -10166,10 +10165,16 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceCollectio
 	public final fun byState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
 	public final fun byUid ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun rxAdd (Ljava/io/File;)Lio/reactivex/Single;
+	public synthetic fun rxAdd (Ljava/lang/Object;)Lio/reactivex/Single;
+	public final fun rxAdd (Lokio/Path;)Lio/reactivex/Single;
 	public final fun rxProcessAndAdd (Ljava/io/File;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;)Lio/reactivex/Single;
+	public final fun rxProcessAndAdd (Lokio/Path;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;)Lio/reactivex/Single;
 	public fun suspendAdd (Ljava/io/File;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendAdd (Lokio/Path;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun suspendProcessAndAdd (Ljava/io/File;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendProcessAndAdd (Lokio/Path;Lorg/hisp/dhis/android/core/arch/helpers/ResourceContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResourceObjectRepository;
 	public final fun upload ()Lio/reactivex/Observable;
@@ -10231,9 +10236,14 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceElementTy
 
 public abstract interface class org/hisp/dhis/android/core/fileresource/FileResourceModule {
 	public abstract fun blockingDownload ()V
+	public abstract fun compressImage (Lokio/Path;)Lokio/Path;
+	public abstract fun compressImage (Lokio/Path;J)Lokio/Path;
 	public abstract fun download ()Lio/reactivex/Observable;
+	public abstract fun fileCacheResourceDirectory ()Lokio/Path;
+	public abstract fun fileResourceDirectory ()Lokio/Path;
 	public abstract fun fileResourceDownloader ()Lorg/hisp/dhis/android/core/fileresource/FileResourceDownloader;
 	public abstract fun fileResources ()Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;
+	public abstract fun resizeImage (Lokio/Path;Lorg/hisp/dhis/android/core/fileresource/ImageDimension;)Lokio/Path;
 }
 
 public final class org/hisp/dhis/android/core/fileresource/FileResourceObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
@@ -10255,6 +10265,16 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceValueType
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/FileResourceValueType;
 	public static fun values ()[Lorg/hisp/dhis/android/core/fileresource/FileResourceValueType;
+}
+
+public final class org/hisp/dhis/android/core/fileresource/ImageDimension : java/lang/Enum {
+	public static final field LARGE Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
+	public static final field MEDIUM Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
+	public static final field SMALL Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getPixels ()I
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
+	public static fun values ()[Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
 }
 
 public final class org/hisp/dhis/android/core/fileresource/OrgHispDhisAndroidCoreFileresourceFileResourceDIModuleModuleKt {

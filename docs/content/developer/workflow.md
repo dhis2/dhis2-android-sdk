@@ -986,7 +986,7 @@ If you only need a high level overview of the aggregated data status, you can us
 
 ## Dealing with FileResources { #android_sdk_file_resources }
 
-The SDK offers a module (the `FileResourceModule`) and three helpers (the `FileResourceDirectoryHelper`, the `FileResizerHelper` and the `FileCompressionHelper`) that allow to work with files.
+The SDK offers a module (the `FileResourceModule`) that allows to work with files. Files are represented as [Okio](https://square.github.io/okio/) `Path` objects, which can be converted from and to `java.io.File` with `File.toOkioPath()` and `Path.toFile()`.
 
 In the context of a mobile connection, dealing with fileResources could be high bandwidth consuming. For this reason, fileResources are not downloaded by default when downloading data and they must be explicitly downloaded if wanted. The recommendation is to download to fileResources only if it is important to have them in the device. If they are not downloaded, there is no negative consequence in terms of data integrity; the only consequence is that they are not available in the device.
 
@@ -1024,29 +1024,38 @@ Through this repository it is possible to request files and save new ones.
         .suspendGet()
     ```
 
-  - **Add**. To save a file it has to added it using the `processAndAdd()` method of the repository, providing an object of type `File` and a `ResourceContext`. The method returns the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
+  - **Add**. To save a file it has to added it using the `processAndAdd()` method of the repository, providing its `Path` and a `ResourceContext`. The method returns the uid that was generated when adding the file. This uid should be used to update the tracked entity attribute value or the tracked entity data value associated with the file resource.
 
     ```kotlin
     // An image captured in the context of a program
     val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
-        file,
+        path,
         ResourceContext.ImageContext.ProgramImageContext(programUid, dataElementUid),
     )
 
     // An image captured in the context of a dataSet
     val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
-        file,
+        path,
         ResourceContext.ImageContext.DatasetImageContext(dataSetUid, dataElementUid),
     )
 
     // A non-image file: stored as it is
     val uid = d2.fileResourceModule().fileResources().blockingProcessAndAdd(
-        file,
+        path,
         ResourceContext.FileContext,
     )
     ```
 
     `rxProcessAndAdd()` and `suspendProcessAndAdd()` are available as well.
+
+- **Directories**. `fileResourceDirectory()` returns the `sdk_resources` directory where the SDK saves the files associated with the file resources, and `fileCacheResourceDirectory()` returns the `sdk_cache_resources` directory. The cache directory should be the place where volatile files are stored, such as camera photos or images to be resized. Since it is contained in the cache directory, Android may auto-delete its files once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
+
+  Each account has its own directories, so a user must be logged in.
+
+  ```kotlin
+  val directory = d2.fileResourceModule().fileResourceDirectory()
+  val cacheDirectory = d2.fileResourceModule().fileCacheResourceDirectory()
+  ```
 
 ### Image compression { #android_sdk_image_compression }
 
@@ -1069,33 +1078,45 @@ val dataSetQuality = d2.settingModule().dataSetSetting()
     .getImageQualityFromDataSetSetting(dataSetUid, dataElementUid)
 ```
 
-The compression itself is also exposed as a helper, in case the app needs to compress a file outside the file resource flow:
+The compression itself is also exposed by the module, in case the app needs to compress an image outside the file resource flow. The compressed image is written to the cache directory, and the app owns it:
 
 ```kotlin
-val compressed = FileCompressionHelper.compressFile(file)              // 600 KB target
-val smaller = FileCompressionHelper.compressFile(file, 200 * 1024L)    // custom target
+val compressed = d2.fileResourceModule().compressImage(path)              // 600 KB target
+val smaller = d2.fileResourceModule().compressImage(path, 200 * 1024L)    // custom target
 ```
 
-### File resizer helper
+### Image resizing
 
-The Sdk provides a helper to resize image files (`FileResizerHelper`). This helper contains a `resizeFile()` method that accepts the file you want to reduce and the dimension to which you want to reduce it.
-
-The possible dimensions are in the following table.
+The `resizeImage()` method of the module resizes an image to one of the dimensions in the following table (`ImageDimension`).
 
 | Small | Medium | Large  |
 |-------|--------|--------|
 | 256px | 512px  | 1024px |
 
-The helper takes the file, measures the height and width of the image, determines which of the two sides is larger and reduces the largest of the sides to the given dimension and the other side is scaled to its proportional size. **Image scaling will always keep the proportions**.
+It measures the height and width of the image, determines which of the two sides is larger and reduces the largest of the sides to the given dimension and the other side is scaled to its proportional size. **Image scaling will always keep the proportions**.
 
-In the event that the last image is smaller than the dimension to which you want to resize it, the same file will be returned without being modified.
+In the event that the image is smaller than the dimension to which you want to resize it, the same path will be returned without modifying the image.
 
-The `resizeFile()` method will return a new file located in the same parent directory of the file to be resized under the name `resized-DIMENSION-` + the name of the file without resizing.
+Otherwise, the resized image is written to the cache directory under the name `resized-DIMENSION-` + the name of the original image, and the app owns it.
 
-### File resource directory helper
+```kotlin
+val resized = d2.fileResourceModule().resizeImage(path, ImageDimension.SMALL)
+```
 
-The `FileResourceDirectoryHelper` helper class provides two methods.
+### Migration from `java.io.File`
 
-- `getFileResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_resources` directory where the SDK will save the files associated with the file resources.
+The members that use `java.io.File` are deprecated and will be removed in a future version. Each one has a replacement that uses `Path`:
 
-- `getFileCacheResourceDirectory()`. This method returns a `File` object whose path points to the `sdk_cache_resources` directory. This should be the place where volatile files are stored, such as camera photos or images to be resized. Since the directory is contained in the cache directory, Android may auto-delete the files in the cache directory once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
+| Deprecated | Replacement |
+|------------|-------------|
+| `FileResourceDirectoryHelper.getFileResourceDirectory(context)` | `d2.fileResourceModule().fileResourceDirectory()` |
+| `FileResourceDirectoryHelper.getFileCacheResourceDirectory(context)` | `d2.fileResourceModule().fileCacheResourceDirectory()` |
+| `FileResizerHelper.resizeFile(file, dimension)` | `d2.fileResourceModule().resizeImage(path, imageDimension)` |
+| `FileResizerHelper.Dimension` | `ImageDimension` |
+| `FileCompressionHelper.compressFile(file, targetSizeBytes)` | `d2.fileResourceModule().compressImage(path, targetSizeBytes)` |
+| `fileResources().blockingAdd(file)`, `rxAdd(file)`, `suspendAdd(file)` | The same methods with a `Path` |
+| `fileResources().blockingProcessAndAdd(file, context)`, `rxProcessAndAdd`, `suspendProcessAndAdd` | The same methods with a `Path` |
+| `databaseImportExport().importDatabase(file)` | `databaseImportExport().importDatabase(path)` |
+| `databaseImportExport().exportLoggedUserDatabase()` | `databaseImportExport().exportLoggedUserDatabaseToPath()` |
+
+The static helpers look up `D2` globally to resolve the directories of the account, so they need it to be instantiated with a logged-in user even though their signatures do not show it. The module methods make this dependency explicit. The `context` parameter of `FileResourceDirectoryHelper` is not used.

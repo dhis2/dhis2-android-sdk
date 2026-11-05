@@ -28,10 +28,9 @@
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
 import android.util.Log
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
@@ -126,7 +125,7 @@ internal constructor(
         propertyGetter: (M?) -> V?,
         updater: (M?, V?) -> M,
     ): org.hisp.dhis.android.core.common.Unit {
-        return runBlocking(Dispatchers.IO) { updateIfChangedInternal(newValue, propertyGetter, updater) }
+        return runBlockingOnIO { updateIfChangedInternal(newValue, propertyGetter, updater) }
     }
 
     protected suspend fun <V> updateIfChangedInternal(

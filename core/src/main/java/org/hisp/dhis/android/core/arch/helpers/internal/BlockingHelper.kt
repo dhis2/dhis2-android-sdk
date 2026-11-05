@@ -29,17 +29,27 @@
 package org.hisp.dhis.android.core.arch.helpers.internal
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
 /**
- * Blocks the calling thread until [block] completes, running [block] on [Dispatchers.IO].
+ * Blocks the calling thread until [block] completes, running [block] in a [Dispatchers.IO] context
+ * that starts on the calling thread.
  *
  * Use it instead of a plain `runBlocking` to bridge blocking APIs to suspend code that touches the
- * database. Room 3 DAO functions start with `withContext(Dispatchers.IO)`; with a plain
- * `runBlocking` every DAO call inside [block] would switch from the calling thread to an IO thread
- * and back, whereas here only the entry and the exit switch.
+ * database. Room 3 DAO functions start with `withContext(Dispatchers.IO)`, which does not switch
+ * threads when the caller already runs in that dispatcher, so [block] runs on the calling thread
+ * until it actually suspends and only resumes on an IO thread afterwards. Dispatching [block] to
+ * an IO thread up front costs a thread hand-off per call, which dominates the cost of small reads
+ * when the blocking API is called from an IO thread.
+ *
+ * Running on the calling thread also lets a call nested in a database block run by the same
+ * thread reuse the connection of that block through Room's thread-local, as Room 2 did.
  */
 internal fun <T> runBlockingOnIO(block: suspend CoroutineScope.() -> T): T {
-    return runBlocking(Dispatchers.IO, block)
+    return runBlocking {
+        async(Dispatchers.IO, CoroutineStart.UNDISPATCHED, block).await()
+    }
 }

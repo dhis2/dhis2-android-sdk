@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.category.internal
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.category.CategoryCombo
 import org.hisp.dhis.android.core.category.CategoryComboCollectionRepository
 import org.koin.core.annotation.Singleton
@@ -42,17 +42,17 @@ internal class DefaultCategoryComboManager(
     private var _defaultCategoryUid: String? = null
 
     val defaultCategoryComboUid: String?
-        get() = _defaultCategoryComboUid ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryComboUid }
+        get() = _defaultCategoryComboUid ?: blockingLoadDefaults().let { _defaultCategoryComboUid }
 
     val defaultCategoryOptionComboUid: String?
         get() = _defaultCategoryOptionComboUid
-            ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryOptionComboUid }
+            ?: blockingLoadDefaults().let { _defaultCategoryOptionComboUid }
 
     val defaultCategoryUid: String?
-        get() = _defaultCategoryUid ?: blockingLoadDefaultsFromDatabase().let { _defaultCategoryUid }
+        get() = _defaultCategoryUid ?: blockingLoadDefaults().let { _defaultCategoryUid }
 
     suspend fun suspendGetDefaultCategoryComboUid(): String? {
-        return _defaultCategoryComboUid ?: loadDefaultsFromDatabase().let { _defaultCategoryComboUid }
+        return _defaultCategoryComboUid ?: loadDefaults().let { _defaultCategoryComboUid }
     }
 
     fun setDefaults(categoryCombo: CategoryCombo) {
@@ -73,9 +73,7 @@ internal class DefaultCategoryComboManager(
         networkHandler.getDefaultCategoryCombo()?.let { setDefaults(it) }
     }
 
-    private fun blockingLoadDefaultsFromDatabase() = runBlocking { loadDefaultsFromDatabase() }
-
-    private suspend fun loadDefaultsFromDatabase() {
+    suspend fun loadDefaults() {
         if (_defaultCategoryComboUid != null) return
 
         categoryComboCollectionRepository
@@ -86,4 +84,6 @@ internal class DefaultCategoryComboManager(
             .suspendGet()
             ?.let { setDefaults(it) }
     }
+
+    private fun blockingLoadDefaults() = runBlockingOnIO { loadDefaults() }
 }

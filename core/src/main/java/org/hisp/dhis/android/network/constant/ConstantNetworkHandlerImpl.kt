@@ -40,7 +40,7 @@ internal class ConstantNetworkHandlerImpl(
     private val service: ConstantService = ConstantService(httpClient)
 
     override suspend fun getConstants(): List<Constant> {
-        val constantDtoList = service.getConstants(ConstantFields.allFields, false)
+        val constantDtoList = service.getConstants(false)
         return constantDtoList.items.map { it.toDomain() }
     }
 }

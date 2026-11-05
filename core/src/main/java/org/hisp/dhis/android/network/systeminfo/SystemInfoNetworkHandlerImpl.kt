@@ -39,7 +39,7 @@ internal class SystemInfoNetworkHandlerImpl(
     private val service: SystemInfoService = SystemInfoService(httpClient)
 
     override suspend fun getSystemInfo(): SystemInfo {
-        val systemInfoDTO = service.getSystemInfo(SystemInfoFields.allFields)
+        val systemInfoDTO = service.getSystemInfo()
         return systemInfoDTO.toDomain()
     }
 }

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.IndicatorType
 import org.hisp.dhis.android.core.indicator.internal.IndicatorTypeNetworkHandler
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,9 +43,8 @@ internal class IndicatorTypeNetworkHandlerImpl(
 
     override suspend fun getIndicatorTypes(uids: Set<String>): Payload<IndicatorType> {
         val apiPayload = service.getIndicatorTypes(
-            IndicatorTypeFields.allFields,
             null,
-            IndicatorTypeFields.uid.`in`(uids),
+            Field.uid<IndicatorType>().`in`(uids),
             false,
         )
         return apiPayload.mapItems(IndicatorTypeDTO::toDomain)

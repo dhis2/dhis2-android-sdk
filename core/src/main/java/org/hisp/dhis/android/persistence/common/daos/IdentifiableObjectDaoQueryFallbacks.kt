@@ -29,5 +29,5 @@
 package org.hisp.dhis.android.persistence.common.daos
 
 internal fun interface IdentifiableObjectDaoQueryFallbacks {
-    fun delete(uid: String): Int
+    suspend fun delete(uid: String): Int
 }

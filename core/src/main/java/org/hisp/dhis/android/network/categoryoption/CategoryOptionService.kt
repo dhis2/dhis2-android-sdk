@@ -28,13 +28,10 @@
 package org.hisp.dhis.android.network.categoryoption
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.category.CategoryOption
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class CategoryOptionService(private val client: HttpServiceClient) {
 
     suspend fun getCategoryOptions(
-        fields: Fields<CategoryOption>,
         categoryUidsFilterString: String,
         accessDataReadFilter: String,
         paging: Boolean,
@@ -42,7 +39,7 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
         return client.get {
             url("categoryOptions")
             parameters {
-                fields(fields)
+                fields<CategoryOptionDTO>()
                 attribute("filter", categoryUidsFilterString)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

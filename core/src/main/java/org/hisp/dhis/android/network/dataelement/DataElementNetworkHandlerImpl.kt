@@ -29,26 +29,29 @@ package org.hisp.dhis.android.network.dataelement
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.dataelement.DataElement
 import org.hisp.dhis.android.core.dataelement.internal.DataElementNetworkHandler
 import org.hisp.dhis.android.network.common.fields.AccessFields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class DataElementNetworkHandlerImpl(
     httpClient: HttpServiceClient,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : DataElementNetworkHandler {
     private val service = DataElementService(httpClient)
 
     override suspend fun getDataElements(uids: Set<String>): Payload<DataElement> {
         val accessReadFilter = "access." + AccessFields.read.eq(true).generateString()
         val apiPayload = service.getDataElements(
-            DataElementFields.allFields,
-            DataElementFields.uid.`in`(uids),
+            Field.uid<DataElement>().`in`(uids),
             null,
             accessReadFilter,
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(DataElementDTO::toDomain)
     }
 }

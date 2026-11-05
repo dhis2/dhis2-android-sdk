@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.arch.repositories.collection
 
 import io.reactivex.Completable
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 
 interface ReadOnlyWithDownloadObjectRepository<M : Any> : ReadOnlyObjectRepository<M> {
@@ -59,5 +59,5 @@ interface ReadOnlyWithDownloadObjectRepository<M : Any> : ReadOnlyObjectReposito
      * executed in the main thread. Consider the asynchronous version [.rxDownload]. The method will finish
      * with a void as soon as the whole download and processing is finished.
      */
-    fun blockingDownload() = runBlocking { suspendDownload() }
+    fun blockingDownload() = runBlockingOnIO { suspendDownload() }
 }

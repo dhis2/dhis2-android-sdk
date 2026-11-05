@@ -38,8 +38,6 @@ internal data class SystemSettingsDTO(
     val keyStyle: String?,
     val keyCustomColorMobile: String?,
     val keyDefaultBaseMap: String?,
-    val keyBingMapsApiKey: String?,
-    val keyAzureMapsApiKey: String?,
     val analyticsFinancialYearStart: String?,
     val analyticsWeeklyStart: String?,
 ) {
@@ -53,10 +51,6 @@ internal data class SystemSettingsDTO(
         buildSetting(SystemSettingKey.ANALYTICS_FINANCIAL_YEAR_START, analyticsFinancialYearStart),
         buildSetting(SystemSettingKey.ANALYTICS_WEEK_START, analyticsWeeklyStart),
     )
-
-    fun toDomainBingMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyBingMapsApiKey)
-
-    fun toDomainAzureMapsApiKey(): SystemSetting = buildSetting(SystemSettingKey.BING_BASE_MAP, keyAzureMapsApiKey)
 
     private fun resolveStyle(): String? = when {
         keyCustomColorMobile == null -> keyStyle
@@ -88,7 +82,7 @@ internal data class SystemSettingsDTO(
         internal fun colorToStyle(color: String): String =
             Theme.entries.firstOrNull { it.color.equals(color, ignoreCase = true) }?.style ?: DEFAULT_STYLE
 
-        private fun buildSetting(key: SystemSettingKey, value: String?): SystemSetting =
+        internal fun buildSetting(key: SystemSettingKey, value: String?): SystemSetting =
             SystemSetting.builder().key(key).value(value).build()
     }
 }

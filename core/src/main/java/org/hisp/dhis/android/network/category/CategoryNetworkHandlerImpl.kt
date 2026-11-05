@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.category
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.Category
 import org.hisp.dhis.android.core.category.internal.CategoryNetworkHandler
+import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
@@ -41,8 +42,7 @@ internal class CategoryNetworkHandlerImpl(
 
     override suspend fun getCategories(categoryUids: Set<String>): PayloadJson<Category> {
         val apiPayload = service.getCategories(
-            CategoryFields.allFields,
-            CategoryFields.uid.`in`(categoryUids),
+            Field.uid<Category>().`in`(categoryUids),
             paging = false,
         )
         return apiPayload.mapItems(CategoryDTO::toDomain)

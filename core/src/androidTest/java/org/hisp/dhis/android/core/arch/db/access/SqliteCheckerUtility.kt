@@ -27,8 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.access
 
-import androidx.room.RoomRawQuery
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 
 object SqliteCheckerUtility {
     suspend fun isTableEmpty(databaseAdapter: DatabaseAdapter, table: String): Boolean {
@@ -40,7 +39,7 @@ object SqliteCheckerUtility {
 
     suspend fun isDatabaseEmpty(databaseAdapter: DatabaseAdapter): Boolean {
         val d2Dao = databaseAdapter.getCurrentDatabase().d2Dao()
-        val query = SimpleSQLiteQuery(
+        val query = RoomRawQuery(
             "SELECT name FROM sqlite_master WHERE type='table' AND " +
                 "name NOT LIKE 'android_%' AND name NOT LIKE 'sqlite_%' AND " +
                 "name NOT LIKE 'room_master_table'",

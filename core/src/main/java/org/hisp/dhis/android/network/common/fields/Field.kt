@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.network.common.fields
 
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.network.common.filters.InFilter
 import org.hisp.dhis.android.network.common.filters.SingleValueFilter
@@ -53,6 +54,10 @@ internal data class Field<Parent> internal constructor(override val name: String
         @JvmStatic
         fun <T> create(name: String): Field<T> {
             return Field(name)
+        }
+
+        fun <T> uid(): Field<T> {
+            return create(BaseIdentifiableObject.UID)
         }
     }
 }

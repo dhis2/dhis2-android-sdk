@@ -29,12 +29,16 @@
 package org.hisp.dhis.android.core.arch.db.access.internal
 
 import android.content.Context
-import androidx.room.Room
+import androidx.room3.Room
+import androidx.room3.useReaderConnection
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.sqlite.db.SupportSQLiteOpenHelper
 import androidx.sqlite.db.framework.FrameworkSQLiteOpenHelperFactory
+import androidx.sqlite.driver.SupportSQLiteConnection
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.hisp.dhis.android.persistence.common.SchemaRow
@@ -76,6 +80,17 @@ class DatabaseMigrationSchemaIntegrationShould {
             row.copy(sql = normalizedSql)
         }.sortedBy { it.name }
     }
+    /** Room 3 has no openHelper, so the schema version is read straight off a connection. */
+    private suspend fun userVersion(db: AppDatabase): Int {
+        var version = 0
+        db.useReaderConnection { transactor ->
+            transactor.usePrepared("PRAGMA user_version;") { statement ->
+                if (statement.step()) version = statement.getLong(0).toInt()
+            }
+        }
+        return version
+    }
+
     private suspend fun getRoomSchema(db: AppDatabase): List<SchemaRow> {
         val schemaFromDao = withContext(Dispatchers.IO) {
             db.d2Dao().getSchemaRows()
@@ -106,7 +121,7 @@ class DatabaseMigrationSchemaIntegrationShould {
             }
             db.beginTransaction()
             try {
-                migration.migrate(db)
+                runBlocking { migration.migrate(SupportSQLiteConnection(db)) }
                 db.execSQL("PRAGMA user_version = ${migration.endVersion};")
                 db.setTransactionSuccessful()
                 currentDbVersion = migration.endVersion
@@ -141,6 +156,7 @@ class DatabaseMigrationSchemaIntegrationShould {
         lateinit var migratedRoomDb: AppDatabase
         try {
             migratedRoomDb = Room.databaseBuilder(context, AppDatabase::class.java, MIGRATED_DB_NAME)
+                .setDriver(BundledSQLiteDriver())
                 .setQueryCoroutineContext(Dispatchers.IO)
                 .allowMainThreadQueries()
                 .build()
@@ -148,7 +164,7 @@ class DatabaseMigrationSchemaIntegrationShould {
             Assert.assertEquals(
                 "Migrated Room DB version after Room opens it",
                 FINAL_DB_VERSION,
-                migratedRoomDb.openHelper.readableDatabase.version,
+                userVersion(migratedRoomDb),
             )
             println("Room database opened and validated successfully with MIGRATED_DB_NAME.")
         } catch (e: IllegalStateException) {
@@ -161,12 +177,14 @@ class DatabaseMigrationSchemaIntegrationShould {
 
         val newRoomDb = Room.databaseBuilder(context, AppDatabase::class.java, NEW_DB_NAME)
             .addMigrations(*ALL_MIGRATIONS.toTypedArray())
+            .setDriver(BundledSQLiteDriver())
             .setQueryCoroutineContext(Dispatchers.IO)
             .allowMainThreadQueries()
             .build()
 
-        newRoomDb.openHelper.writableDatabase.query("SELECT 1").close()
-        Assert.assertEquals("New Room DB version", FINAL_DB_VERSION, newRoomDb.openHelper.readableDatabase.version)
+        // Force Room to open the database and run its migrations/validation.
+        newRoomDb.useReaderConnection { it.usePrepared("SELECT 1") { stmt -> stmt.step() } }
+        Assert.assertEquals("New Room DB version", FINAL_DB_VERSION, userVersion(newRoomDb))
 
         val newSchema = getRoomSchema(newRoomDb)
         newRoomDb.close()

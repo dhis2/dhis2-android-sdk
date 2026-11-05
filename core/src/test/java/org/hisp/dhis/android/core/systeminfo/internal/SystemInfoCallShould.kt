@@ -33,7 +33,6 @@ import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutorMock
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.db.access.Transaction
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.resource.internal.Resource
@@ -66,7 +65,6 @@ class SystemInfoCallShould {
     private val d2Error: D2Error = mock()
     private val systemInfoHandler: SystemInfoHandler = mock()
     private val resourceHandler: ResourceHandler = mock()
-    private val transaction: Transaction = mock()
 
     private val systemInfo: SystemInfo = mock()
     private val versionManager: DHISVersionManagerImpl = mock()
@@ -88,7 +86,6 @@ class SystemInfoCallShould {
 
         whenever(systemInfo.version()).thenReturn("2.30")
         whenever(systemInfo.serverDate()).thenReturn(serverDate)
-        whenever(databaseAdapter.beginNewTransaction()).thenReturn(transaction)
         systemInfoNetworkHandler.stub {
             onBlocking { getSystemInfo() }.doReturn(systemInfo)
         }

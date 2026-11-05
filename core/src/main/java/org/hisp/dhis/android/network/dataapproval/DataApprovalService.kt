@@ -28,13 +28,10 @@
 package org.hisp.dhis.android.network.dataapproval
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.dataapproval.DataApproval
-import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")
 internal class DataApprovalService(private val client: HttpServiceClient) {
     suspend fun getDataApprovals(
-        fields: Fields<DataApproval>,
         lastUpdated: String?,
         workflow: String,
         periods: String,
@@ -44,7 +41,7 @@ internal class DataApprovalService(private val client: HttpServiceClient) {
         return client.get {
             url("dataApprovals/multiple")
             parameters {
-                fields(fields)
+                fields<DataApprovalDTO>()
                 attribute("lastUpdated", lastUpdated)
                 attribute("wf", workflow)
                 attribute("pe", periods)

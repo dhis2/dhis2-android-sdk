@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.sms
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -41,5 +41,5 @@ internal interface SMSOngoingSubmissionDaoAux : ObjectDao<SMSOngoingSubmissionDB
         WHERE ${SMSOngoingSubmissionTableInfo.Columns.SUBMISSION_ID} = :submissionId
     """,
     )
-    fun deleteSubmissionIfExists(submissionId: Int)
+    suspend fun deleteSubmissionIfExists(submissionId: Int)
 }

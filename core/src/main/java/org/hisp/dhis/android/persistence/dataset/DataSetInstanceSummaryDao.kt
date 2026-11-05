@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Dao
+import androidx.room3.Dao
 import org.hisp.dhis.android.persistence.common.daos.ReadableDao
 
 @Dao

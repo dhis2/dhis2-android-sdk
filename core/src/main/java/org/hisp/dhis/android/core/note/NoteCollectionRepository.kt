@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.note
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadWriteWithUidCollectionRepositoryImpl
@@ -52,8 +53,10 @@ class NoteCollectionRepository internal constructor(
     scope: RepositoryScope,
     transformer: NoteProjectionTransformer,
     private val dataStatePropagator: DataStatePropagator,
+    databaseAdapter: DatabaseAdapter,
 ) : ReadWriteWithUidCollectionRepositoryImpl<Note, NoteCreateProjection, NoteCollectionRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     transformer,
@@ -65,6 +68,7 @@ class NoteCollectionRepository internal constructor(
             s,
             transformer,
             dataStatePropagator,
+            databaseAdapter,
         )
     },
 ) {

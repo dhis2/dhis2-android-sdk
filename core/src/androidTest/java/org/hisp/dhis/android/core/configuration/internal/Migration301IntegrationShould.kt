@@ -282,5 +282,6 @@ class Migration301IntegrationShould {
         }
 
         File(context.filesDir, FileResourceDirectories.FILES_DIR).deleteRecursively()
+        File(context.cacheDir, FileResourceDirectories.CACHE_DIR).deleteRecursively()
     }
 }

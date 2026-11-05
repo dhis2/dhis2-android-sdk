@@ -29,20 +29,18 @@ package org.hisp.dhis.android.network.trackedentityinstancefilter
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class TrackedEntityInstanceFilterService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityInstanceFilters(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
         paging: Boolean,
     ): TrackedEntityInstanceFilterPayload {
         return client.get {
             url("trackedEntityInstanceFilters")
             parameters {
-                fields(fields)
+                fields<TrackedEntityInstanceFilterDTO>()
                 filter(uids)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)
@@ -53,13 +51,12 @@ internal class TrackedEntityInstanceFilterService(private val client: HttpServic
     suspend fun getTrackedEntityInstanceFilters37(
         uids: Filter<TrackedEntityInstanceFilter>,
         accessDataReadFilter: String,
-        fields: Fields<TrackedEntityInstanceFilter>,
         paging: Boolean,
     ): TrackedEntityInstanceFilter37Payload {
         return client.get {
             url("trackedEntityInstanceFilters")
             parameters {
-                fields(fields)
+                fields<TrackedEntityInstanceFilter37DTO>()
                 filter(uids)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
 import android.util.Log
-import androidx.sqlite.db.SimpleSQLiteQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidatorBase
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
@@ -48,7 +48,7 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
 
         val selectQueryString = "SELECT _id, value FROM DataValue WHERE $whereClause"
 
-        val dataValues = dao.getCodeMigration133DataValue(SimpleSQLiteQuery(selectQueryString))
+        val dataValues = dao.getCodeMigration133DataValue(RoomRawQuery(selectQueryString))
 
         dataValues.forEach { dataValue ->
             if (dataValue.value?.matches(NumberValidatorBase.HAS_LEADING_ZERO_REGEX) == true) {

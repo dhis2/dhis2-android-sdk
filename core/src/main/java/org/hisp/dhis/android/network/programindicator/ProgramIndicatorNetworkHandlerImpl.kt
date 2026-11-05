@@ -30,38 +30,43 @@ package org.hisp.dhis.android.network.programindicator
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
+import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorNetworkHandler
+import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramIndicatorNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
+    private val defaultCategoryComboManager: DefaultCategoryComboManager,
 ) : ProgramIndicatorNetworkHandler {
     private val service = ProgramIndicatorService(httpServiceClient)
 
     override suspend fun getDisplayInFormProgramIndicators(programUids: Set<String>): Payload<ProgramIndicator> {
-        val displayInFormFilter = ProgramIndicatorFields.displayInForm.eq(true)
+        val displayInFormFilter = Field.create<ProgramIndicator>(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM)
+            .eq(true)
         val programUidsFilter = "program.${ObjectWithUid.uid.`in`(programUids).generateString()}"
         val apiPayload = service.getProgramIndicator(
-            fields = ProgramIndicatorFields.allFields,
             displayInForm = displayInFormFilter,
             program = programUidsFilter,
             uids = null,
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
     }
 
     override suspend fun getProgramIndicatorsByUid(uids: Set<String>): Payload<ProgramIndicator> {
         val apiPayload = service.getProgramIndicator(
-            fields = ProgramIndicatorFields.allFields,
             displayInForm = null,
             program = null,
-            uids = ProgramIndicatorFields.uid.`in`(uids),
+            uids = Field.uid<ProgramIndicator>().`in`(uids),
             false,
         )
+        defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramIndicatorDTO::toDomain)
     }
 }

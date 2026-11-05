@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.persistence.common.daos.ObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
 
@@ -44,7 +44,7 @@ internal interface DataValueConflictDaoAux : ObjectDao<DataValueConflictDB> {
           AND ${DataValueConflictTableInfo.Columns.ORG_UNIT} = :organisationUnit
     """,
     )
-    fun deleteDataValueConflict(
+    suspend fun deleteDataValueConflict(
         attributeOptionCombo: String,
         categoryOptionCombo: String,
         dataElement: String,

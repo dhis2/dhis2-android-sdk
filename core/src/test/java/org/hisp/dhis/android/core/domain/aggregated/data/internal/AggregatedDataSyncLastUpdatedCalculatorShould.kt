@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.domain.aggregated.data.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSet.Companion.futurePeriodsOrDefault
@@ -58,19 +59,19 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     private lateinit var calculator: AggregatedDataSyncLastUpdatedCalculator
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(hashHelper.getDataSetDataElementsHash(dataSet)).thenReturn(dataElementsHash)
         calculator = AggregatedDataSyncLastUpdatedCalculator(hashHelper)
     }
 
     @Test
-    fun return_null_if_sync_value_null() {
+    fun return_null_if_sync_value_null() = runTest {
         val lastUpdated = calculator.getLastUpdated(null, dataSet, 3, 5, 0)
         assertThat<Date>(lastUpdated).isNull()
     }
 
     @Test
-    fun return_expected_last_updated_if_same_values() {
+    fun return_expected_last_updated_if_same_values() = runTest {
         val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
@@ -82,14 +83,14 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_null_if_organisation_units_hash_changed() {
+    fun return_null_if_organisation_units_hash_changed() = runTest {
         val lastUpdated =
             calculator.getLastUpdated(syncValue, dataSet, pastPeriods, dataSet.openFuturePeriods()!!, 33333)
         assertThat(lastUpdated).isNull()
     }
 
     @Test
-    fun return_null_if_data_set_elements_hash_changed() {
+    fun return_null_if_data_set_elements_hash_changed() = runTest {
         whenever(hashHelper.getDataSetDataElementsHash(dataSet)).thenReturn(77777)
 
         val lastUpdated = calculator.getLastUpdated(
@@ -103,7 +104,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_null_if_future_periods_are_increased() {
+    fun return_null_if_future_periods_are_increased() = runTest {
         val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
@@ -115,7 +116,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_expected_last_updated_if_future_periods_are_decreased() {
+    fun return_expected_last_updated_if_future_periods_are_decreased() = runTest {
         val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
@@ -127,7 +128,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_null_if_past_periods_are_increased() {
+    fun return_null_if_past_periods_are_increased() = runTest {
         val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,
@@ -139,7 +140,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_expected_last_updated_if_data_set_has_no_open_future_periods() {
+    fun return_expected_last_updated_if_data_set_has_no_open_future_periods() = runTest {
         val dataSetWithoutOpenFuturePeriods = dataSet.toBuilder().openFuturePeriods(null).build()
         whenever(hashHelper.getDataSetDataElementsHash(dataSetWithoutOpenFuturePeriods))
             .thenReturn(dataElementsHash)
@@ -159,7 +160,7 @@ class AggregatedDataSyncLastUpdatedCalculatorShould {
     }
 
     @Test
-    fun return_expected_past_updated_if_future_periods_are_decreased() {
+    fun return_expected_past_updated_if_future_periods_are_decreased() = runTest {
         val lastUpdated = calculator.getLastUpdated(
             syncValue,
             dataSet,

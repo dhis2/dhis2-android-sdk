@@ -29,8 +29,8 @@
 package org.hisp.dhis.android.core.option
 
 import io.reactivex.Single
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 interface OptionService {
 
@@ -46,7 +46,7 @@ interface OptionService {
         searchText: String? = null,
         optionToHideUids: List<String>? = null,
         optionToShowUids: List<String>? = null,
-    ): List<Option> = runBlocking {
+    ): List<Option> = runBlockingOnIO {
         suspendSearchForOptions(optionSetUid, searchText, optionToHideUids, optionToShowUids)
     }
 

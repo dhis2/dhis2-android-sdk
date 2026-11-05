@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.datastore
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConnectorFactory
@@ -40,6 +41,7 @@ import org.koin.core.annotation.Singleton
 class LocalDataStoreCollectionRepository internal constructor(
     private val store: LocalDataStoreStore,
     scope: RepositoryScope,
+    private val databaseAdapter: DatabaseAdapter,
 ) : ReadOnlyCollectionRepositoryImpl<KeyValuePair, LocalDataStoreCollectionRepository>(
     store,
     childrenAppenders,
@@ -50,13 +52,14 @@ class LocalDataStoreCollectionRepository internal constructor(
         LocalDataStoreCollectionRepository(
             store,
             s,
+            databaseAdapter,
         )
     },
 ) {
 
     fun value(key: String): LocalDataStoreObjectRepository {
         val updatedScope = byKey().eq(key).scope
-        return LocalDataStoreObjectRepository(store, childrenAppenders, updatedScope, key)
+        return LocalDataStoreObjectRepository(store, databaseAdapter, childrenAppenders, updatedScope, key)
     }
 
     fun byKey(): StringFilterConnector<LocalDataStoreCollectionRepository> {

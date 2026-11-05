@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.trackedentity.ownership.ProgramTempOwner
 import org.hisp.dhis.android.core.util.dateFormatNonNull
 import org.hisp.dhis.android.core.util.toJavaDateNonNull

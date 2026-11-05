@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.parser.internal.service.dataitem
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils.DOUBLE_VALUE_IF_NULL
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
@@ -44,7 +44,7 @@ import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
  */
 internal class DimItemDataElementAndOperand : DimensionalItem() {
     override fun getDescription(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {
-        runBlocking {
+        runBlockingOnIO {
             val dataElement = visitor.dataElementStore!!.selectByUid(ctx.uid0.text)
 
             dataElement?.displayName()?.let { deName ->

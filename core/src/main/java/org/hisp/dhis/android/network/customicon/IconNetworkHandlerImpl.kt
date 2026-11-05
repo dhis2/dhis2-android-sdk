@@ -46,7 +46,6 @@ internal class IconNetworkHandlerImpl(
     ): PayloadJson<CustomIcon> {
         val apiPayload = try {
             iconService.getCustomIcons(
-                fields = CustomIconFields.allFields,
                 keys = keys.joinToString(","),
                 type = IconType.CUSTOM.name,
                 paging = false,

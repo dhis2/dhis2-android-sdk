@@ -28,9 +28,9 @@
 package org.hisp.dhis.android.core.arch.repositories.paging.internal
 
 import androidx.paging.PageKeyedDataSource
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.db.stores.internal.ReadableStore
 import org.hisp.dhis.android.core.arch.handlers.internal.TwoWayTransformer
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderExecutor
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -48,7 +48,7 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
 
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, T>) {
         val whereClause = WhereClauseFromScopeBuilder(WhereClauseBuilder()).getWhereClause(scope)
-        runBlocking {
+        runBlockingOnIO {
             val withoutChildren = store.selectWhere(
                 whereClause,
                 OrderByClauseBuilder.orderByFromItems(scope.orderBy()),
@@ -59,11 +59,11 @@ internal class RepositoryDataSourceWithTransformer<M : CoreObject, T : Any> inte
     }
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
-        runBlocking { loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize) }
+        runBlockingOnIO { loadPages(params, callback, nextOffset = params.key + params.requestedLoadSize) }
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, T>) {
-        runBlocking { loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize) }
+        runBlockingOnIO { loadPages(params, callback, nextOffset = params.key - params.requestedLoadSize) }
     }
 
     private suspend fun loadPages(params: LoadParams<Int>, callback: LoadCallback<Int, T>, nextOffset: Int) {

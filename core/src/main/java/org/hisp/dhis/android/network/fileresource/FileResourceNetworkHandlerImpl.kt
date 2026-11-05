@@ -41,6 +41,7 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,8 +64,7 @@ internal class FileResourceNetworkHandlerImpl(
         query: UidsQuery,
     ): Payload<FileResource> {
         val apiPayload = service.getFileResources(
-            FileResourceFields.allFields,
-            FileResourceFields.uid.`in`(query.uids),
+            Field.uid<FileResource>().`in`(query.uids),
             false,
         )
         return apiPayload.mapItems(FileResourceDTO::toDomain)
@@ -74,7 +74,7 @@ internal class FileResourceNetworkHandlerImpl(
         v: MissingTrackerAttributeValue,
         dimension: String,
     ): ByteArray {
-        return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
+        return if (dhis2VersionManager.suspendIsGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromTrackedEntityAttribute(
                 v.value.trackedEntityInstance(),
                 v.value.trackedEntityAttribute(),
@@ -93,7 +93,7 @@ internal class FileResourceNetworkHandlerImpl(
     override suspend fun getFileFromTrackedEntityAttribute(
         v: MissingTrackerAttributeValue,
     ): ByteArray {
-        return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
+        return if (dhis2VersionManager.suspendIsGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromTrackedEntityAttribute(
                 v.value.trackedEntityInstance(),
                 v.value.trackedEntityAttribute(),
@@ -108,7 +108,7 @@ internal class FileResourceNetworkHandlerImpl(
     }
 
     override suspend fun getImageFromEventValue(v: TrackedEntityDataValue, dimension: String): ByteArray {
-        return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
+        return if (dhis2VersionManager.suspendIsGreaterThan(DHISVersion.V2_41)) {
             service.getImageFromEventValue(
                 v.event(),
                 v.dataElement(),
@@ -126,7 +126,7 @@ internal class FileResourceNetworkHandlerImpl(
     override suspend fun getFileFromEventValue(
         v: TrackedEntityDataValue,
     ): ByteArray {
-        return if (dhis2VersionManager.isGreaterThan(DHISVersion.V2_41)) {
+        return if (dhis2VersionManager.suspendIsGreaterThan(DHISVersion.V2_41)) {
             service.getFileFromEventValue(
                 v.event(),
                 v.dataElement(),

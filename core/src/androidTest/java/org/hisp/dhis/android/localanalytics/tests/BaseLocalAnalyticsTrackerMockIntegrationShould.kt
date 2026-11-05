@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.localanalytics.tests
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository

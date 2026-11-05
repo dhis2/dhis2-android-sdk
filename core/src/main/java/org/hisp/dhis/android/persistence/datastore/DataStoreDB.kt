@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.persistence.datastore
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.persistence.common.DataObjectDB
 import org.hisp.dhis.android.persistence.common.DeletableObjectDB

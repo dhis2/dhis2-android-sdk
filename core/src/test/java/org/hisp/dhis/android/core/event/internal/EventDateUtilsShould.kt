@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.event.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
@@ -61,9 +62,9 @@ class EventDateUtilsShould {
     private val february: Period = mock()
 
     @Before
-    fun setUp() {
+    fun setUp() = runTest {
         whenever(
-            periodHelper.blockingGetPeriodForPeriodTypeAndDate(
+            periodHelper.getPeriodForPeriodTypeAndDateInternal(
                 PeriodType.Monthly,
                 Date(thirdJanuary.toEpochMilliseconds()),
                 1,
@@ -79,7 +80,7 @@ class EventDateUtilsShould {
     }
 
     @Test
-    fun should_return_correct_expiration_provided_expiry_days() {
+    fun should_return_correct_expiration_provided_expiry_days() = runTest {
         whenever(event.status()) doReturn EventStatus.ACTIVE
         whenever(event.eventDate()) doReturn Date(thirdJanuary.toEpochMilliseconds())
 
@@ -90,14 +91,14 @@ class EventDateUtilsShould {
     }
 
     @Test
-    fun should_return_is_not_expired_if_no_period_type_provided() {
+    fun should_return_is_not_expired_if_no_period_type_provided() = runTest {
         whenever(event.status()) doReturn EventStatus.ACTIVE
 
         assertThat(eventDateUtils.isEventExpired(event, 0, null, 2)).isFalse()
     }
 
     @Test
-    fun should_return_is_not_expired_if_no_event_or_due_date_provided() {
+    fun should_return_is_not_expired_if_no_event_or_due_date_provided() = runTest {
         whenever(event.status()) doReturn EventStatus.ACTIVE
         whenever(event.eventDate()) doReturn null
         whenever(event.dueDate()) doReturn null

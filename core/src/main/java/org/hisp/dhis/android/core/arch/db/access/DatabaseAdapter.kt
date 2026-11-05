@@ -41,13 +41,15 @@ interface DatabaseAdapter {
 
     fun deactivate()
 
-    fun beginNewTransaction(): Transaction
-
-    fun setTransactionSuccessful()
-
-    fun runInTransaction(block: Runnable)
-
-    fun endTransaction()
+    /**
+     * Runs [block] inside a single write transaction, committing on normal completion and rolling
+     * back if it throws.
+     *
+     * This replaces the previous `beginNewTransaction` / `setTransactionSuccessful` /
+     * `endTransaction` trio, which relied on the SupportSQLite APIs that Room 3 removed. Nesting is
+     * safe: an inner call joins the transaction already held by the surrounding one.
+     */
+    suspend fun <T> withTransaction(block: suspend () -> T): T
 
     suspend fun execSQL(sql: String)
 
@@ -74,7 +76,7 @@ interface DatabaseAdapter {
 
     fun getCurrentDatabase(): AppDatabase
 
-    fun getVersion(): Int
+    suspend fun getVersion(): Int
 
     /**
      * Forces a WAL checkpoint to consolidate pending changes to the main database file.

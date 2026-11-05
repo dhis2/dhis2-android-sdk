@@ -29,12 +29,10 @@ package org.hisp.dhis.android.network.trackedentitytype
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityTypes(
-        fields: Fields<TrackedEntityType>,
         idFilter: Filter<TrackedEntityType>,
         accessDataReadFilter: String,
         paging: Boolean,
@@ -42,7 +40,7 @@ internal class TrackedEntityTypeService(private val client: HttpServiceClient) {
         return client.get {
             url("trackedEntityTypes")
             parameters {
-                fields(fields)
+                fields<TrackedEntityTypeDTO>()
                 filter(idFilter)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

@@ -31,18 +31,18 @@ import org.hisp.dhis.android.core.arch.api.executors.internal.APIDownloader
 import org.hisp.dhis.android.core.arch.call.factories.internal.UidsCallCoroutines
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 @Singleton
 internal class EventFilterCall internal constructor(
     private val networkHandler: EventFilterNetworkHandler,
     val handler: EventFilterHandler,
     val apiDownloader: APIDownloader,
-    private val versionManager: DHISVersionManagerImpl,
+    private val versionManager: DHISVersionManager,
 ) : UidsCallCoroutines<EventFilter> {
 
     override suspend fun download(programUids: Set<String>): List<EventFilter> {
-        return if (versionManager.isGreaterThanInternal(DHISVersion.V2_31)) {
+        return if (versionManager.suspendIsGreaterThan(DHISVersion.V2_31)) {
             apiDownloader.downloadPartitioned(
                 programUids,
                 MAX_UID_LIST_SIZE,

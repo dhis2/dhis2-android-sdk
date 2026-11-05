@@ -38,8 +38,8 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
 import org.hisp.dhis.android.core.fileresource.ImageDimension
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
+import org.hisp.dhis.android.core.fileresource.internal.ImageTransformerImpl.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
@@ -69,25 +69,25 @@ class FileResourceModuleMockIntegrationShould : BaseMockIntegrationTestFullDispa
 
     @Test
     fun return_the_directories_of_the_logged_account() {
-        val subfolder = FileResourceDirectories.subfolderName(databaseAdapter.getDatabaseName())
+        val subfolder = FileResourceDirectoriesImpl.subfolderName(databaseAdapter.getDatabaseName())
 
-        val directory = d2.fileResourceModule().fileResourceDirectory()
-        val cacheDirectory = d2.fileResourceModule().fileCacheResourceDirectory()
+        val directory = d2.fileResourceModule().directories().fileResourceDirectory()
+        val cacheDirectory = d2.fileResourceModule().directories().fileCacheResourceDirectory()
 
         assertThat(directory.name).isEqualTo(subfolder)
-        assertThat(directory.parent!!.name).isEqualTo(FileResourceDirectories.FILES_DIR)
+        assertThat(directory.parent!!.name).isEqualTo(FileResourceDirectoriesImpl.FILES_DIR)
         assertThat(fileSystem.metadata(directory).isDirectory).isTrue()
         assertThat(cacheDirectory.name).isEqualTo(subfolder)
-        assertThat(cacheDirectory.parent!!.name).isEqualTo(FileResourceDirectories.CACHE_DIR)
+        assertThat(cacheDirectory.parent!!.name).isEqualTo(FileResourceDirectoriesImpl.CACHE_DIR)
         assertThat(fileSystem.metadata(cacheDirectory).isDirectory).isTrue()
     }
 
     @Test
     @Suppress("DEPRECATION")
     fun return_the_same_directories_as_the_deprecated_helper() {
-        assertThat(d2.fileResourceModule().fileResourceDirectory().toFile())
+        assertThat(d2.fileResourceModule().directories().fileResourceDirectory().toFile())
             .isEqualTo(FileResourceDirectoryHelper.getFileResourceDirectory(d2.context()))
-        assertThat(d2.fileResourceModule().fileCacheResourceDirectory().toFile())
+        assertThat(d2.fileResourceModule().directories().fileCacheResourceDirectory().toFile())
             .isEqualTo(FileResourceDirectoryHelper.getFileCacheResourceDirectory(d2.context()))
     }
 
@@ -95,9 +95,9 @@ class FileResourceModuleMockIntegrationShould : BaseMockIntegrationTestFullDispa
     fun resize_an_image_into_the_cache_directory() {
         val image = writeImage("to-resize.png", noisyBitmap(2048, 1024))
 
-        val resized = created(d2.fileResourceModule().resizeImage(image, ImageDimension.SMALL))
+        val resized = created(d2.fileResourceModule().imageTransformer().resize(image, ImageDimension.SMALL))
 
-        assertThat(resized.parent).isEqualTo(d2.fileResourceModule().fileCacheResourceDirectory())
+        assertThat(resized.parent).isEqualTo(d2.fileResourceModule().directories().fileCacheResourceDirectory())
         val resizedBitmap = BitmapFactory.decodeFile(resized.toString())
         assertThat(resizedBitmap.width).isEqualTo(256)
         assertThat(resizedBitmap.height).isEqualTo(128)
@@ -107,7 +107,7 @@ class FileResourceModuleMockIntegrationShould : BaseMockIntegrationTestFullDispa
     fun return_the_image_when_it_is_smaller_than_the_dimension() {
         val image = writeImage("small.png", noisyBitmap(100, 125))
 
-        assertThat(d2.fileResourceModule().resizeImage(image, ImageDimension.LARGE)).isEqualTo(image)
+        assertThat(d2.fileResourceModule().imageTransformer().resize(image, ImageDimension.LARGE)).isEqualTo(image)
     }
 
     @Test
@@ -116,9 +116,9 @@ class FileResourceModuleMockIntegrationShould : BaseMockIntegrationTestFullDispa
         val image = writeImage("to-compress.png", noisyBitmap(1500, 1500))
         assertThat(fileSystem.metadata(image).size!!).isGreaterThan(target)
 
-        val compressed = created(d2.fileResourceModule().compressImage(image, target))
+        val compressed = created(d2.fileResourceModule().imageTransformer().compress(image, target))
 
-        assertThat(compressed.parent).isEqualTo(d2.fileResourceModule().fileCacheResourceDirectory())
+        assertThat(compressed.parent).isEqualTo(d2.fileResourceModule().directories().fileCacheResourceDirectory())
         assertThat(fileSystem.metadata(compressed).size!!).isAtMost(target)
     }
 
@@ -127,7 +127,7 @@ class FileResourceModuleMockIntegrationShould : BaseMockIntegrationTestFullDispa
         val image = writeImage("to-compress-by-default.png", noisyBitmap(1500, 1500))
         assertThat(fileSystem.metadata(image).size!!).isGreaterThan(IMAGE_TARGET_SIZE_BYTES)
 
-        val compressed = created(d2.fileResourceModule().compressImage(image))
+        val compressed = created(d2.fileResourceModule().imageTransformer().compress(image))
 
         assertThat(compressed).isNotEqualTo(image)
         assertThat(fileSystem.metadata(compressed).size!!).isAtMost(IMAGE_TARGET_SIZE_BYTES)

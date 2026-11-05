@@ -93,7 +93,7 @@ class TrackedEntityInstanceServiceMockIntegrationShould : BaseMockIntegrationTes
 
     private fun storeFile(fileName: String): Path {
         val inputStream: InputStream = RandomGeneratedInputStream(1024L)
-        val destinationFile = d2.fileResourceModule().fileResourceDirectory() / "$fileName.png"
+        val destinationFile = d2.fileResourceModule().directories().fileResourceDirectory() / "$fileName.png"
         return koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile)
     }
 }

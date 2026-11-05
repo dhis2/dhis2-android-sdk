@@ -35,7 +35,7 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class FileResourceModuleWiper(
     private val tableWiper: TableWiper,
-    private val fileResourceDirectories: FileResourceDirectories,
+    private val fileResourceDirectories: FileResourceDirectoriesImpl,
 ) : ModuleWiper {
 
     override suspend fun wipeMetadata() {

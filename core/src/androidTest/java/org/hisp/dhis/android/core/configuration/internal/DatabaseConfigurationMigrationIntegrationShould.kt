@@ -43,7 +43,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
@@ -107,7 +107,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             databaseManager,
         )
 
-        File(context.filesDir, FileResourceDirectories.FILES_DIR).deleteRecursively()
+        File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).deleteRecursively()
     }
 
     @After
@@ -182,7 +182,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         DatabaseConfigurationInsecureStoreOld[insecureStore].set(oldDatabaseConfiguration)
 
-        val rootSdkResources = File(context.filesDir, FileResourceDirectories.FILES_DIR).apply { mkdirs() }
+        val rootSdkResources = File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).apply { mkdirs() }
         File(rootSdkResources, "sample.txt").createNewFile()
 
         migration.apply()

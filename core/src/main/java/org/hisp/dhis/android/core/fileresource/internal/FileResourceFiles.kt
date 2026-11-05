@@ -35,9 +35,7 @@ import okio.IOException
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.Source
-import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessor
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.generateFileName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.koin.core.annotation.Singleton
@@ -48,17 +46,8 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class FileResourceFiles(
     private val fileSystem: FileSystem,
-    private val fileResourceDirectories: FileResourceDirectories,
-    private val imageProcessor: ImageProcessor,
+    private val fileResourceDirectories: FileResourceDirectoriesImpl,
 ) {
-
-    fun resizeImage(image: Path, dimension: ImageDimension): Path {
-        return imageProcessor.resize(image, dimension, fileResourceDirectories.fileCacheResourceDirectory())
-    }
-
-    fun compressImage(image: Path, targetSizeBytes: Long = IMAGE_TARGET_SIZE_BYTES): Path {
-        return imageProcessor.compress(image, targetSizeBytes, fileResourceDirectories.fileCacheResourceDirectory())
-    }
 
     fun deleteFile(file: Path) {
         try {
@@ -115,8 +104,7 @@ internal class FileResourceFiles(
         return file
     }
 
-    companion object {
-        private const val TAG = "FileResourceFiles"
-        const val IMAGE_TARGET_SIZE_BYTES = 600 * 1024L // 600 KB
+    private companion object {
+        const val TAG = "FileResourceFiles"
     }
 }

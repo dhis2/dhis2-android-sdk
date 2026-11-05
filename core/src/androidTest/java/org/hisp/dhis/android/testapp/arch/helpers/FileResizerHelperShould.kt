@@ -34,7 +34,7 @@ import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,7 +45,7 @@ import java.util.*
 
 /**
  * Covers the deprecated `File` helper, which delegates to the same image processor as
- * `FileResourceModule.resizeImage()`.
+ * `ImageTransformer.resize()`.
  */
 @RunWith(D2JunitRunner::class)
 @Suppress("DEPRECATION")
@@ -120,7 +120,7 @@ class FileResizerHelperShould {
         private fun getFile(compressFormat: CompressFormat, bitmap: Bitmap): File {
             val context = InstrumentationRegistry.getInstrumentation().context
             val imageFile = File(
-                File(context.filesDir, FileResourceDirectories.FILES_DIR).apply { mkdirs() },
+                File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).apply { mkdirs() },
                 "image." +
                     compressFormat.name.lowercase(Locale.getDefault()),
             )

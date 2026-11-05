@@ -66,13 +66,14 @@ import org.koin.core.annotation.Singleton
 import java.io.File
 
 @Singleton
-@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught", "LongParameterList")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val fileResourceFiles: FileResourceFiles,
+    private val imageTransformer: ImageTransformer,
     private val programSettingsRepository: Lazy<ProgramSettingsObjectRepository>,
     private val dataSetSettingsRepository: Lazy<DataSetSettingsObjectRepository>,
     databaseAdapter: DatabaseAdapter,
@@ -90,6 +91,7 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             fileResourceFiles,
+            imageTransformer,
             programSettingsRepository,
             dataSetSettingsRepository,
             databaseAdapter,
@@ -207,7 +209,7 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     private fun compressImageIfNeeded(file: Path, quality: UploadQuality): Path {
-        return if (quality == UploadQuality.DEFAULT) fileResourceFiles.compressImage(file) else file
+        return if (quality == UploadQuality.DEFAULT) imageTransformer.compress(file) else file
     }
 
     private suspend fun getQuality(resourceContext: ResourceContext.ImageContext): UploadQuality {

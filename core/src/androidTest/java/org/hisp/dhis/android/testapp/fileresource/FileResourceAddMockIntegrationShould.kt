@@ -38,8 +38,8 @@ import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
+import org.hisp.dhis.android.core.fileresource.internal.ImageTransformerImpl.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.Test
@@ -218,7 +218,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
      * directory is kept.
      */
     private fun assertNoLeftOverTemporaryFiles() {
-        val cacheDirectory = d2.fileResourceModule().fileCacheResourceDirectory()
+        val cacheDirectory = d2.fileResourceModule().directories().fileCacheResourceDirectory()
         val temporaryFiles = FileSystem.SYSTEM.list(cacheDirectory).filter { it.name.startsWith("compressed-") }
         assertThat(temporaryFiles).isEmpty()
     }
@@ -250,7 +250,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     private fun storeFile(): File {
         val inputStream: InputStream = RandomGeneratedInputStream(1024)
-        val destinationFile = d2.fileResourceModule().fileResourceDirectory() / "file1.png"
+        val destinationFile = d2.fileResourceModule().directories().fileResourceDirectory() / "file1.png"
         val file = koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile).toFile()
         addedSourceFiles.add(file)
         return file
@@ -261,7 +261,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
      * noise barely compresses, so the encoded size stays well above [IMAGE_TARGET_SIZE_BYTES].
      */
     private fun storeImageFile(name: String): File {
-        val destinationFile = (d2.fileResourceModule().fileResourceDirectory() / name).toFile()
+        val destinationFile = (d2.fileResourceModule().directories().fileResourceDirectory() / name).toFile()
 
         val random = Random(SEED)
         val pixels = IntArray(IMAGE_SIDE_PX * IMAGE_SIDE_PX) { OPAQUE or random.nextInt(RGB_RANGE) }

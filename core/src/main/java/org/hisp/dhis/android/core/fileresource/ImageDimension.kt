@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.fileresource
 
 /**
- * Length of the largest side of an image resized with [FileResourceModule.resizeImage].
+ * Length of the largest side of an image resized with [ImageTransformer.resize].
  */
 @Suppress("MagicNumber")
 enum class ImageDimension(val pixels: Int) {

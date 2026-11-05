@@ -28,9 +28,7 @@
 package org.hisp.dhis.android.core.fileresource
 
 import io.reactivex.Observable
-import okio.Path
 import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface FileResourceModule {
     @Deprecated(
@@ -63,31 +61,7 @@ interface FileResourceModule {
 
     fun fileResourceDownloader(): FileResourceDownloader
 
-    /**
-     * Requires a logged-in user, since each account has its own directory.
-     */
-    fun fileResourceDirectory(): Path
+    fun directories(): FileResourceDirectories
 
-    /**
-     * Requires a logged-in user. It is not cleared automatically, so the app has to tidy it up.
-     */
-    fun fileCacheResourceDirectory(): Path
-
-    /**
-     * Returns [image] if it is already smaller than [dimension]. Otherwise the result is written to
-     * [fileCacheResourceDirectory] and the caller should delete it.
-     */
-    @Throws(D2Error::class)
-    fun resizeImage(image: Path, dimension: ImageDimension): Path
-
-    /**
-     * Compresses to 600 KB, the size used for uploads.
-     */
-    fun compressImage(image: Path): Path
-
-    /**
-     * Returns [image] if it was not compressed. Otherwise the result, a JPEG or a PNG, is written to
-     * [fileCacheResourceDirectory] and the caller should delete it.
-     */
-    fun compressImage(image: Path, targetSizeBytes: Long): Path
+    fun imageTransformer(): ImageTransformer
 }

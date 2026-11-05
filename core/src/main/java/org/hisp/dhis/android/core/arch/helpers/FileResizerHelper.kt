@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.io.File
 
-@Deprecated("Use FileResourceModule.resizeImage(), which works on okio.Path.")
+@Deprecated("Use FileResourceModule.imageTransformer().resize(), which works on okio.Path.")
 object FileResizerHelper {
 
     /**
@@ -49,10 +49,10 @@ object FileResizerHelper {
      * @return The resized [File].
      */
     @Deprecated(
-        "Use FileResourceModule.resizeImage(), which works on okio.Path.",
+        "Use FileResourceModule.imageTransformer().resize(), which works on okio.Path.",
         ReplaceWith(
-            "D2Manager.getD2().fileResourceModule()" +
-                ".resizeImage(fileToResize.toOkioPath(), ImageDimension.valueOf(dimension.name)).toFile()",
+            "D2Manager.getD2().fileResourceModule().imageTransformer()" +
+                ".resize(fileToResize.toOkioPath(), ImageDimension.valueOf(dimension.name)).toFile()",
             "org.hisp.dhis.android.core.D2Manager",
             "okio.Path.Companion.toOkioPath",
             "org.hisp.dhis.android.core.fileresource.ImageDimension",

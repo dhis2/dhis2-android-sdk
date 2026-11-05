@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImportSt
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.configuration.internal.DatabaseRenamer
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 
 /**
  * Migration to add hash suffix to database names for guaranteed uniqueness.
@@ -141,15 +141,15 @@ internal class Migration301(
     }
 
     private fun renameFileResourceDirectories(oldDbName: String, newDbName: String) {
-        val oldSubfolder = FileResourceDirectories.subfolderName(oldDbName)
-        val newSubfolder = FileResourceDirectories.subfolderName(newDbName)
+        val oldSubfolder = FileResourceDirectoriesImpl.subfolderName(oldDbName)
+        val newSubfolder = FileResourceDirectoriesImpl.subfolderName(newDbName)
 
-        val resourcesDir = platformDirectories.filesDir / FileResourceDirectories.FILES_DIR
+        val resourcesDir = platformDirectories.filesDir / FileResourceDirectoriesImpl.FILES_DIR
         renameIfExists(resourcesDir / oldSubfolder, resourcesDir / newSubfolder) {
             "Failed to rename resources directory from $oldSubfolder to $newSubfolder"
         }
 
-        val cacheDir = platformDirectories.cacheDir / FileResourceDirectories.CACHE_DIR
+        val cacheDir = platformDirectories.cacheDir / FileResourceDirectoriesImpl.CACHE_DIR
         renameIfExists(cacheDir / oldSubfolder, cacheDir / newSubfolder) {
             "Failed to rename cache directory from $oldSubfolder to $newSubfolder"
         }

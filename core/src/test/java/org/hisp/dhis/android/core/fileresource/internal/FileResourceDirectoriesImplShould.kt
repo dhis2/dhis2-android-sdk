@@ -44,13 +44,13 @@ import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
-class FileResourceDirectoriesShould {
+class FileResourceDirectoriesImplShould {
 
     private val fileSystem = FakeFileSystem()
     private val platformDirectories = FakePlatformDirectories(fileSystem)
     private val databaseAdapter: DatabaseAdapter = mock()
 
-    private val directories = FileResourceDirectories(fileSystem, platformDirectories, databaseAdapter)
+    private val directories = FileResourceDirectoriesImpl(fileSystem, platformDirectories, databaseAdapter)
 
     @Before
     fun setUp() {

@@ -29,14 +29,14 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
 import java.io.File
 
 /**
  * Directories of the file resources of the logged-in user. D2 must be instantiated with a logged-in user, and the
  * `context` parameter is not used.
  */
-@Deprecated("Use the directories of the FileResourceModule, which are okio.Path.")
+@Deprecated("Use FileResourceModule.directories(), which works on okio.Path.")
 @Suppress("UnusedParameter")
 object FileResourceDirectoryHelper {
 
@@ -44,9 +44,9 @@ object FileResourceDirectoryHelper {
      * Directory where the Sdk saves the files associated with the file resources.
      */
     @Deprecated(
-        "Use FileResourceModule.fileResourceDirectory(), which is an okio.Path.",
+        "Use FileResourceModule.directories().fileResourceDirectory(), which is an okio.Path.",
         ReplaceWith(
-            "D2Manager.getD2().fileResourceModule().fileResourceDirectory().toFile()",
+            "D2Manager.getD2().fileResourceModule().directories().fileResourceDirectory().toFile()",
             "org.hisp.dhis.android.core.D2Manager",
         ),
     )
@@ -60,9 +60,9 @@ object FileResourceDirectoryHelper {
      * the device runs low on storage, but it is not cleared automatically, so it has to be tidied up proactively.
      */
     @Deprecated(
-        "Use FileResourceModule.fileCacheResourceDirectory(), which is an okio.Path.",
+        "Use FileResourceModule.directories().fileCacheResourceDirectory(), which is an okio.Path.",
         ReplaceWith(
-            "D2Manager.getD2().fileResourceModule().fileCacheResourceDirectory().toFile()",
+            "D2Manager.getD2().fileResourceModule().directories().fileCacheResourceDirectory().toFile()",
             "org.hisp.dhis.android.core.D2Manager",
         ),
     )
@@ -72,6 +72,6 @@ object FileResourceDirectoryHelper {
     }
 
     private fun directories(): FileResourceDirectories {
-        return D2Manager.getD2().d2DIComponent.fileResourceDirectories
+        return D2Manager.getD2().fileResourceModule().directories()
     }
 }

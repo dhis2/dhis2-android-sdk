@@ -30,24 +30,24 @@ package org.hisp.dhis.android.core.fileresource.internal
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.rx2.asObservable
-import okio.Path
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDownloader
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
-import org.hisp.dhis.android.core.fileresource.ImageDimension
+import org.hisp.dhis.android.core.fileresource.ImageTransformer
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FileResourceModuleImpl(
     private val fileResources: FileResourceCollectionRepository,
     private val fileResourceDownloader: FileResourceDownloader,
-    private val fileResourceDirectories: FileResourceDirectories,
-    private val fileResourceFiles: FileResourceFiles,
+    private val directories: FileResourceDirectories,
+    private val imageTransformer: ImageTransformer,
 ) : FileResourceModule {
 
     @Deprecated(
@@ -90,24 +90,12 @@ internal class FileResourceModuleImpl(
         return fileResourceDownloader
     }
 
-    override fun fileResourceDirectory(): Path {
-        return fileResourceDirectories.fileResourceDirectory()
+    override fun directories(): FileResourceDirectories {
+        return directories
     }
 
-    override fun fileCacheResourceDirectory(): Path {
-        return fileResourceDirectories.fileCacheResourceDirectory()
-    }
-
-    override fun resizeImage(image: Path, dimension: ImageDimension): Path {
-        return fileResourceFiles.resizeImage(image, dimension)
-    }
-
-    override fun compressImage(image: Path): Path {
-        return fileResourceFiles.compressImage(image)
-    }
-
-    override fun compressImage(image: Path, targetSizeBytes: Long): Path {
-        return fileResourceFiles.compressImage(image, targetSizeBytes)
+    override fun imageTransformer(): ImageTransformer {
+        return imageTransformer
     }
 
     private fun flowDownload(): Flow<D2Progress> {

@@ -36,8 +36,8 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
+import org.hisp.dhis.android.core.fileresource.internal.ImageTransformerImpl.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -48,7 +48,7 @@ import java.io.FileOutputStream
 
 /**
  * Covers the deprecated `File` helper, which delegates to the same image processor as
- * `FileResourceModule.compressImage()`.
+ * `ImageTransformer.compress()`.
  */
 @RunWith(D2JunitRunner::class)
 class FileCompressionHelperShould {
@@ -236,7 +236,7 @@ class FileCompressionHelperShould {
         private const val CLOSENESS_RATIO = 0.7
 
         private fun directory() =
-            File(InstrumentationRegistry.getInstrumentation().context.filesDir, FileResourceDirectories.FILES_DIR)
+            File(InstrumentationRegistry.getInstrumentation().context.filesDir, FileResourceDirectoriesImpl.FILES_DIR)
                 .apply { mkdirs() }
 
         /**

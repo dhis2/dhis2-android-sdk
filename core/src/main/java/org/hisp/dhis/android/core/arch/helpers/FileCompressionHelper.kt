@@ -30,14 +30,14 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessorLocator
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
+import org.hisp.dhis.android.core.fileresource.internal.ImageTransformerImpl.Companion.IMAGE_TARGET_SIZE_BYTES
 import java.io.File
 
 /**
  * Compresses image files before uploading them to the server. Only JPEG and PNG are produced, so the extension of the
  * result may differ from the original one.
  */
-@Deprecated("Use FileResourceModule.compressImage(), which works on okio.Path.")
+@Deprecated("Use FileResourceModule.imageTransformer().compress(), which works on okio.Path.")
 object FileCompressionHelper {
 
     /**
@@ -47,7 +47,7 @@ object FileCompressionHelper {
      * @return A new file, in the Sdk cache directory when available, that the caller should delete once consumed, or
      * [fileToCompress] if it was not compressed.
      */
-    @Deprecated("Use FileResourceModule.compressImage(), which works on okio.Path.")
+    @Deprecated("Use FileResourceModule.imageTransformer().compress(), which works on okio.Path.")
     @JvmStatic
     @JvmOverloads
     fun compressFile(fileToCompress: File, targetSizeBytes: Long = IMAGE_TARGET_SIZE_BYTES): File {

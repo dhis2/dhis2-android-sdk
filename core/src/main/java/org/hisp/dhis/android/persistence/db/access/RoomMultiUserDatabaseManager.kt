@@ -44,7 +44,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationIn
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
@@ -65,7 +65,7 @@ internal class RoomMultiUserDatabaseManager(
     private val databaseManager: RoomDatabaseManager,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val databaseExport: BaseDatabaseExport,
-    private val fileResourceDirectories: FileResourceDirectories,
+    private val fileResourceDirectories: FileResourceDirectoriesImpl,
 ) : MultiUserDatabaseManager {
 
     override suspend fun loadExistingChangingEncryptionIfRequiredOtherwiseCreateNew(

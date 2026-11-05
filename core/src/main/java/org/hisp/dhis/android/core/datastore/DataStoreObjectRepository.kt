@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.core.datastore
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -38,31 +39,37 @@ import org.hisp.dhis.android.core.datastore.internal.DataStoreEntryStore
 
 class DataStoreObjectRepository internal constructor(
     store: DataStoreEntryStore,
+    private val databaseAdapter: DatabaseAdapter,
     childrenAppenders: ChildrenAppenderGetter<DataStoreEntry>,
     scope: RepositoryScope,
     private val namespace: String,
     private val key: String,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataStoreEntry, DataStoreObjectRepository>(
     store,
+    databaseAdapter,
     childrenAppenders,
     scope,
     ObjectRepositoryFactory { s ->
-        DataStoreObjectRepository(store, childrenAppenders, s, namespace, key)
+        DataStoreObjectRepository(store, databaseAdapter, childrenAppenders, s, namespace, key)
     },
 ),
     ReadWriteValueObjectRepository<DataStoreEntry> {
 
     override suspend fun suspendSet(value: String?) {
-        val entry = setBuilder().value(value).deleted(false).build()
-        setObject(entry)
+        databaseAdapter.withTransaction {
+            val entry = setBuilder().value(value).deleted(false).build()
+            setObject(entry)
+        }
     }
 
     override suspend fun suspendDelete() {
-        getWithoutChildrenInternal()?.let { entry ->
-            if (entry.syncState() == State.TO_POST) {
-                super.suspendDelete()
-            } else {
-                setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+        databaseAdapter.withTransaction {
+            getWithoutChildrenInternal()?.let { entry ->
+                if (entry.syncState() == State.TO_POST) {
+                    super.suspendDelete()
+                } else {
+                    setObject(entry.toBuilder().deleted(true).syncState(State.TO_UPDATE).build())
+                }
             }
         }
     }

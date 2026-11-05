@@ -42,8 +42,6 @@ class SystemSettingsDTOMappingShould {
         keyStyle = keyStyle,
         keyCustomColorMobile = keyCustomColorMobile,
         keyDefaultBaseMap = null,
-        keyBingMapsApiKey = null,
-        keyAzureMapsApiKey = null,
         analyticsFinancialYearStart = null,
         analyticsWeeklyStart = null,
     )

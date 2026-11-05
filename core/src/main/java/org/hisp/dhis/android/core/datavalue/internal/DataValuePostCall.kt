@@ -37,7 +37,7 @@ import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.DataValue
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
-import org.hisp.dhis.android.core.systeminfo.internal.DHISVersionManagerImpl
+import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -46,7 +46,7 @@ internal class DataValuePostCall(
     private val dataValueImportHandler: DataValueImportHandler,
     private val fileResourcePostCall: DataValueFileResourcePostCall,
     private val dataValueStore: DataValueStore,
-    private val versionManager: DHISVersionManagerImpl,
+    private val versionManager: DHISVersionManager,
 ) {
     fun uploadDataValues(dataValues: List<DataValue>): Flow<D2Progress> = flow {
         if (dataValues.isEmpty()) {
@@ -58,7 +58,7 @@ internal class DataValuePostCall(
         val validDataValues = result.dataValues
 
         try {
-            if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_39)) {
+            if (versionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_39)) {
                 uploadByDataSet(validDataValues)
             } else {
                 uploadLegacy(validDataValues)
@@ -104,7 +104,7 @@ internal class DataValuePostCall(
         markObjectsAs(dataValues, State.UPLOADING)
         val dataValueSet = DataValueSet(dataValues)
 
-        val result = if (versionManager.isGreaterOrEqualThanInternal(DHISVersion.V2_38)) {
+        val result = if (versionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
             networkHandler.postDataValuesWebResponse(dataValueSet).map { it.response }
         } else {
             networkHandler.postDataValues(dataValueSet)

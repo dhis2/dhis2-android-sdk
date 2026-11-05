@@ -40,7 +40,7 @@ internal class OrganisationUnitLevelNetworkHandlerImpl(
     private val service = OrganisationUnitLevelService(httpClient)
 
     override suspend fun getOrganisationUnitLevels(): Payload<OrganisationUnitLevel> {
-        val apiPayload = service.getOrganisationUnitLevels(OrganisationUnitLevelFields.allFields, false)
+        val apiPayload = service.getOrganisationUnitLevels(false)
         return apiPayload.mapItems(OrganisationUnitLevelDTO::toDomain)
     }
 }

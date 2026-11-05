@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.event
 
-import androidx.room.RoomRawQuery
+import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.EnumHelper.asStringList

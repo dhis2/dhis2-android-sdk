@@ -44,7 +44,7 @@ internal class ValidationRuleNetworkHandlerImpl(
     private val service: ValidationRuleService = ValidationRuleService(httpServiceClient)
     override suspend fun getValidationRules(uids: Set<String>): Payload<ValidationRule> {
         val uidsFilterStr = ObjectWithUid.uid.`in`(uids).generateString()
-        val apiPayload = service.getValidationRules(ValidationRuleFields.allFields, uidsFilterStr, false)
+        val apiPayload = service.getValidationRules(uidsFilterStr, false)
         return apiPayload.mapNotNullItems(ValidationRuleDTO::toDomain)
     }
 

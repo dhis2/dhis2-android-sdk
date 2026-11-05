@@ -47,7 +47,6 @@ internal class DataApprovalNetworkHandlerImpl(
         dataApprovalPartition: DataApprovalPartition,
     ): List<DataApproval> {
         val dataApprovalDtoList = service.getDataApprovals(
-            fields = DataApprovalFields.allFields,
             lastUpdated = lastUpdated,
             workflow = commaSeparatedCollectionValues(dataApprovalPartition[0]),
             periods = commaSeparatedCollectionValues(dataApprovalPartition[1]),

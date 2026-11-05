@@ -1,6 +1,6 @@
 package org.hisp.dhis.android.persistence.datavalue
 
-import androidx.room.Entity
+import androidx.room3.Entity
 import org.hisp.dhis.android.core.datavalue.DataValueConflict
 import org.hisp.dhis.android.core.imports.ImportStatus
 import org.hisp.dhis.android.core.util.dateFormat

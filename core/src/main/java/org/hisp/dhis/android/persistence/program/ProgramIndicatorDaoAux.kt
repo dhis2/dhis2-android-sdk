@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.persistence.program
 
-import androidx.room.Query
+import androidx.room3.Query
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.persistence.common.daos.IdentifiableObjectDao
 import org.hisp.dhis.android.processor.GenerateDaoQueries
@@ -41,5 +41,5 @@ internal interface ProgramIndicatorDaoAux : IdentifiableObjectDao<ProgramIndicat
         WHERE ${IdentifiableColumns.UID} IN (:uids)
     """,
     )
-    fun deleteByUids(uids: List<String>)
+    suspend fun deleteByUids(uids: List<String>)
 }

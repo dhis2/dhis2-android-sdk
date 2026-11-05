@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.user.oauth2
 
 import io.reactivex.Observable
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 
@@ -59,12 +59,12 @@ interface OAuth2Handler {
 
     suspend fun suspendSetPin(pin: String): Result<Unit, D2Error>
 
-    fun blockingSetPin(pin: String): Result<Unit, D2Error> = runBlocking { suspendSetPin(pin) }
+    fun blockingSetPin(pin: String): Result<Unit, D2Error> = runBlockingOnIO { suspendSetPin(pin) }
 
     suspend fun suspendChangePin(currentPin: String, newPin: String): Result<Unit, D2Error>
 
     fun blockingChangePin(currentPin: String, newPin: String): Result<Unit, D2Error> =
-        runBlocking { suspendChangePin(currentPin, newPin) }
+        runBlockingOnIO { suspendChangePin(currentPin, newPin) }
 
     fun blockingLogOut()
 

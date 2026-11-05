@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.trackedentity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.util.dateFormat

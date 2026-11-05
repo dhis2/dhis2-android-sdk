@@ -101,7 +101,7 @@ internal class AggregatedDataCallBundleFactory(
         }
     }
 
-    private fun getBundleKey(
+    private suspend fun getBundleKey(
         dataSetSettings: DataSetSettings?,
         dataSet: DataSet,
         syncValues: Map<String, AggregatedDataSync>,

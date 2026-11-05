@@ -42,7 +42,7 @@ internal class OptionNetworkHandlerImpl(
 
     override suspend fun getOptions(optionUids: Set<String>, page: Int, pageSize: Int): PayloadJson<Option> {
         val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(optionUids).generateString()
-        val apiPayload = service.getOptions(OptionFields.allFields, optionSetUidsFilterStr, true, page, pageSize)
+        val apiPayload = service.getOptions(optionSetUidsFilterStr, true, page, pageSize)
         return apiPayload.mapItems(OptionDTO::toDomain)
     }
 }

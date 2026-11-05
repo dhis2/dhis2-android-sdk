@@ -28,21 +28,18 @@
 package org.hisp.dhis.android.network.visualization
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.visualization.Visualization
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class VisualizationService(private val client: HttpServiceClient) {
 
     suspend fun getSingleVisualization(
         uid: String,
-        fields: Fields<Visualization>,
         accessFilter: String,
         paging: Boolean,
     ): VisualizationDTO {
         return client.get {
             url("$VISUALIZATIONS/$uid")
             parameters {
-                fields(fields)
+                fields<VisualizationDTO>()
                 attribute("filter", accessFilter)
                 paging(paging)
             }
@@ -51,14 +48,13 @@ internal class VisualizationService(private val client: HttpServiceClient) {
 
     suspend fun getSingleVisualizations36(
         uid: String,
-        fields: Fields<Visualization>,
         accessFilter: String,
         paging: Boolean,
     ): Visualization36DTO {
         return client.get {
             url("$VISUALIZATIONS/$uid")
             parameters {
-                fields(fields)
+                fields<Visualization36DTO>()
                 attribute("filter", accessFilter)
                 paging(paging)
             }

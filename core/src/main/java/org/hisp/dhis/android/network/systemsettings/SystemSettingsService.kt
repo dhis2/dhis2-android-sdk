@@ -29,15 +29,36 @@
 package org.hisp.dhis.android.network.systemsettings
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class SystemSettingsService(private val client: HttpServiceClient) {
-    suspend fun getSystemSettings(fields: Fields<SystemSettingsDTO>): SystemSettingsDTO {
+    suspend fun getSystemSettings(): SystemSettingsDTO {
         return client.get {
-            url("systemSettings")
+            url(SYSTEM_SETTINGS)
             parameters {
-                keys(fields)
+                keys<SystemSettingsDTO>()
             }
         }
+    }
+
+    suspend fun getBingMapsApiKey(): BingMapsApiKeyDTO {
+        return client.get {
+            url(SYSTEM_SETTINGS)
+            parameters {
+                keys<BingMapsApiKeyDTO>()
+            }
+        }
+    }
+
+    suspend fun getAzureMapsApiKey(): AzureMapsApiKeyDTO {
+        return client.get {
+            url(SYSTEM_SETTINGS)
+            parameters {
+                keys<AzureMapsApiKeyDTO>()
+            }
+        }
+    }
+
+    companion object {
+        private const val SYSTEM_SETTINGS = "systemSettings"
     }
 }

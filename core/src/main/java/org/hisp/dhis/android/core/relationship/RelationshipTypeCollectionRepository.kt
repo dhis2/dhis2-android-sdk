@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -99,7 +99,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
-        val trackedEntityInstance = runBlocking { teiStore.selectByUid(trackedEntityInstanceUid) }
+        val trackedEntityInstance = runBlockingOnIO { teiStore.selectByUid(trackedEntityInstanceUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForTrackedEntityInstanceRawQuery(trackedEntityInstance),
@@ -112,7 +112,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
-        val enrollment = runBlocking { enrollmentStore.selectByUid(enrollmentUid) }
+        val enrollment = runBlockingOnIO { enrollmentStore.selectByUid(enrollmentUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEnrollmentRawQuery(enrollment),
@@ -125,7 +125,7 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
-        val event = runBlocking { eventStore.selectByUid(eventUid) }
+        val event = runBlockingOnIO { eventStore.selectByUid(eventUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
             availableForEventRawQuery(event),

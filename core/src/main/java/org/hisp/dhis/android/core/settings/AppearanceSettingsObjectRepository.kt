@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.settings
 
-import kotlinx.coroutines.runBlocking
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithDownloadObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ReadOnlyAnyObjectWithDownloadRepositoryImpl
 import org.hisp.dhis.android.core.settings.AppearanceSettingsHelper.getGlobal
@@ -160,12 +160,12 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getGlobalProgramConfigurationSetting(): ProgramConfigurationSetting? {
-        val programSettingList = runBlocking { programConfigurationSettingStore.selectAll() }
+        val programSettingList = runBlockingOnIO { programConfigurationSettingStore.selectAll() }
         return getGlobal(programSettingList) { it.uid }
     }
 
     fun getGlobalDataSetConfigurationSetting(): DataSetConfigurationSetting? {
-        val dataSetSettingList = runBlocking { dataSetConfigurationSettingStore.selectAll() }
+        val dataSetSettingList = runBlockingOnIO { dataSetConfigurationSettingStore.selectAll() }
         return getGlobal(dataSetSettingList) { it.uid }
     }
 
@@ -176,14 +176,14 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getProgramConfigurationByUid(uid: String?): ProgramConfigurationSetting? {
-        val programSettingList = runBlocking { programConfigurationSettingStore.selectAll() }
+        val programSettingList = runBlockingOnIO { programConfigurationSettingStore.selectAll() }
         val result = getSpecifics(programSettingList) { it.uid }[uid]
 
         return result ?: getGlobalProgramConfigurationSetting()
     }
 
     fun getDataSetConfigurationByUid(uid: String?): DataSetConfigurationSetting? {
-        val dataSetSettingList = runBlocking { dataSetConfigurationSettingStore.selectAll() }
+        val dataSetSettingList = runBlockingOnIO { dataSetConfigurationSettingStore.selectAll() }
         val result = getSpecifics(dataSetSettingList) { it.uid }[uid]
 
         return result ?: getGlobalDataSetConfigurationSetting()

@@ -55,7 +55,6 @@ internal class DataValueNetworkHandlerImpl(
         lastUpdated: String?,
     ): List<DataValue> {
         val apiResponse = service.getDataValues(
-            fields = DataValueFields.allFields,
             lastUpdated = lastUpdated,
             dataSetUids = dataSetUid,
             periodIds = commaSeparatedCollectionValues(partition.periodIds),

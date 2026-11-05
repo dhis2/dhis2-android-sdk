@@ -28,8 +28,8 @@
 package org.hisp.dhis.android.core.trackedentity.search
 
 import androidx.paging.PageKeyedDataSource
-import kotlinx.coroutines.runBlocking
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 
@@ -66,6 +66,6 @@ internal class TrackedEntityInstanceQueryDataSourceResult(
     }
 
     private fun loadPages(requestedLoadSize: Int): List<Result<TrackedEntityInstance, D2Error>> {
-        return runBlocking { dataFetcher.loadPages(requestedLoadSize) }
+        return runBlockingOnIO { dataFetcher.loadPages(requestedLoadSize) }
     }
 }

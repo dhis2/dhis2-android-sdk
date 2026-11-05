@@ -28,19 +28,16 @@
 package org.hisp.dhis.android.network.programrule
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.program.ProgramRule
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ProgramRuleService(private val client: HttpServiceClient) {
     suspend fun getProgramRules(
-        fields: Fields<ProgramRule>,
         programUidsFilterString: String,
         paging: Boolean,
     ): ProgramRulePayload {
         return client.get {
             url("programRules")
             parameters {
-                fields(fields)
+                fields<ProgramRuleDTO>()
                 attribute("filter", programUidsFilterString)
                 paging(paging)
             }

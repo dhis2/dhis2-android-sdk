@@ -28,21 +28,18 @@
 package org.hisp.dhis.android.network.trackervisualization
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.visualization.TrackerVisualization
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class TrackerVisualizationService(private val client: HttpServiceClient) {
 
     suspend fun getSingleTrackerVisualization(
         uid: String,
-        fields: Fields<TrackerVisualization>,
         accessFilter: String,
         paging: Boolean,
     ): TrackerVisualizationDTO {
         return client.get {
             url("$TRACKER_VISUALIZATIONS/$uid")
             parameters {
-                fields(fields)
+                fields<TrackerVisualizationDTO>()
                 attribute("filter", accessFilter)
                 paging(paging)
             }

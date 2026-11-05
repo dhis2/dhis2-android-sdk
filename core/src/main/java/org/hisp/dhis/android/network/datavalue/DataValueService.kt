@@ -28,14 +28,11 @@
 package org.hisp.dhis.android.network.datavalue
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.datavalue.DataValue
-import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")
 internal class DataValueService(private val client: HttpServiceClient) {
 
     suspend fun getDataValues(
-        fields: Fields<DataValue>,
         lastUpdated: String?,
         dataSetUids: String,
         periodIds: String,
@@ -47,7 +44,7 @@ internal class DataValueService(private val client: HttpServiceClient) {
         return client.get {
             url("dataValueSets")
             parameters {
-                fields(fields)
+                fields<DataValueDTO>()
                 attribute("lastUpdated", lastUpdated)
                 attribute("dataSet", dataSetUids)
                 attribute("period", periodIds)

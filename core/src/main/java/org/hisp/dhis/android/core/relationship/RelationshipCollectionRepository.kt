@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.relationship
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
@@ -66,6 +67,7 @@ class RelationshipCollectionRepository internal constructor(
     private val storeSelector: RelationshipItemElementStoreSelector,
     private val relationshipManager: RelationshipManager,
     private val trackerDataManager: TrackerDataManager,
+    private val databaseAdapter: DatabaseAdapter,
 ) : BaseReadOnlyWithUidCollectionRepositoryImpl<Relationship, RelationshipCollectionRepository>(
     relationshipStore,
     childrenAppenders,
@@ -80,6 +82,7 @@ class RelationshipCollectionRepository internal constructor(
             storeSelector,
             relationshipManager,
             trackerDataManager,
+            databaseAdapter,
         )
     },
 ),
@@ -87,19 +90,19 @@ class RelationshipCollectionRepository internal constructor(
     @Suppress("ThrowsCount")
     @Throws(D2Error::class)
     override suspend fun suspendAdd(o: Relationship): String {
-        if (relationshipHandler.doesRelationshipExist(o)) {
-            throw D2Error
-                .builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
-                .errorDescription("Tried to create already existing Relationship: $o")
-                .build()
-        } else if (o.from() == null || o.to() == null) {
+        if (o.from() == null || o.to() == null) {
             throw D2Error
                 .builder()
                 .errorComponent(D2ErrorComponent.SDK)
                 .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
                 .errorDescription("Relationship is missing either 'from' or 'to' component.")
+                .build()
+        } else if (relationshipHandler.doesRelationshipExist(o)) {
+            throw D2Error
+                .builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.CANT_CREATE_EXISTING_OBJECT)
+                .errorDescription("Tried to create already existing Relationship: $o")
                 .build()
         } else {
             val from = o.from()
@@ -134,6 +137,7 @@ class RelationshipCollectionRepository internal constructor(
         val updatedScope: RepositoryScope = withUidFilterItem(scope, uid)
         return RelationshipObjectRepository(
             relationshipStore,
+            databaseAdapter,
             uid,
             childrenAppenders,
             updatedScope,

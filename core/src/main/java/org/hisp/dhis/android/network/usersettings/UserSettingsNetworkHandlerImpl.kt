@@ -40,7 +40,7 @@ internal class UserSettingsNetworkHandlerImpl(
     private val service = UserSettingsService(httpServiceClient)
 
     override suspend fun getUserSettings(): UserSettings {
-        val apiPayload = service.getUserSettings(UserSettingsFields.allFields)
+        val apiPayload = service.getUserSettings()
         return apiPayload.toDomain()
     }
 }

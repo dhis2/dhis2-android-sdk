@@ -1,8 +1,8 @@
 package org.hisp.dhis.android.persistence.dataelement
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
+import androidx.room3.PrimaryKey
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.EntityDB

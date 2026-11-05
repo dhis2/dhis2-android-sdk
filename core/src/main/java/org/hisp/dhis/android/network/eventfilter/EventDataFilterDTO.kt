@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.eventfilter
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.event.EventDataFilter
 import org.hisp.dhis.android.network.common.dto.DateFilterPeriodDTO
@@ -44,6 +45,7 @@ internal data class EventDataFilterDTO(
     override val `in`: Set<String>?,
     override val like: String?,
     override val dateFilter: DateFilterPeriodDTO?,
+    @SerialName("null")
     override val isEmpty: Boolean?,
     val dataItem: String,
 ) : FilterOperatorsDTO {

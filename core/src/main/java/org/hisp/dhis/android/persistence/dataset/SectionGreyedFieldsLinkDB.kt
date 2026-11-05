@@ -1,7 +1,7 @@
 package org.hisp.dhis.android.persistence.dataset
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room3.Entity
+import androidx.room3.ForeignKey
 import org.hisp.dhis.android.core.dataset.SectionGreyedFieldsLink
 import org.hisp.dhis.android.persistence.category.CategoryOptionComboDB
 import org.hisp.dhis.android.persistence.common.EntityDB

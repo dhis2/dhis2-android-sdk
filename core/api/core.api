@@ -10172,6 +10172,11 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceDataDomai
 	public static fun values ()[Lorg/hisp/dhis/android/core/fileresource/FileResourceDataDomainType;
 }
 
+public abstract interface class org/hisp/dhis/android/core/fileresource/FileResourceDirectories {
+	public abstract fun fileCacheResourceDirectory ()Lokio/Path;
+	public abstract fun fileResourceDirectory ()Lokio/Path;
+}
+
 public final class org/hisp/dhis/android/core/fileresource/FileResourceDomain : java/lang/Enum {
 	public static final field DATA_VALUE Lorg/hisp/dhis/android/core/fileresource/FileResourceDomain;
 	public static final field DOCUMENT Lorg/hisp/dhis/android/core/fileresource/FileResourceDomain;
@@ -10220,14 +10225,11 @@ public final class org/hisp/dhis/android/core/fileresource/FileResourceElementTy
 
 public abstract interface class org/hisp/dhis/android/core/fileresource/FileResourceModule {
 	public abstract fun blockingDownload ()V
-	public abstract fun compressImage (Lokio/Path;)Lokio/Path;
-	public abstract fun compressImage (Lokio/Path;J)Lokio/Path;
+	public abstract fun directories ()Lorg/hisp/dhis/android/core/fileresource/FileResourceDirectories;
 	public abstract fun download ()Lio/reactivex/Observable;
-	public abstract fun fileCacheResourceDirectory ()Lokio/Path;
-	public abstract fun fileResourceDirectory ()Lokio/Path;
 	public abstract fun fileResourceDownloader ()Lorg/hisp/dhis/android/core/fileresource/FileResourceDownloader;
 	public abstract fun fileResources ()Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;
-	public abstract fun resizeImage (Lokio/Path;Lorg/hisp/dhis/android/core/fileresource/ImageDimension;)Lokio/Path;
+	public abstract fun imageTransformer ()Lorg/hisp/dhis/android/core/fileresource/ImageTransformer;
 }
 
 public final class org/hisp/dhis/android/core/fileresource/FileResourceObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl {
@@ -10259,6 +10261,12 @@ public final class org/hisp/dhis/android/core/fileresource/ImageDimension : java
 	public final fun getPixels ()I
 	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
 	public static fun values ()[Lorg/hisp/dhis/android/core/fileresource/ImageDimension;
+}
+
+public abstract interface class org/hisp/dhis/android/core/fileresource/ImageTransformer {
+	public abstract fun compress (Lokio/Path;)Lokio/Path;
+	public abstract fun compress (Lokio/Path;J)Lokio/Path;
+	public abstract fun resize (Lokio/Path;Lorg/hisp/dhis/android/core/fileresource/ImageDimension;)Lokio/Path;
 }
 
 public final class org/hisp/dhis/android/core/fileresource/OrgHispDhisAndroidCoreFileresourceFileResourceDIModuleModuleKt {
@@ -28787,7 +28795,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_f
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;Lorg/hisp/dhis/android/core/arch/repositories/collection/internal/ReadWriteWithUidCollectionRepositoryImpl;Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadWriteWithUidCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/FileResourceDownloader;Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/FileResourceRoutine;)V
-	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceDirectories;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceDirectoriesImpl;Lorg/hisp/dhis/android/core/fileresource/FileResourceDirectories;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceDownloadCall;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceDownloadCallHelper;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceFiles;)V
@@ -28797,6 +28805,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_f
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceModuleWiper;Lorg/hisp/dhis/android/core/wipe/internal/ModuleWiper;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourcePostCall;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/FileResourceProjectionTransformer;Lorg/hisp/dhis/android/core/arch/handlers/internal/Transformer;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_fileresource_FileResourceDIModule_single (Lorg/hisp/dhis/android/core/fileresource/internal/ImageTransformerImpl;Lorg/hisp/dhis/android/core/fileresource/ImageTransformer;)V
 }
 
 public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_icon_IconDIModuleKt {

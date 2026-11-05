@@ -31,7 +31,6 @@ package org.hisp.dhis.android.network.program
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
@@ -62,7 +61,7 @@ internal data class ProgramSectionDTO(
             style?.let { style(it.toDomain()) }
             description(description)
             program(program?.toDomain())
-            attributes(trackedEntityAttributes?.map { TrackedEntityAttribute.builder().uid(it.id).build() })
+            attributeUids(trackedEntityAttributes?.map { it.toDomain() })
             sortOrder(sortOrder)
             formName(formName)
             renderType(renderType?.toDomain())

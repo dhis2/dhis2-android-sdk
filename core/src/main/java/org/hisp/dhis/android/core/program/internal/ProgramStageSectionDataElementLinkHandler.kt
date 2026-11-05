@@ -29,11 +29,11 @@
 package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.OrderedLinkHandlerImpl
-import org.hisp.dhis.android.core.dataelement.DataElement
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class ProgramStageSectionDataElementLinkHandler(
     store: ProgramStageSectionDataElementLinkStore,
-) : OrderedLinkHandlerImpl<DataElement, ProgramStageSectionDataElementLink>(store)
+) : OrderedLinkHandlerImpl<ObjectWithUid, ProgramStageSectionDataElementLink>(store)

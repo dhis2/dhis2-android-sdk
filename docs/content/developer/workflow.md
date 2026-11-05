@@ -1048,13 +1048,13 @@ Through this repository it is possible to request files and save new ones.
 
     `rxProcessAndAdd()` and `suspendProcessAndAdd()` are available as well.
 
-- **Directories**. `fileResourceDirectory()` returns the `sdk_resources` directory where the SDK saves the files associated with the file resources, and `fileCacheResourceDirectory()` returns the `sdk_cache_resources` directory. The cache directory should be the place where volatile files are stored, such as camera photos or images to be resized. Since it is contained in the cache directory, Android may auto-delete its files once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
+- **Directories**. Through `directories()`, `fileResourceDirectory()` returns the `sdk_resources` directory where the SDK saves the files associated with the file resources, and `fileCacheResourceDirectory()` returns the `sdk_cache_resources` directory. The cache directory should be the place where volatile files are stored, such as camera photos or images to be resized. Since it is contained in the cache directory, Android may auto-delete its files once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
 
   Each account has its own directories, so a user must be logged in.
 
   ```kotlin
-  val directory = d2.fileResourceModule().fileResourceDirectory()
-  val cacheDirectory = d2.fileResourceModule().fileCacheResourceDirectory()
+  val directory = d2.fileResourceModule().directories().fileResourceDirectory()
+  val cacheDirectory = d2.fileResourceModule().directories().fileCacheResourceDirectory()
   ```
 
 ### Image compression { #android_sdk_image_compression }
@@ -1078,16 +1078,16 @@ val dataSetQuality = d2.settingModule().dataSetSetting()
     .getImageQualityFromDataSetSetting(dataSetUid, dataElementUid)
 ```
 
-The compression itself is also exposed by the module, in case the app needs to compress an image outside the file resource flow. The compressed image is written to the cache directory, and the app owns it:
+The compression itself is also exposed by the `imageTransformer()` of the module, in case the app needs to compress an image outside the file resource flow. The compressed image is written to the cache directory, and the app owns it:
 
 ```kotlin
-val compressed = d2.fileResourceModule().compressImage(path)              // 600 KB target
-val smaller = d2.fileResourceModule().compressImage(path, 200 * 1024L)    // custom target
+val compressed = d2.fileResourceModule().imageTransformer().compress(path)              // 600 KB target
+val smaller = d2.fileResourceModule().imageTransformer().compress(path, 200 * 1024L)    // custom target
 ```
 
 ### Image resizing
 
-The `resizeImage()` method of the module resizes an image to one of the dimensions in the following table (`ImageDimension`).
+The `resize()` method of the `imageTransformer()` resizes an image to one of the dimensions in the following table (`ImageDimension`).
 
 | Small | Medium | Large  |
 |-------|--------|--------|
@@ -1100,7 +1100,7 @@ In the event that the image is smaller than the dimension to which you want to r
 Otherwise, the resized image is written to the cache directory under the name `resized-DIMENSION-` + the name of the original image, and the app owns it.
 
 ```kotlin
-val resized = d2.fileResourceModule().resizeImage(path, ImageDimension.SMALL)
+val resized = d2.fileResourceModule().imageTransformer().resize(path, ImageDimension.SMALL)
 ```
 
 ### Migration from `java.io.File`
@@ -1109,11 +1109,11 @@ The members that use `java.io.File` are deprecated and will be removed in a futu
 
 | Deprecated | Replacement |
 |------------|-------------|
-| `FileResourceDirectoryHelper.getFileResourceDirectory(context)` | `d2.fileResourceModule().fileResourceDirectory()` |
-| `FileResourceDirectoryHelper.getFileCacheResourceDirectory(context)` | `d2.fileResourceModule().fileCacheResourceDirectory()` |
-| `FileResizerHelper.resizeFile(file, dimension)` | `d2.fileResourceModule().resizeImage(path, imageDimension)` |
+| `FileResourceDirectoryHelper.getFileResourceDirectory(context)` | `d2.fileResourceModule().directories().fileResourceDirectory()` |
+| `FileResourceDirectoryHelper.getFileCacheResourceDirectory(context)` | `d2.fileResourceModule().directories().fileCacheResourceDirectory()` |
+| `FileResizerHelper.resizeFile(file, dimension)` | `d2.fileResourceModule().imageTransformer().resize(path, imageDimension)` |
 | `FileResizerHelper.Dimension` | `ImageDimension` |
-| `FileCompressionHelper.compressFile(file, targetSizeBytes)` | `d2.fileResourceModule().compressImage(path, targetSizeBytes)` |
+| `FileCompressionHelper.compressFile(file, targetSizeBytes)` | `d2.fileResourceModule().imageTransformer().compress(path, targetSizeBytes)` |
 | `fileResources().blockingAdd(file)`, `rxAdd(file)`, `suspendAdd(file)` | The same methods with a `Path` |
 | `fileResources().blockingProcessAndAdd(file, context)`, `rxProcessAndAdd`, `suspendProcessAndAdd` | The same methods with a `Path` |
 | `databaseImportExport().importDatabase(file)` | `databaseImportExport().importDatabase(path)` |

@@ -29,7 +29,7 @@
 package org.hisp.dhis.android.core.arch.helpers.internal
 
 import okio.Path
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.Dimension
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 /**
@@ -49,7 +49,7 @@ internal interface ImageProcessor {
      * @throws D2Error if the image cannot be decoded or the result cannot be written.
      */
     @Throws(D2Error::class)
-    fun resize(source: Path, dimension: Dimension, outputDirectory: Path): Path
+    fun resize(source: Path, dimension: ImageDimension, outputDirectory: Path): Path
 
     /**
      * Compress an image so that its encoded size does not exceed [targetSizeBytes], keeping the aspect ratio and the

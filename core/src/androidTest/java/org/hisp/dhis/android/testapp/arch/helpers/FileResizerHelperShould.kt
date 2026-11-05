@@ -43,7 +43,12 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 import java.util.*
 
+/**
+ * Covers the deprecated `File` helper, which delegates to the same image processor as
+ * `FileResourceModule.resizeImage()`.
+ */
 @RunWith(D2JunitRunner::class)
+@Suppress("DEPRECATION")
 class FileResizerHelperShould {
 
     @Test

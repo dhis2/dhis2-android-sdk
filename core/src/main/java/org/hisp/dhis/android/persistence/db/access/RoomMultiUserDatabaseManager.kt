@@ -172,7 +172,7 @@ internal class RoomMultiUserDatabaseManager(
             fileSystem.deleteIfExists(protectedDbPath)
 
             if (account.encrypted()) {
-                databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath.toFile(), targetFile = dbPath.toFile())
+                databaseExport.encryptAndCopyTo(account, sourceFile = tempDbPath, targetFile = dbPath)
             } else {
                 fileSystem.copyTo(tempDbPath, dbPath, overwrite = true)
             }

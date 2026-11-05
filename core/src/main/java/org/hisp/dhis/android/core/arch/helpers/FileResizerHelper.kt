@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessorLocator
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.io.File
 
+@Deprecated("Use FileResourceModule.resizeImage(), which works on okio.Path.")
 object FileResizerHelper {
 
     /**
@@ -46,15 +48,29 @@ object FileResizerHelper {
      * @param dimension     The dimension to resize.
      * @return The resized [File].
      */
+    @Deprecated(
+        "Use FileResourceModule.resizeImage(), which works on okio.Path.",
+        ReplaceWith(
+            "D2Manager.getD2().fileResourceModule()" +
+                ".resizeImage(fileToResize.toOkioPath(), ImageDimension.valueOf(dimension.name)).toFile()",
+            "org.hisp.dhis.android.core.D2Manager",
+            "okio.Path.Companion.toOkioPath",
+            "org.hisp.dhis.android.core.fileresource.ImageDimension",
+        ),
+    )
     @JvmStatic
     @Throws(D2Error::class)
     fun resizeFile(fileToResize: File, dimension: Dimension): File {
         val source = fileToResize.toOkioPath()
         val outputDirectory = ImageProcessorLocator.outputDirectory(fileToResize)
-        val resized = ImageProcessorLocator.processor.resize(source, dimension, outputDirectory)
+        val resized = ImageProcessorLocator.processor.resize(source, dimension.toImageDimension(), outputDirectory)
         return if (resized == source) fileToResize else resized.toFile()
     }
 
+    @Deprecated(
+        "Use ImageDimension.",
+        ReplaceWith("ImageDimension", "org.hisp.dhis.android.core.fileresource.ImageDimension"),
+    )
     @Suppress("MagicNumber")
     enum class Dimension(val dimension: Int) {
         SMALL(256),
@@ -62,15 +78,11 @@ object FileResizerHelper {
         LARGE(1024),
     }
 
-    @Suppress("MagicNumber")
-    internal sealed class DimensionSize(val name: String, val maxSizeB: Long) {
-        object Small : DimensionSize("SMALL", 400000L)
-        object Medium : DimensionSize("MEDIUM", 1600000L)
-        object NotSupported : DimensionSize("NOT_SUPPORTED", 0L)
-        data class Original(val originalMaxSizeB: Long) : DimensionSize(ORIGINAL_NAME, originalMaxSizeB)
-
-        companion object {
-            const val ORIGINAL_NAME = "ORIGINAL"
+    private fun Dimension.toImageDimension(): ImageDimension {
+        return when (this) {
+            Dimension.SMALL -> ImageDimension.SMALL
+            Dimension.MEDIUM -> ImageDimension.MEDIUM
+            Dimension.LARGE -> ImageDimension.LARGE
         }
     }
 }

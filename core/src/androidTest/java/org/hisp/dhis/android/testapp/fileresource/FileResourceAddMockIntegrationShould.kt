@@ -28,19 +28,17 @@
 package org.hisp.dhis.android.testapp.fileresource
 
 import android.graphics.Bitmap
-import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
 import okio.Path.Companion.toOkioPath
 import okio.source
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
-import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileCacheResourceDirectory
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper.getFileResourceDirectory
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.data.fileresource.RandomGeneratedInputStream
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceStore
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -87,6 +85,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun add_fileResources_to_the_repository() = runTest {
         val file = storeFile()
         assertThat(file.exists()).isTrue()
@@ -108,6 +107,28 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
 
         savedFile.delete()
         koin.get<FileResourceStore>().delete(fileResource.uid())
+    }
+
+    @Test
+    fun add_fileResources_from_a_path() = fileResourceTest {
+        val file = storeFile().toOkioPath()
+
+        val uid = d2.fileResourceModule().fileResources().suspendAdd(file)
+
+        val fileResource = storedFileResource(uid)
+        assertThat(fileResource.name()).isEqualTo(file.name)
+        assertThat(fileResource.contentLength()).isEqualTo(FileSystem.SYSTEM.metadata(file).size)
+    }
+
+    @Test
+    @Suppress("DEPRECATION")
+    fun compress_image_added_as_a_file() = fileResourceTest {
+        val file = storeImageFile("program-default-file.png")
+
+        val uid = d2.fileResourceModule().fileResources()
+            .suspendProcessAndAdd(file, programImageContext(file, ITEM_B_UID))
+
+        assertCompressed(storedFileResource(uid), file)
     }
 
     @Test
@@ -181,7 +202,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     private fun assertCompressed(fileResource: FileResource, sourceFile: File) {
         assertThat(fileResource.contentLength()).isLessThan(sourceFile.length())
-        assertThat(fileResource.contentLength()).isAtMost(FileCompressionHelper.TARGET_SIZE_BYTES)
+        assertThat(fileResource.contentLength()).isAtMost(IMAGE_TARGET_SIZE_BYTES)
 
         // The stored images are opaque, so they are converted to jpeg. The name exposed to the server keeps the
         // original one, with the extension of the format actually uploaded, and the content type must agree with it.
@@ -197,14 +218,17 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
      * directory is kept.
      */
     private fun assertNoLeftOverTemporaryFiles() {
-        val cacheDirectory = getFileCacheResourceDirectory(d2.context())
-        val temporaryFiles = cacheDirectory.listFiles()?.filter { it.name.startsWith("compressed-") }
-        assertThat(temporaryFiles ?: emptyList<File>()).isEmpty()
+        val cacheDirectory = d2.fileResourceModule().fileCacheResourceDirectory()
+        val temporaryFiles = FileSystem.SYSTEM.list(cacheDirectory).filter { it.name.startsWith("compressed-") }
+        assertThat(temporaryFiles).isEmpty()
     }
 
     private suspend fun processAndAdd(file: File, resourceContext: ResourceContext): FileResource {
-        val uid = d2.fileResourceModule().fileResources().suspendProcessAndAdd(file, resourceContext)
+        val uid = d2.fileResourceModule().fileResources().suspendProcessAndAdd(file.toOkioPath(), resourceContext)
+        return storedFileResource(uid)
+    }
 
+    private fun storedFileResource(uid: String): FileResource {
         val fileResource = d2.fileResourceModule().fileResources().uid(uid).blockingGet()!!
         addedFileResources.add(fileResource)
 
@@ -226,18 +250,18 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
 
     private fun storeFile(): File {
         val inputStream: InputStream = RandomGeneratedInputStream(1024)
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val destinationFile = File(getFileResourceDirectory(context), "file1.png")
-        return koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile.toOkioPath()).toFile()
+        val destinationFile = d2.fileResourceModule().fileResourceDirectory() / "file1.png"
+        val file = koin.get<FileResourceFiles>().writeSource(inputStream.source(), destinationFile).toFile()
+        addedSourceFiles.add(file)
+        return file
     }
 
     /**
      * Stores a decodable PNG of random pixels, large enough that the default compression has to shrink it. Random
-     * noise barely compresses, so the encoded size stays well above [FileCompressionHelper.TARGET_SIZE_BYTES].
+     * noise barely compresses, so the encoded size stays well above [IMAGE_TARGET_SIZE_BYTES].
      */
     private fun storeImageFile(name: String): File {
-        val context = InstrumentationRegistry.getInstrumentation().context
-        val destinationFile = File(getFileResourceDirectory(context), name)
+        val destinationFile = (d2.fileResourceModule().fileResourceDirectory() / name).toFile()
 
         val random = Random(SEED)
         val pixels = IntArray(IMAGE_SIDE_PX * IMAGE_SIDE_PX) { OPAQUE or random.nextInt(RGB_RANGE) }
@@ -249,7 +273,7 @@ class FileResourceAddMockIntegrationShould : BaseMockIntegrationTestFullDispatch
             bitmap.recycle()
         }
 
-        assertThat(destinationFile.length()).isGreaterThan(FileCompressionHelper.TARGET_SIZE_BYTES)
+        assertThat(destinationFile.length()).isGreaterThan(IMAGE_TARGET_SIZE_BYTES)
         addedSourceFiles.add(destinationFile)
         return destinationFile
     }

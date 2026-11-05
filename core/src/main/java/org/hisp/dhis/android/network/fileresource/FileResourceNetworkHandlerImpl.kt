@@ -32,8 +32,8 @@ import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.internal.DimensionSize
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceNetworkHandler
 import org.hisp.dhis.android.core.fileresource.internal.MissingAggregatedDataValue
 import org.hisp.dhis.android.core.fileresource.internal.MissingTrackerAttributeValue

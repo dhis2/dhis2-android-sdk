@@ -37,8 +37,8 @@ import com.google.common.truth.Truth.assertThat
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toOkioPath
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.Dimension
 import org.hisp.dhis.android.core.arch.helpers.internal.AndroidImageProcessor
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Before
@@ -106,7 +106,7 @@ class AndroidImageProcessorShould {
     fun write_the_resized_image_in_the_output_directory() {
         val source = writeImage("photo.png", CompressFormat.PNG, noisyBitmap(2048, 1024))
 
-        val resized = processor.resize(source, Dimension.SMALL, outputDirectory)
+        val resized = processor.resize(source, ImageDimension.SMALL, outputDirectory)
 
         assertThat(resized).isEqualTo(outputDirectory / "resized-SMALL-photo.png")
         val resizedBitmap = BitmapFactory.decodeFile(resized.toString())
@@ -118,7 +118,7 @@ class AndroidImageProcessorShould {
     fun return_the_source_when_it_is_smaller_than_the_dimension() {
         val source = writeImage("photo.png", CompressFormat.PNG, noisyBitmap(100, 125))
 
-        val resized = processor.resize(source, Dimension.LARGE, outputDirectory)
+        val resized = processor.resize(source, ImageDimension.LARGE, outputDirectory)
 
         assertThat(resized).isEqualTo(source)
         assertThat(fileSystem.list(outputDirectory)).isEmpty()

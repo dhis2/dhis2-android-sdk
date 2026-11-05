@@ -36,9 +36,9 @@ import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.file.internal.FakePlatformDirectories
-import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
 import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessor
 import org.hisp.dhis.android.core.fileresource.FileResource
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.junit.After
 import org.junit.Assert.assertThrows
 import org.junit.Before
@@ -165,9 +165,41 @@ class FileResourceFilesShould {
         assertThat(result).isEqualTo(compressedImage)
         verify(imageProcessor).compress(
             image,
-            FileCompressionHelper.TARGET_SIZE_BYTES,
+            FileResourceFiles.IMAGE_TARGET_SIZE_BYTES,
             directories.fileCacheResourceDirectory(),
         )
+    }
+
+    @Test
+    fun compress_images_to_the_given_target_size() {
+        val image = "/external/photo.png".toPath()
+        whenever(imageProcessor.compress(any(), any(), any())).thenReturn(image)
+
+        files.compressImage(image, TARGET_SIZE_BYTES)
+
+        verify(imageProcessor).compress(image, TARGET_SIZE_BYTES, directories.fileCacheResourceDirectory())
+    }
+
+    @Test
+    fun resize_images_into_the_cache_directory_of_the_account() {
+        val image = "/external/photo.png".toPath()
+        val resizedImage = directories.fileCacheResourceDirectory() / "resized-SMALL-photo.png"
+        whenever(imageProcessor.resize(any(), any(), any())).thenReturn(resizedImage)
+
+        val result = files.resizeImage(image, ImageDimension.SMALL)
+
+        assertThat(result).isEqualTo(resizedImage)
+        verify(imageProcessor).resize(image, ImageDimension.SMALL, directories.fileCacheResourceDirectory())
+    }
+
+    @Test
+    fun delete_a_file_and_ignore_it_when_missing() {
+        val file = writeFile(directories.fileCacheResourceDirectory() / "compressed-photo.jpg", CONTENT)
+
+        files.deleteFile(file)
+        files.deleteFile(file)
+
+        assertThat(fileSystem.exists(file)).isFalse()
     }
 
     private fun fileResourceWithPath(path: String?): FileResource {
@@ -187,5 +219,6 @@ class FileResourceFilesShould {
     private companion object {
         const val UID = "fileResourceUid"
         const val CONTENT = "file content"
+        const val TARGET_SIZE_BYTES = 100 * 1024L
     }
 }

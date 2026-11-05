@@ -30,42 +30,27 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessorLocator
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceFiles.Companion.IMAGE_TARGET_SIZE_BYTES
 import java.io.File
 
 /**
- * Compresses image files before uploading them to the server, keeping the quality loss to a minimum.
- *
- * Files that are already below the target size and in a format the server accepts are returned untouched. Otherwise
- * the image is re-encoded at a fixed quality and the size is reduced by downscaling: every attempt is measured and
- * the next scale is predicted from that measurement, so the result lands just below the target instead of well
- * under it.
- *
- * Note that only JPEG and PNG are produced, because those are the only formats that the platform can encode and the
- * server accepts. Anything else that can be decoded (webp, heif, bmp, gif...) is converted, and the caller is
- * responsible for exposing the resulting file with the extension it now has: the content type is derived from the
- * name, and it must agree with the actual bytes.
+ * Compresses image files before uploading them to the server. Only JPEG and PNG are produced, so the extension of the
+ * result may differ from the original one.
  */
+@Deprecated("Use FileResourceModule.compressImage(), which works on okio.Path.")
 object FileCompressionHelper {
 
-    internal const val TARGET_SIZE_BYTES = 600 * 1024L // 600 KB
-
     /**
-     * Compress an image file so that its encoded size does not exceed [targetSizeBytes]. The aspect ratio and the
-     * EXIF orientation are always preserved.
+     * Compress an image so that its size does not exceed [targetSizeBytes], keeping the aspect ratio and the EXIF
+     * orientation.
      *
-     * The original file is returned unchanged when it cannot be decoded as an image, when it is already below the
-     * target in a format the server accepts, or when compressing it would not make it any smaller. Otherwise a new
-     * file is returned, written in the Sdk cache directory when available; the caller owns it and should delete it
-     * once consumed. Note that the returned file may be a JPEG or a PNG regardless of the input format, so its
-     * extension may differ from the one of [fileToCompress].
-     *
-     * @param fileToCompress  Image file to compress.
-     * @param targetSizeBytes Maximum size, in bytes, the resulting file should have.
-     * @return A [File] with the compressed image, or [fileToCompress] if it was not compressed.
+     * @return A new file, in the Sdk cache directory when available, that the caller should delete once consumed, or
+     * [fileToCompress] if it was not compressed.
      */
+    @Deprecated("Use FileResourceModule.compressImage(), which works on okio.Path.")
     @JvmStatic
     @JvmOverloads
-    fun compressFile(fileToCompress: File, targetSizeBytes: Long = TARGET_SIZE_BYTES): File {
+    fun compressFile(fileToCompress: File, targetSizeBytes: Long = IMAGE_TARGET_SIZE_BYTES): File {
         val source = fileToCompress.toOkioPath()
         val outputDirectory = ImageProcessorLocator.outputDirectory(fileToCompress)
         val compressed = ImageProcessorLocator.processor.compress(source, targetSizeBytes, outputDirectory)

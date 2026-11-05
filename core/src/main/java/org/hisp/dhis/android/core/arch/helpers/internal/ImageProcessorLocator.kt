@@ -36,7 +36,8 @@ import org.hisp.dhis.android.core.D2Manager
 import java.io.File
 
 /**
- * Gives the public static image helpers (`FileResizerHelper`, `FileCompressionHelper`) access to an [ImageProcessor].
+ * Gives the deprecated static image helpers (`FileResizerHelper`, `FileCompressionHelper`) access to an
+ * [ImageProcessor].
  * Those helpers are called outside the dependency injection of D2, even before it is instantiated, so they cannot get
  * their dependencies injected. Code inside the Sdk gets the [ImageProcessor] injected instead.
  */

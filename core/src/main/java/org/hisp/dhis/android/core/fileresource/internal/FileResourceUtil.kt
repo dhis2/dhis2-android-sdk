@@ -29,7 +29,6 @@ package org.hisp.dhis.android.core.fileresource.internal
 
 import io.ktor.http.ContentType
 import io.ktor.http.fromFilePath
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.DimensionSize
 
 internal object FileResourceUtil {
 

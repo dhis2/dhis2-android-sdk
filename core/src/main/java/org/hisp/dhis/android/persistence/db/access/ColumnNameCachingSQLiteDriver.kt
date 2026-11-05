@@ -42,17 +42,12 @@ import androidx.sqlite.SQLiteStatement
  */
 internal class ColumnNameCachingSQLiteDriver(private val delegate: SQLiteDriver) : SQLiteDriver by delegate {
 
-    override val hasConnectionPool: Boolean
-        get() = delegate.hasConnectionPool
-
     override fun open(fileName: String): SQLiteConnection {
         return ColumnNameCachingConnection(delegate.open(fileName))
     }
 }
 
 private class ColumnNameCachingConnection(private val delegate: SQLiteConnection) : SQLiteConnection by delegate {
-
-    override fun inTransaction(): Boolean = delegate.inTransaction()
 
     override fun prepare(sql: String): SQLiteStatement {
         return ColumnNameCachingStatement(delegate.prepare(sql))

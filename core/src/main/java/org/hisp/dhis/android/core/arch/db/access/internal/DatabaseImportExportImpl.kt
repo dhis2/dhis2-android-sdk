@@ -27,10 +27,14 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
-import android.content.Context
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.DatabaseImportExport
+import org.hisp.dhis.android.core.arch.file.internal.ArchiveHelper
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.getCurrentTimeAndDate
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
@@ -40,8 +44,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.user.UserModule
-import org.hisp.dhis.android.core.util.CipherUtil
-import org.hisp.dhis.android.core.util.FileUtils
+import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormatNonNull
 import org.koin.core.annotation.Singleton
@@ -50,7 +53,9 @@ import java.util.Date
 
 @Singleton
 internal class DatabaseImportExportImpl(
-    private val context: Context,
+    private val fileSystem: FileSystem,
+    private val platformDirectories: PlatformDirectories,
+    private val archiveHelper: ArchiveHelper,
     private val multiUserDatabaseManager: MultiUserDatabaseManager,
     private val userModule: UserModule,
     private val credentialsStore: CredentialsSecureStore,
@@ -68,8 +73,13 @@ internal class DatabaseImportExportImpl(
     private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
-    @Suppress("TooGenericExceptionCaught")
+    @Deprecated("Use the okio.Path overload.")
     override fun importDatabase(file: File): DatabaseExportMetadata {
+        return importDatabase(file.toOkioPath())
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    override fun importDatabase(file: Path): DatabaseExportMetadata {
         if (userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log out to import database")
@@ -77,20 +87,20 @@ internal class DatabaseImportExportImpl(
                 .build()
         }
 
-        val importMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
-        val importDatabaseFile = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
+        val importMetadataFile = workingFile(ExportMetadata)
+        val importDatabaseFile = workingFile(ExportDatabaseProtected)
 
         return try {
-            FileUtils.unzipFiles(file, getWorkingDir())
+            archiveHelper.unzip(file, getWorkingDir(), setOf(ExportMetadata, ExportDatabaseProtected))
 
-            if (!importMetadataFile.exists() || !importDatabaseFile.exists()) {
+            if (!fileSystem.exists(importMetadataFile) || !fileSystem.exists(importDatabaseFile)) {
                 throw d2ErrorBuilder
                     .errorDescription("Import file is not valid")
                     .errorCode(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
                     .build()
             }
 
-            val metadataContent = importMetadataFile.readText(Charsets.UTF_8)
+            val metadataContent = fileSystem.read(importMetadataFile) { readUtf8() }
             val metadata = KotlinxJsonParser.instance.decodeFromString<DatabaseExportMetadata>(metadataContent)
 
             when {
@@ -108,8 +118,8 @@ internal class DatabaseImportExportImpl(
 
                 else -> {
                     val databaseAccount = multiUserDatabaseManager.createNewPendingToImport(metadata)
-                    val destDatabase = context.getDatabasePath(databaseAccount.importDB()!!.protectedDbName())
-                    importDatabaseFile.copyTo(destDatabase)
+                    val destDatabase = platformDirectories.databasePath(databaseAccount.importDB()!!.protectedDbName())
+                    fileSystem.copyTo(importDatabaseFile, destDatabase)
 
                     metadata
                 }
@@ -125,15 +135,20 @@ internal class DatabaseImportExportImpl(
                         .build()
             }
         } finally {
-            importMetadataFile.deleteIfExists()
-            importDatabaseFile.deleteIfExists()
+            fileSystem.deleteIfExists(importMetadataFile)
+            fileSystem.deleteIfExists(importDatabaseFile)
         }
     }
 
+    @Deprecated("Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.")
     override suspend fun exportLoggedUserDatabase(): File {
-        val exportMetadataFile = getWorkingDir().resolve(ExportMetadata).also { it.deleteIfExists() }
-        val copiedDatabase = getWorkingDir().resolve(ExportDatabase).also { it.deleteIfExists() }
-        val protectedDatabase = getWorkingDir().resolve(ExportDatabaseProtected).also { it.deleteIfExists() }
+        return exportLoggedUserDatabaseToPath().toFile()
+    }
+
+    override suspend fun exportLoggedUserDatabaseToPath(): Path {
+        val exportMetadataFile = workingFile(ExportMetadata)
+        val copiedDatabase = workingFile(ExportDatabase)
+        val protectedDatabase = workingFile(ExportDatabaseProtected)
 
         if (!userModule.suspendIsLogged()) {
             throw d2ErrorBuilder
@@ -151,7 +166,7 @@ internal class DatabaseImportExportImpl(
         )!!
 
         val databaseName = userConfiguration.databaseName()
-        val databaseFile = getDatabaseFile(databaseName)
+        val databaseFile = platformDirectories.databasePath(databaseName)
 
         // Force WAL checkpoint to ensure all pending changes are written to the database file
         databaseAdapter.checkpointWAL()
@@ -159,12 +174,12 @@ internal class DatabaseImportExportImpl(
         if (userConfiguration.encrypted()) {
             databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)
         } else {
-            databaseFile.copyTo(copiedDatabase)
+            fileSystem.copyTo(databaseFile, copiedDatabase)
         }
 
-        CipherUtil.createEncryptedZipFile(
-            input = copiedDatabase,
-            output = protectedDatabase,
+        archiveHelper.createEncrypted(
+            file = copiedDatabase,
+            zipFile = protectedDatabase,
             password = credentials.passwordOrPin!!,
         )
 
@@ -177,31 +192,31 @@ internal class DatabaseImportExportImpl(
             authorizationType = credentials.authorizationType,
         )
 
-        exportMetadataFile.bufferedWriter(Charsets.UTF_8).use {
-            it.write(KotlinxJsonParser.instance.encodeToString(DatabaseExportMetadata.serializer(), metadata))
+        fileSystem.write(exportMetadataFile) {
+            writeUtf8(KotlinxJsonParser.instance.encodeToString(DatabaseExportMetadata.serializer(), metadata))
         }
 
         val zipName = credentials.username + '-' + getCurrentTimeAndDate() + '-' + ExportZip
-        val zipFile = getWorkingDir().resolve(zipName).also { it.deleteIfExists() }
+        val zipFile = workingFile(zipName)
 
-        FileUtils.zipFiles(
+        archiveHelper.zip(
             files = listOf(exportMetadataFile, protectedDatabase),
             zipFile = zipFile,
         )
 
-        exportMetadataFile.deleteIfExists()
-        copiedDatabase.deleteIfExists()
-        protectedDatabase.deleteIfExists()
+        fileSystem.deleteIfExists(exportMetadataFile)
+        fileSystem.deleteIfExists(copiedDatabase)
+        fileSystem.deleteIfExists(protectedDatabase)
 
         return zipFile
     }
 
-    private fun getWorkingDir(): File {
-        return context.filesDir
+    private fun getWorkingDir(): Path {
+        return platformDirectories.filesDir
     }
 
-    private fun getDatabaseFile(dbName: String): File {
-        return context.getDatabasePath(dbName)
+    private fun workingFile(name: String): Path {
+        return (getWorkingDir() / name).also { fileSystem.deleteIfExists(it) }
     }
 
     private fun getExistingAccountForMetadata(metadata: DatabaseExportMetadata): DatabaseAccount? {

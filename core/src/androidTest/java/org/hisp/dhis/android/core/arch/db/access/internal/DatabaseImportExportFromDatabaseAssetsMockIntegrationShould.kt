@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.arch.db.access.internal
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTest
 import org.hisp.dhis.android.core.utils.integration.mock.MockIntegrationTestDatabaseContent
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
@@ -78,6 +78,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun import_fail_when_logged_in() {
         d2.userModule().blockingLogIn("other_user", "other_password", serverUrl)
 
@@ -92,6 +93,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun import_fail_when_account_exists() {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.userModule().blockingLogOut()
@@ -108,6 +110,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun import_fail_when_invalid_database_file() {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.userModule().blockingLogOut()
@@ -124,6 +127,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun import_fail_when_no_zip_file() {
         d2.userModule().blockingLogIn(username, password, serverUrl)
         d2.userModule().blockingLogOut()
@@ -140,6 +144,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
     }
 
     @Test
+    @Suppress("DEPRECATION")
     fun export_fail_when_not_logged() = runTest {
         try {
             d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
@@ -195,7 +200,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
         beforeExport()
 
-        val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabase()
+        val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabaseToPath()
 
         d2.userModule().accountManager().deleteCurrentAccount()
 
@@ -217,6 +222,6 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
         d2.userModule().accountManager().deleteCurrentAccount()
 
-        exportedFile.deleteIfExists()
+        FileSystem.SYSTEM.delete(exportedFile)
     }
 }

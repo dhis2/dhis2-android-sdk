@@ -31,9 +31,10 @@ import androidx.room3.RoomRawQuery
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.ChunkedSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStoreImpl
@@ -42,6 +43,7 @@ import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.InsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.SecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.DatabaseConfigurationInsecureStoreOld
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.user.UserCredentials
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.hisp.dhis.android.persistence.configuration.ConfigurationStoreImpl
@@ -67,7 +69,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
     private val chunkedSecureStore = ChunkedSecureStore(secureStore)
 
     private val nameGenerator = DatabaseNameGenerator()
-    private val renamer = DatabaseRenamer(context)
+    private val platformDirectories = AndroidPlatformDirectories(context)
+    private val renamer = DatabaseRenamer(FileSystem.SYSTEM, platformDirectories)
     private val storeRegistry = KoinStoreRegistry()
     private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
@@ -94,6 +97,8 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         migration = DatabaseConfigurationMigration(
             context,
+            FileSystem.SYSTEM,
+            platformDirectories,
             databasesConfigurationStore,
             credentialsSecureStore,
             insecureStore,
@@ -102,7 +107,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
             databaseManager,
         )
 
-        FileResourceDirectoryHelper.deleteRootFileResourceDirectory(context)
+        File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).deleteRecursively()
     }
 
     @After
@@ -177,7 +182,7 @@ class DatabaseConfigurationMigrationIntegrationShould {
 
         DatabaseConfigurationInsecureStoreOld[insecureStore].set(oldDatabaseConfiguration)
 
-        val rootSdkResources = FileResourceDirectoryHelper.getRootFileResourceDirectory(context)
+        val rootSdkResources = File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).apply { mkdirs() }
         File(rootSdkResources, "sample.txt").createNewFile()
 
         migration.apply()

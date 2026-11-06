@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -26,43 +26,36 @@
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.hisp.dhis.android.core.util
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-import net.lingala.zip4j.ZipFile
-import net.lingala.zip4j.model.ZipParameters
-import net.lingala.zip4j.model.enums.AesKeyStrength
-import net.lingala.zip4j.model.enums.EncryptionMethod
+import okio.Path
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.core.maintenance.D2ErrorCode
-import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import java.io.File
 
-internal object CipherUtil {
-    fun createEncryptedZipFile(input: File, output: File, password: String) {
-        val zipParameters = ZipParameters()
-        zipParameters.isEncryptFiles = true
-        zipParameters.encryptionMethod = EncryptionMethod.AES
-        zipParameters.aesKeyStrength = AesKeyStrength.KEY_STRENGTH_256
+/**
+ * Transformations applied to image files before uploading them. Image codecs are platform specific, so each platform
+ * provides its own implementation.
+ *
+ * The results are written to the output directory given by the caller, who owns them.
+ */
+internal interface ImageProcessor {
 
-        val filesToAdd = listOf(input)
+    /**
+     * Resize an image so that its largest side matches [dimension], keeping the aspect ratio. The EXIF orientation is
+     * baked into the pixels, since re-encoding the image drops the metadata.
+     *
+     * @return The resized image, written to [outputDirectory], or [source] if both of its sides are already smaller
+     * than [dimension].
+     * @throws D2Error if the image cannot be decoded or the result cannot be written.
+     */
+    @Throws(D2Error::class)
+    fun resize(source: Path, dimension: ImageDimension, outputDirectory: Path): Path
 
-        val zipFile = ZipFile(output, password.toCharArray())
-        zipFile.addFiles(filesToAdd, zipParameters)
-    }
-
-    fun extractEncryptedZipFile(input: File, output: File, password: String) {
-        val zipFile = ZipFile(input, password.toCharArray())
-        val allFiles = zipFile.fileHeaders
-
-        if (allFiles.size == 1) {
-            val targetFile = allFiles.first()
-            zipFile.extractFile(targetFile, output.parent, output.name)
-        } else {
-            throw D2Error.builder()
-                .errorComponent(D2ErrorComponent.SDK)
-                .errorDescription("Database zip file must contain a single file")
-                .errorCode(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
-                .build()
-        }
-    }
+    /**
+     * Compress an image so that its encoded size does not exceed [targetSizeBytes], keeping the aspect ratio and the
+     * EXIF orientation. The result may be encoded in a different format than [source], so its extension may differ.
+     *
+     * @return The compressed image, written to [outputDirectory], or [source] if it was not compressed.
+     */
+    fun compress(source: Path, targetSizeBytes: Long, outputDirectory: Path): Path
 }

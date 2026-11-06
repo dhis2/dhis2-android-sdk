@@ -151,7 +151,7 @@ The SDK include some helpers in the package `org.hisp.dhis.android.core.arch.hel
 - `AccessHelper`: related to access (sharing settings) object.
 - `CollectionsHelper`: common operations to collections.
 - `CoordinateHelper`, `GeometryHelper`: geospatial data manipulation.
-- `FileResizerHelper`, `FileCompressionHelper`, `FileResourceDirectoryHelper`: file resource manipulation.
+- `FileResizerHelper`, `FileCompressionHelper`, `FileResourceDirectoryHelper`: file resource manipulation. Deprecated: use the methods of the `FileResourceModule` instead.
 - `UidsHelper`: common operations to collections of objects with uid.
 - `UserHelper`: operations related to user authentication.
 - `ValueType`: list of different value types and their validators.

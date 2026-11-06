@@ -29,86 +29,49 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
 import java.io.File
 
+/**
+ * Directories of the file resources of the logged-in user. D2 must be instantiated with a logged-in user, and the
+ * `context` parameter is not used.
+ */
+@Deprecated("Use FileResourceModule.directories(), which works on okio.Path.")
+@Suppress("UnusedParameter")
 object FileResourceDirectoryHelper {
 
-    internal const val FilesDir = "sdk_resources"
-    internal const val CacheDir = "sdk_cache_resources"
-
     /**
-     * This method returns a [File] object whose path points to the Sdk resources directory where the Sdk will
-     * save the files associated with the file resources.
-     *
-     * @param context The application context.
-     * @return A [File] object whose path points to the Sdk resources directory.
+     * Directory where the Sdk saves the files associated with the file resources.
      */
+    @Deprecated(
+        "Use FileResourceModule.directories().fileResourceDirectory(), which is an okio.Path.",
+        ReplaceWith(
+            "D2Manager.getD2().fileResourceModule().directories().fileResourceDirectory().toFile()",
+            "org.hisp.dhis.android.core.D2Manager",
+        ),
+    )
     @JvmStatic
     fun getFileResourceDirectory(context: Context): File {
-        return getFileResourceDirectory(context, getSubfolderName())
-    }
-
-    internal fun getRootFileResourceDirectory(context: Context): File {
-        return getFileResourceDirectory(context, null)
-    }
-
-    internal fun getFileResourceDirectory(context: Context, subfolder: String?): File {
-        val childPath = subfolder?.let { "$FilesDir/$it" } ?: FilesDir
-        val file = File(context.filesDir, childPath)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    internal fun deleteRootFileResourceDirectory(context: Context) {
-        getRootFileResourceDirectory(context).deleteRecursively()
+        return directories().fileResourceDirectory().toFile()
     }
 
     /**
-     * This method returns a [File] object whose path points to the Sdk cache resources directory. This should be
-     * the place where volatile files are stored, such as camera photos or images to be resized. Since the directory
-     * is contained in the cache directory, Android may auto-delete the files in the cache directory once the system
-     * is about to run out of memory. Third party applications can also delete files from the cache directory.
-     * Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in
-     * the methods explained above should not mean that the cache will automatically get cleared; therefore, the
-     * cache will need to be tidied up from time to time proactively.
-     *
-     * @param context The application context.
-     * @return A [File] object whose path points to the Sdk cache resources directory.
+     * Directory for volatile files, such as camera photos or images to be resized. Android may delete its files when
+     * the device runs low on storage, but it is not cleared automatically, so it has to be tidied up proactively.
      */
+    @Deprecated(
+        "Use FileResourceModule.directories().fileCacheResourceDirectory(), which is an okio.Path.",
+        ReplaceWith(
+            "D2Manager.getD2().fileResourceModule().directories().fileCacheResourceDirectory().toFile()",
+            "org.hisp.dhis.android.core.D2Manager",
+        ),
+    )
     @JvmStatic
     fun getFileCacheResourceDirectory(context: Context): File {
-        return getFileCacheResourceDirectory(context, getSubfolderName())
+        return directories().fileCacheResourceDirectory().toFile()
     }
 
-    internal fun getRootFileCacheResourceDirectory(context: Context): File {
-        return getFileCacheResourceDirectory(context, null)
-    }
-
-    private fun getFileCacheResourceDirectory(context: Context, subfolder: String?): File {
-        val childPath = subfolder?.let { "$CacheDir/$it" } ?: CacheDir
-        val file = File(context.cacheDir, childPath)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
-        return file
-    }
-
-    internal fun getSubfolderName(databaseName: String): String {
-        return databaseName.removeSuffix(DatabaseNameGenerator.DB_SUFFIX)
-    }
-
-    internal fun deleteFileResourceDirectories(context: Context, databaseAccount: DatabaseAccount) {
-        val resourcesName = getSubfolderName(databaseAccount.databaseName())
-        getFileResourceDirectory(context, resourcesName).deleteRecursively()
-        getFileCacheResourceDirectory(context, resourcesName).deleteRecursively()
-    }
-
-    private fun getSubfolderName(): String {
-        val dbName = D2Manager.getD2().databaseAdapter().getDatabaseName()
-        return getSubfolderName(dbName)
+    private fun directories(): FileResourceDirectories {
+        return D2Manager.getD2().fileResourceModule().directories()
     }
 }

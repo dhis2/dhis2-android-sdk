@@ -33,10 +33,10 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
 import android.util.Log
+import okio.IOException
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.charset.StandardCharsets
 import java.security.InvalidAlgorithmParameterException

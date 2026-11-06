@@ -30,9 +30,9 @@ package org.hisp.dhis.android.core.arch.api.internal
 
 import io.ktor.client.plugins.ClientRequestException
 import io.ktor.client.statement.bodyAsText
+import okio.IOException
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.getIfNotEmpty
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper.Companion.noErrorMessage
-import java.io.IOException
 import java.lang.Exception
 
 class D2HttpException(val response: D2HttpResponse) : Exception() {

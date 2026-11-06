@@ -28,14 +28,14 @@
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
 import android.util.Log
+import okio.EOFException
+import okio.IOException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
-import java.io.EOFException
-import java.io.IOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException

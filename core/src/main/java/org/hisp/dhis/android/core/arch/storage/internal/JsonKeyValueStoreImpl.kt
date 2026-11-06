@@ -29,8 +29,8 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
+import okio.IOException
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
-import java.io.IOException
 
 @Suppress("TooGenericExceptionThrown")
 internal open class JsonKeyValueStoreImpl<T>(

@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
+import okio.FileSystem
+import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -37,17 +39,20 @@ import java.io.File
 import java.util.Date
 
 @Singleton
-internal class FileResourceProjectionTransformer : Transformer<File, FileResource> {
+internal class FileResourceProjectionTransformer(
+    private val fileSystem: FileSystem,
+) : Transformer<File, FileResource> {
     override fun transform(o: File): FileResource {
+        val file = o.absoluteFile.toOkioPath()
         val creationDate = Date()
         return FileResource.builder()
-            .uid(o.nameWithoutExtension)
+            .uid(file.name.substringBeforeLast("."))
             .syncState(State.TO_POST)
             .created(creationDate)
             .lastUpdated(creationDate)
-            .contentLength(o.length())
-            .contentType(getContentTypeFromName(o.name))
-            .path(o.absolutePath)
+            .contentLength(fileSystem.metadataOrNull(file)?.size ?: 0L)
+            .contentType(getContentTypeFromName(file.name))
+            .path(file.toString())
             .domain(FileResourceDomain.DATA_VALUE)
             .build()
     }

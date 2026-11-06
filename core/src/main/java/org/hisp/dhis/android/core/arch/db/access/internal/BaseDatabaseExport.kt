@@ -28,16 +28,16 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal
 
+import okio.Path
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import java.io.File
 
-interface BaseDatabaseExport {
+internal interface BaseDatabaseExport {
 
     suspend fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
 
-    suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File)
+    suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: Path, targetFile: Path)
 
     suspend fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount)
 
-    suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File)
+    suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: Path)
 }

@@ -36,7 +36,8 @@ import android.os.Build
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.arch.helpers.FileResourceDirectoryHelper
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
+import org.hisp.dhis.android.core.fileresource.internal.ImageTransformerImpl.Companion.IMAGE_TARGET_SIZE_BYTES
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Assume.assumeTrue
@@ -45,6 +46,10 @@ import org.junit.runner.RunWith
 import java.io.File
 import java.io.FileOutputStream
 
+/**
+ * Covers the deprecated `File` helper, which delegates to the same image processor as
+ * `ImageTransformer.compress()`.
+ */
 @RunWith(D2JunitRunner::class)
 class FileCompressionHelperShould {
 
@@ -111,7 +116,7 @@ class FileCompressionHelperShould {
     fun return_the_original_file_when_it_is_already_below_target() {
         val file = writeImage("jpeg-small.jpg", CompressFormat.JPEG, noisyBitmap(100, 125))
 
-        val compressedFile = compress(file, FileCompressionHelper.TARGET_SIZE_BYTES)
+        val compressedFile = compress(file, IMAGE_TARGET_SIZE_BYTES)
 
         assertThat(compressedFile).isEqualTo(file)
     }
@@ -155,9 +160,9 @@ class FileCompressionHelperShould {
     @Suppress("DEPRECATION")
     fun convert_webp_even_when_it_is_below_the_target() {
         val file = writeImage("image-webp.webp", CompressFormat.WEBP, noisyBitmap(300, 300))
-        assertThat(file.length()).isLessThan(FileCompressionHelper.TARGET_SIZE_BYTES)
+        assertThat(file.length()).isLessThan(IMAGE_TARGET_SIZE_BYTES)
 
-        val compressedFile = compress(file, FileCompressionHelper.TARGET_SIZE_BYTES)
+        val compressedFile = compress(file, IMAGE_TARGET_SIZE_BYTES)
 
         assertThat(compressedFile).isNotEqualTo(file)
         assertThat(compressedFile.extension).isEqualTo("jpg")
@@ -200,6 +205,7 @@ class FileCompressionHelperShould {
         assertThat(compressedFile.length()).isGreaterThan(target)
     }
 
+    @Suppress("DEPRECATION")
     private fun compress(file: File, target: Long): File {
         return FileCompressionHelper.compressFile(file, target).also { createdFiles.add(it) }
     }
@@ -230,9 +236,8 @@ class FileCompressionHelperShould {
         private const val CLOSENESS_RATIO = 0.7
 
         private fun directory() =
-            FileResourceDirectoryHelper.getRootFileResourceDirectory(
-                InstrumentationRegistry.getInstrumentation().context,
-            )
+            File(InstrumentationRegistry.getInstrumentation().context.filesDir, FileResourceDirectoriesImpl.FILES_DIR)
+                .apply { mkdirs() }
 
         /**
          * Builds a high-entropy bitmap whose pixels vary per position, so that the encoded file does not collapse to a

@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.hisp.dhis.android.core.program.ProgramStageSectionDataElementLink
 import org.hisp.dhis.android.core.program.ProgramStageSectionProgramIndicatorLink
@@ -46,8 +45,8 @@ internal class ProgramStageSectionHandler(
     override suspend fun afterObjectHandled(o: ProgramStageSection, action: HandleAction) {
         programStageSectionDataElementLinkHandler.handleMany(
             o.uid(),
-            o.dataElements(),
-        ) { dataElement: DataElement, sortOrder: Int ->
+            o.dataElementUids,
+        ) { dataElement: ObjectWithUid, sortOrder: Int ->
             ProgramStageSectionDataElementLink.builder()
                 .programStageSection(o.uid())
                 .dataElement(dataElement.uid())
@@ -57,8 +56,8 @@ internal class ProgramStageSectionHandler(
 
         programStageSectionProgramIndicatorLinkHandler.handleMany(
             o.uid(),
-            o.programIndicators(),
-        ) { programIndicator: ProgramIndicator ->
+            o.programIndicatorUids,
+        ) { programIndicator: ObjectWithUid ->
             ProgramStageSectionProgramIndicatorLink.builder()
                 .programStageSection(o.uid())
                 .programIndicator(programIndicator.uid())

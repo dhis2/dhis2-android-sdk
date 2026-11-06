@@ -58,7 +58,7 @@ internal class ProgramSection32Should : CoreObjectShould<ProgramSectionDTO>(
 
         assertThat(programSection.description()).isEqualTo("Description")
         assertThat(getUidOrNull(programSection.program())).isEqualTo("IpHINAT79UW")
-        assertThat(programSection.attributes()!![0].uid()).isEqualTo("zDhUuAYrxNC")
+        assertThat(programSection.attributeUids!![0].uid()).isEqualTo("zDhUuAYrxNC")
         assertThat(programSection.sortOrder()).isEqualTo(1)
         assertThat(programSection.formName()).isEqualTo("formName")
         assertThat(programSection.style())

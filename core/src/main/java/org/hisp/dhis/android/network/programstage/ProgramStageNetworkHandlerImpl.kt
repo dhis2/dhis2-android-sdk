@@ -48,7 +48,6 @@ internal class ProgramStageNetworkHandlerImpl(
         val programUidsFilterStr =
             "program." + ObjectWithUid.uid.`in`(uids).generateString()
         val apiPayload = service.getProgramStages(
-            ProgramStageFields.allFields,
             programUidsFilterStr,
             accessDataReadFilter,
             false,

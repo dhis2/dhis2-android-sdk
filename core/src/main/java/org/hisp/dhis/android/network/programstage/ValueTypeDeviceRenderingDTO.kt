@@ -34,9 +34,6 @@ import org.hisp.dhis.android.core.common.ValueTypeRenderingType
 
 @Serializable
 internal data class ValueTypeDeviceRenderingDTO(
-    val uid: String?,
-    val objectTable: String?,
-    val deviceType: String?,
     val type: String?,
     val min: Int?,
     val max: Int?,
@@ -45,9 +42,6 @@ internal data class ValueTypeDeviceRenderingDTO(
 ) {
     fun toDomain(): ValueTypeDeviceRendering {
         return ValueTypeDeviceRendering.builder()
-            .uid(uid)
-            .objectTable(objectTable)
-            .deviceType(deviceType)
             .type(type?.let { ValueTypeRenderingType.valueOf(it) })
             .min(min)
             .max(max)

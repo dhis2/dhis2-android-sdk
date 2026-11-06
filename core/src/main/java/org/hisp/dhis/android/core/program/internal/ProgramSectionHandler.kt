@@ -29,9 +29,9 @@ package org.hisp.dhis.android.core.program.internal
 
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramSection
 import org.hisp.dhis.android.core.program.ProgramSectionAttributeLink
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,8 +43,8 @@ internal class ProgramSectionHandler(
     override suspend fun afterObjectHandled(o: ProgramSection, action: HandleAction) {
         programSectionAttributeLinkHandler.handleMany(
             o.uid(),
-            o.attributes(),
-        ) { trackedEntityAttribute: TrackedEntityAttribute, sortOrder: Int ->
+            o.attributeUids,
+        ) { trackedEntityAttribute: ObjectWithUid, sortOrder: Int ->
             ProgramSectionAttributeLink.builder()
                 .programSection(o.uid())
                 .attribute(trackedEntityAttribute.uid())

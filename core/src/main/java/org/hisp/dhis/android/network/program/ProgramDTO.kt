@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.program.AccessLevel
 import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.ProgramType
+import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.network.attribute.AttributeValueDTO
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.AccessDTO
@@ -44,7 +45,6 @@ import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
-import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 
 @Serializable
 internal data class ProgramDTO(
@@ -62,9 +62,11 @@ internal data class ProgramDTO(
     val style: ObjectWithStyleDTO?,
     val version: Int?,
     val onlyEnrollOnce: Boolean?,
+    // Needed by servers before 2.35, which only send the untranslated label. Remove when 2.34 is no longer supported.
     val enrollmentDateLabel: String?,
     val displayEnrollmentDateLabel: String?,
     val displayIncidentDate: Boolean?,
+    // Needed by servers before 2.35, which only send the untranslated label. Remove when 2.34 is no longer supported.
     val incidentDateLabel: String?,
     val displayIncidentDateLabel: String?,
     val registration: Boolean?,
@@ -77,7 +79,7 @@ internal data class ProgramDTO(
     val programType: String?,
     val programTrackedEntityAttributes: List<ProgramTrackedEntityAttributeDTO>?,
     val relatedProgram: ObjectWithUidDTO?,
-    val trackedEntityType: TrackedEntityTypeDTO?,
+    val trackedEntityType: ObjectWithUidDTO?,
     val categoryCombo: CategoryComboWithFallbackDTO = CategoryComboWithFallbackDTO(null),
     val access: AccessDTO?,
     val programRuleVariables: List<ProgramRuleVariableDTO>?,
@@ -133,7 +135,7 @@ internal data class ProgramDTO(
             programType(programType?.let { ProgramType.valueOf(programType) })
             programTrackedEntityAttributes(programTrackedEntityAttributes?.map { it.toDomain() })
             relatedProgram(relatedProgram?.toDomain())
-            trackedEntityType(trackedEntityType?.toDomain())
+            trackedEntityType(trackedEntityType?.let { TrackedEntityType.builder().uid(it.id).build() })
             categoryCombo(categoryCombo.toDomain())
             access?.let { access(it.toDomain()) }
             programRuleVariables(programRuleVariables?.map { it.toDomain() })

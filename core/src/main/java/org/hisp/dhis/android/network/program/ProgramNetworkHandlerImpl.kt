@@ -36,7 +36,7 @@ import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -49,20 +49,11 @@ internal class ProgramNetworkHandlerImpl(
     override suspend fun getPrograms(uids: Set<String>): Payload<Program> {
         val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
         val apiPayload = service.getPrograms(
-            getFields(),
-            ProgramFields.uid.`in`(uids),
+            Field.uid<Program>().`in`(uids),
             accessDataReadFilter,
             false,
         )
         defaultCategoryComboManager.loadDefaults()
         return apiPayload.mapItems(ProgramDTO::toDomain)
-    }
-
-    private suspend fun getFields(): Fields<Program> {
-        return if (dhisVersionManager.suspendIsGreaterThan(DHISVersion.V2_34)) {
-            ProgramFields.allFields
-        } else {
-            ProgramFields.allFieldsBefore35
-        }
     }
 }

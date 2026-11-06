@@ -29,12 +29,10 @@ package org.hisp.dhis.android.network.program
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.program.Program
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ProgramService(private val client: HttpServiceClient) {
     suspend fun getPrograms(
-        fields: Fields<Program>,
         uids: Filter<Program>,
         accessDataReadFilter: String,
         paging: Boolean,
@@ -42,7 +40,7 @@ internal class ProgramService(private val client: HttpServiceClient) {
         return client.get {
             url("programs")
             parameters {
-                fields(fields)
+                fields<ProgramDTO>()
                 filter(uids)
                 attribute("filter", accessDataReadFilter)
                 paging(paging)

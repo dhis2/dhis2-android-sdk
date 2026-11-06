@@ -29,8 +29,7 @@ package org.hisp.dhis.android.core.program.internal
 
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
-import org.hisp.dhis.android.core.dataelement.DataElement
-import org.hisp.dhis.android.core.program.ProgramIndicator
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStageSection
 import org.junit.Before
 import org.junit.Test
@@ -47,12 +46,9 @@ class ProgramStageSectionHandlerShould {
     private val programStageSectionProgramIndicatorLinkHandler: ProgramStageSectionProgramIndicatorLinkHandler = mock()
     private val programStageSectionDataElementLinkHandler: ProgramStageSectionDataElementLinkHandler = mock()
     private val programStageSection: ProgramStageSection = mock()
-    private val dataElement: DataElement = mock()
-    private val programIndicator: ProgramIndicator = mock()
 
     // object to test
     private lateinit var programStageSectionHandler: ProgramStageSectionHandler
-    private lateinit var programIndicators: MutableList<ProgramIndicator>
 
     @Before
     @Throws(Exception::class)
@@ -63,12 +59,9 @@ class ProgramStageSectionHandlerShould {
         )
 
         whenever(programStageSection.uid()).thenReturn(PROGRAM_STAGE_SECTION_UID)
-        val dataElements = mutableListOf(dataElement)
-        programIndicators = mutableListOf(programIndicator)
-        whenever(programStageSection.dataElements()).thenReturn(dataElements)
-        whenever(programStageSection.programIndicators()).thenReturn(programIndicators)
-        whenever(dataElement.uid()).thenReturn("data_element_uid")
-        whenever(programIndicator.uid()).thenReturn("program_indicator_uid")
+        whenever(programStageSection.dataElementUids).thenReturn(listOf(ObjectWithUid.create("data_element_uid")))
+        whenever(programStageSection.programIndicatorUids)
+            .thenReturn(listOf(ObjectWithUid.create("program_indicator_uid")))
         whenever(programStageSectionStore.updateOrInsert(any<List<ProgramStageSection>>())).thenReturn(
             listOf(
                 HandleAction.Insert,
@@ -79,13 +72,13 @@ class ProgramStageSectionHandlerShould {
     @Test
     fun handle_program_stage_section_data_element_links() = runTest {
         programStageSectionHandler.handle(programStageSection)
-        verify(programStageSectionDataElementLinkHandler).handleMany(any(), any<List<DataElement>>(), any())
+        verify(programStageSectionDataElementLinkHandler).handleMany(any(), any<List<ObjectWithUid>>(), any())
     }
 
     @Test
     fun handle_program_stage_section_program_indicator_links() = runTest {
         programStageSectionHandler.handle(programStageSection)
-        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(), any<List<ProgramIndicator>>(), any())
+        verify(programStageSectionProgramIndicatorLinkHandler).handleMany(any(), any<List<ObjectWithUid>>(), any())
     }
 
     companion object {

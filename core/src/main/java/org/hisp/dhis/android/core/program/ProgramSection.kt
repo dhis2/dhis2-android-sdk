@@ -48,6 +48,7 @@ data class ProgramSection(
     override val deleted: Boolean?,
     val description: String?,
     val program: ObjectWithUid?,
+    internal val attributeUids: List<ObjectWithUid>?,
     val attributes: List<TrackedEntityAttribute>?,
     val sortOrder: Int?,
     val formName: String?,

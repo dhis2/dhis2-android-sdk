@@ -51,8 +51,10 @@ import org.hisp.dhis.android.network.option.OptionDTO
 import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
 import org.hisp.dhis.android.network.optionset.OptionSetDTO
 import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
+import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
 import org.hisp.dhis.android.network.programrule.ProgramRuleDTO
+import org.hisp.dhis.android.network.programstage.ProgramStageDTO
 import org.hisp.dhis.android.network.programstageworkinglist.ProgramStageWorkingListDTO
 import org.hisp.dhis.android.network.relationshiptype.RelationshipTypeDTO
 import org.hisp.dhis.android.network.systeminfo.SystemInfoDTO
@@ -108,8 +110,10 @@ internal class DTOFieldsShould {
         "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
         "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
         "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
+        "ProgramDTO" to fieldsOf<ProgramDTO>(),
         "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
         "ProgramRuleDTO" to fieldsOf<ProgramRuleDTO>(),
+        "ProgramStageDTO" to fieldsOf<ProgramStageDTO>(),
         "ProgramStageWorkingListDTO" to fieldsOf<ProgramStageWorkingListDTO>(),
         "RelationshipTypeDTO" to fieldsOf<RelationshipTypeDTO>(),
         "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
@@ -196,6 +200,29 @@ internal class DTOFieldsShould {
         "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",
         "OptionSetDTO" to "id,code,name,displayName,created,lastUpdated,deleted,version,valueType",
         "OrganisationUnitLevelDTO" to "id,code,name,displayName,created,lastUpdated,deleted,level",
+        "ProgramDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,style[color,icon],version,onlyEnrollOnce,enrollmentDateLabel," +
+            "displayEnrollmentDateLabel,displayIncidentDate,incidentDateLabel,displayIncidentDateLabel," +
+            "registration,selectEnrollmentDatesInFuture,dataEntryMethod,ignoreOverdueEvents," +
+            "selectIncidentDatesInFuture,useFirstStageDuringRegistration,displayFrontPageList,programType," +
+            "programTrackedEntityAttributes[id,code,name,displayName,created,lastUpdated,deleted,shortName," +
+            "displayShortName,description,displayDescription,mandatory,trackedEntityAttribute[id]," +
+            "allowFutureDate,displayInList,program[id],sortOrder,searchable,renderType[DESKTOP[type,min,max,step," +
+            "decimalPoints],MOBILE[type,min,max,step,decimalPoints]]],relatedProgram[id],trackedEntityType[id]," +
+            "categoryCombo[id],access[read,write,data[read,write]],programRuleVariables[id,code,name,displayName," +
+            "created,lastUpdated,deleted,useCodeForOptionSet,program[id],programStage[id],dataElement[id]," +
+            "trackedEntityAttribute[id],programRuleVariableSourceType],expiryDays,completeEventsExpiryDays," +
+            "expiryPeriodType,minAttributesRequiredToSearch,maxTeiCountToReturn,programSections[id,code,name," +
+            "displayName,created,lastUpdated,deleted,style[color,icon],description,program[id]," +
+            "trackedEntityAttributes[id],programTrackedEntityAttribute[id],sortOrder,formName," +
+            "renderType[DESKTOP[type],MOBILE[type]]],featureType,accessLevel,enrollmentLabel," +
+            "displayEnrollmentLabel,displayEnrollmentsLabel,followUpLabel,displayFollowUpLabel,orgUnitLabel," +
+            "displayOrgUnitLabel,relationshipLabel,displayRelationshipLabel,displayRelationshipsLabel,noteLabel," +
+            "displayNoteLabel,trackedEntityAttributeLabel,displayTrackedEntityAttributeLabel,programStageLabel," +
+            "displayProgramStageLabel,displayProgramStagesLabel,eventLabel,displayEventLabel,displayEventsLabel," +
+            "attributeValues[value,attribute[id]],enrollmentCategoryCombo[id],categoryMappings[id,categoryId," +
+            "mappingName,optionMappings[optionId,filter]]",
         "ProgramIndicatorDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
             "displayDescription,displayInForm,expression,dimensionItem,filter,decimals,aggregationType," +
@@ -207,6 +234,23 @@ internal class DTOFieldsShould {
             "programRuleActions[id,code,name,displayName,created,lastUpdated,deleted,data,content,location," +
             "trackedEntityAttribute[id],programIndicator[id],programStageSection[id],programRuleActionType," +
             "programStage[id],dataElement[id],option[id],optionGroup[id],displayContent,priority,legendSet[id]]",
+        "ProgramStageDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,style[color,icon],description," +
+            "displayDescription,executionDateLabel,displayExecutionDateLabel,dueDateLabel,displayDueDateLabel," +
+            "allowGenerateNextVisit,validCompleteOnly,reportDateToUse,openAfterEnrollment,repeatable,featureType," +
+            "formType,displayGenerateEventBox,generatedByEnrollmentDate,autoGenerateEvent,sortOrder,hideDueDate," +
+            "blockEntryForm,minDaysFromStart,standardInterval,enableUserAssignment,programStageSections[id,code," +
+            "name,displayName,created,lastUpdated,deleted,sortOrder,programIndicators[id],dataElements[id]," +
+            "renderType[DESKTOP[type],MOBILE[type]],description,displayDescription],programStageDataElements[id," +
+            "code,name,displayName,created,lastUpdated,deleted,displayInReports,compulsory," +
+            "allowProvidedElsewhere,sortOrder,allowFutureDate,dataElement[id,code,name,displayName,created," +
+            "lastUpdated,deleted,shortName,displayShortName,description,displayDescription,valueType," +
+            "zeroIsSignificant,aggregationType,formName,domainType,displayFormName,optionSet[id]," +
+            "categoryCombo[id],legendSets[id],fieldMask,attributeValues[value,attribute[id]],style[color,icon]]," +
+            "programStage[id],renderType[DESKTOP[type,min,max,step,decimalPoints],MOBILE[type,min,max,step," +
+            "decimalPoints]]],periodType,program[id],access[read,write,data[read,write]],remindCompleted," +
+            "validationStrategy,programStageLabel,displayProgramStageLabel,eventLabel,displayEventLabel," +
+            "displayEventsLabel,attributeValues[value,attribute[id]]",
         "ProgramStageWorkingListDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,description,program[id],programStage[id]," +
             "programStageQueryCriteria[eventStatus,eventCreatedAt[startBuffer,endBuffer,startDate,endDate,period," +

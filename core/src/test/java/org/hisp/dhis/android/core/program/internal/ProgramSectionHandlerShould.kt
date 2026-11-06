@@ -30,8 +30,8 @@ package org.hisp.dhis.android.core.program.internal
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramSection
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -57,8 +57,8 @@ class ProgramSectionHandlerShould {
     fun setUp() = runTest {
         programSectionHandler = ProgramSectionHandler(programSectionStore, programSectionAttributeLinkHandler)
 
-        val attributes = listOf(TrackedEntityAttribute.builder().uid("attribute_uid").build())
-        whenever(programSection.attributes()).thenReturn(attributes)
+        val attributes = listOf(ObjectWithUid.create("attribute_uid"))
+        whenever(programSection.attributeUids).thenReturn(attributes)
         whenever(programSection.uid()).thenReturn(sectionUid)
         whenever(
             programSectionStore.updateOrInsert(any<List<ProgramSection>>()),
@@ -71,7 +71,7 @@ class ProgramSectionHandlerShould {
         programSectionHandler.handle(programSection)
         verify(programSectionAttributeLinkHandler).handleMany(
             same(sectionUid),
-            any<List<TrackedEntityAttribute>>(),
+            any<List<ObjectWithUid>>(),
             any(),
         )
     }

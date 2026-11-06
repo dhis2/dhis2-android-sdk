@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.user
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.user.User
 import org.hisp.dhis.android.core.user.internal.UserNetworkHandler
@@ -43,12 +44,15 @@ internal class UserNetworkHandlerImpl(
     override suspend fun authenticate(
         credentials: String,
     ): User {
-        val userDTO = service.authenticate(credentials, UserFields.allFieldsWithoutOrgUnit)
+        val userDTO = service.authenticate(credentials)
         return userDTO.toDomain()
     }
 
     override suspend fun getUser(): User {
-        val userDTO = service.getUser(UserFields.allFieldsWithOrgUnit(dhisVersionManager.suspendGetVersion()))
-        return userDTO.toDomain()
+        return if (dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
+            service.getUser().toDomain()
+        } else {
+            service.getUser37().toDomain()
+        }
     }
 }

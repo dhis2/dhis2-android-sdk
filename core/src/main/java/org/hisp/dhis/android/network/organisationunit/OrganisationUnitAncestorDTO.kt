@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.user
 
-import org.hisp.dhis.android.core.user.UserRole
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+package org.hisp.dhis.android.network.organisationunit
 
-internal object UserRoleFields : BaseFields<UserRole>() {
-    val allFields = Fields.from(
-        fh.getIdentifiableFields(),
-    )
-}
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class OrganisationUnitAncestorDTO(
+    val id: String,
+    val displayName: String?,
+)

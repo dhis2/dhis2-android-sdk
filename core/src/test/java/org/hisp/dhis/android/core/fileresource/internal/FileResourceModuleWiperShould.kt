@@ -50,7 +50,8 @@ class FileResourceModuleWiperShould {
     private val fileSystem = FakeFileSystem()
     private val databaseAdapter: DatabaseAdapter = mock()
     private val tableWiper: TableWiper = mock()
-    private val directories = FileResourceDirectories(fileSystem, FakePlatformDirectories(fileSystem), databaseAdapter)
+    private val directories =
+        FileResourceDirectoriesImpl(fileSystem, FakePlatformDirectories(fileSystem), databaseAdapter)
 
     private val wiper = FileResourceModuleWiper(tableWiper, directories)
 

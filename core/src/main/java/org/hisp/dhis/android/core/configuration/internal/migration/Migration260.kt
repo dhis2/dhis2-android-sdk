@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.fileresource.FileResource
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.sms.data.localdbrepository.internal.SMSConfigKey
 import org.hisp.dhis.android.persistence.fileresource.FileResourceStoreImpl
 import org.hisp.dhis.android.persistence.sms.SMSConfigStoreImpl
@@ -69,9 +69,9 @@ internal class Migration260(
     }
 
     private suspend fun migrateFileResources260(databaseAdapter: DatabaseAdapter) {
-        val accountSubFolder = FileResourceDirectories.subfolderName(databaseAdapter.getDatabaseName())
+        val accountSubFolder = FileResourceDirectoriesImpl.subfolderName(databaseAdapter.getDatabaseName())
 
-        val rootResources = platformDirectories.filesDir / FileResourceDirectories.FILES_DIR
+        val rootResources = platformDirectories.filesDir / FileResourceDirectoriesImpl.FILES_DIR
         val dstResources = rootResources / accountSubFolder
         ignoringFailure { fileSystem.createDirectories(dstResources) }
 
@@ -88,8 +88,8 @@ internal class Migration260(
         }
         fileResources.forEach {
             val newPath = it.path()?.replace(
-                oldValue = FileResourceDirectories.FILES_DIR,
-                newValue = FileResourceDirectories.FILES_DIR + "/" + accountSubFolder,
+                oldValue = FileResourceDirectoriesImpl.FILES_DIR,
+                newValue = FileResourceDirectoriesImpl.FILES_DIR + "/" + accountSubFolder,
             ) ?: ""
             val newFileResource = it.toBuilder().path(newPath).build()
             fileResourcesStore.updateOrInsert(newFileResource)

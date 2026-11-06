@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.fileresource
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.rx2.rxSingle
 import kotlinx.coroutines.withContext
+import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
@@ -66,13 +66,14 @@ import org.koin.core.annotation.Singleton
 import java.io.File
 
 @Singleton
-@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught", "LongParameterList")
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     scope: RepositoryScope,
     transformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val fileResourceFiles: FileResourceFiles,
+    private val imageTransformer: ImageTransformer,
     private val programSettingsRepository: Lazy<ProgramSettingsObjectRepository>,
     private val dataSetSettingsRepository: Lazy<DataSetSettingsObjectRepository>,
     databaseAdapter: DatabaseAdapter,
@@ -90,6 +91,7 @@ class FileResourceCollectionRepository internal constructor(
             transformer,
             dataStatePropagator,
             fileResourceFiles,
+            imageTransformer,
             programSettingsRepository,
             dataSetSettingsRepository,
             databaseAdapter,
@@ -115,26 +117,68 @@ class FileResourceCollectionRepository internal constructor(
     @Deprecated("Check {@link #upload()}.")
     fun blockingUpload() = Unit
 
-    override suspend fun suspendAdd(o: File): String = addFile(o, o.name)
+    @Deprecated(USE_PATH, ReplaceWith("rxAdd(o.toOkioPath())", "okio.Path.Companion.toOkioPath"))
+    override fun rxAdd(o: File): Single<String> = rxAdd(o.toOkioPath())
 
-    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String = withContext(dispatcher) {
+    @Deprecated(USE_PATH, ReplaceWith("blockingAdd(o.toOkioPath())", "okio.Path.Companion.toOkioPath"))
+    override fun blockingAdd(o: File): String = blockingAdd(o.toOkioPath())
+
+    @Deprecated(USE_PATH, ReplaceWith("suspendAdd(o.toOkioPath())", "okio.Path.Companion.toOkioPath"))
+    override suspend fun suspendAdd(o: File): String = suspendAdd(o.toOkioPath())
+
+    fun rxAdd(file: Path): Single<String> = rxSingle { suspendAdd(file) }
+
+    @Throws(D2Error::class)
+    fun blockingAdd(file: Path): String = runBlockingOnIO { suspendAdd(file) }
+
+    @Throws(D2Error::class)
+    suspend fun suspendAdd(file: Path): String = addFile(file, file.name)
+
+    suspend fun suspendProcessAndAdd(file: Path, resourceContext: ResourceContext): String = withContext(dispatcher) {
         val processedFile = when (resourceContext) {
-            is ResourceContext.ImageContext -> compressImageIfNeeded(o, getQuality(resourceContext))
-            ResourceContext.FileContext -> o
+            is ResourceContext.ImageContext -> compressImageIfNeeded(file, getQuality(resourceContext))
+            ResourceContext.FileContext -> file
         }
         try {
-            addFile(processedFile, resourceName(o, processedFile))
+            addFile(processedFile, resourceName(file, processedFile))
         } finally {
-            if (processedFile != o && !processedFile.delete()) {
-                Log.w(TAG, "Could not delete the temporary file ${processedFile.name}")
+            if (processedFile != file) {
+                fileResourceFiles.deleteFile(processedFile)
             }
         }
     }
 
-    private suspend fun addFile(file: File, name: String): String = withContext(dispatcher) {
+    fun rxProcessAndAdd(file: Path, resourceContext: ResourceContext): Single<String> =
+        rxSingle { suspendProcessAndAdd(file, resourceContext) }
+
+    fun blockingProcessAndAdd(file: Path, resourceContext: ResourceContext): String =
+        runBlockingOnIO { suspendProcessAndAdd(file, resourceContext) }
+
+    @Deprecated(
+        USE_PATH,
+        ReplaceWith("suspendProcessAndAdd(o.toOkioPath(), resourceContext)", "okio.Path.Companion.toOkioPath"),
+    )
+    suspend fun suspendProcessAndAdd(o: File, resourceContext: ResourceContext): String =
+        suspendProcessAndAdd(o.toOkioPath(), resourceContext)
+
+    @Deprecated(
+        USE_PATH,
+        ReplaceWith("rxProcessAndAdd(o.toOkioPath(), resourceContext)", "okio.Path.Companion.toOkioPath"),
+    )
+    fun rxProcessAndAdd(o: File, resourceContext: ResourceContext): Single<String> =
+        rxProcessAndAdd(o.toOkioPath(), resourceContext)
+
+    @Deprecated(
+        USE_PATH,
+        ReplaceWith("blockingProcessAndAdd(o.toOkioPath(), resourceContext)", "okio.Path.Companion.toOkioPath"),
+    )
+    fun blockingProcessAndAdd(o: File, resourceContext: ResourceContext): String =
+        blockingProcessAndAdd(o.toOkioPath(), resourceContext)
+
+    private suspend fun addFile(file: Path, name: String): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
-            val dstFile = fileResourceFiles.saveFile(file.toOkioPath(), generatedUid).toFile()
+            val dstFile = fileResourceFiles.saveFile(file, generatedUid).toFile()
             val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
             store.insert(fileResource)
             fileResource.uid()
@@ -154,28 +198,18 @@ class FileResourceCollectionRepository internal constructor(
      * server. The extension is taken from the processed file, because the compression may have changed the image
      * format: the content type is derived from the name, so both must agree with the actual bytes.
      */
-    private fun resourceName(originalFile: File, processedFile: File): String {
-        return if (processedFile.extension.equals(originalFile.extension, ignoreCase = true)) {
-            originalFile.name
+    private fun resourceName(originalFile: Path, processedFile: Path): String {
+        val originalName = originalFile.name
+        val processedExtension = processedFile.name.substringAfterLast('.', "")
+        return if (processedExtension.equals(originalName.substringAfterLast('.', ""), ignoreCase = true)) {
+            originalName
         } else {
-            "${originalFile.nameWithoutExtension}.${processedFile.extension}"
+            "${originalName.substringBeforeLast('.')}.$processedExtension"
         }
     }
 
-    fun rxProcessAndAdd(o: File, resourceContext: ResourceContext): Single<String> =
-        rxSingle { suspendProcessAndAdd(o, resourceContext) }
-
-    fun blockingProcessAndAdd(o: File, resourceContext: ResourceContext): String =
-        runBlockingOnIO { suspendProcessAndAdd(o, resourceContext) }
-
-    private fun compressImageIfNeeded(file: File, quality: UploadQuality): File {
-        return if (quality == UploadQuality.DEFAULT) {
-            val source = file.toOkioPath()
-            val compressed = fileResourceFiles.compressImage(source)
-            if (compressed == source) file else compressed.toFile()
-        } else {
-            file
-        }
+    private fun compressImageIfNeeded(file: Path, quality: UploadQuality): Path {
+        return if (quality == UploadQuality.DEFAULT) imageTransformer.compress(file) else file
     }
 
     private suspend fun getQuality(resourceContext: ResourceContext.ImageContext): UploadQuality {
@@ -236,7 +270,7 @@ class FileResourceCollectionRepository internal constructor(
     }
 
     internal companion object {
-        private val TAG = FileResourceCollectionRepository::class.java.simpleName
+        private const val USE_PATH = "Use the okio.Path overload."
         val childrenAppenders: ChildrenAppenderGetter<FileResource> = emptyMap()
         const val DEFAULT_QUALITY = "default"
     }

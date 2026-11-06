@@ -221,7 +221,7 @@ dependencies {
     // Square libraries
     api(libs.okhttp)
     api(libs.okhttp.mockwebserver)
-    implementation(libs.okio)
+    api(libs.okio)
 
     // Ktor
     api(libs.ktor)

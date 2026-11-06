@@ -60,4 +60,8 @@ interface FileResourceModule {
     fun fileResources(): FileResourceCollectionRepository
 
     fun fileResourceDownloader(): FileResourceDownloader
+
+    fun directories(): FileResourceDirectories
+
+    fun imageTransformer(): ImageTransformer
 }

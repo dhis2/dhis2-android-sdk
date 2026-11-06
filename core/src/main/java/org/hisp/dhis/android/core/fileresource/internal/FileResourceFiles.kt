@@ -35,8 +35,6 @@ import okio.IOException
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.Source
-import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessor
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.generateFileName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
@@ -48,13 +46,15 @@ import org.koin.core.annotation.Singleton
 @Singleton
 internal class FileResourceFiles(
     private val fileSystem: FileSystem,
-    private val fileResourceDirectories: FileResourceDirectories,
-    private val imageProcessor: ImageProcessor,
+    private val fileResourceDirectories: FileResourceDirectoriesImpl,
 ) {
 
-    fun compressImage(image: Path): Path {
-        val outputDirectory = fileResourceDirectories.fileCacheResourceDirectory()
-        return imageProcessor.compress(image, FileCompressionHelper.TARGET_SIZE_BYTES, outputDirectory)
+    fun deleteFile(file: Path) {
+        try {
+            fileSystem.delete(file)
+        } catch (e: IOException) {
+            Log.w(TAG, "Could not delete ${file.name}", e)
+        }
     }
 
     fun getFile(fileResource: FileResource): Path? {

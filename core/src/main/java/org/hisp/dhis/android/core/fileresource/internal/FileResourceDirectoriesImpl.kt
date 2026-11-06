@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
+import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
 import org.koin.core.annotation.Singleton
 
 /**
@@ -45,11 +46,11 @@ import org.koin.core.annotation.Singleton
  * Getters create the directory if it does not exist yet.
  */
 @Singleton
-internal class FileResourceDirectories(
+internal class FileResourceDirectoriesImpl(
     private val fileSystem: FileSystem,
     private val platformDirectories: PlatformDirectories,
     private val databaseAdapter: DatabaseAdapter,
-) {
+) : FileResourceDirectories {
 
     private val filesRoot: Path
         get() = platformDirectories.filesDir / FILES_DIR
@@ -57,11 +58,11 @@ internal class FileResourceDirectories(
     private val cacheRoot: Path
         get() = platformDirectories.cacheDir / CACHE_DIR
 
-    fun fileResourceDirectory(): Path {
+    override fun fileResourceDirectory(): Path {
         return createIfMissing(filesRoot / currentSubfolder())
     }
 
-    fun fileCacheResourceDirectory(): Path {
+    override fun fileCacheResourceDirectory(): Path {
         return createIfMissing(cacheRoot / currentSubfolder())
     }
 
@@ -110,7 +111,7 @@ internal class FileResourceDirectories(
         const val FILES_DIR = "sdk_resources"
         const val CACHE_DIR = "sdk_cache_resources"
 
-        private const val TAG = "FileResourceDirectories"
+        private const val TAG = "FileResourceDirectoriesImpl"
 
         fun subfolderName(databaseName: String): String {
             return databaseName.removeSuffix(DatabaseNameGenerator.DB_SUFFIX)

@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHe
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -57,7 +57,7 @@ internal class AccountManagerImpl(
     private val databaseManager: DatabaseManager,
     private val credentialsSecureStore: CredentialsSecureStore,
     private val logOutCall: LogOutCall,
-    private val fileResourceDirectories: FileResourceDirectories,
+    private val fileResourceDirectories: FileResourceDirectoriesImpl,
     private val databaseConfigurationHelper: DatabaseConfigurationHelper,
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,

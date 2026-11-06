@@ -73,8 +73,13 @@ internal class DatabaseImportExportImpl(
     private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
-    @Suppress("TooGenericExceptionCaught")
+    @Deprecated("Use the okio.Path overload.")
     override fun importDatabase(file: File): DatabaseExportMetadata {
+        return importDatabase(file.toOkioPath())
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    override fun importDatabase(file: Path): DatabaseExportMetadata {
         if (userModule.blockingIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log out to import database")
@@ -86,7 +91,7 @@ internal class DatabaseImportExportImpl(
         val importDatabaseFile = workingFile(ExportDatabaseProtected)
 
         return try {
-            archiveHelper.unzip(file.toOkioPath(), getWorkingDir(), setOf(ExportMetadata, ExportDatabaseProtected))
+            archiveHelper.unzip(file, getWorkingDir(), setOf(ExportMetadata, ExportDatabaseProtected))
 
             if (!fileSystem.exists(importMetadataFile) || !fileSystem.exists(importDatabaseFile)) {
                 throw d2ErrorBuilder
@@ -135,7 +140,12 @@ internal class DatabaseImportExportImpl(
         }
     }
 
+    @Deprecated("Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.")
     override suspend fun exportLoggedUserDatabase(): File {
+        return exportLoggedUserDatabaseToPath().toFile()
+    }
+
+    override suspend fun exportLoggedUserDatabaseToPath(): Path {
         val exportMetadataFile = workingFile(ExportMetadata)
         val copiedDatabase = workingFile(ExportDatabase)
         val protectedDatabase = workingFile(ExportDatabaseProtected)
@@ -162,7 +172,7 @@ internal class DatabaseImportExportImpl(
         databaseAdapter.checkpointWAL()
 
         if (userConfiguration.encrypted()) {
-            databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase.toFile())
+            databaseExport.decryptAndCopyTo(userConfiguration, copiedDatabase)
         } else {
             fileSystem.copyTo(databaseFile, copiedDatabase)
         }
@@ -198,7 +208,7 @@ internal class DatabaseImportExportImpl(
         fileSystem.deleteIfExists(copiedDatabase)
         fileSystem.deleteIfExists(protectedDatabase)
 
-        return zipFile.toFile()
+        return zipFile
     }
 
     private fun getWorkingDir(): Path {

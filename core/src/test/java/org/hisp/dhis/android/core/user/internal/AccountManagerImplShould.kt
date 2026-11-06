@@ -39,7 +39,7 @@ import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHe
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationInsecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.configuration.internal.MultiUserDatabaseManager
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2StateSecureStore
@@ -70,7 +70,7 @@ class AccountManagerImplShould {
 
     private val fileSystem = FakeFileSystem()
     private val fileResourceDirectories =
-        FileResourceDirectories(fileSystem, FakePlatformDirectories(fileSystem), mock())
+        FileResourceDirectoriesImpl(fileSystem, FakePlatformDirectories(fileSystem), mock())
 
     private lateinit var accountManager: AccountManagerImpl
 

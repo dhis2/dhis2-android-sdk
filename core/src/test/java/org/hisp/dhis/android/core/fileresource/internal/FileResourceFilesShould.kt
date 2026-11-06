@@ -36,8 +36,6 @@ import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.file.internal.FakePlatformDirectories
-import org.hisp.dhis.android.core.arch.helpers.FileCompressionHelper
-import org.hisp.dhis.android.core.arch.helpers.internal.ImageProcessor
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.junit.After
 import org.junit.Assert.assertThrows
@@ -45,9 +43,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
@@ -55,10 +51,10 @@ class FileResourceFilesShould {
 
     private val fileSystem = FakeFileSystem()
     private val databaseAdapter: DatabaseAdapter = mock()
-    private val directories = FileResourceDirectories(fileSystem, FakePlatformDirectories(fileSystem), databaseAdapter)
-    private val imageProcessor: ImageProcessor = mock()
+    private val directories =
+        FileResourceDirectoriesImpl(fileSystem, FakePlatformDirectories(fileSystem), databaseAdapter)
 
-    private val files = FileResourceFiles(fileSystem, directories, imageProcessor)
+    private val files = FileResourceFiles(fileSystem, directories)
 
     @Before
     fun setUp() {
@@ -155,19 +151,13 @@ class FileResourceFilesShould {
     }
 
     @Test
-    fun compress_images_into_the_cache_directory_of_the_account() {
-        val image = "/external/photo.png".toPath()
-        val compressedImage = directories.fileCacheResourceDirectory() / "compressed-photo.jpg"
-        whenever(imageProcessor.compress(any(), any(), any())).thenReturn(compressedImage)
+    fun delete_a_file_and_ignore_it_when_missing() {
+        val file = writeFile(directories.fileCacheResourceDirectory() / "compressed-photo.jpg", CONTENT)
 
-        val result = files.compressImage(image)
+        files.deleteFile(file)
+        files.deleteFile(file)
 
-        assertThat(result).isEqualTo(compressedImage)
-        verify(imageProcessor).compress(
-            image,
-            FileCompressionHelper.TARGET_SIZE_BYTES,
-            directories.fileCacheResourceDirectory(),
-        )
+        assertThat(fileSystem.exists(file)).isFalse()
     }
 
     private fun fileResourceWithPath(path: String?): FileResource {

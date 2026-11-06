@@ -34,16 +34,20 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.fileresource.FileResourceDataDomainType
+import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
 import org.hisp.dhis.android.core.fileresource.FileResourceDomainType
 import org.hisp.dhis.android.core.fileresource.FileResourceDownloader
 import org.hisp.dhis.android.core.fileresource.FileResourceModule
 import org.hisp.dhis.android.core.fileresource.FileResourceValueType
+import org.hisp.dhis.android.core.fileresource.ImageTransformer
 import org.koin.core.annotation.Singleton
 
 @Singleton
 internal class FileResourceModuleImpl(
     private val fileResources: FileResourceCollectionRepository,
     private val fileResourceDownloader: FileResourceDownloader,
+    private val directories: FileResourceDirectories,
+    private val imageTransformer: ImageTransformer,
 ) : FileResourceModule {
 
     @Deprecated(
@@ -84,6 +88,14 @@ internal class FileResourceModuleImpl(
 
     override fun fileResourceDownloader(): FileResourceDownloader {
         return fileResourceDownloader
+    }
+
+    override fun directories(): FileResourceDirectories {
+        return directories
+    }
+
+    override fun imageTransformer(): ImageTransformer {
+        return imageTransformer
     }
 
     private fun flowDownload(): Flow<D2Progress> {

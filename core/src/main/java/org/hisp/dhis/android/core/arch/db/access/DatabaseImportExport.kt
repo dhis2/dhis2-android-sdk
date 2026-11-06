@@ -27,9 +27,27 @@
  */
 package org.hisp.dhis.android.core.arch.db.access
 
+import okio.Path
+import org.hisp.dhis.android.core.maintenance.D2Error
 import java.io.File
 
 interface DatabaseImportExport {
+
+    @Deprecated(
+        "Use the okio.Path overload.",
+        ReplaceWith("importDatabase(file.toOkioPath())", "okio.Path.Companion.toOkioPath"),
+    )
     fun importDatabase(file: File): DatabaseExportMetadata
+
+    @Throws(D2Error::class)
+    fun importDatabase(file: Path): DatabaseExportMetadata
+
+    @Deprecated(
+        "Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.",
+        ReplaceWith("exportLoggedUserDatabaseToPath().toFile()"),
+    )
     suspend fun exportLoggedUserDatabase(): File
+
+    @Throws(D2Error::class)
+    suspend fun exportLoggedUserDatabaseToPath(): Path
 }

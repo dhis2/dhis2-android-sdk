@@ -36,7 +36,7 @@ import okio.FileSystem
 import okio.IOException
 import okio.Path
 import okio.buffer
-import org.hisp.dhis.android.core.arch.helpers.FileResizerHelper.Dimension
+import org.hisp.dhis.android.core.fileresource.ImageDimension
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
@@ -56,8 +56,8 @@ internal class AndroidImageProcessor(
     private val fileSystem: FileSystem,
 ) : ImageProcessor {
 
-    override fun resize(source: Path, dimension: Dimension, outputDirectory: Path): Path {
-        val bitmap = ImageFileHelper.decodeBitmap(source, dimension.dimension * DECODE_HEADROOM_FACTOR)
+    override fun resize(source: Path, dimension: ImageDimension, outputDirectory: Path): Path {
+        val bitmap = ImageFileHelper.decodeBitmap(source, dimension.pixels * DECODE_HEADROOM_FACTOR)
             ?: throw resizeError("${source.name} could not be decoded as an image")
         val width = bitmap.width.toFloat()
         val height = bitmap.height.toFloat()
@@ -65,16 +65,16 @@ internal class AndroidImageProcessor(
         val target = outputDirectory / "$RESIZED_PREFIX${dimension.name}-${source.name}"
         try {
             return if (scaleFactor > 1) {
-                if (width < dimension.dimension) {
+                if (width < dimension.pixels) {
                     source
                 } else {
-                    writeResized(bitmap, dimension.dimension, (dimension.dimension / scaleFactor).toInt(), target)
+                    writeResized(bitmap, dimension.pixels, (dimension.pixels / scaleFactor).toInt(), target)
                 }
             } else {
-                if (height < dimension.dimension) {
+                if (height < dimension.pixels) {
                     source
                 } else {
-                    writeResized(bitmap, (scaleFactor * dimension.dimension).toInt(), dimension.dimension, target)
+                    writeResized(bitmap, (scaleFactor * dimension.pixels).toInt(), dimension.pixels, target)
                 }
             }
         } finally {

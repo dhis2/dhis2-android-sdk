@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.arch.storage.internal.InMemoryUnsecureStore
 import org.hisp.dhis.android.core.configuration.internal.migration.Migration301
-import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import org.hisp.dhis.android.core.utils.runner.D2JunitRunner
 import org.junit.After
 import org.junit.Before
@@ -281,7 +281,7 @@ class Migration301IntegrationShould {
             }
         }
 
-        File(context.filesDir, FileResourceDirectories.FILES_DIR).deleteRecursively()
-        File(context.cacheDir, FileResourceDirectories.CACHE_DIR).deleteRecursively()
+        File(context.filesDir, FileResourceDirectoriesImpl.FILES_DIR).deleteRecursively()
+        File(context.cacheDir, FileResourceDirectoriesImpl.CACHE_DIR).deleteRecursively()
     }
 }

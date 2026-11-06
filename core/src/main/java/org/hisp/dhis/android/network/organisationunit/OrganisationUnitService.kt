@@ -29,14 +29,12 @@ package org.hisp.dhis.android.network.organisationunit
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class OrganisationUnitService(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
     suspend fun getOrganisationUnits(
-        fields: Fields<OrganisationUnit>,
         filter: Filter<OrganisationUnit>,
         order: String,
         paging: Boolean,
@@ -46,7 +44,7 @@ internal class OrganisationUnitService(private val client: HttpServiceClient) {
         return client.get {
             url(ORGANISATION_UNITS)
             parameters {
-                fields(fields)
+                fields<OrganisationUnitDTO>()
                 filter(filter)
                 attribute(ORDER, order)
                 paging(paging)

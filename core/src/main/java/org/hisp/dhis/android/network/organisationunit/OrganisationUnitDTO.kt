@@ -30,13 +30,10 @@ package org.hisp.dhis.android.network.organisationunit
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.hisp.dhis.android.core.common.FeatureType
-import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.hisp.dhis.android.network.common.dto.BaseNameableObjectDTO
-import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
@@ -59,12 +56,9 @@ internal data class OrganisationUnitDTO(
     val openingDate: String?,
     val closedDate: String?,
     val level: Int?,
-    val coordinates: String?,
-    val featureType: String?,
-    val geometry: GeometryDTO?,
     val programs: List<ObjectWithUidDTO>? = emptyList(),
     val dataSets: List<ObjectWithUidDTO>? = emptyList(),
-    val ancestors: List<OrganisationUnitDTO>? = emptyList(),
+    val ancestors: List<OrganisationUnitAncestorDTO>? = emptyList(),
     val organisationUnitGroups: List<OrganisationUnitGroupDTO>? = emptyList(),
 ) : BaseNameableObjectDTO {
     fun toDomain(): OrganisationUnit {
@@ -77,7 +71,6 @@ internal data class OrganisationUnitDTO(
                 closedDate?.let { closedDate(it) }
             }
             .level(level)
-            .geometry(evaluateGeometry())
             .programs(programs?.map { ObjectWithUid.create(it.id) })
             .programs(programs?.map { ObjectWithUid.create(it.id) })
             .dataSets(dataSets?.map { ObjectWithUid.create(it.id) })
@@ -90,19 +83,6 @@ internal data class OrganisationUnitDTO(
         return ancestors?.let {
             (ancestors.map { it.displayName } + displayName).filterNotNull()
         } ?: emptyList()
-    }
-
-    private fun evaluateGeometry(): Geometry? {
-        return when {
-            geometry != null ->
-                geometry.toDomain()
-            featureType != null && coordinates != null ->
-                Geometry.builder()
-                    .type(FeatureType.valueOfFeatureType(featureType))
-                    .coordinates(coordinates)
-                    .build()
-            else -> null
-        }
     }
 }
 

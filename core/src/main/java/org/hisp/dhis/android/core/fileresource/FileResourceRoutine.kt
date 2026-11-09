@@ -31,6 +31,8 @@ package org.hisp.dhis.android.core.fileresource
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.minus
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.dataelement.DataElementCollectionRepository
@@ -42,10 +44,10 @@ import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeCollection
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValueCollectionRepository
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValueCollectionRepository
 import org.koin.core.annotation.Singleton
-import java.io.File
 import java.util.Date
 
 @Singleton
+@Suppress("LongParameterList")
 internal class FileResourceRoutine(
     private val dataValueCollectionRepository: DataValueCollectionRepository,
     private val dataElementCollectionRepository: DataElementCollectionRepository,
@@ -56,6 +58,7 @@ internal class FileResourceRoutine(
     private val customIconStore: CustomIconStore,
     private val trackedEntityAttributeValueCollectionRepository: TrackedEntityAttributeValueCollectionRepository,
     private val clockProvider: ClockProvider,
+    private val fileSystem: FileSystem,
 ) {
 
     @SuppressWarnings("MagicNumber")
@@ -110,8 +113,7 @@ internal class FileResourceRoutine(
 
     private fun deleteFile(path: String) {
         runCatching {
-            val file = File(path)
-            file.delete()
+            fileSystem.delete(path.toPath())
         }
     }
 }

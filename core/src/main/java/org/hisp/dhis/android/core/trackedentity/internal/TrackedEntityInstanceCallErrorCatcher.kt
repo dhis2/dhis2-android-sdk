@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
+import okio.IOException
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
-import java.io.IOException
 import javax.net.ssl.HttpsURLConnection
 
 internal class TrackedEntityInstanceCallErrorCatcher : APICallErrorCatcher {

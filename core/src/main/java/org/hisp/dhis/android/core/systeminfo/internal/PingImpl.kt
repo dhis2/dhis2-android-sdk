@@ -28,12 +28,12 @@
 package org.hisp.dhis.android.core.systeminfo.internal
 
 import io.ktor.http.isSuccess
+import okio.IOException
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.hisp.dhis.android.core.systeminfo.Ping
 import org.koin.core.annotation.Singleton
-import java.io.IOException
 
 @Singleton
 class PingImpl internal constructor(

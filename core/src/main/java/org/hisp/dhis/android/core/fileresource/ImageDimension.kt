@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2023, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,15 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.db.access.internal
 
-import org.hisp.dhis.android.core.arch.db.access.internal.migrations.DatabaseCodeMigration
+package org.hisp.dhis.android.core.fileresource
 
-internal data class DatabaseMigration(val version: Int, val sql: List<String>, val code: DatabaseCodeMigration?)
+/**
+ * Length of the largest side of an image resized with [ImageTransformer.resize].
+ */
+@Suppress("MagicNumber")
+enum class ImageDimension(val pixels: Int) {
+    SMALL(256),
+    MEDIUM(512),
+    LARGE(1024),
+}

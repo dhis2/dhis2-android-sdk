@@ -33,6 +33,7 @@ import android.util.Log
 import net.zetetic.database.sqlcipher.SQLiteConnection
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
+import okio.Path
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader.loadSQLCipher
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -76,10 +77,10 @@ internal class RoomDatabaseExport(
     /**
      * Encrypts a database from a source file and copies it to a target file.
      */
-    override suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: File, targetFile: File) {
+    override suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: Path, targetFile: Path) {
         exportDatabase(
-            sourceFile,
-            targetFile,
+            sourceFile.toFile(),
+            targetFile.toFile(),
             oldPassword = null, // Unencrypted source
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             encrypt = true,
@@ -107,10 +108,10 @@ internal class RoomDatabaseExport(
     /**
      * Decrypts a database and copies it to a destination file.
      */
-    override suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: File) {
+    override suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: Path) {
         exportDatabase(
             context.getDatabasePath(account.databaseName()),
-            destinationFile,
+            destinationFile.toFile(),
             oldPassword = passwordManager.getPassword(account.databaseName()),
             newPassword = "", // Empty password for unencrypted database
             encrypt = false,

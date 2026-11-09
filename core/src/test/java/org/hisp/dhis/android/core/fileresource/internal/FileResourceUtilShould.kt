@@ -41,8 +41,49 @@ class FileResourceUtilShould {
         assertThat(getContentTypeFromName("image.jpg")).isEqualTo("image/jpeg")
         assertThat(getContentTypeFromName("image.jpeg")).isEqualTo("image/jpeg")
         assertThat(getContentTypeFromName("image.png")).isEqualTo("image/png")
+        assertThat(getContentTypeFromName("image.gif")).isEqualTo("image/gif")
+        assertThat(getContentTypeFromName("image.webp")).isEqualTo("image/webp")
+        assertThat(getContentTypeFromName("image.heic")).isEqualTo("image/heic")
+        assertThat(getContentTypeFromName("text.txt")).isEqualTo("text/plain")
+        assertThat(getContentTypeFromName("document.doc")).isEqualTo("application/msword")
+        assertThat(getContentTypeFromName("document.docx"))
+            .isEqualTo("application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+        assertThat(getContentTypeFromName("sheet.xlsx"))
+            .isEqualTo("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        assertThat(getContentTypeFromName("archive.zip")).isEqualTo("application/zip")
+        assertThat(getContentTypeFromName("video.mp4")).isEqualTo("video/mp4")
+        assertThat(getContentTypeFromName("video.3gp")).isEqualTo("video/3gpp")
+        assertThat(getContentTypeFromName("audio.mp3")).isEqualTo("audio/mpeg")
 
         assertThat(getContentTypeFromName("file.pak")).isEqualTo("application/octet-stream")
+        assertThat(getContentTypeFromName("file")).isEqualTo("application/octet-stream")
+    }
+
+    @Test
+    fun should_guess_content_type_ignoring_case_and_previous_dots() {
+        assertThat(getContentTypeFromName("IMAGE.JPG")).isEqualTo("image/jpeg")
+        assertThat(getContentTypeFromName("photo.2024.png")).isEqualTo("image/png")
+        assertThat(getContentTypeFromName("SHEET.XLS")).isEqualTo("application/vnd.ms-excel")
+    }
+
+    @Test
+    fun should_keep_android_content_type_where_ktor_differs() {
+        assertThat(getContentTypeFromName("audio.amr")).isEqualTo("audio/amr")
+        assertThat(getContentTypeFromName("image.bmp")).isEqualTo("image/x-ms-bmp")
+        assertThat(getContentTypeFromName("table.csv")).isEqualTo("text/comma-separated-values")
+        assertThat(getContentTypeFromName("audio.m4a")).isEqualTo("audio/mpeg")
+        assertThat(getContentTypeFromName("audio.opus")).isEqualTo("audio/ogg")
+        assertThat(getContentTypeFromName("slides.ppt")).isEqualTo("application/vnd.ms-powerpoint")
+        assertThat(getContentTypeFromName("text.rtf")).isEqualTo("text/rtf")
+        assertThat(getContentTypeFromName("audio.wav")).isEqualTo("audio/x-wav")
+        assertThat(getContentTypeFromName("sheet.xls")).isEqualTo("application/vnd.ms-excel")
+        assertThat(getContentTypeFromName("data.xml")).isEqualTo("text/xml")
+    }
+
+    @Test
+    fun should_use_default_content_type_when_unknown() {
+        assertThat(getContentTypeFromName("file.pak", defaultType = "image/*")).isEqualTo("image/*")
+        assertThat(getContentTypeFromName("image.png", defaultType = "image/*")).isEqualTo("image/png")
     }
 
     @Test

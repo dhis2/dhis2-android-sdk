@@ -33,10 +33,12 @@ import org.hisp.dhis.android.core.arch.helpers.AccessHelper.defaultAccess
 import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.BaseNameableObject
 import org.hisp.dhis.android.core.common.CoreObject
+import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithStyleKt
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
+import org.hisp.dhis.android.core.dataentryform.DataEntryForm
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.period.PeriodType
 import java.util.Date
@@ -79,6 +81,9 @@ data class DataSet(
     val displayOptions: DataSetDisplayOptions?,
     val access: Access,
     override val style: ObjectStyle,
+    val formType: FormType?,
+    val dataEntryForm: ObjectWithUid?,
+    internal val dataEntryFormContent: DataEntryForm?,
 ) : BaseNameableObject, CoreObject, ObjectWithStyleKt {
 
     fun periodType(): PeriodType? = periodType
@@ -104,6 +109,9 @@ data class DataSet(
     fun dataInputPeriods(): List<DataInputPeriod>? = dataInputPeriods
     fun displayOptions(): DataSetDisplayOptions? = displayOptions
     fun access(): Access = access
+    fun formType(): FormType? = formType
+    fun dataEntryForm(): ObjectWithUid? = dataEntryForm
+    internal fun dataEntryFormContent(): DataEntryForm? = dataEntryFormContent
 
     fun toBuilder(): Builder = DataSetBuilder.from(this)
 

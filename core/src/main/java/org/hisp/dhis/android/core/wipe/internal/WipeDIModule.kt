@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.configuration.internal.ConfigurationDIModule
 import org.hisp.dhis.android.core.constant.ConstantDIModule
 import org.hisp.dhis.android.core.dataapproval.DataApprovalDIModule
 import org.hisp.dhis.android.core.dataelement.DataElementDIModule
+import org.hisp.dhis.android.core.dataentryform.DataEntryFormDIModule
 import org.hisp.dhis.android.core.dataset.DataSetDIModule
 import org.hisp.dhis.android.core.datastore.DataStoreDIModule
 import org.hisp.dhis.android.core.datavalue.DataValueDIModule
@@ -87,6 +88,7 @@ import org.koin.core.annotation.Module
         ConstantDIModule::class,
         DataApprovalDIModule::class,
         DataElementDIModule::class,
+        DataEntryFormDIModule::class,
         DataSetDIModule::class,
         DataStoreDIModule::class,
         DataValueDIModule::class,

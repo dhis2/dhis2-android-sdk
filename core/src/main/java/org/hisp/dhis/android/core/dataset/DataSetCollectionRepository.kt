@@ -36,6 +36,7 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.IntegerFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
+import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.dataset.internal.DataInputPeriodChildrenAppender
 import org.hisp.dhis.android.core.dataset.internal.DataSetCompulsoryDataElementOperandChildrenAppender
@@ -157,6 +158,14 @@ class DataSetCollectionRepository internal constructor(
 
     fun byTabsDirection(): EnumFilterConnector<DataSetCollectionRepository, TabsDirection> {
         return cf.enumC(DataSetTableInfo.Columns.TABS_DIRECTION)
+    }
+
+    fun byFormType(): EnumFilterConnector<DataSetCollectionRepository, FormType> {
+        return cf.enumC(DataSetTableInfo.Columns.FORM_TYPE)
+    }
+
+    fun byDataEntryFormUid(): StringFilterConnector<DataSetCollectionRepository> {
+        return cf.string(DataSetTableInfo.Columns.DATA_ENTRY_FORM)
     }
 
     fun byOrganisationUnitList(uids: List<String>): DataSetCollectionRepository {

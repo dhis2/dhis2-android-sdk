@@ -32,6 +32,8 @@ import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
+import org.hisp.dhis.android.core.dataentryform.internal.DataEntryFormHandler
+import org.hisp.dhis.android.core.dataentryform.internal.DataEntryFormOrphanCleaner
 import org.hisp.dhis.android.core.dataset.*
 import org.hisp.dhis.android.core.indicator.DataSetIndicatorLink
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -51,9 +53,12 @@ internal class DataSetHandler(
     private val dataSetIndicatorLinkHandler: DataSetIndicatorLinkHandler,
     private val collectionCleaner: DataSetCollectionCleaner,
     private val linkCleaner: DataSetOrganisationUnitLinkCleaner,
+    private val dataEntryFormHandler: DataEntryFormHandler,
+    private val dataEntryFormOrphanCleaner: DataEntryFormOrphanCleaner,
 ) : IdentifiableHandlerImpl<DataSet>(dataSetStore) {
 
     override suspend fun afterObjectHandled(o: DataSet, action: HandleAction) {
+        dataEntryFormHandler.handle(o.dataEntryFormContent())
         val sections = o.sections()
         sectionHandler.handleMany(sections)
         compulsoryDataElementOperandHandler.handleMany(o.compulsoryDataElementOperands())
@@ -93,5 +98,6 @@ internal class DataSetHandler(
     override suspend fun afterCollectionHandled(oCollection: Collection<DataSet>?) {
         collectionCleaner.deleteNotPresent(oCollection)
         linkCleaner.deleteNotPresent(oCollection)
+        dataEntryFormOrphanCleaner.deleteOrphans()
     }
 }

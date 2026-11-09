@@ -31,6 +31,8 @@ package org.hisp.dhis.android.network.dataset
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.common.FormType
+import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.DataSetDisplayOptions
 import org.hisp.dhis.android.core.dataset.TabsDirection
@@ -44,6 +46,7 @@ import org.hisp.dhis.android.network.common.dto.ObjectWithStyleDTO
 import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 import org.hisp.dhis.android.network.common.dto.PagerDTO
 import org.hisp.dhis.android.network.common.dto.applyBaseNameableFields
+import org.hisp.dhis.android.network.dataentryform.DataEntryFormDTO
 
 @Serializable
 internal data class DataSetDTO(
@@ -82,6 +85,8 @@ internal data class DataSetDTO(
     val displayOptions: String?,
     val access: AccessDTO?,
     val style: ObjectWithStyleDTO?,
+    val formType: String?,
+    val dataEntryForm: DataEntryFormDTO?,
 ) : BaseNameableObjectDTO {
     fun toDomain(): DataSet {
         return DataSet.builder().apply {
@@ -116,6 +121,9 @@ internal data class DataSetDTO(
             )
             access?.let { access(access.toDomain()) }
             style?.let { style(style.toDomain()) }
+            formType(formType?.let { FormType.valueOf(it) })
+            dataEntryForm(dataEntryForm?.let { ObjectWithUid.create(it.id) })
+            dataEntryFormContent(dataEntryForm?.toDomain())
         }.build()
     }
 }

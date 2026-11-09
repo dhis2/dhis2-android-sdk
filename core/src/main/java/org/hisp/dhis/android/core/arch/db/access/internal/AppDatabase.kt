@@ -73,6 +73,8 @@ import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationDB
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationDao
 import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkDB
 import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkDao
+import org.hisp.dhis.android.persistence.dataentryform.DataEntryFormDB
+import org.hisp.dhis.android.persistence.dataentryform.DataEntryFormDao
 import org.hisp.dhis.android.persistence.dataset.DataSetDB
 import org.hisp.dhis.android.persistence.dataset.DataSetDao
 import org.hisp.dhis.android.persistence.dataset.DataSetDataElementLinkDB
@@ -344,6 +346,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         DataSetCompulsoryDataElementOperandsLinkDB::class,
         DataSetDataElementLinkDB::class,
         DataSetDB::class,
+        DataEntryFormDB::class,
         DataSetOrganisationUnitLinkDB::class,
         SectionDataElementLinkDB::class,
         SectionDB::class,
@@ -493,6 +496,7 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun dataSetCompleteRegistrationDao(): DataSetCompleteRegistrationDao
     internal abstract fun dataSetCompulsoryDataElementOperandLinkDao(): DataSetCompulsoryDataElementOperandsLinkDao
     internal abstract fun dataSetDao(): DataSetDao
+    internal abstract fun dataEntryFormDao(): DataEntryFormDao
     internal abstract fun dataSetDataElementLinkDao(): DataSetDataElementLinkDao
     internal abstract fun dataSetInstanceDao(): DataSetInstanceDao
     internal abstract fun dataSetInstanceSummaryDao(): DataSetInstanceSummaryDao
@@ -618,6 +622,6 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
 
     companion object {
-        const val VERSION = 182
+        const val VERSION = 183
     }
 }

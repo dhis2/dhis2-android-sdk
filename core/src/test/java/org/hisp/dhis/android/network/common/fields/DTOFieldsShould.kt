@@ -171,7 +171,8 @@ internal class DTOFieldsShould {
             "dataElements[id],greyedFields[id,deleted,dataElement[id],categoryOptionCombo[id]],indicators[id]," +
             "disableDataElementAutoGroup,displayOptions],compulsoryDataElementOperands[id,deleted," +
             "dataElement[id],categoryOptionCombo[id]],dataInputPeriods[period[id],openingDate,closingDate]," +
-            "displayOptions,access[read,write,data[read,write]],style[color,icon]",
+            "displayOptions,access[read,write,data[read,write]],style[color,icon],formType,dataEntryForm[id,code," +
+            "name,displayName,created,lastUpdated,deleted,style,htmlCode,format]",
         "DataValueDTO" to
             "deleted,dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo,value,storedBy," +
             "created,lastUpdated,comment,followup",

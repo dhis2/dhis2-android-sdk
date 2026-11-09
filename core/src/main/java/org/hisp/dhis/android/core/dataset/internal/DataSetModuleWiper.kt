@@ -29,6 +29,7 @@ package org.hisp.dhis.android.core.dataset.internal
 
 import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
+import org.hisp.dhis.android.persistence.dataentryform.DataEntryFormTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataInputPeriodTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetCompleteRegistrationTableInfo
 import org.hisp.dhis.android.persistence.dataset.DataSetCompulsoryDataElementOperandsLinkTableInfo
@@ -46,6 +47,7 @@ internal class DataSetModuleWiper(
 ) : ModuleWiper {
     override suspend fun wipeMetadata() {
         tableWiper.wipeTables(
+            DataEntryFormTableInfo.TABLE_INFO,
             DataInputPeriodTableInfo.TABLE_INFO,
             DataSetCompulsoryDataElementOperandsLinkTableInfo.TABLE_INFO,
             DataSetDataElementLinkTableInfo.TABLE_INFO,

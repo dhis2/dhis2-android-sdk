@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.core.common.DataAccess
+import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectStyle
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.indicator.Indicator
@@ -93,5 +94,24 @@ internal class DataSetShould : CoreObjectShould<DataSetDTO>("dataset/data_set.js
             ),
         )
         assertThat(dataSet.style()).isEqualTo(ObjectStyle.builder().color("#000").icon("my-icon-name").build())
+    }
+
+    @Test
+    fun map_custom_form_from_json_string() {
+        val dataSet = deserialize().toDomain()
+
+        assertThat(dataSet.formType()).isEqualTo(FormType.CUSTOM)
+        assertThat(dataSet.dataEntryForm()).isEqualTo(ObjectWithUid.create("DiszpKrYNg8"))
+
+        val dataEntryForm = dataSet.dataEntryFormContent()!!
+        assertThat(dataEntryForm.uid()).isEqualTo("DiszpKrYNg8")
+        assertThat(dataEntryForm.name()).isEqualTo("ART monthly summary form")
+        assertThat(dataEntryForm.lastUpdated()).isEqualTo(
+            BaseIdentifiableObject.parseDate("2016-02-03T09:12:41.208"),
+        )
+        assertThat(dataEntryForm.style()).isEqualTo("NORMAL")
+        assertThat(dataEntryForm.format()).isEqualTo(2)
+        assertThat(dataEntryForm.htmlCode()).startsWith("<table>")
+        assertThat(dataEntryForm.htmlCode()).contains("id=\"n91IylSb1JQ-Prlt0C1RF0s-val\"")
     }
 }

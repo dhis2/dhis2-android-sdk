@@ -28,11 +28,13 @@
 package org.hisp.dhis.android.core.dataset
 
 import org.hisp.dhis.android.core.dataapproval.DataApprovalCollectionRepository
+import org.hisp.dhis.android.core.dataentryform.DataEntryFormCollectionRepository
 
 interface DataSetModule {
     fun dataSetCompleteRegistrations(): DataSetCompleteRegistrationCollectionRepository
     fun dataSets(): DataSetCollectionRepository
     fun sections(): SectionCollectionRepository
+    fun dataEntryForms(): DataEntryFormCollectionRepository
     fun dataApprovals(): DataApprovalCollectionRepository
     fun dataSetInstances(): DataSetInstanceCollectionRepository
     fun dataSetInstanceSummaries(): DataSetInstanceSummaryCollectionRepository

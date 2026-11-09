@@ -182,5 +182,15 @@
   "style": {
     "color": "#000",
     "icon": "my-icon-name"
+  },
+  "formType": "CUSTOM",
+  "dataEntryForm": {
+    "id": "DiszpKrYNg8",
+    "name": "ART monthly summary form",
+    "created": "2014-04-11T10:21:32.137",
+    "lastUpdated": "2016-02-03T09:12:41.208",
+    "style": "NORMAL",
+    "format": 2,
+    "htmlCode": "<table><tr><td>ART new</td><td><input id=\"n91IylSb1JQ-Prlt0C1RF0s-val\" name=\"entryfield\" /></td></tr></table>"
   }
 }

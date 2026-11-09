@@ -33,6 +33,9 @@ import org.hisp.dhis.android.core.common.Access
 import org.hisp.dhis.android.core.common.DataAccess
 import org.hisp.dhis.android.core.dataelement.DataElementOperand
 import org.hisp.dhis.android.core.dataelement.internal.DataElementOperandHandler
+import org.hisp.dhis.android.core.dataentryform.DataEntryForm
+import org.hisp.dhis.android.core.dataentryform.internal.DataEntryFormHandler
+import org.hisp.dhis.android.core.dataentryform.internal.DataEntryFormOrphanCleaner
 import org.hisp.dhis.android.core.dataset.DataInputPeriod
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.Section
@@ -71,6 +74,9 @@ class DataSetHandlerShould {
     private val collectionCleaner: DataSetCollectionCleaner = mock()
     private val linkCleaner: DataSetOrganisationUnitLinkCleaner = mock()
     private var dataInputPeriods: MutableList<DataInputPeriod> = mock()
+    private val dataEntryFormHandler: DataEntryFormHandler = mock()
+    private val dataEntryFormOrphanCleaner: DataEntryFormOrphanCleaner = mock()
+    private val dataEntryForm: DataEntryForm = mock()
 
     // object to test
     private lateinit var dataSetHandler: DataSetHandler
@@ -89,6 +95,8 @@ class DataSetHandlerShould {
             dataSetIndicatorLinkHandler,
             collectionCleaner,
             linkCleaner,
+            dataEntryFormHandler,
+            dataEntryFormOrphanCleaner,
         )
 
         whenever(dataSet.uid()).thenReturn("dataset_uid")
@@ -105,6 +113,7 @@ class DataSetHandlerShould {
 
         dataInputPeriods = mutableListOf(dataInputPeriod)
         whenever(dataSet.dataInputPeriods()).thenReturn(dataInputPeriods)
+        whenever(dataSet.dataEntryFormContent()).thenReturn(dataEntryForm)
         whenever(dataSetStore.updateOrInsert(any<List<DataSet>>())).thenReturn(listOf(HandleAction.Insert))
     }
 
@@ -176,5 +185,19 @@ class DataSetHandlerShould {
         dataSetHandler.handle(dataSet)
 
         verify(dataSetIndicatorLinkHandler).handleMany(any(), any(), any())
+    }
+
+    @Test
+    fun handle_data_entry_form() = runTest {
+        dataSetHandler.handle(dataSet)
+
+        verify(dataEntryFormHandler).handle(dataEntryForm)
+    }
+
+    @Test
+    fun delete_orphan_data_entry_forms_after_collection_handled() = runTest {
+        dataSetHandler.handleMany(dataSets)
+
+        verify(dataEntryFormOrphanCleaner).deleteOrphans()
     }
 }

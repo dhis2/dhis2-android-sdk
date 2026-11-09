@@ -3,6 +3,7 @@ package org.hisp.dhis.android.persistence.dataset
 import androidx.room3.Entity
 import androidx.room3.ForeignKey
 import androidx.room3.PrimaryKey
+import org.hisp.dhis.android.core.common.FormType
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.dataset.CustomText
 import org.hisp.dhis.android.core.dataset.DataSet
@@ -66,6 +67,8 @@ internal data class DataSetDB(
     val subHeader: String?,
     val customTextAlign: String?,
     val tabsDirection: String?,
+    val formType: String?,
+    val dataEntryForm: String?,
 ) : EntityDB<DataSet>, BaseNameableObjectDB, ObjectWithStyleDB {
 
     override fun toDomain(): DataSet {
@@ -89,6 +92,8 @@ internal data class DataSetDB(
             renderHorizontally(renderHorizontally)
             accessDataWrite?.let { access(it.toDomain()) }
             workflow?.let { workflow(ObjectWithUid.create(it)) }
+            formType?.let { formType(FormType.valueOf(it)) }
+            dataEntryForm?.let { dataEntryForm(ObjectWithUid.create(it)) }
             displayOptions(
                 DataSetDisplayOptions.builder().apply {
                     customText(
@@ -140,5 +145,7 @@ internal fun DataSet.toDB(): DataSetDB {
         subHeader = displayOptions()?.customText()?.subHeader(),
         customTextAlign = displayOptions()?.customText()?.align()?.name,
         tabsDirection = displayOptions()?.tabsDirection()?.name,
+        formType = formType()?.name,
+        dataEntryForm = dataEntryForm()?.uid(),
     )
 }

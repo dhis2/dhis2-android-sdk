@@ -31,76 +31,54 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
-import android.util.Base64
-import android.util.Log
-import okio.IOException
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
-import java.nio.charset.Charset
-import java.nio.charset.StandardCharsets
-import java.security.InvalidAlgorithmParameterException
-import java.security.InvalidKeyException
-import java.security.KeyPairGenerator
+import java.io.IOException
+import java.security.GeneralSecurityException
 import java.security.KeyStore
-import java.security.KeyStoreException
-import java.security.NoSuchAlgorithmException
-import java.security.NoSuchProviderException
-import java.security.PrivateKey
-import java.security.PublicKey
-import java.security.UnrecoverableEntryException
-import java.security.UnrecoverableKeyException
-import java.security.cert.CertificateException
 import java.util.Date
-import javax.crypto.BadPaddingException
 import javax.crypto.Cipher
-import javax.crypto.IllegalBlockSizeException
-import javax.crypto.NoSuchPaddingException
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.GCMParameterSpec
+import kotlin.io.encoding.Base64
+import androidx.core.content.edit
 
-@Suppress("TooGenericExceptionThrown", "TooGenericExceptionCaught")
+/**
+ * Values are encrypted with AES-256-GCM using a key of the Android Keystore. The name of each entry is bound
+ * to its value as additional authenticated data, so a value moved under another key fails to decrypt.
+ */
+@Suppress("TooGenericExceptionThrown")
 class AndroidSecureStore(context: Context) : SecureStore {
     private val preferences: SharedPreferences = context.getSharedPreferences(PREFERENCES_FILE, Context.MODE_PRIVATE)
+    private val secretKey: SecretKey
 
     init {
         try {
-            val ks = getKeyStore()
-            val privateKey = ks.getKey(ALIAS, null) as PrivateKey?
-
-            if (privateKey == null || ks.getCertificate(ALIAS)?.publicKey == null) {
-                generateKeys(ks)
-            }
-        } catch (ex: KeyStoreException) {
-            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
-        } catch (ex: CertificateException) {
-            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
-        } catch (ex: IOException) {
-            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
-        } catch (ex: NoSuchAlgorithmException) {
-            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
-        } catch (ex: UnrecoverableKeyException) {
-            throw keyStoreError(ex, D2ErrorCode.CANT_ACCESS_KEYSTORE)
+            val keyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+            secretKey = keyStore.getKey(ALIAS, null) as SecretKey? ?: generateKey()
+            LegacyRsaSecureStoreMigration(context, keyStore).migrate(::storeMigratedEntries)
+        } catch (e: GeneralSecurityException) {
+            throw keyStoreError(e, D2ErrorCode.CANT_ACCESS_KEYSTORE)
+        } catch (e: IOException) {
+            throw keyStoreError(e, D2ErrorCode.CANT_ACCESS_KEYSTORE)
         }
     }
 
-    @Suppress("MagicNumber", "ThrowsCount")
-    private fun generateKeys(ks: KeyStore) {
-        val spec = KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_DECRYPT or KeyProperties.PURPOSE_ENCRYPT)
-            .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
-            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_RSA_PKCS1)
+    private fun generateKey(): SecretKey {
+        val spec = KeyGenParameterSpec.Builder(ALIAS, KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+            .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+            .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+            .setKeySize(KEY_SIZE)
             .build()
 
-        try {
-            val kpGenerator = KeyPairGenerator.getInstance(KEY_ALGORITHM_RSA, KEYSTORE_PROVIDER_ANDROID_KEYSTORE)
-            kpGenerator.initialize(spec)
-            kpGenerator.generateKeyPair()
-        } catch (e: NoSuchAlgorithmException) {
-            deleteKeyStoreEntry(ks, ALIAS)
-            throw keyStoreError(e, D2ErrorCode.CANT_INSTANTIATE_KEYSTORE)
-        } catch (e: InvalidAlgorithmParameterException) {
-            deleteKeyStoreEntry(ks, ALIAS)
-            throw keyStoreError(e, D2ErrorCode.CANT_INSTANTIATE_KEYSTORE)
-        } catch (e: NoSuchProviderException) {
-            deleteKeyStoreEntry(ks, ALIAS)
+        return try {
+            KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE).run {
+                init(spec)
+                generateKey()
+            }
+        } catch (e: GeneralSecurityException) {
             throw keyStoreError(e, D2ErrorCode.CANT_INSTANTIATE_KEYSTORE)
         }
     }
@@ -109,103 +87,51 @@ class AndroidSecureStore(context: Context) : SecureStore {
         if (data == null) {
             removeData(key)
         } else {
-            setNonNullData(key, data)
-        }
-    }
-
-    @Suppress("ThrowsCount")
-    private fun setNonNullData(key: String, data: String) {
-        try {
-            val ks = getKeyStore()
-
-            if (ks.getCertificate(ALIAS) == null) {
-                throw RuntimeException("Couldn't find certificate for key: $key")
-            }
-
-            val publicKey = ks.getCertificate(ALIAS).publicKey
-                ?: throw RuntimeException("Couldn't find publicKey for key: $key")
-
-            val value = encrypt(publicKey, data.toByteArray(CHARSET))
-
-            val editor = preferences.edit()
-            editor.putString(key, value)
-            editor.apply()
-        } catch (e: NoSuchAlgorithmException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: InvalidKeyException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: NoSuchPaddingException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: IllegalBlockSizeException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: BadPaddingException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: KeyStoreException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: CertificateException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
-        } catch (e: IOException) {
-            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
+            preferences.edit { putString(key, encrypt(key, data)) }
         }
     }
 
     override fun getData(key: String): String? {
-        var value: String? = null
-        try {
-            val ks = getKeyStore()
-            val privateKey = ks.getKey(ALIAS, null) as PrivateKey
-            value = preferences.getString(key, null)
-
-            return value?.let {
-                String(decrypt(privateKey, value), CHARSET)
-            }
-        } catch (e: KeyStoreException) {
-            throw getDataError(key, value, e)
-        } catch (e: NoSuchAlgorithmException) {
-            throw getDataError(key, value, e)
-        } catch (e: CertificateException) {
-            throw getDataError(key, value, e)
-        } catch (e: IOException) {
-            throw getDataError(key, value, e)
-        } catch (e: UnrecoverableEntryException) {
-            throw getDataError(key, value, e)
-        } catch (e: InvalidKeyException) {
-            throw getDataError(key, value, e)
-        } catch (e: NoSuchPaddingException) {
-            throw getDataError(key, value, e)
-        } catch (e: IllegalBlockSizeException) {
-            throw getDataError(key, value, e)
-        } catch (e: BadPaddingException) {
-            throw getDataError(key, value, e)
-        }
+        return preferences.getString(key, null)?.let { decrypt(key, it) }
     }
 
     override fun removeData(key: String) {
-        val editor = preferences.edit()
-        editor.remove(key)
-        editor.apply()
+        preferences.edit { remove(key) }
     }
 
     override fun getAllKeys(): Set<String> {
         return preferences.all.keys
     }
 
-    private fun deleteKeyStoreEntry(ks: KeyStore?, entry: String) {
+    private fun storeMigratedEntries(entries: Map<String, String>): Boolean {
+        val editor = preferences.edit()
+        entries.filterKeys { !preferences.contains(it) }.forEach { (key, value) ->
+            editor.putString(key, encrypt(key, value))
+        }
+        return editor.commit()
+    }
+
+    private fun encrypt(key: String, data: String): String {
         try {
-            ks?.deleteEntry(entry)
-        } catch (e1: Exception) {
-            Log.w("SECURE_STORE", "Cannot deleted entry $entry")
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey)
+            cipher.updateAAD(key.encodeToByteArray())
+            return Base64.encode(cipher.iv + cipher.doFinal(data.encodeToByteArray()))
+        } catch (e: GeneralSecurityException) {
+            throw RuntimeException("Couldn't store value in AndroidSecureStore for key: $key", e)
         }
     }
 
-    private fun getDataError(key: String, value: Any?, e: Throwable): RuntimeException {
-        val valueToDisplay = value ?: "null"
-        val errorMessage = String.format(
-            "Couldn't get value from AndroidSecureStore for key: %s and value: %s",
-            key,
-            valueToDisplay,
-        )
-        return RuntimeException(errorMessage, e)
+    private fun decrypt(key: String, value: String): String {
+        try {
+            val bytes = Base64.decode(value)
+            val cipher = Cipher.getInstance(TRANSFORMATION)
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, GCMParameterSpec(TAG_SIZE_BITS, bytes, 0, IV_SIZE))
+            cipher.updateAAD(key.encodeToByteArray())
+            return cipher.doFinal(bytes, IV_SIZE, bytes.size - IV_SIZE).decodeToString()
+        } catch (e: GeneralSecurityException) {
+            throw RuntimeException("Couldn't get value from AndroidSecureStore for key: $key", e)
+        }
     }
 
     private fun keyStoreError(ex: Exception, d2ErrorCode: D2ErrorCode): D2Error {
@@ -218,59 +144,13 @@ class AndroidSecureStore(context: Context) : SecureStore {
             .build()
     }
 
-    private fun getKeyStore(): KeyStore {
-        val ks = KeyStore.getInstance(KEYSTORE_PROVIDER_ANDROID_KEYSTORE)
-        ks.load(null)
-        return ks
-    }
-
     companion object {
-        private const val KEY_CIPHER_MARSHMALLOW_PROVIDER = "AndroidKeyStoreBCWorkaround"
-
-        private const val KEY_ALGORITHM_RSA = "RSA"
-
-        private const val KEYSTORE_PROVIDER_ANDROID_KEYSTORE = "AndroidKeyStore"
-        private const val RSA_ECB_PKCS1_PADDING = "RSA/ECB/PKCS1Padding"
-        private val CHARSET: Charset = StandardCharsets.UTF_8
-
-        private const val PREFERENCES_FILE = "preferences"
-        private const val ALIAS = "dhis_sdk_key"
-
-        private val cipherInstance: Cipher
-            get() {
-                try {
-                    return Cipher.getInstance(RSA_ECB_PKCS1_PADDING, KEY_CIPHER_MARSHMALLOW_PROVIDER)
-                } catch (exception: Exception) {
-                    throw RuntimeException("getCipher: Failed to get an instance of Cipher", exception)
-                }
-            }
-
-        @Throws(
-            NoSuchAlgorithmException::class,
-            NoSuchPaddingException::class,
-            InvalidKeyException::class,
-            IllegalBlockSizeException::class,
-            BadPaddingException::class,
-        )
-        private fun encrypt(encryptionKey: PublicKey, data: ByteArray): String {
-            val cipher = cipherInstance
-            cipher.init(Cipher.ENCRYPT_MODE, encryptionKey)
-            val encrypted = cipher.doFinal(data)
-            return Base64.encodeToString(encrypted, Base64.DEFAULT)
-        }
-
-        @Throws(
-            NoSuchAlgorithmException::class,
-            NoSuchPaddingException::class,
-            InvalidKeyException::class,
-            IllegalBlockSizeException::class,
-            BadPaddingException::class,
-        )
-        private fun decrypt(decryptionKey: PrivateKey, encryptedData: String): ByteArray {
-            val encryptedBuffer = Base64.decode(encryptedData, Base64.DEFAULT)
-            val cipher = cipherInstance
-            cipher.init(Cipher.DECRYPT_MODE, decryptionKey)
-            return cipher.doFinal(encryptedBuffer)
-        }
+        private const val ANDROID_KEYSTORE = "AndroidKeyStore"
+        private const val ALIAS = "dhis_sdk_aes_key"
+        private const val PREFERENCES_FILE = "dhis2_secure_store"
+        private const val TRANSFORMATION = "AES/GCM/NoPadding"
+        private const val KEY_SIZE = 256
+        private const val IV_SIZE = 12
+        private const val TAG_SIZE_BITS = 128
     }
 }

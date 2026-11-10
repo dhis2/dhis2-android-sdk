@@ -50,6 +50,7 @@ import org.hisp.dhis.android.network.legendset.LegendSetDTO
 import org.hisp.dhis.android.network.option.OptionDTO
 import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
 import org.hisp.dhis.android.network.optionset.OptionSetDTO
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
 import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
@@ -66,6 +67,9 @@ import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityIn
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterDTO
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
+import org.hisp.dhis.android.network.user.AuthenticatedUserDTO
+import org.hisp.dhis.android.network.user.User37DTO
+import org.hisp.dhis.android.network.user.UserDTO
 import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.hisp.dhis.android.network.visualization.Visualization36DTO
@@ -87,6 +91,7 @@ internal class DTOFieldsShould {
 
     private val requestedFields = mapOf(
         "AttributeDTO" to fieldsOf<AttributeDTO>(),
+        "AuthenticatedUserDTO" to fieldsOf<AuthenticatedUserDTO>(),
         "AzureMapsApiKeyDTO" to fieldsOf<AzureMapsApiKeyDTO>(),
         "BingMapsApiKeyDTO" to fieldsOf<BingMapsApiKeyDTO>(),
         "CategoryComboDTO" to fieldsOf<CategoryComboDTO>(),
@@ -109,6 +114,7 @@ internal class DTOFieldsShould {
         "OptionDTO" to fieldsOf<OptionDTO>(),
         "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
         "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
+        "OrganisationUnitDTO" to fieldsOf<OrganisationUnitDTO>(),
         "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
         "ProgramDTO" to fieldsOf<ProgramDTO>(),
         "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
@@ -123,6 +129,8 @@ internal class DTOFieldsShould {
         "TrackedEntityInstanceFilterDTO" to fieldsOf<TrackedEntityInstanceFilterDTO>(),
         "TrackedEntityTypeDTO" to fieldsOf<TrackedEntityTypeDTO>(),
         "TrackerVisualizationDTO" to fieldsOf<TrackerVisualizationDTO>(),
+        "User37DTO" to fieldsOf<User37DTO>(),
+        "UserDTO" to fieldsOf<UserDTO>(),
         "UserSettingsDTO" to fieldsOf<UserSettingsDTO>(),
         "ValidationRuleDTO" to fieldsOf<ValidationRuleDTO>(),
         "Visualization36DTO" to fieldsOf<Visualization36DTO>(),
@@ -141,6 +149,12 @@ internal class DTOFieldsShould {
             "categoryOptionComboAttribute,categoryOptionGroupSetAttribute,validationRuleAttribute," +
             "programIndicatorAttribute,organisationUnitGroupAttribute,dataElementGroupSetAttribute," +
             "organisationUnitGroupSetAttribute,optionAttribute",
+        "AuthenticatedUserDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,username,birthday,education,gender,jobTitle," +
+            "surname,firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "userCredentials[username,userRoles[id,code,name,displayName,created,lastUpdated,deleted]]," +
+            "userRoles[id,code,name,displayName,created,lastUpdated,deleted],userGroups[id,code,name,displayName," +
+            "created,lastUpdated,deleted]",
         "AzureMapsApiKeyDTO" to "keyAzureMapsApiKey",
         "BingMapsApiKeyDTO" to "keyBingMapsApiKey",
         "CategoryComboDTO" to
@@ -199,6 +213,11 @@ internal class DTOFieldsShould {
             "id,code,name,displayName,created,lastUpdated,deleted,sortOrder,optionSet[id],style[color,icon]",
         "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",
         "OptionSetDTO" to "id,code,name,displayName,created,lastUpdated,deleted,version,valueType",
+        "OrganisationUnitDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,parent[id],path,openingDate,closedDate,level,programs[id],dataSets[id]," +
+            "ancestors[id,displayName],organisationUnitGroups[id,code,name,displayName,created,lastUpdated," +
+            "deleted,shortName,displayShortName]",
         "OrganisationUnitLevelDTO" to "id,code,name,displayName,created,lastUpdated,deleted,level",
         "ProgramDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
@@ -302,6 +321,17 @@ internal class DTOFieldsShould {
             "program[id],programStage[id],trackedEntityType[id],columns[dimension,dimensionType,program[id]," +
             "programStage[id],items[id],filter,repetition[indexes]],filters[dimension,dimensionType,program[id]," +
             "programStage[id],items[id],filter,repetition[indexes]],sorting[dimension,direction]",
+        "User37DTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,birthday,education,gender,jobTitle,surname," +
+            "firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "userCredentials[username,userRoles[id,code,name,displayName,created,lastUpdated,deleted]]," +
+            "organisationUnits[id,path],teiSearchOrganisationUnits[id,path],userGroups[id,code,name,displayName," +
+            "created,lastUpdated,deleted]",
+        "UserDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,username,birthday,education,gender,jobTitle," +
+            "surname,firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "organisationUnits[id,path],teiSearchOrganisationUnits[id,path],userRoles[id,code,name,displayName," +
+            "created,lastUpdated,deleted],userGroups[id,code,name,displayName,created,lastUpdated,deleted]",
         "UserSettingsDTO" to "keyUiLocale,keyDbLocale",
         "ValidationRuleDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +

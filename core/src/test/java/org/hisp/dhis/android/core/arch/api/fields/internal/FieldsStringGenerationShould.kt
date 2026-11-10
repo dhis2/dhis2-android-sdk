@@ -36,8 +36,6 @@ import org.hisp.dhis.android.network.enrollment.EnrollmentFields
 import org.hisp.dhis.android.network.event.EventFields
 import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
 import org.hisp.dhis.android.network.note.NoteFields
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
 import org.hisp.dhis.android.network.relationship.RelationshipFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEnrollmentFields
 import org.hisp.dhis.android.network.relationship.RelationshipItemEventFields
@@ -56,10 +54,6 @@ import org.hisp.dhis.android.network.tracker.NewRelationshipItemTrackedEntityIns
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.user.UserCredentialsFields
-import org.hisp.dhis.android.network.user.UserFields
-import org.hisp.dhis.android.network.user.UserGroupFields
-import org.hisp.dhis.android.network.user.UserRoleFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -115,8 +109,6 @@ class FieldsStringGenerationShould {
         NewTrackedEntityDataValueFields,
         NewTrackedEntityInstanceFields,
         NoteFields,
-        OrganisationUnitFields,
-        OrganisationUnitGroupFields,
         RelationshipFields,
         RelationshipItemEnrollmentFields,
         RelationshipItemEventFields,
@@ -125,9 +117,5 @@ class FieldsStringGenerationShould {
         TrackedEntityAttributeValueFields,
         TrackedEntityDataValueFields,
         TrackedEntityInstanceFields,
-        UserCredentialsFields,
-        UserFields,
-        UserGroupFields,
-        UserRoleFields,
     )
 }

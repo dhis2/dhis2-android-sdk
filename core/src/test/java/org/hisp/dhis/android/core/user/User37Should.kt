@@ -30,10 +30,10 @@ package org.hisp.dhis.android.core.user
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
-import org.hisp.dhis.android.network.user.UserDTO
+import org.hisp.dhis.android.network.user.User37DTO
 import org.junit.Test
 
-internal class User37Should : CoreObjectShould<UserDTO>("user/user37.json", UserDTO.serializer()) {
+internal class User37Should : CoreObjectShould<User37DTO>("user/user37.json", User37DTO.serializer()) {
 
     @Test
     override fun map_from_json_string() {

@@ -76,7 +76,6 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<TrackedEntityInstance> {
         val payload = service.getTrackedEntityInstance(
-            fields = TrackedEntityInstanceFields.asRelationshipFields,
             trackedEntityInstance = item.itemUid,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
             includeAllAttributes = true,
@@ -87,7 +86,6 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
 
     override suspend fun getTrackedEntityInstance(uid: String, query: TrackerAPIQuery): TrackedEntityInstance {
         return service.getSingleTrackedEntityInstance(
-            fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,
             orgUnitMode = query.commonParams.ouMode.name,
             program = query.commonParams.program,
@@ -100,7 +98,6 @@ internal class TrackedEntityInstanceNetworkHandlerImpl(
 
     override suspend fun getTrackedEntityInstances(query: TrackerAPIQuery): Payload<TrackedEntityInstance> {
         val payload = service.getTrackedEntityInstances(
-            fields = TrackedEntityInstanceFields.allFields,
             trackedEntityInstances = query.getUidStr(),
             orgUnits = query.getOrgunitStr(),
             orgUnitMode = query.commonParams.ouMode.name,

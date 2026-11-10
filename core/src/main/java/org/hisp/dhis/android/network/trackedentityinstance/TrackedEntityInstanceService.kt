@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.network.trackedentityinstance
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
-import org.hisp.dhis.android.network.common.fields.Fields
 
 @Suppress("LongParameterList")
 internal class TrackedEntityInstanceService(private val client: HttpServiceClient) {
@@ -49,14 +47,13 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
     suspend fun getTrackedEntityInstance(
         trackedEntityInstance: String,
         orgUnitMode: String?,
-        fields: Fields<TrackedEntityInstance>,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
     ): TrackedEntityInstancePayload {
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
-                fields(fields)
+                fields<TrackedEntityInstanceDTO>(exclude = TrackedEntityInstanceDTO.CHILDREN)
                 attribute(TRACKED_ENTITY_INSTACE, trackedEntityInstance)
                 attribute(OU_MODE, orgUnitMode)
                 attribute(INCLUDE_ALL_ATTRIBUTES, includeAllAttributes)
@@ -71,14 +68,13 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         program: String?,
         programStatus: String?,
         programStartDate: String?,
-        fields: Fields<TrackedEntityInstance>,
         includeAllAttributes: Boolean,
         includeDeleted: Boolean,
     ): TrackedEntityInstanceDTO {
         return client.get {
             url("$TRACKED_ENTITY_INSTANCES/$trackedEntityInstanceUid")
             parameters {
-                fields(fields)
+                fields<TrackedEntityInstanceDTO>()
                 attribute(OU_MODE, orgUnitMode)
                 attribute(PROGRAM, program)
                 attribute(PROGRAM_STATUS, programStatus)
@@ -96,7 +92,6 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         program: String?,
         programStatus: String?,
         programStartDate: String?,
-        fields: Fields<TrackedEntityInstance>,
         order: String?,
         paging: Boolean,
         page: Int?,
@@ -108,7 +103,7 @@ internal class TrackedEntityInstanceService(private val client: HttpServiceClien
         return client.get {
             url(TRACKED_ENTITY_INSTANCES)
             parameters {
-                fields(fields)
+                fields<TrackedEntityInstanceDTO>()
                 attribute(TRACKED_ENTITY_INSTACE, trackedEntityInstances)
                 attribute(OU, orgUnits)
                 attribute(OU_MODE, orgUnitMode)

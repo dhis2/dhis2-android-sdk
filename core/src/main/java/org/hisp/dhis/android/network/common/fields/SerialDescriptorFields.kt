@@ -32,6 +32,7 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
+import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.JsonNames
 
 /**
@@ -39,17 +40,23 @@ import kotlinx.serialization.json.JsonNames
  * declaring what the SDK requests. Every DTO property is requested, nested DTOs are expanded recursively
  * and lists are expanded through their element type. Each request is expected to map to its own DTO, so a
  * different projection of the same object means a different DTO.
+ *
+ * The only exception are the top level properties in [exclude], for requests that need the object without some of
+ * its nested collections. An excluded name must be a property of the DTO, so a typo fails instead of being ignored.
  */
-internal fun SerialDescriptor.toFieldsString(): String {
-    return fieldsString(path = emptyList())
+@OptIn(ExperimentalSerializationApi::class)
+internal fun SerialDescriptor.toFieldsString(exclude: Set<String> = emptySet()): String {
+    val unknownNames = exclude - elementNames.toSet()
+    require(unknownNames.isEmpty()) { "$unknownNames are not properties of ${nonNullSerialName()}" }
+    return fieldsString(path = emptyList(), exclude = exclude)
 }
 
 @OptIn(ExperimentalSerializationApi::class)
-private fun SerialDescriptor.fieldsString(path: List<String>): String {
+private fun SerialDescriptor.fieldsString(path: List<String>, exclude: Set<String> = emptySet()): String {
     val currentPath = path + nonNullSerialName()
     require(nonNullSerialName() !in path) { "Cyclic DTO reference: ${currentPath.joinToString(" -> ")}" }
 
-    return (0 until elementsCount).flatMap { index ->
+    return (0 until elementsCount).filterNot { getElementName(it) in exclude }.flatMap { index ->
         requestedNames(index).map { name -> getElementDescriptor(index).fieldString(name, currentPath) }
     }.joinToString(",")
 }

@@ -89,6 +89,13 @@ internal data class EnrollmentDTO(
             relationships(relationships?.map { it.toDomain() })
         }.build()
     }
+
+    companion object {
+        /**
+         * Nested collections left out when only the enrollment itself is needed, e.g. as a relationship item.
+         */
+        val CHILDREN = setOf("events", "notes", "relationships")
+    }
 }
 
 internal fun Enrollment.toDto(): EnrollmentDTO {

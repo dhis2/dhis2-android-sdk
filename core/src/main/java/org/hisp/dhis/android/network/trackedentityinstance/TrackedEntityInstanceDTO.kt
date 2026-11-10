@@ -76,6 +76,14 @@ internal data class TrackedEntityInstanceDTO(
             programOwners(programOwners?.map { it.toDomain() })
         }.build()
     }
+
+    companion object {
+        /**
+         * Nested collections left out when only the tracked entity instance itself is needed, e.g. as a
+         * relationship item.
+         */
+        val CHILDREN = setOf("relationships", "enrollments", "programOwners")
+    }
 }
 
 internal fun TrackedEntityInstance.toDto(): TrackedEntityInstanceDTO {

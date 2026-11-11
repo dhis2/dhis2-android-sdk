@@ -27,57 +27,62 @@
  */
 package org.hisp.dhis.android.core.arch.helpers.internal
 
-import android.content.Context
-import android.content.pm.ApplicationInfo
-import android.util.Log
+import kotlin.concurrent.Volatile
 
-internal object D2Logger {
-    private const val MAX_CAUSE_DEPTH = 5
+internal fun interface D2Logger {
+    fun log(level: LogLevel, tag: String?, message: String)
 
-    @Volatile
-    internal var debuggable: Boolean = false
-        private set
+    companion object {
+        private const val MAX_CAUSE_DEPTH = 5
 
-    fun init(context: Context) {
-        debuggable = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
-    }
+        @Volatile
+        private var debuggable: Boolean = false
 
-    fun v(tag: String?, message: String, throwable: Throwable? = null) {
-        if (debuggable) log(Log.VERBOSE, tag, message, throwable)
-    }
+        @Volatile
+        private var logger: D2Logger = D2Logger { _, _, _ -> }
 
-    fun d(tag: String?, message: String, throwable: Throwable? = null) {
-        if (debuggable) log(Log.DEBUG, tag, message, throwable)
-    }
-
-    fun i(tag: String?, message: String, throwable: Throwable? = null) {
-        if (debuggable) log(Log.INFO, tag, message, throwable)
-    }
-
-    fun w(tag: String?, message: String, throwable: Throwable? = null) {
-        log(Log.WARN, tag, message, throwable)
-    }
-
-    fun e(tag: String?, message: String, throwable: Throwable? = null) {
-        log(Log.ERROR, tag, message, throwable)
-    }
-
-    internal fun describe(throwable: Throwable?): String {
-        return throwable?.let {
-            generateSequence(it) { current -> current.cause?.takeIf { cause -> cause !== current } }
-                .take(MAX_CAUSE_DEPTH)
-                .joinToString(separator = " <- ", prefix = " [", postfix = "]") { t ->
-                    t::class.simpleName ?: "Throwable"
-                }
-        } ?: ""
-    }
-
-    private fun log(priority: Int, tag: String?, message: String, throwable: Throwable?) {
-        val text = when {
-            throwable == null -> message
-            debuggable -> message + "\n" + Log.getStackTraceString(throwable)
-            else -> message + describe(throwable)
+        fun init(debuggable: Boolean, logger: D2Logger) {
+            this.debuggable = debuggable
+            this.logger = logger
         }
-        Log.println(priority, tag, text)
+
+        fun v(tag: String?, message: String, throwable: Throwable? = null) {
+            if (debuggable) log(LogLevel.VERBOSE, tag, message, throwable)
+        }
+
+        fun d(tag: String?, message: String, throwable: Throwable? = null) {
+            if (debuggable) log(LogLevel.DEBUG, tag, message, throwable)
+        }
+
+        fun i(tag: String?, message: String, throwable: Throwable? = null) {
+            if (debuggable) log(LogLevel.INFO, tag, message, throwable)
+        }
+
+        fun w(tag: String?, message: String, throwable: Throwable? = null) {
+            log(LogLevel.WARN, tag, message, throwable)
+        }
+
+        fun e(tag: String?, message: String, throwable: Throwable? = null) {
+            log(LogLevel.ERROR, tag, message, throwable)
+        }
+
+        internal fun describe(throwable: Throwable?): String {
+            return throwable?.let {
+                generateSequence(it) { current -> current.cause?.takeIf { cause -> cause !== current } }
+                    .take(MAX_CAUSE_DEPTH)
+                    .joinToString(separator = " <- ", prefix = " [", postfix = "]") { t ->
+                        t::class.simpleName ?: "Throwable"
+                    }
+            } ?: ""
+        }
+
+        private fun log(level: LogLevel, tag: String?, message: String, throwable: Throwable?) {
+            val text = when {
+                throwable == null -> message
+                debuggable -> message + "\n" + throwable.stackTraceToString()
+                else -> message + describe(throwable)
+            }
+            logger.log(level, tag, text)
+        }
     }
 }

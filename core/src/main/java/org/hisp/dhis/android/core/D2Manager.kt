@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core
 
-import android.util.Log
+import android.content.pm.ApplicationInfo
 import androidx.annotation.VisibleForTesting
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxSingle
@@ -36,6 +36,8 @@ import org.hisp.dhis.android.core.NotClosedObjectsDetector.enableNotClosedObject
 import org.hisp.dhis.android.core.arch.api.ssl.internal.SSLContextInitializer
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponent
 import org.hisp.dhis.android.core.arch.d2.internal.D2DIComponentFactory
+import org.hisp.dhis.android.core.arch.helpers.internal.AndroidD2Logger
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidInsecureStore
 import org.hisp.dhis.android.core.arch.storage.internal.AndroidSecureStore
@@ -130,6 +132,10 @@ object D2Manager {
     suspend fun suspendInstantiateD2(d2Config: D2Configuration): D2 {
         val startTime = System.currentTimeMillis()
         val context = d2Config.context()
+        D2Logger.init(
+            debuggable = context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0,
+            logger = AndroidD2Logger,
+        )
 
         val secureStore = testingSecureStore ?: AndroidSecureStore(context)
         val insecureStore = testingInsecureStore ?: AndroidInsecureStore(context)
@@ -170,7 +176,7 @@ object D2Manager {
         }
 
         val setUpTime = System.currentTimeMillis() - startTime
-        Log.i(D2Manager::class.java.name, "D2 instantiation took " + setUpTime + "ms")
+        D2Logger.i(D2Manager::class.java.name, "D2 instantiation took " + setUpTime + "ms")
 
         return d2!!
     }

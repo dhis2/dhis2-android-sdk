@@ -27,20 +27,68 @@
  */
 package org.hisp.dhis.android.core.arch.helpers.internal
 
-import android.content.Context
-import android.content.pm.ApplicationInfo
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 import java.io.IOException
 
 class D2LoggerShould {
 
+    private val written = mutableListOf<Triple<LogLevel, String?, String>>()
+    private val logger = D2Logger { level, tag, message -> written.add(Triple(level, tag, message)) }
+
     @After
     fun tearDown() {
-        D2Logger.init(contextWithFlags(0))
+        D2Logger.init(debuggable = false, logger = { _, _, _ -> })
+    }
+
+    @Test
+    fun not_write_verbose_debug_or_info_when_the_host_app_is_not_debuggable() {
+        D2Logger.init(debuggable = false, logger = logger)
+
+        D2Logger.v(TAG, "verbose")
+        D2Logger.d(TAG, "debug")
+        D2Logger.i(TAG, "info")
+
+        assertThat(written).isEmpty()
+    }
+
+    @Test
+    fun write_every_level_when_the_host_app_is_debuggable() {
+        D2Logger.init(debuggable = true, logger = logger)
+
+        D2Logger.v(TAG, "verbose")
+        D2Logger.d(TAG, "debug")
+        D2Logger.i(TAG, "info")
+        D2Logger.w(TAG, "warn")
+        D2Logger.e(TAG, "error")
+
+        assertThat(written.map { it.first })
+            .containsExactly(LogLevel.VERBOSE, LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARN, LogLevel.ERROR)
+            .inOrder()
+        assertThat(written.map { it.second }).containsExactly(TAG, TAG, TAG, TAG, TAG)
+    }
+
+    @Test
+    fun write_only_the_exception_classes_when_the_host_app_is_not_debuggable() {
+        D2Logger.init(debuggable = false, logger = logger)
+
+        D2Logger.e(TAG, "Failed", IllegalStateException("token=secret", IOException("/data/server_admin.db")))
+
+        assertThat(written).containsExactly(
+            Triple(LogLevel.ERROR, TAG, "Failed [IllegalStateException <- IOException]"),
+        )
+    }
+
+    @Test
+    fun write_the_stack_trace_when_the_host_app_is_debuggable() {
+        D2Logger.init(debuggable = true, logger = logger)
+
+        D2Logger.w(TAG, "Failed", IllegalStateException("detail"))
+
+        val message = written.single().third
+        assertThat(message).startsWith("Failed\njava.lang.IllegalStateException: detail")
+        assertThat(message).contains("D2LoggerShould")
     }
 
     @Test
@@ -71,22 +119,12 @@ class D2LoggerShould {
         assertThat(D2Logger.describe(throwable).split(" <- ")).hasSize(5)
     }
 
-    @Test
-    fun be_debuggable_only_when_the_host_app_is_debuggable() {
-        D2Logger.init(contextWithFlags(ApplicationInfo.FLAG_DEBUGGABLE))
-        assertThat(D2Logger.debuggable).isTrue()
-
-        D2Logger.init(contextWithFlags(0))
-        assertThat(D2Logger.debuggable).isFalse()
-    }
-
-    private fun contextWithFlags(flags: Int): Context {
-        val applicationInfo = mock<ApplicationInfo>().also { it.flags = flags }
-        return mock<Context>().also { whenever(it.applicationInfo).thenReturn(applicationInfo) }
-    }
-
     private class SelfCausedException : Exception() {
         override val cause: Throwable
             get() = this
+    }
+
+    private companion object {
+        const val TAG = "D2LoggerShould"
     }
 }

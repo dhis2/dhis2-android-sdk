@@ -32,8 +32,8 @@ import android.content.SharedPreferences
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import android.util.Log
 import okio.IOException
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -194,7 +194,7 @@ class AndroidSecureStore(context: Context) : SecureStore {
         try {
             ks?.deleteEntry(entry)
         } catch (e1: Exception) {
-            Log.w("SECURE_STORE", "Cannot deleted entry $entry")
+            D2Logger.w("SECURE_STORE", "Cannot deleted entry $entry")
         }
     }
 

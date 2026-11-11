@@ -32,7 +32,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Binder
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.Utility.timeLeft
 import org.hisp.dhis.android.core.sms.data.smsrepository.internal.Utility.unregisterReceiver
 import java.util.Objects
@@ -64,15 +64,15 @@ internal class SendingStateReceiver(
             return
         }
 
-        Log.d(TAG, Objects.requireNonNull<String>(intent.getAction()))
+        D2Logger.d(TAG, Objects.requireNonNull<String>(intent.getAction()))
         if (sendSmsAction != intent.getAction() || smsResultsWaiting.isEmpty()) {
-            Log.w(TAG, "Received an unexpected action. Ignoring...")
+            D2Logger.w(TAG, "Received an unexpected action. Ignoring...")
             return
         }
 
         val callingUid = Binder.getCallingUid()
         if (callingUid != context.getApplicationInfo().uid) {
-            Log.w(
+            D2Logger.w(
                 TAG,
                 "Broadcast received from an untrusted source (UID=" + callingUid + "). Ignoring...",
             )
@@ -81,7 +81,7 @@ internal class SendingStateReceiver(
 
         val smsKey = intent.getStringExtra(SmsRepositoryImpl.SMS_KEY)
         if (smsKey == null || !smsResultsWaiting.contains(smsKey)) {
-            Log.d(TAG, "Received SMS result for a different dataset or missing key. Ignoring...")
+            D2Logger.d(TAG, "Received SMS result for a different dataset or missing key. Ignoring...")
             return
         }
 

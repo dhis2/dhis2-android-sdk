@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.sms.domain.interactor
 
-import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository
 import org.hisp.dhis.android.core.sms.domain.repository.WebApiRepository.GetMetadataIdsConfig
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository
@@ -147,14 +147,14 @@ class ConfigCase internal constructor(
             val config = try {
                 localDbRepository.getMetadataDownloadConfig()
             } catch (ignored: Exception) {
-                Log.d(TAG, "Can't read saved SMS metadata download config. Using default.")
+                D2Logger.d(TAG, "Can't read saved SMS metadata download config. Using default.")
                 getDefaultMetadataDownloadConfig()
             }
 
             val metadata = webApiRepository.getMetadataIds(config)
             localDbRepository.setMetadataIds(metadata)
         } else {
-            Log.d(TAG, "Not refreshing SMS metadata, because sms module is disabled")
+            D2Logger.d(TAG, "Not refreshing SMS metadata, because sms module is disabled")
         }
     }
 
@@ -164,11 +164,11 @@ class ConfigCase internal constructor(
      */
     internal suspend fun refreshMetadataIdsCallable() {
         try {
-            Log.d(TAG, "Started SMS metadata sync.")
+            D2Logger.d(TAG, "Started SMS metadata sync.")
             refreshMetadataIdsCoroutines()
-            Log.d(TAG, "Completed SMS metadata sync.")
+            D2Logger.d(TAG, "Completed SMS metadata sync.")
         } catch (ignored: Exception) {
-            Log.d(TAG, "Error refreshing SMS metadata ids.")
+            D2Logger.d(TAG, "Error refreshing SMS metadata ids.")
         }
     }
 

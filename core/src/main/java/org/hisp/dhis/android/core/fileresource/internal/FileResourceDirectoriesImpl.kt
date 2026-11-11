@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.util.Log
 import okio.FileSystem
 import okio.IOException
 import okio.Path
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
@@ -93,7 +93,7 @@ internal class FileResourceDirectoriesImpl(
             try {
                 fileSystem.createDirectories(directory)
             } catch (e: IOException) {
-                Log.w(TAG, "Could not create directory $directory", e)
+                D2Logger.w(TAG, "Could not create directory", e)
             }
         }
         return directory
@@ -103,7 +103,7 @@ internal class FileResourceDirectoriesImpl(
         try {
             fileSystem.deleteRecursively(directory)
         } catch (e: IOException) {
-            Log.w(TAG, "Could not delete directory $directory", e)
+            D2Logger.w(TAG, "Could not delete directory", e)
         }
     }
 

@@ -30,12 +30,12 @@ package org.hisp.dhis.android.core.configuration.internal.migration
 
 import android.content.Context
 import android.database.SQLException
-import android.util.Log
 import okio.FileSystem
 import okio.IOException
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabasesConfiguration
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -83,7 +83,7 @@ internal class Migration260(
         val fileResources = try {
             fileResourcesStore.selectAll()
         } catch (e: SQLException) {
-            Log.e("Room Exception", "$e")
+            D2Logger.e("Room Exception", "Could not read file resources", e)
             emptyList<FileResource>()
         }
         fileResources.forEach {
@@ -130,7 +130,7 @@ internal class Migration260(
                 smsConfigStore.set(SMSConfigKey.WAIT_FOR_RESULT, it.toString())
             }
         } catch (e: SQLException) {
-            Log.e("MIGRATION", "Couldn't migrate sms settings")
+            D2Logger.e("MIGRATION", "Couldn't migrate sms settings")
         } finally {
             smsPrefs.edit().clear().apply()
         }
@@ -140,7 +140,7 @@ internal class Migration260(
         try {
             operation()
         } catch (e: IOException) {
-            Log.w("MIGRATION", "Couldn't migrate file resources", e)
+            D2Logger.w("MIGRATION", "Couldn't migrate file resources", e)
         }
     }
 

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -77,7 +77,7 @@ internal object D2ConfigurationValidator {
         return try {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
-            Log.e(D2ConfigurationValidator::class.java.simpleName, e.toString())
+            D2Logger.e(D2ConfigurationValidator::class.java.simpleName, "Package not found", e)
             null
         }
     }

@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.helpers.internal
 
-import android.util.Log
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toOkioPath
@@ -61,7 +60,7 @@ internal object ImageProcessorLocator {
         return try {
             directories.fileCacheResourceDirectory()
         } catch (e: RuntimeException) {
-            Log.w(TAG, "Could not resolve the account cache directory", e)
+            D2Logger.w(TAG, "Could not resolve the account cache directory", e)
             directories.rootFileCacheResourceDirectory()
         }
     }

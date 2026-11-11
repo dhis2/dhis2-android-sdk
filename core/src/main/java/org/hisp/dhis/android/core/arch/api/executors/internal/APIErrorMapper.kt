@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.api.executors.internal
 
-import android.util.Log
 import okio.EOFException
 import okio.IOException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpException
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -59,7 +59,7 @@ internal class APIErrorMapper {
     }
 
     private fun logAndAppendOriginal(errorBuilder: D2Error.Builder, e: Exception): D2Error.Builder {
-        Log.e(this.javaClass.simpleName, e.toString())
+        D2Logger.e(this.javaClass.simpleName, "API call failed", e)
         return errorBuilder.originalException(e)
     }
 
@@ -140,7 +140,7 @@ internal class APIErrorMapper {
     ): D2Error {
         val code = errorCode ?: D2ErrorCode.API_UNSUCCESSFUL_RESPONSE
         val serverMessage = response.errorBody.takeIf { it.isNotEmpty() } ?: getServerMessage(response)
-        Log.e(this.javaClass.simpleName, serverMessage)
+        D2Logger.e(this.javaClass.simpleName, "API call failed with HTTP ${response.statusCode}, $code")
         return errorBuilder
             .errorCode(code)
             .httpErrorCode(response.statusCode)

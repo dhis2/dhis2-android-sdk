@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
@@ -70,7 +70,10 @@ internal constructor(
         try {
             suspendDelete()
         } catch (d2Error: D2Error) {
-            Log.v(ReadWriteWithValueObjectRepositoryImpl::class.java.canonicalName, d2Error.errorDescription())
+            D2Logger.v(
+                ReadWriteWithValueObjectRepositoryImpl::class.java.canonicalName,
+                "Delete failed: ${d2Error.errorCode()}",
+            )
         }
     }
 

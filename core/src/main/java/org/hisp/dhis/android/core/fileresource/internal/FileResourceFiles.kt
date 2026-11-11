@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.util.Log
 import okio.Buffer
 import okio.FileSystem
 import okio.IOException
 import okio.Path
 import okio.Path.Companion.toPath
 import okio.Source
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.generateFileName
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getExtension
@@ -53,7 +53,7 @@ internal class FileResourceFiles(
         try {
             fileSystem.delete(file)
         } catch (e: IOException) {
-            Log.w(TAG, "Could not delete ${file.name}", e)
+            D2Logger.w(TAG, "Could not delete file", e)
         }
     }
 
@@ -73,7 +73,7 @@ internal class FileResourceFiles(
         try {
             fileSystem.atomicMove(file, newFile)
         } catch (e: IOException) {
-            Log.d(TAG, "Fail renaming ${file.name} to $generatedName", e)
+            D2Logger.d(TAG, "Fail renaming file to $generatedName", e)
         }
 
         return newFile
@@ -99,7 +99,7 @@ internal class FileResourceFiles(
         try {
             source.use { fileSystem.write(file) { writeAll(it) } }
         } catch (e: IOException) {
-            e.message?.let { Log.v(TAG, it) }
+            D2Logger.v(TAG, "Could not write file", e)
         }
         return file
     }

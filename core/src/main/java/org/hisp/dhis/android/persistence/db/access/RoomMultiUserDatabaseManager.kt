@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
-import android.util.Log
 import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseExportMetadata
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
 import org.hisp.dhis.android.core.arch.file.internal.ArchiveHelper
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
 import org.hisp.dhis.android.core.common.AuthorizationType
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
@@ -227,9 +227,9 @@ internal class RoomMultiUserDatabaseManager(
         encrypt: Boolean,
     ) {
         if (encrypt != existingAccount.encrypted()) {
-            Log.w(
+            D2Logger.w(
                 RoomMultiUserDatabaseManager::class.java.name,
-                "Encryption value changed for ${existingAccount.username()}: $encrypt",
+                "Encryption value changed: $encrypt",
             )
             if (encrypt && !existingAccount.encrypted()) {
                 databaseExport.encrypt(serverUrl, existingAccount)

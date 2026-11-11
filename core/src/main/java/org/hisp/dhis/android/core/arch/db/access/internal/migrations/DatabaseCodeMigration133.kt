@@ -28,7 +28,6 @@
 
 package org.hisp.dhis.android.core.arch.db.access.internal.migrations
 
-import android.util.Log
 import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.common.valuetype.validation.validators.NumberValidatorBase
@@ -58,7 +57,6 @@ internal class DatabaseCodeMigration133(private val databaseAdapter: DatabaseAda
                         "WHERE _id = ${dataValue.id}"
 
                     databaseAdapter.execSQL(updateQuery)
-                    Log.i("Migration 133:", "Value migrated from ${dataValue.value} to $trimmedValue")
                 }
             }
         }

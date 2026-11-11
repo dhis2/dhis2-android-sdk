@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.network.common.dto.BaseDeletableDataObjectDTO
 import org.hisp.dhis.android.network.common.dto.DateStringDTO
 import org.hisp.dhis.android.network.common.dto.toDto
+import org.hisp.dhis.android.network.common.fields.NotRequested
 
 @Serializable
 internal data class NewRelationshipDTO(
@@ -44,7 +45,7 @@ internal data class NewRelationshipDTO(
     val relationshipName: String?,
     val createdAt: DateStringDTO?,
     val updatedAt: DateStringDTO?,
-    val bidirectional: Boolean?,
+    @NotRequested val bidirectional: Boolean?,
     val from: NewRelationshipItemDTO?,
     val to: NewRelationshipItemDTO?,
 ) : BaseDeletableDataObjectDTO {

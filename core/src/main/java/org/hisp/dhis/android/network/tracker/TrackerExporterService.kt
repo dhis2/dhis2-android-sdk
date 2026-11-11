@@ -28,16 +28,13 @@
 package org.hisp.dhis.android.network.tracker
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.enrollment.NewTrackerImporterEnrollment
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
-import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
-import org.hisp.dhis.android.network.common.fields.Fields
+import org.hisp.dhis.android.network.common.PayloadJson
 
 @Suppress("LongParameterList")
-internal class TrackerExporterService(private val client: HttpServiceClient) {
+internal class TrackerExporterService(@PublishedApi internal val client: HttpServiceClient) {
     suspend fun getSingleTrackedEntityInstance(
         trackedEntityInstanceUid: String,
-        fields: Fields<NewTrackerImporterTrackedEntity>,
+        exclude: Set<String> = emptySet(),
         orgUnitMode: Map<String, String> = emptyMap(),
         program: String?,
         programStatus: String?,
@@ -47,7 +44,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         return client.get {
             url("$TRACKED_ENTITIES_API/$trackedEntityInstanceUid")
             parameters {
-                fields(fields)
+                fields<NewTrackedEntityDTO>(exclude)
                 attribute(PROGRAM, program)
                 attribute(PROGRAM_STATUS, programStatus)
                 attribute(ENROLLMENT_ENROLLED_AFTER, programStartDate)
@@ -58,7 +55,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
     }
 
     suspend fun getTrackedEntityInstances(
-        fields: Fields<NewTrackerImporterTrackedEntity>,
+        exclude: Set<String> = emptySet(),
         trackedEntityInstances: Map<String, String> = emptyMap(),
         orgUnits: Map<String, String> = emptyMap(),
         orgUnitMode: Map<String, String> = emptyMap(),
@@ -87,7 +84,7 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         return client.get {
             url(TRACKED_ENTITIES_API)
             parameters {
-                fields(fields)
+                fields<NewTrackedEntityDTO>(exclude)
                 trackedEntityInstances.forEach { (key, value) -> attribute(key, value) }
                 orgUnits.forEach { (key, value) -> attribute(key, value) }
                 orgUnitMode.forEach { (key, value) -> attribute(key, value) }
@@ -118,18 +115,21 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
 
     suspend fun getEnrollmentSingle(
         enrollmentUid: String,
-        fields: Fields<NewTrackerImporterEnrollment>,
     ): NewEnrollmentDTO {
         return client.get {
             url("$ENROLLMENTS_API/$enrollmentUid")
             parameters {
-                fields(fields)
+                fields<NewEnrollmentDTO>(exclude = NewEnrollmentDTO.CHILDREN)
             }
         }
     }
 
-    suspend fun getEvents(
-        fields: Fields<NewTrackerImporterEvent>,
+    /**
+     * Generic on the DTO because the online search requests a smaller [NewEventTrackedEntityDTO] instead of the
+     * whole [NewEventDTO].
+     */
+    suspend inline fun <reified P : PayloadJson<DTO>, reified DTO> getEvents(
+        exclude: Set<String> = emptySet(),
         orgUnit: String?,
         orgUnitMode: Map<String, String> = emptyMap(),
         status: String? = null,
@@ -156,11 +156,11 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
         updatedBefore: String? = null,
         includeDeleted: Boolean,
         eventUid: Map<String, String> = emptyMap(),
-    ): NewEventPayload {
+    ): P {
         return client.get {
             url(EVENTS_API)
             parameters {
-                fields(fields)
+                fields<DTO>(exclude)
                 attribute(ORG_UNIT, orgUnit)
                 orgUnitMode.forEach { (key, value) -> attribute(key, value) }
                 attribute(STATUS, status)
@@ -192,14 +192,13 @@ internal class TrackerExporterService(private val client: HttpServiceClient) {
     }
 
     suspend fun getEventSingle(
-        fields: Fields<NewTrackerImporterEvent>,
         eventUid: Map<String, String>? = null,
         orgUnitMode: Map<String, String>? = null,
     ): NewEventPayload {
         return client.get {
             url(EVENTS_API)
             parameters {
-                fields(fields)
+                fields<NewEventDTO>(exclude = NewEventDTO.CHILDREN)
                 eventUid?.forEach { (key, value) -> attribute(key, value) }
                 orgUnitMode?.forEach { (key, value) -> attribute(key, value) }
             }

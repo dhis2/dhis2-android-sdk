@@ -93,6 +93,13 @@ internal data class NewEventDTO(
             trackedEntityInstance(trackedEntity)
         }.build()
     }
+
+    companion object {
+        /**
+         * Nested collections left out when only the event itself is needed, e.g. as a relationship item.
+         */
+        val CHILDREN = setOf("notes", "dataValues", "relationships")
+    }
 }
 
 internal fun NewTrackerImporterEvent.toDto(): NewEventDTO {

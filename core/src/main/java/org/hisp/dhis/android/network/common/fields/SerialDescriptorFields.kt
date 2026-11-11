@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.network.common.fields
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
@@ -36,42 +35,37 @@ import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.JsonNames
 
 /**
- * Builds the `fields` request parameter out of the structure of a DTO, so that the DTO is the only place
- * declaring what the SDK requests. Every DTO property is requested, nested DTOs are expanded recursively
- * and lists are expanded through their element type. Each request is expected to map to its own DTO, so a
- * different projection of the same object means a different DTO.
- *
- * The only exception are the top level properties in [exclude], for requests that need the object without some of
- * its nested collections. An excluded name must be a property of the DTO, so a typo fails instead of being ignored.
+ * Builds the `fields` parameter from the DTO: every property except [NotRequested] ones is requested, expanding
+ * nested DTOs and list elements recursively. Top-level properties in [exclude] are left out; unknown names fail.
  */
-@OptIn(ExperimentalSerializationApi::class)
 internal fun SerialDescriptor.toFieldsString(exclude: Set<String> = emptySet()): String {
     val unknownNames = exclude - elementNames.toSet()
     require(unknownNames.isEmpty()) { "$unknownNames are not properties of ${nonNullSerialName()}" }
     return fieldsString(path = emptyList(), exclude = exclude)
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private fun SerialDescriptor.fieldsString(path: List<String>, exclude: Set<String> = emptySet()): String {
     val currentPath = path + nonNullSerialName()
     require(nonNullSerialName() !in path) { "Cyclic DTO reference: ${currentPath.joinToString(" -> ")}" }
 
-    return (0 until elementsCount).filterNot { getElementName(it) in exclude }.flatMap { index ->
+    return (0 until elementsCount).filterNot { getElementName(it) in exclude || isNotRequested(it) }.flatMap { index ->
         requestedNames(index).map { name -> getElementDescriptor(index).fieldString(name, currentPath) }
     }.joinToString(",")
+}
+
+private fun SerialDescriptor.isNotRequested(index: Int): Boolean {
+    return getElementAnnotations(index).any { it is NotRequested }
 }
 
 /**
  * Alternative names declared with `@JsonNames` are requested too, so the DTO gets the value whichever name the
  * server version uses.
  */
-@OptIn(ExperimentalSerializationApi::class)
 private fun SerialDescriptor.requestedNames(index: Int): List<String> {
     val alternativeNames = getElementAnnotations(index).filterIsInstance<JsonNames>().flatMap { it.names.toList() }
     return listOf(getElementName(index)) + alternativeNames
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private fun SerialDescriptor.fieldString(name: String, path: List<String>): String {
     val type = unwrapLists()
     return when {
@@ -84,7 +78,6 @@ private fun SerialDescriptor.fieldString(name: String, path: List<String>): Stri
     }
 }
 
-@OptIn(ExperimentalSerializationApi::class)
 private fun SerialDescriptor.unwrapLists(): SerialDescriptor {
     return if (kind == StructureKind.LIST) getElementDescriptor(0).unwrapLists() else this
 }
@@ -92,7 +85,6 @@ private fun SerialDescriptor.unwrapLists(): SerialDescriptor {
 /**
  * Value classes are encoded as their single property and JSON elements are free-form, so both are requested whole.
  */
-@OptIn(ExperimentalSerializationApi::class)
 private fun SerialDescriptor.isLeaf(): Boolean {
     return kind is PrimitiveKind ||
         kind == SerialKind.ENUM ||

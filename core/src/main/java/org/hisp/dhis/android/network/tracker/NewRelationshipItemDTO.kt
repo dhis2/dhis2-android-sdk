@@ -36,11 +36,12 @@ import org.hisp.dhis.android.core.relationship.RelationshipItem
 import org.hisp.dhis.android.core.relationship.RelationshipItemEnrollment
 import org.hisp.dhis.android.core.relationship.RelationshipItemEvent
 import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInstance
+import org.hisp.dhis.android.network.common.fields.NotRequested
 
 @Serializable
 internal data class NewRelationshipItemDTO(
-    val relationship: String?,
-    val relationshipItemType: String?,
+    @NotRequested val relationship: String?,
+    @NotRequested val relationshipItemType: String?,
     val trackedEntity: NewRelationshipItemTrackedEntityDTO?,
     val enrollment: NewRelationshipItemEnrollmentDTO?,
     val event: NewRelationshipItemEventDTO?,

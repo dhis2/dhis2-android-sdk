@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.core.event.NewTrackerImporterEvent
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnitMode
 import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -46,7 +45,6 @@ import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -63,7 +61,6 @@ internal class TrackerExporterNetworkHandlerImpl(
         val programStartDate = query.getProgramStartDate()
 
         val apiPayload = service.getTrackedEntityInstances(
-            fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
@@ -88,7 +85,6 @@ internal class TrackerExporterNetworkHandlerImpl(
         val programStartDate = query.getProgramStartDate()
 
         val apiDto = service.getSingleTrackedEntityInstance(
-            fields = NewTrackedEntityInstanceFields.allFields,
             trackedEntityInstanceUid = uid,
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
             program = query.commonParams.program,
@@ -104,7 +100,7 @@ internal class TrackerExporterNetworkHandlerImpl(
         program: String?,
     ): Payload<TrackedEntityInstance> {
         val apiPayload = service.getSingleTrackedEntityInstance(
-            fields = NewTrackedEntityInstanceFields.asRelationshipFields,
+            exclude = NewTrackedEntityDTO.CHILDREN,
             trackedEntityInstanceUid = item.itemUid,
             orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
             program = program,
@@ -118,25 +114,18 @@ internal class TrackerExporterNetworkHandlerImpl(
     override suspend fun getEventQueryCall(
         query: TrackedEntityInstanceQueryOnline,
     ): Payload<Event> {
-        return getEventQueryInternal(
-            query = query,
-            fields = NewEventFields.allFields,
-        )
+        return getEventQueryInternal<NewEventPayload, NewEventDTO>(query).mapItems(NewEventDTO::toDomain)
     }
 
     override suspend fun getEventQueryForSearch(query: TrackedEntityInstanceQueryOnline): List<Event> {
-        return getEventQueryInternal(
-            query = query,
-            fields = NewEventFields.teiQueryFields,
-        ).items
+        return getEventQueryInternal<NewEventTrackedEntityPayload, NewEventTrackedEntityDTO>(query)
+            .items.map(NewEventTrackedEntityDTO::toDomain)
     }
 
-    private suspend fun getEventQueryInternal(
+    private suspend inline fun <reified P : PayloadJson<DTO>, reified DTO> getEventQueryInternal(
         query: TrackedEntityInstanceQueryOnline,
-        fields: Fields<NewTrackerImporterEvent>,
-    ): Payload<Event> {
-        val apiPayload = service.getEvents(
-            fields = fields,
+    ): P {
+        return service.getEvents<P, DTO>(
             orgUnit = query.orgUnits.firstOrNull(),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
             status = query.eventStatus?.toString(),
@@ -163,15 +152,13 @@ internal class TrackerExporterNetworkHandlerImpl(
             updatedBefore = query.lastUpdatedEndDate.simpleDateFormat(),
             includeDeleted = query.includeDeleted,
         )
-
-        return apiPayload.mapItems(NewEventDTO::toDomain)
     }
 
     override suspend fun getTrackedEntityQuery(
         query: TrackedEntityInstanceQueryOnline,
     ): Payload<TrackedEntityInstance> {
         val apiPayload = service.getTrackedEntityInstances(
-            fields = NewTrackedEntityInstanceFields.asSearchFields,
+            exclude = NewTrackedEntityDTO.SEARCH_EXCLUDED,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.orgUnitMode),
@@ -202,14 +189,12 @@ internal class TrackerExporterNetworkHandlerImpl(
     override suspend fun getEnrollmentRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
         val apiPayload = service.getEnrollmentSingle(
             enrollmentUid = item.itemUid,
-            fields = NewEnrollmentFields.asRelationshipFields,
         )
         return apiPayload.toDomain()
     }
 
     override suspend fun getEventCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
-        val apiPayload = service.getEvents(
-            fields = NewEventFields.allFields,
+        val apiPayload = service.getEvents<NewEventPayload, NewEventDTO>(
             orgUnit = eventQuery.orgUnit,
             orgUnitMode = parameterManager.getOrgunitModeParameter(eventQuery.commonParams.ouMode),
             program = eventQuery.commonParams.program,
@@ -227,7 +212,6 @@ internal class TrackerExporterNetworkHandlerImpl(
     override suspend fun getEventRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         val apiPayload = service.getEventSingle(
             eventUid = parameterManager.getEventsParameter(listOf(item.itemUid)),
-            fields = NewEventFields.asRelationshipFields,
             orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
         )
         return apiPayload.mapItems(NewEventDTO::toDomain)

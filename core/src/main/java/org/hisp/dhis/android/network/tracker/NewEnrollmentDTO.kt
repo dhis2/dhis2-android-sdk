@@ -39,6 +39,7 @@ import org.hisp.dhis.android.network.common.dto.GeometryDTO
 import org.hisp.dhis.android.network.common.dto.ZonedDateDTO
 import org.hisp.dhis.android.network.common.dto.toDto
 import org.hisp.dhis.android.network.common.dto.toZonedDateDto
+import org.hisp.dhis.android.network.common.fields.NotRequested
 
 @Serializable
 internal data class NewEnrollmentDTO(
@@ -58,7 +59,7 @@ internal data class NewEnrollmentDTO(
     val trackedEntity: String?,
     val geometry: GeometryDTO?,
     val attributeOptionCombo: CategoryOptionComboWithFallbackDTO = CategoryOptionComboWithFallbackDTO(null),
-    val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
+    @NotRequested val attributes: List<NewTrackedEntityAttributeValueDTO> = emptyList(),
     val events: List<NewEventDTO>?,
     val notes: List<NewNoteDTO>?,
     val relationships: List<NewRelationshipDTO>? = null,
@@ -85,6 +86,13 @@ internal data class NewEnrollmentDTO(
             events(events?.map { it.toDomain() })
             relationships(relationships?.map { it.toDomain() })
         }.build()
+    }
+
+    companion object {
+        /**
+         * Nested collections left out when only the enrollment itself is needed, e.g. as a relationship item.
+         */
+        val CHILDREN = setOf("events", "notes", "relationships")
     }
 }
 

@@ -27,24 +27,39 @@
  */
 package org.hisp.dhis.android.network.tracker
 
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItem
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEnrollment
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemTrackedEntity
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
+import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.network.common.PayloadJson
+import org.hisp.dhis.android.network.common.dto.PagerDTO
 
-internal object NewRelationshipItemFields : BaseFields<NewTrackerImporterRelationshipItem>() {
-    private const val TRACKED_ENTITY = "trackedEntity"
-    private const val ENROLLMENT = "enrollment"
-    private const val EVENT = "event"
+/**
+ * Event as requested by the online search, which only needs to know the tracked entity of each matching event.
+ */
+@Serializable
+internal data class NewEventTrackedEntityDTO(
+    val event: String,
+    val trackedEntity: String?,
+) {
+    fun toDomain(): Event {
+        return Event.builder()
+            .uid(event)
+            .trackedEntityInstance(trackedEntity)
+            .build()
+    }
+}
 
-    val allFields = Fields.from(
-        fh.nestedField<NewTrackerImporterRelationshipItemTrackedEntity>(TRACKED_ENTITY)
-            .with(NewRelationshipItemTrackedEntityInstanceFields.trackedEntityInstance),
-        fh.nestedField<NewTrackerImporterRelationshipItemEnrollment>(ENROLLMENT)
-            .with(NewRelationshipItemEnrollmentFields.enrollment),
-        fh.nestedField<NewTrackerImporterRelationshipItemEvent>(EVENT)
-            .with(NewRelationshipItemEventFields.event),
-    )
+@Serializable
+internal class NewEventTrackedEntityPayload(
+    override val pager: PagerDTO?,
+    val page: Int?,
+    val pageCount: Int?,
+    val pageSize: Int?,
+    val total: Int?,
+    @JsonNames("instances", "events") override val items: List<NewEventTrackedEntityDTO> = emptyList(),
+) : PayloadJson<NewEventTrackedEntityDTO>(pager, items) {
+
+    override fun pager(): PagerDTO {
+        return pager ?: PagerDTO(page, pageCount, pageSize, total)
+    }
 }

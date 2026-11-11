@@ -41,10 +41,7 @@ internal class EnrollmentNetworkHandlerImpl(
     private val service = EnrollmentService(httpClient)
 
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Enrollment {
-        val enrollmentDTO = service.getEnrollmentSingle(
-            enrollmentUid = item.itemUid,
-            fields = EnrollmentFields.asRelationshipFields,
-        )
+        val enrollmentDTO = service.getEnrollmentSingle(enrollmentUid = item.itemUid)
         return enrollmentDTO.toDomain()
     }
 }

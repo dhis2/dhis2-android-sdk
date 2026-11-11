@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.network.event
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.event.Event
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class EventService(private val client: HttpServiceClient) {
 
@@ -45,7 +43,7 @@ internal class EventService(private val client: HttpServiceClient) {
 
     @SuppressWarnings("LongParameterList")
     suspend fun getEvents(
-        fields: Fields<Event>,
+        includeChildren: Boolean,
         orgUnit: String? = null,
         orgUnitMode: String? = null,
         status: String? = null,
@@ -71,7 +69,7 @@ internal class EventService(private val client: HttpServiceClient) {
         return client.get {
             url(EVENTS)
             parameters {
-                fields(fields)
+                fields<EventDTO>(exclude = if (includeChildren) emptySet() else EventDTO.CHILDREN)
                 attribute(ORG_UNIT, orgUnit)
                 attribute(OU_MODE, orgUnitMode)
                 attribute(STATUS, status)
@@ -99,13 +97,12 @@ internal class EventService(private val client: HttpServiceClient) {
 
     suspend fun getEvent(
         eventUid: String,
-        fields: Fields<Event>,
         orgUnitMode: String,
     ): EventDTO {
         return client.get {
             url("$EVENTS/$eventUid")
             parameters {
-                fields(fields)
+                fields<EventDTO>()
                 attribute(OU_MODE, orgUnitMode)
             }
         }
@@ -113,13 +110,12 @@ internal class EventService(private val client: HttpServiceClient) {
 
     suspend fun getEventSingle(
         eventUid: String,
-        fields: Fields<Event>,
         orgUnitMode: String,
     ): EventPayload {
         return client.get {
             url(EVENTS)
             parameters {
-                fields(fields)
+                fields<EventDTO>(exclude = EventDTO.CHILDREN)
                 attribute(EVENT, eventUid)
                 attribute(OU_MODE, orgUnitMode)
             }

@@ -39,8 +39,8 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
         parameters.add("fields" to fields.generateString())
     }
 
-    internal inline fun <reified DTO> fields() {
-        parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString())
+    internal inline fun <reified DTO> fields(exclude: Set<String> = emptySet()) {
+        parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString(exclude))
     }
 
     internal inline fun <reified DTO> keys() {

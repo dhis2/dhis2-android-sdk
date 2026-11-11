@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.mockwebserver
 
-import android.util.Log
 import io.ktor.http.HttpStatusCode
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -54,7 +53,6 @@ class Dhis2Dispatcher internal constructor(
 
         try {
             val body = fileReader.getStringFromFile(checkNotNull(fileName))
-            Log.i(DISPATCHER, String.format(method, path, body))
             return MockResponse()
                 .setBody(body)
                 .setResponseCode(httpCode)
@@ -75,7 +73,5 @@ class Dhis2Dispatcher internal constructor(
         responseController.addResponse(method, path, responseName, responseCode, contentType)
     }
 
-    companion object {
-        private const val DISPATCHER = "Dispatcher"
-    }
+    companion object
 }

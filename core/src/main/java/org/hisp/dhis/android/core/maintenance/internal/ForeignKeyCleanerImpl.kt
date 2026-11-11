@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.maintenance.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.helpers.CollectionsHelper.commaAndSpaceSeparatedArrayValues
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.maintenance.ForeignKeyViolation
 import org.koin.core.annotation.Singleton
@@ -102,9 +102,9 @@ internal class ForeignKeyCleanerImpl(
             if (rowsAffected > 0) {
                 val msg =
                     " was not persisted on ${error.fromTable} table to avoid Foreign Key constraint error. " +
-                        "Target not found on ${error.toTable} table. $it"
+                        "Target not found on ${error.toTable} table (${it.fromColumn()} -> ${it.toColumn()})."
                 val warningMsg = it.fromObjectUid()?.let { uid -> "The object $uid$msg" } ?: "An object$msg"
-                Log.w(this::class.simpleName, warningMsg)
+                D2Logger.w(this::class.simpleName, warningMsg)
             }
         }
     }

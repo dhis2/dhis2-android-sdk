@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.util.Log
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.http.Headers
@@ -35,6 +34,7 @@ import io.ktor.http.HttpHeaders
 import okio.IOException
 import okio.Path
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -117,10 +117,10 @@ internal class FileResourcePostCall(
 
             return downloadedFileResource.uid()
         } catch (e: IOException) {
-            Log.v(FileResourcePostCall::class.java.canonicalName, e.message!!)
+            D2Logger.v(FileResourcePostCall::class.java.canonicalName, "File resource upload failed", e)
             throw D2Error.builder()
                 .errorCode(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
-                .errorDescription(e.message!!)
+                .errorDescription(e.message ?: "File resource upload failed")
                 .build()
         }
     }

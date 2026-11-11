@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.helpers.internal
 
 import android.graphics.Bitmap
 import android.graphics.Bitmap.CompressFormat
-import android.util.Log
 import androidx.core.graphics.scale
 import okio.FileSystem
 import okio.IOException
@@ -93,7 +92,7 @@ internal class AndroidImageProcessor(
 
         val bitmap = ImageFileHelper.decodeBitmap(source, MAX_WORKING_DIMENSION_PX)
         if (bitmap == null) {
-            Log.w(TAG, "${source.name} could not be decoded, it will be uploaded as it is")
+            D2Logger.w(TAG, "The image could not be decoded, it will be uploaded as it is")
             return source
         }
 
@@ -106,18 +105,18 @@ internal class AndroidImageProcessor(
 
         return when {
             compressed == null -> {
-                Log.w(TAG, "${source.name} could not be encoded, it will be uploaded as it is")
+                D2Logger.w(TAG, "The image could not be encoded, it will be uploaded as it is")
                 source
             }
 
             isSupportedFormat && compressed.size >= sourceSize -> {
-                Log.w(TAG, "Compressing ${source.name} does not make it smaller, it is left as it is")
+                D2Logger.w(TAG, "Compressing the image does not make it smaller, it is left as it is")
                 source
             }
 
             else -> {
                 if (compressed.size > targetSizeBytes) {
-                    Log.w(TAG, "${source.name} could not be compressed below $targetSizeBytes bytes")
+                    D2Logger.w(TAG, "The image could not be compressed below $targetSizeBytes bytes")
                 }
                 writeCompressed(source, compressed, format, outputDirectory) ?: source
             }
@@ -171,12 +170,12 @@ internal class AndroidImageProcessor(
             }
             target
         } catch (e: IOException) {
-            Log.w(TAG, "Could not write the compressed image, ${source.name} will be uploaded as it is", e)
+            D2Logger.w(TAG, "Could not write the compressed image, the original will be uploaded as it is", e)
             if (created) {
                 try {
                     fileSystem.delete(target)
                 } catch (deleteError: IOException) {
-                    Log.w(TAG, "Could not delete the partially written ${target.name}", deleteError)
+                    D2Logger.w(TAG, "Could not delete the partially written compressed image", deleteError)
                 }
             }
             null

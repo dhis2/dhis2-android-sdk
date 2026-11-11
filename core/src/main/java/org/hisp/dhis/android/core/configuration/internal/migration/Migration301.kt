@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.configuration.internal.migration
 
-import android.util.Log
 import okio.FileSystem
 import okio.IOException
 import okio.Path
 import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.storage.internal.ObjectKeyValueStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccountImport
@@ -67,7 +67,7 @@ internal class Migration301(
             return
         }
 
-        Log.i(TAG, "Starting database name hash migration for ${configuration.accounts().size} accounts")
+        D2Logger.i(TAG, "Starting database name hash migration for ${configuration.accounts().size} accounts")
 
         val migratedAccounts = configuration.accounts().mapNotNull { account ->
             migrateAccount(account)
@@ -79,7 +79,7 @@ internal class Migration301(
 
         databaseConfigurationStore.set(updatedConfiguration)
 
-        Log.i(TAG, "Database name hash migration completed successfully")
+        D2Logger.i(TAG, "Database name hash migration completed successfully")
     }
 
     private fun migrateAccount(account: DatabaseAccount): DatabaseAccount? {
@@ -100,17 +100,14 @@ internal class Migration301(
                 .build()
 
             if (dbRenamed) {
-                Log.i(TAG, "Successfully migrated account: ${account.username()}@${account.serverUrl()}")
+                D2Logger.i(TAG, "Successfully migrated account")
             } else {
-                Log.w(
-                    TAG,
-                    "Account migrated but database file didn't exist: ${account.username()}@${account.serverUrl()}",
-                )
+                D2Logger.w(TAG, "Account migrated but database file didn't exist")
             }
 
             updatedAccount
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-            Log.e(TAG, "Failed to migrate account: ${account.username()}@${account.serverUrl()}", e)
+            D2Logger.e(TAG, "Failed to migrate account", e)
             account
         }
     }
@@ -125,11 +122,11 @@ internal class Migration301(
 
         return when {
             !fileSystem.exists(oldDbFile) -> {
-                Log.d(TAG, "Database file doesn't exist: $oldDbName")
+                D2Logger.d(TAG, "Database file doesn't exist")
                 false
             }
             fileSystem.exists(newDbFile) -> {
-                Log.e(TAG, "Target database already exists, skipping rename: $newDbName")
+                D2Logger.e(TAG, "Target database already exists, skipping rename")
                 false
             }
             else -> {

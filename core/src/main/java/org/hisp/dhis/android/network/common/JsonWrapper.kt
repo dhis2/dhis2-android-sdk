@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.common
 
-import android.util.Log
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.JsonElement
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 
 @JvmInline
@@ -42,7 +42,7 @@ internal value class JsonWrapper(val json: JsonElement) {
                 try {
                     JsonWrapper(KotlinxJsonParser.instance.parseToJsonElement(it))
                 } catch (e: SerializationException) {
-                    Log.w(JsonWrapper::javaClass.toString(), e.message, e)
+                    D2Logger.w(JsonWrapper::class.simpleName, "Could not parse JSON value", e)
                     null
                 }
             }

@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.trackedentity.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.enrollment.internal.EnrollmentHandler
 import org.hisp.dhis.android.core.relationship.internal.RelationshipDHISVersionManager
@@ -66,7 +66,7 @@ internal class TrackedEntityInstanceHandler(
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
-            Log.i(
+            D2Logger.i(
                 this.javaClass.simpleName,
                 "TrackedEntityInstance " + o.uid() + " has invalid geometry value",
             )

@@ -29,12 +29,12 @@
 package org.hisp.dhis.android.persistence.db.access
 
 import android.content.Context
-import android.util.Log
 import net.zetetic.database.sqlcipher.SQLiteConnection
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import okio.Path
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader.loadSQLCipher
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
@@ -187,7 +187,7 @@ internal class RoomDatabaseExport(
                     try {
                         sourceDbDirect.execSQL("DETACH DATABASE roomExport;")
                     } catch (detachEx: Exception) {
-                        Log.e(TAG, "Error detaching database: ${detachEx.message}")
+                        D2Logger.e(TAG, "Error detaching database", detachEx)
                     }
                     sourceDbDirect.close()
                 }
@@ -206,10 +206,10 @@ internal class RoomDatabaseExport(
         try {
             action() // Simply invoke the suspend lambda
         } catch (e: Exception) {
-            Log.e(TAG, "Error during database $tag: ${e.message}")
+            D2Logger.e(TAG, "Error during database $tag: ${e::class.simpleName}")
             throw RuntimeException("Exception thrown during database export action: $tag", e)
         }
         val endMillis = System.currentTimeMillis()
-        Log.i(TAG, "$tag completed in ${endMillis - startMillis}ms")
+        D2Logger.i(TAG, "$tag completed in ${endMillis - startMillis}ms")
     }
 }

@@ -32,13 +32,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.telephony.SmsManager
-import android.util.Log
 import androidx.core.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ReceivedErrorException
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseException
@@ -60,7 +60,7 @@ internal class SmsRepositoryImpl(private val context: Context) : SmsRepository {
         return Observable.create { e: ObservableEmitter<SmsSendingState> ->
             executeSmsSending(e, number, smsParts, sendingTimeoutSeconds)
         }.doOnError { throwable ->
-            Log.e(TAG, throwable.javaClass.simpleName, throwable)
+            D2Logger.e(TAG, throwable.javaClass.simpleName, throwable)
         }.subscribeOn(Schedulers.newThread())
     }
 

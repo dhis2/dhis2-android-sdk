@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.user.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.api.executors.internal.APICallErrorCatcher
 import org.hisp.dhis.android.core.arch.api.executors.internal.APIErrorMapper
 import org.hisp.dhis.android.core.arch.api.internal.D2HttpResponse
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
@@ -64,7 +64,7 @@ internal class UserAuthenticateCallErrorCatcher : APICallErrorCatcher {
             if (hasInvalidCharacters(response.statusCode, response.errorBody)) {
                 D2ErrorCode.INVALID_CHARACTERS
             } else {
-                Log.e(UserAuthenticateCallErrorCatcher::class.java.simpleName, e.javaClass.simpleName, e)
+                D2Logger.e(UserAuthenticateCallErrorCatcher::class.java.simpleName, e.javaClass.simpleName, e)
                 D2ErrorCode.NO_DHIS2_SERVER
             }
         }

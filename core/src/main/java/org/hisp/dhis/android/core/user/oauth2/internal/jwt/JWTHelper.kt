@@ -27,13 +27,13 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal.jwt
 
-import android.util.Log
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import kotlinx.serialization.json.long
 import kotlinx.serialization.json.put
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
 import java.net.MalformedURLException
 import java.net.URL
@@ -116,7 +116,7 @@ internal object JWTHelper {
             val expirationSeconds = expirationSecondsOf(jwt)
             expirationSeconds == null || expirationSeconds * MILLIS_PER_SECOND >= System.currentTimeMillis()
         } catch (e: Exception) {
-            Log.e(TAG, "Invalid JWT: $jwt", e)
+            D2Logger.e(TAG, "Invalid JWT: ${e::class.simpleName}")
             false
         }
     }
@@ -161,7 +161,7 @@ internal object JWTHelper {
             val contextPath = if (pathParts.isNotEmpty()) "/${pathParts[0]}" else ""
             url.protocol + "://" + url.host + (if (url.port != -1) ":${url.port}" else "") + contextPath + "/"
         } catch (e: MalformedURLException) {
-            Log.e(TAG, "Invalid token endpoint URL: $tokenEndpoint", e)
+            D2Logger.e(TAG, "Invalid token endpoint URL")
             tokenEndpoint
         }
     }

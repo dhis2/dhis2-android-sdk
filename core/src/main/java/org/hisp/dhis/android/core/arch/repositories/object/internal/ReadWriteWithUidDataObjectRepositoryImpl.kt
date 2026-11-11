@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.IdentifiableDeletableDataObjectStore
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
@@ -82,7 +82,10 @@ abstract class ReadWriteWithUidDataObjectRepositoryImpl<M, R : ReadOnlyObjectRep
         try {
             suspendDelete()
         } catch (d2Error: D2Error) {
-            Log.v(ReadWriteWithUidDataObjectRepositoryImpl::class.java.canonicalName, d2Error.errorDescription())
+            D2Logger.v(
+                ReadWriteWithUidDataObjectRepositoryImpl::class.java.canonicalName,
+                "Delete failed: ${d2Error.errorCode()}",
+            )
         }
     }
 

@@ -27,8 +27,8 @@
  */
 package org.hisp.dhis.android.network.metadata
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataIds
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.MetadataNetworkHandler
 import org.hisp.dhis.android.core.sms.data.webapirepository.internal.WebApiRepositoryImpl
@@ -48,7 +48,7 @@ internal class MetadataNetworkHandlerImpl(
         config: GetMetadataIdsConfig,
     ): MetadataIds {
         val updatedConfig = if (dhisVersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_35) && config.users) {
-            Log.i(TAG, "Version greater or equal to 2.35. Skipping users query to metadata endpoint")
+            D2Logger.i(TAG, "Version greater or equal to 2.35. Skipping users query to metadata endpoint")
             config.copy(users = false)
         } else {
             config

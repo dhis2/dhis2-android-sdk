@@ -41,7 +41,6 @@ internal data class NewTrackerImporterRelationship(
     val relationshipName: String?,
     val createdAt: Date?,
     val updatedAt: Date?,
-    val bidirectional: Boolean?,
     val from: NewTrackerImporterRelationshipItem?,
     val to: NewTrackerImporterRelationshipItem?,
 ) : ObjectWithUidInterface, ObjectWithSyncStateInterface, ObjectWithDeleteInterface {

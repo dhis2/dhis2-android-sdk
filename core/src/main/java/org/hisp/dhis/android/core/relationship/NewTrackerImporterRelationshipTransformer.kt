@@ -32,7 +32,6 @@ import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 internal object NewTrackerImporterRelationshipTransformer :
     Transformer<Relationship, NewTrackerImporterRelationship> {
     override fun transform(o: Relationship): NewTrackerImporterRelationship {
-        val isBidirectional = o.from() != null && o.to() != null
         return NewTrackerImporterRelationship(
             uid = o.uid(),
             relationshipType = o.relationshipType(),
@@ -43,15 +42,12 @@ internal object NewTrackerImporterRelationshipTransformer :
             to = transformRelationshipItem(o.to()),
             deleted = o.deleted(),
             syncState = o.syncState(),
-            bidirectional = isBidirectional,
         )
     }
 
     private fun transformRelationshipItem(item: RelationshipItem?): NewTrackerImporterRelationshipItem? {
         return item?.let {
             val relationshipItem = NewTrackerImporterRelationshipItem(
-                relationship = item.relationship()?.uid(),
-                relationshipItemType = item.relationshipItemType(),
                 trackedEntity = if (item.hasTrackedEntityInstance()) {
                     NewTrackerImporterRelationshipItemTrackedEntity(trackedEntity = item.elementUid())
                 } else {

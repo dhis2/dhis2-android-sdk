@@ -98,6 +98,26 @@ internal class SerialDescriptorFieldsShould {
     }
 
     @Test
+    fun leave_out_excluded_top_level_properties() {
+        assertThat(SampleDTO.serializer().descriptor.toFieldsString(exclude = setOf("children", "tags"))).isEqualTo(
+            "id,displayName,type,count,reference[id],created,coordinates",
+        )
+    }
+
+    @Test
+    fun leave_out_alternative_json_names_of_excluded_properties() {
+        assertThat(AliasedDTO.serializer().descriptor.toFieldsString(exclude = setOf("references"))).isEqualTo("id")
+    }
+
+    @Test
+    fun reject_excluded_names_that_are_not_properties() {
+        val error = assertThrows(IllegalArgumentException::class.java) {
+            SampleDTO.serializer().descriptor.toFieldsString(exclude = setOf("childrens"))
+        }
+        assertThat(error.message).contains("[childrens]")
+    }
+
+    @Test
     fun reject_cyclic_dtos() {
         val error = assertThrows(IllegalArgumentException::class.java) { fieldsOf(NodeDTO.serializer()) }
         assertThat(error.message).contains("Cyclic DTO reference")

@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.arch.storage.internal
 
 import android.content.Context
 import android.util.Base64
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import java.security.GeneralSecurityException
 import java.security.KeyStore
 import java.security.PrivateKey
@@ -62,7 +62,7 @@ internal class LegacyRsaSecureStoreMigration(context: Context, private val keySt
             if (editor.commit() && migrated.size == candidates.size) {
                 keyStore.deleteEntry(ALIAS)
             } else {
-                Log.w(TAG, "${candidates.size - migrated.size} secure store values could not be migrated")
+                D2Logger.w(TAG,"${candidates.size - migrated.size} secure store values could not be migrated")
             }
         }
     }

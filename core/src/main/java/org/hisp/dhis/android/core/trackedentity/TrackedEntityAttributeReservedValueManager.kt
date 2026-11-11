@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.trackedentity
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.Single
 import kotlinx.coroutines.coroutineScope
@@ -41,6 +40,7 @@ import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.getUidOrNull
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.RepositoryScopeOrderByItem
@@ -328,7 +328,7 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
                         true,
                     )
                 } catch (e: Exception) {
-                    Log.e(
+                    D2Logger.e(
                         this::class.java.simpleName,
                         "Error downloading reserved values for attribute: $attribute and " +
                             "org. unit: ${organisationUnit.uid()}",
@@ -341,7 +341,11 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
             try {
                 downloadValuesIfBelowThreshold(attribute, null, numberOfValuesToFillUp, true)
             } catch (e: Exception) {
-                Log.e(this::class.java.simpleName, "Error downloading reserved values for attribute: $attribute", e)
+                D2Logger.e(
+                    this::class.java.simpleName,
+                    "Error downloading reserved values for attribute: $attribute",
+                    e,
+                )
             }
             emit(increaseProgress())
         }

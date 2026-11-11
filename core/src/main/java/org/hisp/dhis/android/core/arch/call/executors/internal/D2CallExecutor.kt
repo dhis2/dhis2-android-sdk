@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.arch.call.executors.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.d2.internal.DhisAndroidSdkKoinContext.koin
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -53,7 +53,7 @@ internal class D2CallExecutor(
         } catch (d2E: D2Error) {
             throw d2E
         } catch (e: Exception) {
-            Log.e(this.javaClass.simpleName, e.toString())
+            D2Logger.e(this.javaClass.simpleName, "Unexpected error", e)
             throw exceptionBuilder
                 .errorCode(D2ErrorCode.UNEXPECTED)
                 .errorDescription("Unexpected error calling $call").build()
@@ -78,7 +78,7 @@ internal class D2CallExecutor(
         } catch (d2E: D2Error) {
             throw d2E
         } catch (e: Exception) {
-            Log.e(this.javaClass.simpleName, e.toString())
+            D2Logger.e(this.javaClass.simpleName, "Unexpected error", e)
             throw exceptionBuilder
                 .errorCode(D2ErrorCode.UNEXPECTED)
                 .errorDescription("Unexpected error calling $call").build()

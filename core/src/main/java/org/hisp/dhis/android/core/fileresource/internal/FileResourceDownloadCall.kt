@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.fileresource.internal
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
@@ -37,6 +36,7 @@ import org.hisp.dhis.android.core.arch.call.fetchers.internal.UidsNoResourceCall
 import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
 import org.hisp.dhis.android.core.arch.call.queries.internal.UidsQuery
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.FileResource
@@ -79,7 +79,10 @@ internal class FileResourceDownloadCall(
             val existingFileResources = fileResourceStore.selectUids()
             downloadTrackerValues(withResolvedMaxContentLength(params), existingFileResources)
         } catch (d2Error: D2Error) {
-            Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+            D2Logger.v(
+                FileResourceDownloadCall::class.java.canonicalName,
+                "File resource download failed: ${d2Error.errorCode()}",
+            )
         }
     }
 
@@ -221,7 +224,10 @@ internal class FileResourceDownloadCall(
             try {
                 getIdsValuePairsFunction(valueMap)
             } catch (d2Error: D2Error) {
-                Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+                D2Logger.v(
+                    FileResourceDownloadCall::class.java.canonicalName,
+                    "File resource download failed: ${d2Error.errorCode()}",
+                )
                 emptyList()
             }
         }
@@ -271,7 +277,10 @@ internal class FileResourceDownloadCall(
                     }
 
                     is Result.Failure -> {
-                        Log.v(FileResourceDownloadCall::class.java.canonicalName, frResult.failure.errorDescription())
+                        D2Logger.v(
+                            FileResourceDownloadCall::class.java.canonicalName,
+                            "File resource download failed: ${frResult.failure.errorCode()}",
+                        )
                         null
                     }
                 }
@@ -304,7 +313,10 @@ internal class FileResourceDownloadCall(
             }
         } catch (d2Error: D2Error) {
             fileResource.uid.let { fileResourceStore.deleteIfExists(it) }
-            Log.v(FileResourceDownloadCall::class.java.canonicalName, d2Error.errorDescription())
+            D2Logger.v(
+                FileResourceDownloadCall::class.java.canonicalName,
+                "File resource download failed: ${d2Error.errorCode()}",
+            )
             null
         }
     }

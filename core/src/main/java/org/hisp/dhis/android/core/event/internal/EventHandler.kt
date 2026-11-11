@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerImpl
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableDataHandlerParams
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
@@ -80,7 +80,7 @@ internal class EventHandler(
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
-            Log.i(this::class.simpleName, "Event ${o.uid()} has an invalid geometry value")
+            D2Logger.i(this::class.simpleName, "Event ${o.uid()} has an invalid geometry value")
             o.toBuilder().geometry(null).build()
         }
     }
@@ -93,7 +93,7 @@ internal class EventHandler(
     ) {
         val eventUid = o.uid()
         if (action === HandleAction.Delete) {
-            Log.d(this.javaClass.simpleName, "$eventUid with no org. unit, invalid eventDate or deleted")
+            D2Logger.d(this.javaClass.simpleName, "$eventUid with no org. unit, invalid eventDate or deleted")
         } else {
             if (o.trackedEntityDataValues() == null || o.trackedEntityDataValues()!!.isEmpty()) {
                 trackedEntityDataValueHandler.removeEventDataValues(eventUid)

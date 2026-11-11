@@ -96,6 +96,13 @@ internal data class EventDTO(
             trackedEntityDataValues(dataValues?.mapNotNull { it.toDomain(event) })
         }.build()
     }
+
+    companion object {
+        /**
+         * Nested collections left out when only the event itself is needed, e.g. as a relationship item.
+         */
+        val CHILDREN = setOf("notes", "relationships", "dataValues")
+    }
 }
 
 internal fun Event.toDto(): EventDTO {

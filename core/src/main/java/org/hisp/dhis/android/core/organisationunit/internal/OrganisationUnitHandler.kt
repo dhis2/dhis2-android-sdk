@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.organisationunit.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.arch.handlers.internal.IdentifiableHandlerImpl
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.dataset.DataSetOrganisationUnitLink
 import org.hisp.dhis.android.core.dataset.internal.DataSetOrganisationUnitLinkHandler
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
@@ -77,7 +77,7 @@ internal class OrganisationUnitHandler(
         return if (GeometryHelper.isValid(o.geometry())) {
             o
         } else {
-            Log.i(
+            D2Logger.i(
                 this.javaClass.simpleName,
                 "OrganisationUnit " + o.uid() + " has invalid geometryValue",
             )

@@ -30,7 +30,6 @@ package org.hisp.dhis.android.persistence.db.access
 
 import android.content.Context
 import android.database.sqlite.SQLiteException
-import android.util.Log
 import androidx.room3.Room
 import androidx.room3.RoomDatabase
 import androidx.sqlite.SQLiteConnection
@@ -41,6 +40,7 @@ import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
@@ -118,7 +118,7 @@ internal class RoomDatabaseManager(
     }
 
     override fun createInMemoryDatabase(): DatabaseAdapter {
-        Log.d(TAG, "createInMemoryDatabase called. Setting up PRAGMA foreign_keys=OFF.")
+        D2Logger.d(TAG, "createInMemoryDatabase called. Setting up PRAGMA foreign_keys=OFF.")
         val database = build(
             databaseName = null,
             password = null,
@@ -181,7 +181,7 @@ internal class RoomDatabaseManager(
             }
             true
         } catch (e: Exception) {
-            Log.e(TAG, "Error deleting database $databaseName", e)
+            D2Logger.e(TAG, "Error deleting database", e)
             false
         }
     }
@@ -202,6 +202,6 @@ internal class RoomDatabaseManager(
 
 internal class LoggingErrorHandler(private val tag: String) : DatabaseErrorHandler {
     override fun onCorruption(dbObj: net.zetetic.database.sqlcipher.SQLiteDatabase?, exception: SQLiteException?) {
-        Log.e(tag, "CORRUPTION DETECTED! DB Path: ${dbObj?.path}")
+        D2Logger.e(tag, "CORRUPTION DETECTED!")
     }
 }

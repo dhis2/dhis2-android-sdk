@@ -30,9 +30,6 @@ package org.hisp.dhis.android.network.user
 
 import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.dto.BaseIdentifiableObjectDTO
-import org.hisp.dhis.android.network.common.dto.applyBaseIdentifiableFields
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 
 @Serializable
 internal data class UserDTO(
@@ -44,46 +41,31 @@ internal data class UserDTO(
     override val lastUpdated: String?,
     override val deleted: Boolean?,
     val username: String?,
-    val birthday: String?,
-    val education: String?,
-    val gender: String? = null,
-    val jobTitle: String? = null,
-    val surname: String? = null,
-    val firstName: String? = null,
-    val introduction: String? = null,
-    val employer: String? = null,
-    val interests: String? = null,
-    val languages: String? = null,
-    val email: String? = null,
-    val phoneNumber: String? = null,
-    val nationality: String? = null,
-    val userCredentials: UserCredentialsDTO? = null,
-    val organisationUnits: List<OrganisationUnitDTO>? = emptyList(),
-    val teiSearchOrganisationUnits: List<OrganisationUnitDTO>? = emptyList(),
+    override val birthday: String?,
+    override val education: String?,
+    override val gender: String? = null,
+    override val jobTitle: String? = null,
+    override val surname: String? = null,
+    override val firstName: String? = null,
+    override val introduction: String? = null,
+    override val employer: String? = null,
+    override val interests: String? = null,
+    override val languages: String? = null,
+    override val email: String? = null,
+    override val phoneNumber: String? = null,
+    override val nationality: String? = null,
+    val organisationUnits: List<UserOrganisationUnitDTO>? = emptyList(),
+    val teiSearchOrganisationUnits: List<UserOrganisationUnitDTO>? = emptyList(),
     val userRoles: List<UserRoleDTO>?,
-    val userGroups: List<UserGroupDTO>? = emptyList(),
-) : BaseIdentifiableObjectDTO {
+    override val userGroups: List<UserGroupDTO>? = emptyList(),
+) : BaseUserDTO {
     fun toDomain(): User {
         return User.builder()
-            .applyBaseIdentifiableFields(this)
-            .username(username ?: userCredentials?.username)
-            .birthday(birthday)
-            .education(education)
-            .gender(gender)
-            .jobTitle(jobTitle)
-            .surname(surname)
-            .firstName(firstName)
-            .introduction(introduction)
-            .employer(employer)
-            .interests(interests)
-            .languages(languages)
-            .email(email)
-            .phoneNumber(phoneNumber)
-            .nationality(nationality)
+            .applyBaseUserFields(this)
+            .username(username)
             .organisationUnits(organisationUnits?.map { it.toDomain() })
             .teiSearchOrganisationUnits(teiSearchOrganisationUnits?.map { it.toDomain() })
-            .userRoles((userRoles ?: userCredentials?.userRoles)?.map { it.toDomain() })
-            .userGroups(userGroups?.map { it.toDomain() })
+            .userRoles(userRoles?.map { it.toDomain() })
             .build()
     }
 }

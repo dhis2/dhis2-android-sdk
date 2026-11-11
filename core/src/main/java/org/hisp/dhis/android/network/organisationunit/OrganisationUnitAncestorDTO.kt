@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2024, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,22 +25,13 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.note
 
-import org.hisp.dhis.android.core.note.Note
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.persistence.note.NoteTableInfo.Columns
+package org.hisp.dhis.android.network.organisationunit
 
-internal object NoteFields : BaseFields<Note>() {
-    const val UID = "note"
+import kotlinx.serialization.Serializable
 
-    val uid = fh.uid()
-
-    val allFields = Fields.from(
-        fh.field(UID),
-        fh.field(Columns.VALUE),
-        fh.field(Columns.STORED_BY),
-        fh.field(Columns.STORED_DATE),
-    )
-}
+@Serializable
+internal data class OrganisationUnitAncestorDTO(
+    val id: String,
+    val displayName: String?,
+)

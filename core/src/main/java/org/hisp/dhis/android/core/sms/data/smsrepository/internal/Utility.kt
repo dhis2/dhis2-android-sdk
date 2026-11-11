@@ -29,7 +29,7 @@ package org.hisp.dhis.android.core.sms.data.smsrepository.internal
 
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 
 internal object Utility {
     private val TAG: String = Utility::class.java.getSimpleName()
@@ -44,7 +44,7 @@ internal object Utility {
         try {
             context.unregisterReceiver(receiver)
         } catch (e: Exception) {
-            Log.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e)
+            D2Logger.w(TAG, "Unnecessarily unregistered broadcast receiver. Nothing to see here.", e)
         }
     }
 }

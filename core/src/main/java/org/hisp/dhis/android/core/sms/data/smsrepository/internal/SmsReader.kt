@@ -33,11 +33,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.provider.Telephony
 import android.telephony.SmsMessage
-import android.util.Log
 import androidx.core.content.ContextCompat
 import io.reactivex.Completable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository
 import org.hisp.dhis.android.core.sms.domain.repository.SmsRepository.ResultResponseIssue.RECEIVED_ERROR
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
@@ -88,7 +88,7 @@ internal class SmsReader(private val context: Context) {
                 try {
                     context.unregisterReceiver(it)
                 } catch (t: Throwable) {
-                    Log.d(TAG, "${t.javaClass.simpleName} ${t.message}")
+                    D2Logger.d(TAG, "Could not unregister receiver", t)
                 }
             }
         }

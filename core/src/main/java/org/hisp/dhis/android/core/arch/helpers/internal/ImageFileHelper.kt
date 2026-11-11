@@ -32,7 +32,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Matrix
-import android.util.Log
 import androidx.core.graphics.scale
 import androidx.exifinterface.media.ExifInterface
 import okio.IOException
@@ -86,7 +85,7 @@ internal object ImageFileHelper {
                 val bitmap = BitmapFactory.decodeFile(path.toString(), options)
                 return bitmap?.let { applyExifRotation(path, it) }
             } catch (e: OutOfMemoryError) {
-                Log.w(TAG, "Not enough memory to decode ${path.name} with sample size $sampleSize", e)
+                D2Logger.w(TAG, "Not enough memory to decode the image with sample size $sampleSize", e)
                 sampleSize *= SAMPLE_SIZE_STEP
             }
         }
@@ -180,10 +179,10 @@ internal object ImageFileHelper {
                 else -> NO_ROTATION
             }
         } catch (e: IOException) {
-            Log.w(TAG, "Could not read the EXIF orientation of ${path.name}", e)
+            D2Logger.w(TAG, "Could not read the EXIF orientation of the image", e)
             NO_ROTATION
         } catch (e: RuntimeException) {
-            Log.w(TAG, "Could not read the EXIF orientation of ${path.name}", e)
+            D2Logger.w(TAG, "Could not read the EXIF orientation of the image", e)
             NO_ROTATION
         }
     }

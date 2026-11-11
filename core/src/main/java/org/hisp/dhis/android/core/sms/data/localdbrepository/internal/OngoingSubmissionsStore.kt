@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 
-import android.util.Log
 import android.util.Pair
 import io.reactivex.Completable
 import io.reactivex.Single
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.sms.domain.repository.internal.LocalDbRepository.TooManySubmissionsException
 import org.hisp.dhis.android.core.sms.domain.repository.internal.SubmissionType
 import org.koin.core.annotation.Singleton
@@ -52,7 +52,7 @@ internal class OngoingSubmissionsStore(
             }
             ongoingSubmissions!!
         }.onErrorReturn { throwable ->
-            Log.e(TAG, throwable.message, throwable)
+            D2Logger.e(TAG, "Error accessing ongoing submissions", throwable)
             emptyMap()
         }
     }

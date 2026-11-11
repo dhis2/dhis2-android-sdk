@@ -29,28 +29,32 @@
 package org.hisp.dhis.android.network.user
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.user.User
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class UserService(private val client: HttpServiceClient) {
-    suspend fun authenticate(
-        credentials: String,
-        fields: Fields<User>,
-    ): UserDTO {
+    suspend fun authenticate(credentials: String): AuthenticatedUserDTO {
         return client.get {
             url("me")
             authorizationHeader(credentials)
             parameters {
-                fields(fields)
+                fields<AuthenticatedUserDTO>()
             }
         }
     }
 
-    suspend fun getUser(fields: Fields<User>): UserDTO {
+    suspend fun getUser(): UserDTO {
         return client.get {
             url("me")
             parameters {
-                fields(fields)
+                fields<UserDTO>()
+            }
+        }
+    }
+
+    suspend fun getUser37(): User37DTO {
+        return client.get {
+            url("me")
+            parameters {
+                fields<User37DTO>()
             }
         }
     }

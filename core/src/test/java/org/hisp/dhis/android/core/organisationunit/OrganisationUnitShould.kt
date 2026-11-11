@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.organisationunit
 import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.android.core.common.CoreObjectShould
-import org.hisp.dhis.android.core.common.FeatureType
 import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -63,10 +62,6 @@ internal class OrganisationUnitShould : CoreObjectShould<OrganisationUnitDTO>(
         assertThat(organisationUnit.displayShortName()).isEqualTo("Baomahun CHC")
         assertThat(organisationUnit.parent()!!.uid()).isEqualTo("npWGUj37qDe")
 
-        // geometry
-        assertThat(organisationUnit.geometry()!!.type()).isEqualTo(FeatureType.POINT)
-        assertThat(organisationUnit.geometry()!!.coordinates()).isEqualTo("[9.0,9.0]")
-
         // checking programs
         assertThat(organisationUnit.programs()!![0].uid()).isEqualTo("uy2gU8kT1jF")
         assertThat(organisationUnit.programs()!![1].uid()).isEqualTo("q04UBOqq3rp")
@@ -88,20 +83,5 @@ internal class OrganisationUnitShould : CoreObjectShould<OrganisationUnitDTO>(
                 "Baomahun CHC",
             ),
         )
-    }
-
-    @Test
-    fun map_coordinates_and_feature_type_to_geometry() {
-        val organisationUnitDTO = deserializePath(
-            path = "organisationunit/organisation_unit_with_feature_type_and_coordinates.json",
-            serializer = OrganisationUnitDTO.serializer(),
-        )
-        val organisationUnit = organisationUnitDTO.toDomain()
-
-        assertThat(organisationUnit.uid()).isEqualTo("FLjwMPWLrL2")
-
-        // geometry
-        assertThat(organisationUnit.geometry()!!.type()).isEqualTo(FeatureType.POINT)
-        assertThat(organisationUnit.geometry()!!.coordinates()).isEqualTo("[-11.6677,8.4165]")
     }
 }

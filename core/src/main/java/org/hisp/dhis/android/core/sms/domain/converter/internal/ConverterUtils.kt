@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.sms.domain.converter.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.containsAPoint
 import org.hisp.dhis.android.core.arch.helpers.GeometryHelper.getPoint
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.Geometry
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.EventStatus
@@ -80,7 +80,7 @@ internal object ConverterUtils {
             val point: List<Double?> = getPoint(geometry)
             return GeoPoint(point.get(1)!!.toFloat(), point.get(0)!!.toFloat())
         } catch (d2Error: D2Error) {
-            Log.d(TAG, d2Error.errorDescription())
+            D2Logger.d(TAG, "Could not convert geometry: ${d2Error.errorCode()}")
             return null
         }
     }

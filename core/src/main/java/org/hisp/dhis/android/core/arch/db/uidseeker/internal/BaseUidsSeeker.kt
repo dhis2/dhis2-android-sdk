@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.arch.db.uidseeker.internal
 
 import androidx.room3.RoomRawQuery
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 
 internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter) {
 
@@ -41,7 +42,7 @@ internal open class BaseUidsSeeker(private val databaseAdapter: DatabaseAdapter)
             val resultsList: List<String> = dao.stringListRawQuery(sqliteQuery)
             resultsList.toSet()
         } catch (e: Exception) {
-            System.err.println("Error executing query '$query': ${e.message}")
+            D2Logger.e(BaseUidsSeeker::class.simpleName, "Error executing UIDs query", e)
             emptySet()
         }
     }

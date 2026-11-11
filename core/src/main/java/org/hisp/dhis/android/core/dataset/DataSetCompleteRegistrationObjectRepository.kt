@@ -27,9 +27,9 @@
  */
 package org.hisp.dhis.android.core.dataset
 
-import android.util.Log
 import io.reactivex.Completable
 import kotlinx.coroutines.rx2.rxCompletable
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
@@ -146,7 +146,10 @@ class DataSetCompleteRegistrationObjectRepository internal constructor(
         try {
             suspendDelete()
         } catch (d2Error: D2Error) {
-            Log.v(DataSetCompleteRegistrationObjectRepository::class.java.canonicalName, d2Error.errorDescription())
+            D2Logger.v(
+                DataSetCompleteRegistrationObjectRepository::class.java.canonicalName,
+                "Delete failed: ${d2Error.errorCode()}",
+            )
         }
     }
 }

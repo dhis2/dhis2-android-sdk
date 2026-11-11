@@ -28,18 +28,13 @@
 package org.hisp.dhis.android.network.enrollment
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class EnrollmentService(private val client: HttpServiceClient) {
-    suspend fun getEnrollmentSingle(
-        enrollmentUid: String?,
-        fields: Fields<Enrollment>,
-    ): EnrollmentDTO {
+    suspend fun getEnrollmentSingle(enrollmentUid: String?): EnrollmentDTO {
         return client.get {
             url("$ENROLLMENTS/$enrollmentUid")
             parameters {
-                fields(fields)
+                fields<EnrollmentDTO>(exclude = EnrollmentDTO.CHILDREN)
             }
         }
     }

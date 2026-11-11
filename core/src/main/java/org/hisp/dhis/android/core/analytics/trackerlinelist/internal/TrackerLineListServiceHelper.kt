@@ -28,10 +28,10 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import android.util.Log
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListValue
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 
 @Suppress("TooGenericExceptionCaught")
 internal object TrackerLineListServiceHelper {
@@ -52,7 +52,7 @@ internal object TrackerLineListServiceHelper {
                 }
             }
         } catch (e: Exception) {
-            Log.e("TrackerHelper", "Error fetching data with D2Dao: ${e.message}", e)
+            D2Logger.e("TrackerHelper", "Error fetching data with D2Dao", e)
         }
         return rows
     }

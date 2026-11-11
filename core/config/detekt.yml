@@ -486,8 +486,11 @@ style:
       - 'TODO:'
     allowedPatterns: ''
   ForbiddenImport:
-    active: false
-    imports: []
+    active: true
+    excludes: ['**/AndroidD2Logger.kt', '**/test/**', '**/androidTest/**', '**/commonTest/**', '**/jvmTest/**', '**/jsTest/**', '**/iosTest/**']
+    imports:
+      - value: 'android.util.Log'
+        reason: 'Use D2Logger, which hides verbose logs and exception details in release builds.'
     forbiddenPatterns: ''
   ForbiddenMethodCall:
     active: false

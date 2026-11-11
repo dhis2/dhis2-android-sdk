@@ -40,6 +40,8 @@ import org.hisp.dhis.android.network.dataelement.DataElementDTO
 import org.hisp.dhis.android.network.dataset.DataSetDTO
 import org.hisp.dhis.android.network.datasetcompleteregistration.DataSetCompleteRegistrationDTO
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
+import org.hisp.dhis.android.network.enrollment.EnrollmentDTO
+import org.hisp.dhis.android.network.event.EventDTO
 import org.hisp.dhis.android.network.eventfilter.EventFilterDTO
 import org.hisp.dhis.android.network.expressiondimensionitem.ExpressionDimensionItemDTO
 import org.hisp.dhis.android.network.externalmaplayer.ExternalMapLayerDTO
@@ -50,6 +52,7 @@ import org.hisp.dhis.android.network.legendset.LegendSetDTO
 import org.hisp.dhis.android.network.option.OptionDTO
 import org.hisp.dhis.android.network.optiongroup.OptionGroupDTO
 import org.hisp.dhis.android.network.optionset.OptionSetDTO
+import org.hisp.dhis.android.network.organisationunit.OrganisationUnitDTO
 import org.hisp.dhis.android.network.organisationunitlevel.OrganisationUnitLevelDTO
 import org.hisp.dhis.android.network.program.ProgramDTO
 import org.hisp.dhis.android.network.programindicator.ProgramIndicatorDTO
@@ -62,10 +65,14 @@ import org.hisp.dhis.android.network.systemsettings.AzureMapsApiKeyDTO
 import org.hisp.dhis.android.network.systemsettings.BingMapsApiKeyDTO
 import org.hisp.dhis.android.network.systemsettings.SystemSettingsDTO
 import org.hisp.dhis.android.network.trackedentityattribute.TrackedEntityAttributeDTO
+import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceDTO
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilter37DTO
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterDTO
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
+import org.hisp.dhis.android.network.user.AuthenticatedUserDTO
+import org.hisp.dhis.android.network.user.User37DTO
+import org.hisp.dhis.android.network.user.UserDTO
 import org.hisp.dhis.android.network.usersettings.UserSettingsDTO
 import org.hisp.dhis.android.network.validationrule.ValidationRuleDTO
 import org.hisp.dhis.android.network.visualization.Visualization36DTO
@@ -81,12 +88,13 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 internal class DTOFieldsShould {
 
-    private inline fun <reified DTO> fieldsOf(): String {
-        return ParametersBuilder(mutableListOf()).apply { fields<DTO>() }.parameters.single().second
+    private inline fun <reified DTO> fieldsOf(exclude: Set<String> = emptySet()): String {
+        return ParametersBuilder(mutableListOf()).apply { fields<DTO>(exclude) }.parameters.single().second
     }
 
     private val requestedFields = mapOf(
         "AttributeDTO" to fieldsOf<AttributeDTO>(),
+        "AuthenticatedUserDTO" to fieldsOf<AuthenticatedUserDTO>(),
         "AzureMapsApiKeyDTO" to fieldsOf<AzureMapsApiKeyDTO>(),
         "BingMapsApiKeyDTO" to fieldsOf<BingMapsApiKeyDTO>(),
         "CategoryComboDTO" to fieldsOf<CategoryComboDTO>(),
@@ -99,6 +107,9 @@ internal class DTOFieldsShould {
         "DataSetCompleteRegistrationDTO" to fieldsOf<DataSetCompleteRegistrationDTO>(),
         "DataSetDTO" to fieldsOf<DataSetDTO>(),
         "DataValueDTO" to fieldsOf<DataValueDTO>(),
+        "EnrollmentDTO without children" to fieldsOf<EnrollmentDTO>(EnrollmentDTO.CHILDREN),
+        "EventDTO" to fieldsOf<EventDTO>(),
+        "EventDTO without children" to fieldsOf<EventDTO>(EventDTO.CHILDREN),
         "EventFilterDTO" to fieldsOf<EventFilterDTO>(),
         "ExpressionDimensionItemDTO" to fieldsOf<ExpressionDimensionItemDTO>(),
         "ExternalMapLayerDTO" to fieldsOf<ExternalMapLayerDTO>(),
@@ -109,6 +120,7 @@ internal class DTOFieldsShould {
         "OptionDTO" to fieldsOf<OptionDTO>(),
         "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
         "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
+        "OrganisationUnitDTO" to fieldsOf<OrganisationUnitDTO>(),
         "OrganisationUnitLevelDTO" to fieldsOf<OrganisationUnitLevelDTO>(),
         "ProgramDTO" to fieldsOf<ProgramDTO>(),
         "ProgramIndicatorDTO" to fieldsOf<ProgramIndicatorDTO>(),
@@ -119,10 +131,15 @@ internal class DTOFieldsShould {
         "SystemInfoDTO" to fieldsOf<SystemInfoDTO>(),
         "SystemSettingsDTO" to fieldsOf<SystemSettingsDTO>(),
         "TrackedEntityAttributeDTO" to fieldsOf<TrackedEntityAttributeDTO>(),
+        "TrackedEntityInstanceDTO" to fieldsOf<TrackedEntityInstanceDTO>(),
+        "TrackedEntityInstanceDTO without children" to
+            fieldsOf<TrackedEntityInstanceDTO>(TrackedEntityInstanceDTO.CHILDREN),
         "TrackedEntityInstanceFilter37DTO" to fieldsOf<TrackedEntityInstanceFilter37DTO>(),
         "TrackedEntityInstanceFilterDTO" to fieldsOf<TrackedEntityInstanceFilterDTO>(),
         "TrackedEntityTypeDTO" to fieldsOf<TrackedEntityTypeDTO>(),
         "TrackerVisualizationDTO" to fieldsOf<TrackerVisualizationDTO>(),
+        "User37DTO" to fieldsOf<User37DTO>(),
+        "UserDTO" to fieldsOf<UserDTO>(),
         "UserSettingsDTO" to fieldsOf<UserSettingsDTO>(),
         "ValidationRuleDTO" to fieldsOf<ValidationRuleDTO>(),
         "Visualization36DTO" to fieldsOf<Visualization36DTO>(),
@@ -141,6 +158,12 @@ internal class DTOFieldsShould {
             "categoryOptionComboAttribute,categoryOptionGroupSetAttribute,validationRuleAttribute," +
             "programIndicatorAttribute,organisationUnitGroupAttribute,dataElementGroupSetAttribute," +
             "organisationUnitGroupSetAttribute,optionAttribute",
+        "AuthenticatedUserDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,username,birthday,education,gender,jobTitle," +
+            "surname,firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "userCredentials[username,userRoles[id,code,name,displayName,created,lastUpdated,deleted]]," +
+            "userRoles[id,code,name,displayName,created,lastUpdated,deleted],userGroups[id,code,name,displayName," +
+            "created,lastUpdated,deleted]",
         "AzureMapsApiKeyDTO" to "keyAzureMapsApiKey",
         "BingMapsApiKeyDTO" to "keyBingMapsApiKey",
         "CategoryComboDTO" to
@@ -175,6 +198,22 @@ internal class DTOFieldsShould {
         "DataValueDTO" to
             "deleted,dataElement,period,orgUnit,categoryOptionCombo,attributeOptionCombo,value,storedBy," +
             "created,lastUpdated,comment,followup",
+        "EnrollmentDTO without children" to
+            "deleted,enrollment,created,lastUpdated,createdAtClient,lastUpdatedAtClient,orgUnit,program," +
+            "enrollmentDate,incidentDate,completedDate,followup,status,trackedEntityInstance,geometry[type," +
+            "coordinates]",
+        "EventDTO" to
+            "deleted,event,enrollment,trackedEntityInstance,created,lastUpdated,createdAtClient,lastUpdatedAtClient," +
+            "program,programStage,orgUnit,eventDate,status,geometry[type,coordinates],completedDate,completedBy," +
+            "dueDate,attributeOptionCombo,assignedUser,notes[note,value,storedBy,storedDate],relationships[deleted," +
+            "relationship,relationshipName,created,lastUpdated,relationshipType," +
+            "from[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]," +
+            "to[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]]," +
+            "dataValues[created,lastUpdated,dataElement,storedBy,value,providedElsewhere]",
+        "EventDTO without children" to
+            "deleted,event,enrollment,trackedEntityInstance,created,lastUpdated,createdAtClient,lastUpdatedAtClient," +
+            "program,programStage,orgUnit,eventDate,status,geometry[type,coordinates],completedDate,completedBy," +
+            "dueDate,attributeOptionCombo,assignedUser",
         "EventFilterDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,program,programStage,description," +
             "eventQueryCriteria[followUp,organisationUnit,ouMode,assignedUserMode,order,displayColumnOrder," +
@@ -199,6 +238,11 @@ internal class DTOFieldsShould {
             "id,code,name,displayName,created,lastUpdated,deleted,sortOrder,optionSet[id],style[color,icon]",
         "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",
         "OptionSetDTO" to "id,code,name,displayName,created,lastUpdated,deleted,version,valueType",
+        "OrganisationUnitDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
+            "displayDescription,parent[id],path,openingDate,closedDate,level,programs[id],dataSets[id]," +
+            "ancestors[id,displayName],organisationUnitGroups[id,code,name,displayName,created,lastUpdated," +
+            "deleted,shortName,displayShortName]",
         "OrganisationUnitLevelDTO" to "id,code,name,displayName,created,lastUpdated,deleted,level",
         "ProgramDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +
@@ -278,6 +322,28 @@ internal class DTOFieldsShould {
             "orgunitScope,unique,inherit,fieldMask,style[color,icon],access[read,write,data[read,write]]," +
             "legendSets[id],formName,displayFormName,preferredSearchOperator,blockedSearchOperators," +
             "minCharactersToSearch",
+        "TrackedEntityInstanceDTO" to
+            "deleted,trackedEntityInstance,created,lastUpdated,createdAtClient,lastUpdatedAtClient,orgUnit," +
+            "trackedEntityType,geometry[type,coordinates],attributes[attribute,value,created,lastUpdated]," +
+            "relationships[deleted,relationship,relationshipName,created,lastUpdated,relationshipType," +
+            "from[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]," +
+            "to[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]]," +
+            "enrollments[deleted,enrollment,created,lastUpdated,createdAtClient,lastUpdatedAtClient,orgUnit,program," +
+            "enrollmentDate,incidentDate,completedDate,followup,status,trackedEntityInstance,geometry[type," +
+            "coordinates],events[deleted,event,enrollment,trackedEntityInstance,created,lastUpdated,createdAtClient," +
+            "lastUpdatedAtClient,program,programStage,orgUnit,eventDate,status,geometry[type,coordinates]," +
+            "completedDate,completedBy,dueDate,attributeOptionCombo,assignedUser,notes[note,value,storedBy," +
+            "storedDate],relationships[deleted,relationship,relationshipName,created,lastUpdated,relationshipType," +
+            "from[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]," +
+            "to[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]]," +
+            "dataValues[created,lastUpdated,dataElement,storedBy,value,providedElsewhere]],notes[note,value,storedBy," +
+            "storedDate],relationships[deleted,relationship,relationshipName,created,lastUpdated,relationshipType," +
+            "from[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]," +
+            "to[trackedEntityInstance[trackedEntityInstance],enrollment[enrollment],event[event]]]]," +
+            "programOwners[program,trackedEntityInstance,ownerOrgUnit]",
+        "TrackedEntityInstanceDTO without children" to
+            "deleted,trackedEntityInstance,created,lastUpdated,createdAtClient,lastUpdatedAtClient,orgUnit," +
+            "trackedEntityType,geometry[type,coordinates],attributes[attribute,value,created,lastUpdated]",
         "TrackedEntityInstanceFilter37DTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,program[id],description,sortOrder," +
             "enrollmentStatus,followup,enrollmentCreatedPeriod[periodFrom,periodTo],eventFilters[programStage," +
@@ -302,6 +368,17 @@ internal class DTOFieldsShould {
             "program[id],programStage[id],trackedEntityType[id],columns[dimension,dimensionType,program[id]," +
             "programStage[id],items[id],filter,repetition[indexes]],filters[dimension,dimensionType,program[id]," +
             "programStage[id],items[id],filter,repetition[indexes]],sorting[dimension,direction]",
+        "User37DTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,birthday,education,gender,jobTitle,surname," +
+            "firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "userCredentials[username,userRoles[id,code,name,displayName,created,lastUpdated,deleted]]," +
+            "organisationUnits[id,path],teiSearchOrganisationUnits[id,path],userGroups[id,code,name,displayName," +
+            "created,lastUpdated,deleted]",
+        "UserDTO" to
+            "id,code,name,displayName,created,lastUpdated,deleted,username,birthday,education,gender,jobTitle," +
+            "surname,firstName,introduction,employer,interests,languages,email,phoneNumber,nationality," +
+            "organisationUnits[id,path],teiSearchOrganisationUnits[id,path],userRoles[id,code,name,displayName," +
+            "created,lastUpdated,deleted],userGroups[id,code,name,displayName,created,lastUpdated,deleted]",
         "UserSettingsDTO" to "keyUiLocale,keyDbLocale",
         "ValidationRuleDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,shortName,displayShortName,description," +

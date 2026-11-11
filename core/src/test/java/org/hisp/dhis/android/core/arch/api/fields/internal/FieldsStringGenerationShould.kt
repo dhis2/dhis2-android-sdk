@@ -32,19 +32,6 @@ import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
-import org.hisp.dhis.android.network.enrollment.EnrollmentFields
-import org.hisp.dhis.android.network.event.EventFields
-import org.hisp.dhis.android.network.event.TrackedEntityDataValueFields
-import org.hisp.dhis.android.network.note.NoteFields
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitFields
-import org.hisp.dhis.android.network.organisationunit.OrganisationUnitGroupFields
-import org.hisp.dhis.android.network.relationship.RelationshipFields
-import org.hisp.dhis.android.network.relationship.RelationshipItemEnrollmentFields
-import org.hisp.dhis.android.network.relationship.RelationshipItemEventFields
-import org.hisp.dhis.android.network.relationship.RelationshipItemFields
-import org.hisp.dhis.android.network.relationship.RelationshipItemTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityAttributeValueFields
-import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstanceFields
 import org.hisp.dhis.android.network.tracker.NewEnrollmentFields
 import org.hisp.dhis.android.network.tracker.NewEventFields
 import org.hisp.dhis.android.network.tracker.NewNoteFields
@@ -56,10 +43,6 @@ import org.hisp.dhis.android.network.tracker.NewRelationshipItemTrackedEntityIns
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityAttributeValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueFields
 import org.hisp.dhis.android.network.tracker.NewTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.user.UserCredentialsFields
-import org.hisp.dhis.android.network.user.UserFields
-import org.hisp.dhis.android.network.user.UserGroupFields
-import org.hisp.dhis.android.network.user.UserRoleFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -101,8 +84,6 @@ class FieldsStringGenerationShould {
     private val fieldsClasses = listOf(
         AccessFields,
         DataAccessFields,
-        EnrollmentFields,
-        EventFields,
         NewEnrollmentFields,
         NewEventFields,
         NewNoteFields,
@@ -114,20 +95,5 @@ class FieldsStringGenerationShould {
         NewTrackedEntityAttributeValueFields,
         NewTrackedEntityDataValueFields,
         NewTrackedEntityInstanceFields,
-        NoteFields,
-        OrganisationUnitFields,
-        OrganisationUnitGroupFields,
-        RelationshipFields,
-        RelationshipItemEnrollmentFields,
-        RelationshipItemEventFields,
-        RelationshipItemFields,
-        RelationshipItemTrackedEntityInstanceFields,
-        TrackedEntityAttributeValueFields,
-        TrackedEntityDataValueFields,
-        TrackedEntityInstanceFields,
-        UserCredentialsFields,
-        UserFields,
-        UserGroupFields,
-        UserRoleFields,
     )
 }

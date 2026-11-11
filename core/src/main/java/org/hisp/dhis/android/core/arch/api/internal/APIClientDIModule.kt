@@ -27,11 +27,11 @@
  */
 package org.hisp.dhis.android.core.arch.api.internal
 
-import android.util.Log
 import io.ktor.client.HttpClient
 import okhttp3.OkHttpClient
 import org.hisp.dhis.android.core.D2Configuration
 import org.hisp.dhis.android.core.arch.api.authentication.internal.ParentAuthenticatorPlugin
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Module
 import org.koin.core.annotation.Singleton
@@ -53,7 +53,7 @@ internal class APIClientDIModule {
         return try {
             HttpServiceClientFactory.ktor(okHttpClient, d2Configuration, authenticator)
         } catch (d2Error: D2Error) {
-            Log.e("APIClientDIModule", d2Error.message!!)
+            D2Logger.e("APIClientDIModule", "Can't instantiate ktor: ${d2Error.errorCode()}")
             throw RuntimeException("Can't instantiate ktor")
         }
     }

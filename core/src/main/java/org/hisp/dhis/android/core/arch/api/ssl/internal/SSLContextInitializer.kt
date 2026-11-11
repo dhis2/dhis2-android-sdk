@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.api.ssl.internal
 
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import java.security.NoSuchAlgorithmException
 import javax.net.ssl.SSLContext
 
@@ -36,7 +36,7 @@ internal object SSLContextInitializer {
         try {
             SSLContext.getInstance("TLSv1.2")
         } catch (e: NoSuchAlgorithmException) {
-            Log.e(SSLContextInitializer::class.java.simpleName, e.toString())
+            D2Logger.e(SSLContextInitializer::class.java.simpleName, "TLS SSLContext not available", e)
         }
     }
 }

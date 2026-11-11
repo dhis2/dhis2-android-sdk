@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.common.internal
 
-import android.util.Log
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 
 internal object NativeLibraryLoader {
 
@@ -41,7 +41,7 @@ internal object NativeLibraryLoader {
                     System.loadLibrary("sqlcipher")
                     isLibraryLoaded = true
                 } catch (e: UnsatisfiedLinkError) {
-                    Log.e("NativeLibraryLoader", "Could not load SQLCipher library")
+                    D2Logger.e("NativeLibraryLoader", "Could not load SQLCipher library")
                 }
             }
         }

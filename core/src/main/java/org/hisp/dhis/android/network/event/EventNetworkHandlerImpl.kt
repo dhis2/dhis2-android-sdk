@@ -45,7 +45,6 @@ import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.koin.core.annotation.Singleton
 import java.net.HttpURLConnection.HTTP_CONFLICT
 
@@ -69,7 +68,7 @@ internal class EventNetworkHandlerImpl(
 
     override suspend fun getCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event> {
         val apiPayload = service.getEvents(
-            fields = EventFields.allFields,
+            includeChildren = true,
             orgUnit = getOrgunits(eventQuery)?.firstOrNull(),
             orgUnitMode = eventQuery.commonParams.ouMode.name,
             program = eventQuery.commonParams.program,
@@ -87,21 +86,21 @@ internal class EventNetworkHandlerImpl(
     override suspend fun getEventQueryCall(
         query: TrackedEntityInstanceQueryOnline,
     ): Payload<Event> {
-        return getEventQueryForSearchInternal(query, EventFields.allFields)
+        return getEventQueryForSearchInternal(query, includeChildren = true)
     }
 
     override suspend fun getEventQueryForSearch(
         query: TrackedEntityInstanceQueryOnline,
     ): List<Event> {
-        return getEventQueryForSearchInternal(query, EventFields.teiQueryFields).items
+        return getEventQueryForSearchInternal(query, includeChildren = false).items
     }
 
     private suspend fun getEventQueryForSearchInternal(
         query: TrackedEntityInstanceQueryOnline,
-        fields: Fields<Event>,
+        includeChildren: Boolean,
     ): Payload<Event> {
         val apiPayload = service.getEvents(
-            fields = fields,
+            includeChildren = includeChildren,
             orgUnit = getOrgunits(query)?.firstOrNull(),
             orgUnitMode = query.orgUnitMode?.toString(),
             status = query.eventStatus?.toString(),
@@ -129,7 +128,6 @@ internal class EventNetworkHandlerImpl(
     override suspend fun getRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {
         val payload = service.getEventSingle(
             eventUid = item.itemUid,
-            fields = EventFields.asRelationshipFields,
             orgUnitMode = OrganisationUnitMode.ACCESSIBLE.name,
         )
         return payload.mapItems { it.toDomain() }
@@ -141,7 +139,6 @@ internal class EventNetworkHandlerImpl(
     ): Event {
         return service.getEvent(
             eventUid = eventUid,
-            fields = EventFields.allFields,
             orgUnitMode = orgUnitMode,
         ).toDomain()
     }

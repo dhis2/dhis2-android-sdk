@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.mockwebserver
 
-import android.util.Log
 import io.ktor.http.HttpStatusCode
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -35,6 +34,7 @@ import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
 import org.hisp.dhis.android.core.arch.file.IFileReader
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
+import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -60,7 +60,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         try {
             server.start(port)
         } catch (_: IOException) {
-            Log.e(MOCKWEBSERVER, "Could not start server")
+            D2Logger.e(MOCKWEBSERVER, "Could not start server")
         }
     }
 
@@ -68,7 +68,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         try {
             server.shutdown()
         } catch (_: IOException) {
-            Log.e(MOCKWEBSERVER, "Could not shutdown server")
+            D2Logger.e(MOCKWEBSERVER, "Could not shutdown server")
         }
     }
 

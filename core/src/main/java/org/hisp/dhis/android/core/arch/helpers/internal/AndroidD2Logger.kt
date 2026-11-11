@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2025, University of Oslo
+ *  Copyright (c) 2004-2026, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,31 +25,22 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.relationship
+package org.hisp.dhis.android.core.arch.helpers.internal
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.core.relationship.Relationship
-import org.hisp.dhis.android.core.relationship.RelationshipItem
-import org.hisp.dhis.android.network.common.fields.BaseFields
-import org.hisp.dhis.android.network.common.fields.Fields
+import android.util.Log
 
-internal object RelationshipFields : BaseFields<Relationship>() {
-    const val RELATIONSHIP = "relationship"
-    const val RELATIONSHIP_NAME = "relationshipName"
-    private const val RELATIONSHIP_TYPE = "relationshipType"
-    private const val FROM = "from"
-    private const val TO = "to"
+internal object AndroidD2Logger : D2Logger {
+    override fun log(level: LogLevel, tag: String?, message: String) {
+        Log.println(priorityOf(level), tag, message)
+    }
 
-    // Used only for children appending, can't be used in query
-    const val ITEMS = "items"
-
-    val allFields = Fields.from(
-        fh.field(RELATIONSHIP),
-        fh.field(RELATIONSHIP_NAME),
-        fh.field(RELATIONSHIP_TYPE),
-        fh.field(BaseIdentifiableObject.CREATED),
-        fh.field(BaseIdentifiableObject.LAST_UPDATED),
-        fh.nestedField<RelationshipItem>(FROM).with(RelationshipItemFields.allFields),
-        fh.nestedField<RelationshipItem>(TO).with(RelationshipItemFields.allFields),
-    )
+    private fun priorityOf(level: LogLevel): Int {
+        return when (level) {
+            LogLevel.VERBOSE -> Log.VERBOSE
+            LogLevel.DEBUG -> Log.DEBUG
+            LogLevel.INFO -> Log.INFO
+            LogLevel.WARN -> Log.WARN
+            LogLevel.ERROR -> Log.ERROR
+        }
+    }
 }

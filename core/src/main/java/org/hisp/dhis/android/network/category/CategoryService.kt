@@ -34,7 +34,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 internal class CategoryService(private val client: HttpServiceClient) {
 
     suspend fun getCategories(
-        uids: Filter<Category>,
+        uids: Filter,
         paging: Boolean,
     ): CategoryPayload {
         return client.get {

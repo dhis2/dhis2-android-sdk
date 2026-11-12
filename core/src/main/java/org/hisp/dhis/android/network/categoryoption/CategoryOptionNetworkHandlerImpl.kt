@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.categoryoption
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionNetworkHandler
@@ -44,7 +45,7 @@ internal class CategoryOptionNetworkHandlerImpl(
 
     override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): PayloadJson<CategoryOption> {
         val apiPayload = service.getCategoryOptions(
-            "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
+            Filter.inUnchecked("categories.id", categoryOptionUids).generateString(),
             AccessFilters.DATA_READ,
             paging = false,
         )

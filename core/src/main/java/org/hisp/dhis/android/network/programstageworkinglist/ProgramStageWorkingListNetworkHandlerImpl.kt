@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.network.programstageworkinglist
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListNetworkHandler
 import org.hisp.dhis.android.network.common.filters.AccessFilters
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -43,15 +43,12 @@ internal class ProgramStageWorkingListNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
 ) : ProgramStageWorkingListNetworkHandler {
     private val service: ProgramStageWorkingListService = ProgramStageWorkingListService(httpServiceClient)
-    private val programUid = Field.create<ProgramStageWorkingList>(
-        ProgramStageWorkingListTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID,
-    )
 
     override suspend fun getProgramStageWorkingLists(uids: Set<String>): Payload<ProgramStageWorkingList> {
-        val accessDataReadFilter = AccessFilters.READ
+        val accessFilter = AccessFilters.READ
         val apiPayload = service.getProgramStageWorkingLists(
-            programUid.`in`(uids),
-            accessDataReadFilter,
+            Filter.`in`<ProgramStageWorkingListDTO>("program.id", uids),
+            accessFilter,
             false,
         )
         return apiPayload.mapNotNullItems(ProgramStageWorkingListDTO::toDomain)

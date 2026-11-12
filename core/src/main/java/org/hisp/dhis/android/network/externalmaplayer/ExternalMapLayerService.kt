@@ -34,7 +34,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 internal class ExternalMapLayerService(private val client: HttpServiceClient) {
 
     suspend fun getExternalMapLayers(
-        mapLayerPosition: Filter<ExternalMapLayerDTO>,
+        mapLayerPosition: Filter,
         paging: Boolean,
     ): ExternalMapLayerPayload {
         return client.get {

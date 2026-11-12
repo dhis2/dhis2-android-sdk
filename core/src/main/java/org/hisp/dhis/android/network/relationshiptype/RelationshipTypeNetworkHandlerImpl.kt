@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.network.relationshiptype
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.relationship.RelationshipType
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeNetworkHandler
 import org.hisp.dhis.android.network.common.filters.AccessFilters
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,13 +42,12 @@ internal class RelationshipTypeNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
 ) : RelationshipTypeNetworkHandler {
     private val service: RelationshipTypeService = RelationshipTypeService(httpServiceClient)
-    private val lastUpdatedField = Field.create<RelationshipType>(BaseIdentifiableObject.LAST_UPDATED)
 
     override suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType> {
-        val accessDataFilter = AccessFilters.DATA_READ
+        val accessFilter = AccessFilters.DATA_READ
         val apiPayload = service.getRelationshipTypes(
-            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { lastUpdatedField.gt(it) },
-            accessDataFilter,
+            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { Filter.gt<RelationshipTypeDTO>("lastUpdated", it) },
+            accessFilter,
             false,
         )
         return apiPayload.mapItems(RelationshipTypeDTO::toDomain)

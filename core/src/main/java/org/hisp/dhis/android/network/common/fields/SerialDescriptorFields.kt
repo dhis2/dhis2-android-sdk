@@ -32,6 +32,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.SerialKind
 import kotlinx.serialization.descriptors.StructureKind
 import kotlinx.serialization.descriptors.elementNames
+import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.json.JsonNames
 
 /**
@@ -42,6 +43,18 @@ internal fun SerialDescriptor.toFieldsString(exclude: Set<String> = emptySet()):
     val unknownNames = exclude - elementNames.toSet()
     require(unknownNames.isEmpty()) { "$unknownNames are not properties of ${nonNullSerialName()}" }
     return fieldsString(path = emptyList(), exclude = exclude)
+}
+
+/**
+ * Checks that [path], a property name or a dot-separated path to a nested one like `program.id`, exists in the DTO,
+ * so that request filters only use names the DTO maps.
+ */
+internal fun SerialDescriptor.requirePropertyPath(path: String) {
+    path.split(".").fold(this) { descriptor, name ->
+        val index = if (descriptor.isLeaf()) CompositeDecoder.UNKNOWN_NAME else descriptor.getElementIndex(name)
+        require(index != CompositeDecoder.UNKNOWN_NAME) { "'$path' is not a property path of ${nonNullSerialName()}" }
+        descriptor.getElementDescriptor(index).unwrapLists()
+    }
 }
 
 private fun SerialDescriptor.fieldsString(path: List<String>, exclude: Set<String> = emptySet()): String {

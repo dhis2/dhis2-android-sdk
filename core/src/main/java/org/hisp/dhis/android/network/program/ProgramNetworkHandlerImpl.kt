@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.program
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
@@ -36,7 +37,6 @@ import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.network.common.filters.AccessFilters
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -47,10 +47,10 @@ internal class ProgramNetworkHandlerImpl(
 ) : ProgramNetworkHandler {
     private val service = ProgramService(httpServiceClient)
     override suspend fun getPrograms(uids: Set<String>): Payload<Program> {
-        val accessDataReadFilter = AccessFilters.DATA_READ
+        val accessFilter = AccessFilters.DATA_READ
         val apiPayload = service.getPrograms(
-            Field.uid<Program>().`in`(uids),
-            accessDataReadFilter,
+            Filter.uidIn(uids),
+            accessFilter,
             false,
         )
         defaultCategoryComboManager.loadDefaults()

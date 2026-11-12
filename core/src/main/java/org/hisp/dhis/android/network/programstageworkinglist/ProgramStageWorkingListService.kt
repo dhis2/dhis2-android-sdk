@@ -34,8 +34,8 @@ import org.hisp.dhis.android.network.common.filters.Filter
 internal class ProgramStageWorkingListService(private val client: HttpServiceClient) {
 
     suspend fun getProgramStageWorkingLists(
-        uids: Filter<ProgramStageWorkingList>,
-        accessDataReadFilter: String,
+        uids: Filter,
+        accessFilter: String,
         paging: Boolean,
     ): ProgramStageWorkingListPayload {
         return client.get {
@@ -43,7 +43,7 @@ internal class ProgramStageWorkingListService(private val client: HttpServiceCli
             parameters {
                 fields<ProgramStageWorkingListDTO>()
                 filter(uids)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

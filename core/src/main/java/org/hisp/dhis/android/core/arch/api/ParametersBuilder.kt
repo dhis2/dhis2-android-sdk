@@ -42,7 +42,7 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
         parameters.add("key" to serializer<DTO>().descriptor.toFieldsString())
     }
 
-    internal fun <T> filter(filter: Filter<T>?) {
+    internal fun filter(filter: Filter?) {
         filter?.let {
             parameters.add("filter" to filter.generateString())
         }

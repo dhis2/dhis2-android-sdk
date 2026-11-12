@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.fileresource
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -41,7 +42,6 @@ import org.hisp.dhis.android.core.icon.CustomIcon
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityDataValue
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -64,7 +64,7 @@ internal class FileResourceNetworkHandlerImpl(
         query: UidsQuery,
     ): Payload<FileResource> {
         val apiPayload = service.getFileResources(
-            Field.uid<FileResource>().`in`(query.uids),
+            Filter.uidIn(query.uids),
             false,
         )
         return apiPayload.mapItems(FileResourceDTO::toDomain)

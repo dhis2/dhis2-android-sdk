@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.validationrule
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,7 +43,7 @@ internal class ValidationRuleNetworkHandlerImpl(
 ) : ValidationRuleNetworkHandler {
     private val service: ValidationRuleService = ValidationRuleService(httpServiceClient)
     override suspend fun getValidationRules(uids: Set<String>): Payload<ValidationRule> {
-        val uidsFilterStr = ObjectWithUid.uid.`in`(uids).generateString()
+        val uidsFilterStr = Filter.uidIn(uids).generateString()
         val apiPayload = service.getValidationRules(uidsFilterStr, false)
         return apiPayload.mapNotNullItems(ValidationRuleDTO::toDomain)
     }

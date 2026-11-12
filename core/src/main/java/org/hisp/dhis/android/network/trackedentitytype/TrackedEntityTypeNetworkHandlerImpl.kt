@@ -28,12 +28,12 @@
 
 package org.hisp.dhis.android.network.trackedentitytype
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityType
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityTypeNetworkHandler
 import org.hisp.dhis.android.network.common.filters.AccessFilters
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,11 +45,11 @@ internal class TrackedEntityTypeNetworkHandlerImpl(
     override suspend fun getTrackedEntityTypes(
         uids: Set<String>,
     ): Payload<TrackedEntityType> {
-        val accessDataReadFilter = AccessFilters.DATA_READ
+        val accessFilter = AccessFilters.DATA_READ
 
         val apiPayload = service.getTrackedEntityTypes(
-            Field.uid<TrackedEntityType>().`in`(uids),
-            accessDataReadFilter,
+            Filter.uidIn(uids),
+            accessFilter,
             false,
         )
         return apiPayload.mapItems(TrackedEntityTypeDTO::toDomain)

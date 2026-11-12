@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.network.organisationunit
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.organisationunit.OrganisationUnit
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.organisationunit.OrganisationUnitTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -46,7 +46,7 @@ internal class OrganisationUnitNetworkHandlerImpl(
 
     override suspend fun getOrganisationUnits(parentUid: String, pageSize: Int, page: Int): Payload<OrganisationUnit> {
         val apiPayload = service.getOrganisationUnits(
-            Field.create<OrganisationUnit>(OrganisationUnitTableInfo.Columns.PATH).like(parentUid),
+            Filter.like<OrganisationUnitDTO>("path", parentUid),
             ASC_ORDER,
             true,
             pageSize,
@@ -57,7 +57,7 @@ internal class OrganisationUnitNetworkHandlerImpl(
 
     override suspend fun getOrganisationUnitsByUid(uids: Set<String>): Payload<OrganisationUnit> {
         val apiPayload = service.getOrganisationUnits(
-            Field.uid<OrganisationUnit>().`in`(uids),
+            Filter.uidIn(uids),
             ASC_ORDER,
             false,
             uids.size,

@@ -33,8 +33,8 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ProgramService(private val client: HttpServiceClient) {
     suspend fun getPrograms(
-        uids: Filter<Program>,
-        accessDataReadFilter: String,
+        uids: Filter,
+        accessFilter: String,
         paging: Boolean,
     ): ProgramPayload {
         return client.get {
@@ -42,7 +42,7 @@ internal class ProgramService(private val client: HttpServiceClient) {
             parameters {
                 fields<ProgramDTO>()
                 filter(uids)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

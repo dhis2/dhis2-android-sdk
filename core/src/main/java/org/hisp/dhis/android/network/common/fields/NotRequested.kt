@@ -25,13 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.tracker
+package org.hisp.dhis.android.network.common.fields
 
-import org.hisp.dhis.android.core.relationship.NewTrackerImporterRelationshipItemEvent
-import org.hisp.dhis.android.network.common.fields.BaseFields
+import kotlinx.serialization.SerialInfo
 
-internal object NewRelationshipItemEventFields : BaseFields<NewTrackerImporterRelationshipItemEvent>() {
-    private const val EVENT = "event"
-
-    val event = fh.field(EVENT)
-}
+/**
+ * Marks a DTO property the SDK sends to the server but never reads from it, so the generated `fields` parameter
+ * leaves it out. Typical case: properties of the tracker DTOs that are only used to build the upload payload.
+ */
+@SerialInfo
+@Target(AnnotationTarget.PROPERTY)
+internal annotation class NotRequested

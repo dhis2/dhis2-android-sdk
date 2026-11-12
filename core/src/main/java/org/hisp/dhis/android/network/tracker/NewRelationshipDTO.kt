@@ -44,7 +44,6 @@ internal data class NewRelationshipDTO(
     val relationshipName: String?,
     val createdAt: DateStringDTO?,
     val updatedAt: DateStringDTO?,
-    val bidirectional: Boolean?,
     val from: NewRelationshipItemDTO?,
     val to: NewRelationshipItemDTO?,
 ) : BaseDeletableDataObjectDTO {
@@ -71,7 +70,6 @@ internal fun NewTrackerImporterRelationship.toDto(): NewRelationshipDTO {
         relationshipName = relationshipName,
         createdAt = createdAt?.toDto(),
         updatedAt = updatedAt?.toDto(),
-        bidirectional = bidirectional,
         from = from?.toDto(),
         to = to?.toDto(),
     )

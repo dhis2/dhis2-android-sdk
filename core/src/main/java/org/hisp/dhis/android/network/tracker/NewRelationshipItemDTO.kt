@@ -39,8 +39,6 @@ import org.hisp.dhis.android.core.relationship.RelationshipItemTrackedEntityInst
 
 @Serializable
 internal data class NewRelationshipItemDTO(
-    val relationship: String?,
-    val relationshipItemType: String?,
     val trackedEntity: NewRelationshipItemTrackedEntityDTO?,
     val enrollment: NewRelationshipItemEnrollmentDTO?,
     val event: NewRelationshipItemEventDTO?,
@@ -79,8 +77,6 @@ internal data class NewRelationshipItemDTO(
 
 internal fun NewTrackerImporterRelationshipItem.toDto(): NewRelationshipItemDTO {
     return NewRelationshipItemDTO(
-        relationship = relationship,
-        relationshipItemType = relationshipItemType?.name,
         trackedEntity = trackedEntity?.toDto(),
         enrollment = enrollment?.toDto(),
         event = event?.toDto(),

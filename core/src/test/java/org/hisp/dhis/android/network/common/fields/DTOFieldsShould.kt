@@ -69,6 +69,10 @@ import org.hisp.dhis.android.network.trackedentityinstance.TrackedEntityInstance
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilter37DTO
 import org.hisp.dhis.android.network.trackedentityinstancefilter.TrackedEntityInstanceFilterDTO
 import org.hisp.dhis.android.network.trackedentitytype.TrackedEntityTypeDTO
+import org.hisp.dhis.android.network.tracker.NewEnrollmentDTO
+import org.hisp.dhis.android.network.tracker.NewEventDTO
+import org.hisp.dhis.android.network.tracker.NewEventTrackedEntityDTO
+import org.hisp.dhis.android.network.tracker.NewTrackedEntityDTO
 import org.hisp.dhis.android.network.trackervisualization.TrackerVisualizationDTO
 import org.hisp.dhis.android.network.user.AuthenticatedUserDTO
 import org.hisp.dhis.android.network.user.User37DTO
@@ -117,6 +121,13 @@ internal class DTOFieldsShould {
         "IndicatorDTO" to fieldsOf<IndicatorDTO>(),
         "IndicatorTypeDTO" to fieldsOf<IndicatorTypeDTO>(),
         "LegendSetDTO" to fieldsOf<LegendSetDTO>(),
+        "NewEnrollmentDTO without children" to fieldsOf<NewEnrollmentDTO>(NewEnrollmentDTO.CHILDREN),
+        "NewEventDTO" to fieldsOf<NewEventDTO>(),
+        "NewEventDTO without children" to fieldsOf<NewEventDTO>(NewEventDTO.CHILDREN),
+        "NewEventTrackedEntityDTO" to fieldsOf<NewEventTrackedEntityDTO>(),
+        "NewTrackedEntityDTO" to fieldsOf<NewTrackedEntityDTO>(),
+        "NewTrackedEntityDTO for search" to fieldsOf<NewTrackedEntityDTO>(NewTrackedEntityDTO.SEARCH_EXCLUDED),
+        "NewTrackedEntityDTO without children" to fieldsOf<NewTrackedEntityDTO>(NewTrackedEntityDTO.CHILDREN),
         "OptionDTO" to fieldsOf<OptionDTO>(),
         "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
         "OptionSetDTO" to fieldsOf<OptionSetDTO>(),
@@ -234,6 +245,47 @@ internal class DTOFieldsShould {
         "LegendSetDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,symbolizer,legends[id,code,name," +
             "displayName,created,lastUpdated,deleted,startValue,endValue,color]",
+        "NewEnrollmentDTO without children" to
+            "deleted,enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,program,enrolledAt," +
+            "occurredAt,completedAt,followUp,status,trackedEntity,geometry[type,coordinates],attributeOptionCombo",
+        "NewEventDTO" to
+            "deleted,event,enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,program,programStage," +
+            "orgUnit,occurredAt,status,geometry[type,coordinates],completedAt,completedBy,scheduledAt," +
+            "attributeOptionCombo,assignedUser[uid],notes[deleted,note,value,storedBy,storedAt],dataValues[createdAt," +
+            "updatedAt,dataElement,createdBy[uid,username,firstName,surname],value,providedElsewhere],trackedEntity," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]",
+        "NewEventDTO without children" to
+            "deleted,event,enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,program,programStage," +
+            "orgUnit,occurredAt,status,geometry[type,coordinates],completedAt,completedBy,scheduledAt," +
+            "attributeOptionCombo,assignedUser[uid],trackedEntity",
+        "NewEventTrackedEntityDTO" to "event,trackedEntity",
+        "NewTrackedEntityDTO" to
+            "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
+            "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt],enrollments[deleted," +
+            "enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,program,enrolledAt,occurredAt," +
+            "completedAt,followUp,status,trackedEntity,geometry[type,coordinates],attributeOptionCombo," +
+            "events[deleted,event,enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,program," +
+            "programStage,orgUnit,occurredAt,status,geometry[type,coordinates],completedAt,completedBy,scheduledAt," +
+            "attributeOptionCombo,assignedUser[uid],notes[deleted,note,value,storedBy,storedAt],dataValues[createdAt," +
+            "updatedAt,dataElement,createdBy[uid,username,firstName,surname],value,providedElsewhere],trackedEntity," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]],notes[deleted,note,value,storedBy,storedAt]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]],programOwners[program,trackedEntity,orgUnit]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]",
+        "NewTrackedEntityDTO for search" to
+            "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
+            "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt],programOwners[program," +
+            "trackedEntity,orgUnit]",
+        "NewTrackedEntityDTO without children" to
+            "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
+            "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt]",
         "OptionDTO" to
             "id,code,name,displayName,created,lastUpdated,deleted,sortOrder,optionSet[id],style[color,icon]",
         "OptionGroupDTO" to "id,code,name,displayName,created,lastUpdated,deleted,optionSet[id],options[id]",

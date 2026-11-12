@@ -78,6 +78,18 @@ internal data class NewTrackedEntityDTO(
             relationships(relationships?.map { it.toDomain() })
         }.build()
     }
+
+    companion object {
+        /**
+         * Nested collections left out when only the tracked entity itself is needed, e.g. as a relationship item.
+         */
+        val CHILDREN = setOf("enrollments", "programOwners", "relationships")
+
+        /**
+         * Nested collections left out by the online search, which keeps the program owners.
+         */
+        val SEARCH_EXCLUDED = setOf("enrollments", "relationships")
+    }
 }
 
 internal fun NewTrackerImporterTrackedEntity.toDto(): NewTrackedEntityDTO {

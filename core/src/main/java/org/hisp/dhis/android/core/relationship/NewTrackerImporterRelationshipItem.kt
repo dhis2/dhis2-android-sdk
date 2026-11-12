@@ -28,8 +28,6 @@
 package org.hisp.dhis.android.core.relationship
 
 internal data class NewTrackerImporterRelationshipItem(
-    val relationship: String?,
-    val relationshipItemType: RelationshipConstraintType?,
     val trackedEntity: NewTrackerImporterRelationshipItemTrackedEntity?,
     val enrollment: NewTrackerImporterRelationshipItemEnrollment?,
     val event: NewTrackerImporterRelationshipItemEvent?,

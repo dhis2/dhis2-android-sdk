@@ -460,7 +460,6 @@ class NewTrackerImporterTrackedEntityPostStateManagerShould {
         relationshipName = null,
         createdAt = null,
         updatedAt = null,
-        bidirectional = null,
         from = null,
         to = null,
     )

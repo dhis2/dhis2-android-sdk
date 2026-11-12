@@ -66,10 +66,11 @@ internal class EventService(private val client: HttpServiceClient) {
         includeDeleted: Boolean,
         eventUid: String? = null,
     ): EventPayload {
+        val excludedFields = if (includeChildren) emptySet() else EventDTO.CHILDREN
         return client.get {
             url(EVENTS)
             parameters {
-                fields<EventDTO>(exclude = if (includeChildren) emptySet() else EventDTO.CHILDREN)
+                fields<EventDTO>(exclude = excludedFields)
                 attribute(ORG_UNIT, orgUnit)
                 attribute(OU_MODE, orgUnitMode)
                 attribute(STATUS, status)

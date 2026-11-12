@@ -32,17 +32,6 @@ import org.hisp.dhis.android.network.common.fields.AccessFields
 import org.hisp.dhis.android.network.common.fields.DataAccessFields
 import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.Property
-import org.hisp.dhis.android.network.tracker.NewEnrollmentFields
-import org.hisp.dhis.android.network.tracker.NewEventFields
-import org.hisp.dhis.android.network.tracker.NewNoteFields
-import org.hisp.dhis.android.network.tracker.NewRelationshipFields
-import org.hisp.dhis.android.network.tracker.NewRelationshipItemEnrollmentFields
-import org.hisp.dhis.android.network.tracker.NewRelationshipItemEventFields
-import org.hisp.dhis.android.network.tracker.NewRelationshipItemFields
-import org.hisp.dhis.android.network.tracker.NewRelationshipItemTrackedEntityInstanceFields
-import org.hisp.dhis.android.network.tracker.NewTrackedEntityAttributeValueFields
-import org.hisp.dhis.android.network.tracker.NewTrackedEntityDataValueFields
-import org.hisp.dhis.android.network.tracker.NewTrackedEntityInstanceFields
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,16 +73,5 @@ class FieldsStringGenerationShould {
     private val fieldsClasses = listOf(
         AccessFields,
         DataAccessFields,
-        NewEnrollmentFields,
-        NewEventFields,
-        NewNoteFields,
-        NewRelationshipFields,
-        NewRelationshipItemEnrollmentFields,
-        NewRelationshipItemEventFields,
-        NewRelationshipItemFields,
-        NewRelationshipItemTrackedEntityInstanceFields,
-        NewTrackedEntityAttributeValueFields,
-        NewTrackedEntityDataValueFields,
-        NewTrackedEntityInstanceFields,
     )
 }

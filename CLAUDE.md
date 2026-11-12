@@ -138,3 +138,8 @@ The active path is controlled by `TrackerImporterVersion` in sync settings.
 - `internal` Kotlin visibility is used extensively to separate public API from implementation
 - New fields added to existing models generally require: model change + `TableInfo` column addition + migration SQL file + handler/store update + API dump update
 - Jira tickets referenced in commit messages follow the `ANDROSDK-XXXX` format
+
+## Change Scope
+
+- Make the smallest change that delivers the task, as long as functionality, backward compatibility and security are guaranteed. Do not add improvements, refactors, abstractions or extra hardening beyond what the task asks; suggest them as follow-ups instead.
+- Prefer extending existing files over creating new ones: every new file has a high maintenance cost. If a new file (production or test code) is needed, ask the user first and explain why.

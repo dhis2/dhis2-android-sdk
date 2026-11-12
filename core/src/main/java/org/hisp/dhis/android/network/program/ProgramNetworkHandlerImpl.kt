@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.program.Program
 import org.hisp.dhis.android.core.program.internal.ProgramNetworkHandler
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
 import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
@@ -47,7 +47,7 @@ internal class ProgramNetworkHandlerImpl(
 ) : ProgramNetworkHandler {
     private val service = ProgramService(httpServiceClient)
     override suspend fun getPrograms(uids: Set<String>): Payload<Program> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        val accessDataReadFilter = AccessFilters.DATA_READ
         val apiPayload = service.getPrograms(
             Field.uid<Program>().`in`(uids),
             accessDataReadFilter,

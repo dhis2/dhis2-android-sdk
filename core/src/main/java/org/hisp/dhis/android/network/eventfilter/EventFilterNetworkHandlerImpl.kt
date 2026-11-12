@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.event.EventFilter
 import org.hisp.dhis.android.core.event.internal.EventFilterNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.event.EventFilterTableInfo
 import org.koin.core.annotation.Singleton
@@ -46,7 +46,7 @@ internal class EventFilterNetworkHandlerImpl(
     override suspend fun getEventFilters(
         partitionUids: Set<String>,
     ): PayloadJson<EventFilter> {
-        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+        val accessDataReadFilter = AccessFilters.READ
         val apiPayload = service.getEventFilters(
             Field.create<EventFilter>(EventFilterTableInfo.Columns.PROGRAM).`in`(partitionUids),
             accessDataReadFilter,

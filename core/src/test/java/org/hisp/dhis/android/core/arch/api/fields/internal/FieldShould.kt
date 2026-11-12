@@ -31,7 +31,6 @@ import com.google.common.truth.Truth
 import nl.jqno.equalsverifier.EqualsVerifier
 import nl.jqno.equalsverifier.Warning
 import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.NestedField
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -50,35 +49,5 @@ class FieldShould {
         EqualsVerifier.forClass(Field.create<Any>("").javaClass)
             .suppress(Warning.NULL_FIELDS)
             .verify()
-    }
-
-    @Test
-    fun conform_nested_field_to_contract() {
-        EqualsVerifier.forClass(NestedField.create<Any, Any>("").javaClass)
-            .suppress(Warning.NULL_FIELDS)
-            .verify()
-    }
-
-    @Test
-    fun return_nested_field_children_when_they_are_added_in_a_new_variable() {
-        val fieldOne = Field.create<String>("fieldOne")
-        val fieldTwo = Field.create<String>("fieldTwo")
-
-        val nestedField = NestedField.create<String, String>("test_nested_field")
-        val nestedFieldWithChildren: NestedField<String, *> = nestedField.with(fieldOne, fieldTwo)
-
-        Truth.assertThat(nestedField.children).isEmpty()
-        Truth.assertThat(nestedField).isNotEqualTo(nestedFieldWithChildren)
-        Truth.assertThat(
-            nestedFieldWithChildren.children.contains(fieldOne) &&
-                nestedFieldWithChildren.children.contains(fieldTwo),
-        ).isTrue()
-    }
-
-    @Test
-    fun no_throw_exceptions_when_nested_fields_have_null_arguments() {
-        val nestedField: NestedField<String, *> =
-            NestedField.create<String, Any>("test_nested_field")
-        Truth.assertThat(nestedField.with().children).isEmpty()
     }
 }

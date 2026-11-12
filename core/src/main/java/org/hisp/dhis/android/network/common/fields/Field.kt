@@ -32,7 +32,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.network.common.filters.InFilter
 import org.hisp.dhis.android.network.common.filters.SingleValueFilter
 
-internal data class Field<Parent> internal constructor(override val name: String) : Property<Parent> {
+internal data class Field<Parent> internal constructor(val name: String) {
 
     fun <V> eq(value: V): Filter<Parent> {
         return SingleValueFilter.eq(this, value.toString())

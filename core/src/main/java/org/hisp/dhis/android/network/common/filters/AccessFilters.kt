@@ -25,19 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.network.common.fields
 
-import org.hisp.dhis.android.core.common.DataAccess
+package org.hisp.dhis.android.network.common.filters
 
-internal object DataAccessFields : BaseFields<DataAccess>() {
-    private const val READ = "read"
-    private const val WRITE = "write"
-
-    val read = fh.field(READ)
-    val write = fh.field(WRITE)
-
-    val allFields = Fields.from(
-        read,
-        write,
-    )
+/**
+ * Filters that limit metadata requests to objects the user can read (metadata access) or whose data the user can
+ * read (data access).
+ */
+internal object AccessFilters {
+    const val READ = "access.read:eq:true"
+    const val DATA_READ = "access.data.read:eq:true"
 }

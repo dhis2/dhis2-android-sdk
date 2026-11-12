@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageNetworkHandler
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,8 +43,7 @@ internal class ProgramStageNetworkHandlerImpl(
     private val service = ProgramStageService(httpServiceClient)
 
     override suspend fun getProgramStages(uids: Set<String>): Payload<ProgramStage> {
-        val accessDataReadFilter =
-            "access.data." + DataAccessFields.read.eq(true).generateString()
+        val accessDataReadFilter = AccessFilters.DATA_READ
         val programUidsFilterStr =
             "program." + ObjectWithUid.uid.`in`(uids).generateString()
         val apiPayload = service.getProgramStages(

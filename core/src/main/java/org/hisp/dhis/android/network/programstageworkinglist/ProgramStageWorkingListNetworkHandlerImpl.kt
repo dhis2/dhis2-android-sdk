@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
 import org.hisp.dhis.android.core.programstageworkinglist.internal.ProgramStageWorkingListNetworkHandler
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.programstageworkinglist.ProgramStageWorkingListTableInfo
 import org.koin.core.annotation.Singleton
@@ -48,7 +48,7 @@ internal class ProgramStageWorkingListNetworkHandlerImpl(
     )
 
     override suspend fun getProgramStageWorkingLists(uids: Set<String>): Payload<ProgramStageWorkingList> {
-        val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+        val accessDataReadFilter = AccessFilters.READ
         val apiPayload = service.getProgramStageWorkingLists(
             programUid.`in`(uids),
             accessDataReadFilter,

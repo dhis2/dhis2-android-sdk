@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
 import org.koin.core.annotation.Singleton
@@ -46,7 +46,7 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     private val dhis2VersionManager: DHISVersionManager,
 ) : TrackedEntityInstanceFilterNetworkHandler {
     private val service: TrackedEntityInstanceFilterService = TrackedEntityInstanceFilterService(httpClient)
-    val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
+    val accessDataReadFilter = AccessFilters.READ
     private val programUid = Field.create<TrackedEntityInstanceFilter>(
         TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID,
     )

@@ -32,7 +32,7 @@ import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.dataset.DataSet
 import org.hisp.dhis.android.core.dataset.internal.DataSetNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
@@ -44,7 +44,7 @@ internal class DataSetNetworkHandlerImpl(
     private val service: DataSetService = DataSetService(httpClient)
 
     override suspend fun getDataSets(dataSetUids: Set<String>): PayloadJson<DataSet> {
-        val accessDataReadFilter = "access.data." + DataAccessFields.read.eq(true).generateString()
+        val accessDataReadFilter = AccessFilters.DATA_READ
         val apiPayload = service.getDataSets(
             Field.uid<DataSet>().`in`(dataSetUids),
             accessDataReadFilter,

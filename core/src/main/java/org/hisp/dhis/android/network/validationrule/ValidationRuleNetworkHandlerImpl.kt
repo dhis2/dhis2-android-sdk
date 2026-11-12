@@ -30,7 +30,6 @@ package org.hisp.dhis.android.network.validationrule
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.validation.ValidationRule
 import org.hisp.dhis.android.core.validation.internal.ValidationRuleNetworkHandler
@@ -51,7 +50,6 @@ internal class ValidationRuleNetworkHandlerImpl(
     override suspend fun getDataSetValidationRuleUids(uid: String): Payload<ObjectWithUid> {
         val apiPayload = service.getDataSetValidationRuleUids(
             uid,
-            BaseIdentifiableObject.UID,
             false,
         )
         return apiPayload.mapItems(ObjectWithUidDTO::toDomain)

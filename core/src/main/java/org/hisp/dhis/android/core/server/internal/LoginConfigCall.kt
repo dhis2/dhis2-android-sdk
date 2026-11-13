@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.server.LoginConfig
 import org.hisp.dhis.android.core.server.OauthConfig
-import org.hisp.dhis.android.core.systeminfo.DHISVersion
+import org.hisp.dhis.android.core.systeminfo.DHISPatchVersion
 import org.hisp.dhis.android.core.systeminfo.internal.PingNetworkHandler
 import org.hisp.dhis.android.core.user.internal.LogInExceptions
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
@@ -79,8 +79,7 @@ internal class LoginConfigCall(
     }
 
     private suspend fun tryFetchOauthConfig(serverUrl: String, apiVersion: String?): OauthConfig? {
-        val serverVersion = apiVersion?.let { DHISVersion.getValue(it) }
-        if (serverVersion == null || serverVersion < MIN_OAUTH_VERSION) {
+        if (apiVersion == null || !DHISPatchVersion.isGreaterOrEqualThanPatch(apiVersion, MIN_OAUTH_VERSION)) {
             return null
         }
 
@@ -119,6 +118,6 @@ internal class LoginConfigCall(
     }
 
     companion object {
-        private val MIN_OAUTH_VERSION = DHISVersion.V2_43
+        private val MIN_OAUTH_VERSION = DHISPatchVersion.V2_42_7
     }
 }

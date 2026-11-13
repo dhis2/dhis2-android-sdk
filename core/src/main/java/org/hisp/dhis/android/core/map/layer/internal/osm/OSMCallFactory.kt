@@ -57,6 +57,7 @@ internal class OSMCallFactory(
                 .external(false)
                 .imageUrl(basemap.imageUrl)
                 .subdomains(basemap.subdomains)
+                .mapService(basemap.mapService)
                 .subdomainPlaceholder(basemap.subdomainPlaceholder)
                 .imageryProviders(
                     listOf(

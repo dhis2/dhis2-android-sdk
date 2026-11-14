@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.trackedentityattribute
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttribute
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityAttributeNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,7 +43,7 @@ internal class TrackedEntityAttributeNetworkHandlerImpl(
 
     override suspend fun getTrackedEntityAttributes(partitionUids: Set<String>): PayloadJson<TrackedEntityAttribute> {
         val apiPayload = service.getTrackedEntityAttributes(
-            Field.uid<TrackedEntityAttribute>().`in`(partitionUids),
+            Filter.uidIn(partitionUids),
             false,
         )
         return apiPayload.mapItems(TrackedEntityAttributeDTO::toDomain)

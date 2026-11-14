@@ -27,19 +27,12 @@
  */
 package org.hisp.dhis.android.core.common
 
-import org.hisp.dhis.android.core.common.BaseIdentifiableObject.Companion.UID
-import org.hisp.dhis.android.network.common.fields.Field
-import org.hisp.dhis.android.network.common.fields.Field.Companion.create
-
 data class ObjectWithUid(
     val uid: String,
 ) : ObjectWithUidInterface {
     override fun uid(): String = uid
 
     companion object {
-        @JvmField
-        internal val uid: Field<ObjectWithUid> = Field.create(UID)
-
         @JvmStatic
         fun create(uid: String): ObjectWithUid = ObjectWithUid(uid)
 

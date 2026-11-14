@@ -28,12 +28,13 @@
 
 package org.hisp.dhis.android.network.categoryoption
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.internal.CategoryOptionNetworkHandler
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -44,8 +45,8 @@ internal class CategoryOptionNetworkHandlerImpl(
 
     override suspend fun getCategoryOptions(categoryOptionUids: Set<String>): PayloadJson<CategoryOption> {
         val apiPayload = service.getCategoryOptions(
-            "categories." + ObjectWithUid.uid.`in`(categoryOptionUids).generateString(),
-            "access.data." + DataAccessFields.read.eq(true).generateString(),
+            Filter.inUnchecked("categories.id", categoryOptionUids).generateString(),
+            AccessFilters.DATA_READ,
             paging = false,
         )
         return apiPayload.mapItems(CategoryOptionDTO::toDomain)

@@ -34,7 +34,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class LegendSetService(private val client: HttpServiceClient) {
     suspend fun getLegendSets(
-        uids: Filter<LegendSet>,
+        uids: Filter,
         paging: Boolean,
     ): LegendSetPayload {
         return client.get {

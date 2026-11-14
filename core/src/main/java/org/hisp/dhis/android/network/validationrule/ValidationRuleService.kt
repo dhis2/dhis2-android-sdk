@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.network.validationrule
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
+import org.hisp.dhis.android.network.common.dto.ObjectWithUidDTO
 
 internal class ValidationRuleService(private val client: HttpServiceClient) {
     suspend fun getValidationRules(
@@ -46,14 +47,13 @@ internal class ValidationRuleService(private val client: HttpServiceClient) {
 
     suspend fun getDataSetValidationRuleUids(
         dataSetUid: String,
-        id: String,
         paging: Boolean,
     ): ValidationRuleDatasetPayload {
         return client.get {
             url("validationRules")
             parameters {
                 attribute("dataSet", dataSetUid)
-                attribute("fields", id)
+                fields<ObjectWithUidDTO>()
                 paging(paging)
             }
         }

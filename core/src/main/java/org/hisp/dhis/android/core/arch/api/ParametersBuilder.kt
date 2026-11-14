@@ -29,16 +29,11 @@
 package org.hisp.dhis.android.core.arch.api
 
 import kotlinx.serialization.serializer
-import org.hisp.dhis.android.network.common.fields.Fields
 import org.hisp.dhis.android.network.common.fields.toFieldsString
 import org.hisp.dhis.android.network.common.filters.Filter
 
 @Suppress("TooManyFunctions")
 class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
-    internal fun <T> fields(fields: Fields<T>) {
-        parameters.add("fields" to fields.generateString())
-    }
-
     internal inline fun <reified DTO> fields(exclude: Set<String> = emptySet()) {
         parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString(exclude))
     }
@@ -47,7 +42,7 @@ class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
         parameters.add("key" to serializer<DTO>().descriptor.toFieldsString())
     }
 
-    internal fun <T> filter(filter: Filter<T>?) {
+    internal fun filter(filter: Filter?) {
         filter?.let {
             parameters.add("filter" to filter.generateString())
         }

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.systeminfo.DHISVersion
@@ -35,8 +36,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstanceFilter
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceFilterNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceFilterTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -46,25 +46,22 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     private val dhis2VersionManager: DHISVersionManager,
 ) : TrackedEntityInstanceFilterNetworkHandler {
     private val service: TrackedEntityInstanceFilterService = TrackedEntityInstanceFilterService(httpClient)
-    val accessDataReadFilter = "access." + DataAccessFields.read.eq(true).generateString()
-    private val programUid = Field.create<TrackedEntityInstanceFilter>(
-        TrackedEntityInstanceFilterTableInfo.Columns.PROGRAM + "." + BaseIdentifiableObject.UID,
-    )
+    val accessFilter = AccessFilters.READ
 
     override suspend fun getTrackedEntityInstanceFilters(
         partitionUids: Set<String>,
     ): PayloadJson<TrackedEntityInstanceFilter> {
         return if (dhis2VersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
             val apiPayload = service.getTrackedEntityInstanceFilters(
-                programUid.`in`(partitionUids),
-                accessDataReadFilter,
+                Filter.`in`<TrackedEntityInstanceFilterDTO>("program.id", partitionUids),
+                accessFilter,
                 false,
             )
             apiPayload.mapItems(TrackedEntityInstanceFilterDTO::toDomain)
         } else {
             val apiPayload = service.getTrackedEntityInstanceFilters37(
-                programUid.`in`(partitionUids),
-                accessDataReadFilter,
+                Filter.`in`<TrackedEntityInstanceFilterDTO>("program.id", partitionUids),
+                accessFilter,
                 false,
             )
             apiPayload.mapItems(TrackedEntityInstanceFilter37DTO::toDomain)

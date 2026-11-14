@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.optionset
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.option.OptionSet
 import org.hisp.dhis.android.core.option.internal.OptionSetNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
@@ -42,7 +42,7 @@ internal class OptionSetNetworkHandlerImpl(
 
     override suspend fun getOptionSets(optionSetUids: Set<String>): PayloadJson<OptionSet> {
         val apiPayload = service.getOptionSets(
-            Field.uid<OptionSet>().`in`(optionSetUids),
+            Filter.uidIn(optionSetUids),
             false,
         )
         return apiPayload.mapItems(OptionSetDTO::toDomain)

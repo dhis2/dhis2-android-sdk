@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.network.common.fields.Field
+import com.google.common.truth.Truth.assertThat
+import kotlinx.serialization.Serializable
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -36,12 +38,49 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class FilterShould {
 
-    @Test
-    fun return_correct_values_when_create_field_filter() {
-        val field: Field<*> = Field.create<Any>("test_field_name")
-        val filter = field.gt("test_field_filter_operator")
+    @Serializable
+    private data class ReferenceDTO(val id: String)
 
-        Truth.assertThat(filter.operator).isEqualTo("gt")
-        Truth.assertThat(filter.values.contains("test_field_filter_operator")).isTrue()
+    @Serializable
+    private data class SampleDTO(
+        val isDefault: Boolean?,
+        val lastUpdated: String?,
+        val path: String?,
+        val program: ReferenceDTO?,
+        val programs: List<ReferenceDTO>?,
+    )
+
+    @Test
+    fun generate_single_value_filters() {
+        assertThat(Filter.eq<SampleDTO>("isDefault", true).generateString()).isEqualTo("isDefault:eq:true")
+        assertThat(Filter.gt<SampleDTO>("lastUpdated", "2024-01-01").generateString())
+            .isEqualTo("lastUpdated:gt:2024-01-01")
+        assertThat(Filter.like<SampleDTO>("path", "uid1").generateString()).isEqualTo("path:like:uid1")
+    }
+
+    @Test
+    fun generate_in_filters() {
+        assertThat(Filter.`in`<SampleDTO>("program.id", listOf("uid1", "uid2")).generateString())
+            .isEqualTo("program.id:in:[uid1,uid2]")
+        assertThat(Filter.`in`<SampleDTO>("program.id", emptyList()).generateString()).isEqualTo("program.id:in:[]")
+        assertThat(Filter.uidIn(listOf("uid1", "uid2")).generateString()).isEqualTo("id:in:[uid1,uid2]")
+        assertThat(Filter.inUnchecked("categories.id", listOf("uid1")).generateString())
+            .isEqualTo("categories.id:in:[uid1]")
+    }
+
+    @Test
+    fun accept_paths_through_lists() {
+        assertThat(Filter.`in`<SampleDTO>("programs.id", listOf("uid1")).generateString())
+            .isEqualTo("programs.id:in:[uid1]")
+    }
+
+    @Test
+    fun reject_fields_that_are_not_dto_properties() {
+        listOf("isdefault", "program.uid", "path.id", "categories.id").forEach { field ->
+            val error = assertThrows(IllegalArgumentException::class.java) {
+                Filter.`in`<SampleDTO>(field, listOf("uid1"))
+            }
+            assertThat(error.message).contains("'$field'")
+        }
     }
 }

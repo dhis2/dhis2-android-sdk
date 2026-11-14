@@ -35,7 +35,7 @@ internal class OrganisationUnitService(private val client: HttpServiceClient) {
 
     @Suppress("LongParameterList")
     suspend fun getOrganisationUnits(
-        filter: Filter<OrganisationUnit>,
+        filter: Filter,
         order: String,
         paging: Boolean,
         pageSize: Int,

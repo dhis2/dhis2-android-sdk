@@ -33,7 +33,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class OptionSetService(private val client: HttpServiceClient) {
     suspend fun getOptionSets(
-        filter: Filter<OptionSet>,
+        filter: Filter,
         paging: Boolean,
     ): OptionSetPayload {
         return client.get {

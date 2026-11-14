@@ -33,9 +33,9 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class DataElementService(private val client: HttpServiceClient) {
     suspend fun getDataElements(
-        uids: Filter<DataElement>,
-        lastUpdated: Filter<DataElement>?,
-        accessReadFilter: String,
+        uids: Filter,
+        lastUpdated: Filter?,
+        accessFilter: String,
         paging: Boolean,
     ): DataElementPayload {
         return client.get {
@@ -44,7 +44,7 @@ internal class DataElementService(private val client: HttpServiceClient) {
                 fields<DataElementDTO>()
                 filter(uids)
                 filter(lastUpdated)
-                attribute("filter", accessReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

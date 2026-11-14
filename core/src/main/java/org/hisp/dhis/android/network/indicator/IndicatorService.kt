@@ -33,8 +33,8 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class IndicatorService(private val client: HttpServiceClient) {
     suspend fun getIndicators(
-        lastUpdated: Filter<Indicator>?,
-        uids: Filter<Indicator>,
+        lastUpdated: Filter?,
+        uids: Filter,
         paging: Boolean,
     ): IndicatorPayload {
         return client.get {

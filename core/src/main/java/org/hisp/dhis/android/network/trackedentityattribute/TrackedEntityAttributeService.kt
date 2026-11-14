@@ -33,7 +33,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class TrackedEntityAttributeService(private val client: HttpServiceClient) {
     suspend fun getTrackedEntityAttributes(
-        idFilter: Filter<TrackedEntityAttribute>,
+        idFilter: Filter,
         paging: Boolean,
     ): TrackedEntityAttributePayload {
         return client.get {

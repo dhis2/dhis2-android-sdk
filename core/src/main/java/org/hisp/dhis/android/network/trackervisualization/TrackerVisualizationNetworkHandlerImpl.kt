@@ -34,7 +34,7 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.hisp.dhis.android.core.visualization.TrackerVisualization
 import org.hisp.dhis.android.core.visualization.internal.TrackerVisualizationNetworkHandler
 import org.hisp.dhis.android.network.common.PayloadJson
-import org.hisp.dhis.android.network.common.fields.AccessFields
+import org.hisp.dhis.android.network.common.filters.AccessFilters
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -45,7 +45,7 @@ internal class TrackerVisualizationNetworkHandlerImpl(
     private val service = TrackerVisualizationService(httpClient)
 
     override suspend fun getTrackerVisualizations(partitionUids: Set<String>): Payload<TrackerVisualization> {
-        val accessFilter = "access." + AccessFields.read.eq(true).generateString()
+        val accessFilter = AccessFilters.READ
         val visualizations =
             if (dhis2VersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
                 // Workaround for DHIS2-16746. Request visualizations using the entity endpoint.

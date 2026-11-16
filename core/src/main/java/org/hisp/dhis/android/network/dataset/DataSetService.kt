@@ -33,8 +33,8 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class DataSetService(private val client: HttpServiceClient) {
     suspend fun getDataSets(
-        uids: Filter<DataSet>,
-        accessDataReadFilter: String,
+        uids: Filter,
+        accessFilter: String,
         paging: Boolean,
     ): DataSetPayload {
         return client.get {
@@ -42,7 +42,7 @@ internal class DataSetService(private val client: HttpServiceClient) {
             parameters {
                 fields<DataSetDTO>()
                 filter(uids)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

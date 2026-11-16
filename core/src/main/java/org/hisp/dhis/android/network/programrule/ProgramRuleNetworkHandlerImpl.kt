@@ -28,6 +28,8 @@
 
 package org.hisp.dhis.android.network.programrule
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.common.ObjectWithUid
@@ -42,7 +44,7 @@ internal class ProgramRuleNetworkHandlerImpl(
     private val service = ProgramRuleService(httpServiceClient)
     override suspend fun getProgramRules(programUids: Set<String>): Payload<ProgramRule> {
         val programUidsFilterStr =
-            "program." + ObjectWithUid.uid.`in`(programUids).generateString()
+            Filter.`in`(FilterPath.PROGRAM_RULE_PROGRAM, programUids).generateString()
         val apiPayload = service.getProgramRules(
             programUidsFilterStr,
             false,

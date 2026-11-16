@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.network.option
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.option.Option
@@ -41,7 +43,7 @@ internal class OptionNetworkHandlerImpl(
     private val service: OptionService = OptionService(httpClient)
 
     override suspend fun getOptions(optionUids: Set<String>, page: Int, pageSize: Int): PayloadJson<Option> {
-        val optionSetUidsFilterStr = "optionSet." + ObjectWithUid.uid.`in`(optionUids).generateString()
+        val optionSetUidsFilterStr = Filter.`in`(FilterPath.OPTION_OPTION_SET, optionUids).generateString()
         val apiPayload = service.getOptions(optionSetUidsFilterStr, true, page, pageSize)
         return apiPayload.mapItems(OptionDTO::toDomain)
     }

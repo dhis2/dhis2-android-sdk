@@ -50,7 +50,7 @@ internal class FileResourceService(private val client: HttpServiceClient) {
     }
 
     suspend fun getFileResources(
-        fileResources: Filter<FileResource>,
+        fileResources: Filter,
         paging: Boolean,
     ): FileResourcePayload {
         return client.get {

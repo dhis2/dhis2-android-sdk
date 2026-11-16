@@ -34,7 +34,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 internal class ExpressionDimensionItemService(private val client: HttpServiceClient) {
 
     suspend fun getExpressionDimensionItems(
-        uids: Filter<ExpressionDimensionItem>,
+        uids: Filter,
         paging: Boolean,
     ): ExpressionDimensionItemPayload {
         return client.get {

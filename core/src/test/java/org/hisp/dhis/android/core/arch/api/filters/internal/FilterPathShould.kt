@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,53 +25,26 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.android.core.arch.api.fields.internal
+
+package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.network.common.fields.AccessFields
-import org.hisp.dhis.android.network.common.fields.DataAccessFields
-import org.hisp.dhis.android.network.common.fields.Fields
-import org.hisp.dhis.android.network.common.fields.Property
-import org.junit.Ignore
+import org.hisp.dhis.android.network.common.fields.requirePropertyPath
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Ignore("Test for fields string generation. Only to be executed on demand")
 @RunWith(JUnit4::class)
-class FieldsStringGenerationShould {
+class FilterPathShould {
 
     @Test
-    fun generate_not_empty_string() {
-        val sortedFieldsClasses = fieldsClasses.sortedBy { it::class.simpleName }
-
-        sortedFieldsClasses.forEach { fieldsClass ->
-            fieldsClass::class.members
-                .filter { it.returnType.toString().contains("Fields") }
-                .forEach { member ->
-                    val fieldInstance = try {
-                        member.call(fieldsClass) as? Fields<*>
-                    } catch (e: Exception) {
-                        null
-                    }
-
-                    fieldInstance?.let { field ->
-                        val sortedFields = field.fields.sortedBy { it.name }
-
-                        @Suppress("UNCHECKED_CAST")
-                        val sortedField = Fields(sortedFields as List<Property<Any>>)
-
-                        val generatedString = sortedField.generateString()
-                        println("${fieldsClass::class.simpleName}.${member.name}: $generatedString")
-
-                        assertThat(generatedString).isNotEmpty()
-                    }
-                }
+    fun match_a_property_path_of_their_dto() {
+        val errors = FilterPath.entries.mapNotNull { filterPath ->
+            runCatching { filterPath.dto?.descriptor?.requirePropertyPath(filterPath.path) }
+                .exceptionOrNull()
+                ?.let { "${filterPath.name}: ${it.message}" }
         }
+        assertThat(errors).isEmpty()
     }
-
-    private val fieldsClasses = listOf(
-        AccessFields,
-        DataAccessFields,
-    )
 }

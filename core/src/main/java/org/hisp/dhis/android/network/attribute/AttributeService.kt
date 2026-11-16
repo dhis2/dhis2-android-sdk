@@ -34,7 +34,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class AttributeService(private val client: HttpServiceClient) {
     suspend fun getAttributes(
-        uids: Filter<Attribute>,
+        uids: Filter,
         paging: Boolean,
     ): AttributePayload {
         return client.get {

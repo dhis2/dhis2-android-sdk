@@ -25,13 +25,34 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.common.filters
 
-import org.hisp.dhis.android.network.common.fields.Field
+import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 
-internal interface Filter<T> {
-    val field: Field<T>
-    val operator: String
-    val values: Collection<String>
-    fun generateString(): String
+/**
+ * A `filter` request parameter, generated as `field:operator:value`. The field is a declared [FilterPath], so it is
+ * checked against its DTO by `FilterPathShould`; only the `id` of [uidIn], present in every DTO, is not.
+ */
+internal data class Filter private constructor(
+    val field: String,
+    val operator: String,
+    val value: String,
+) {
+    fun generateString(): String = "$field:$operator:$value"
+
+    companion object {
+        fun eq(path: FilterPath, value: Any): Filter = Filter(path.path, "eq", value.toString())
+
+        fun gt(path: FilterPath, value: String): Filter = Filter(path.path, "gt", value)
+
+        fun like(path: FilterPath, value: String): Filter = Filter(path.path, "like", value)
+
+        fun `in`(path: FilterPath, values: Collection<String>): Filter = inFilter(path.path, values)
+
+        fun uidIn(uids: Collection<String>): Filter = inFilter(BaseIdentifiableObject.UID, uids)
+
+        private fun inFilter(field: String, values: Collection<String>): Filter =
+            Filter(field, "in", values.joinToString(",", prefix = "[", postfix = "]"))
+    }
 }

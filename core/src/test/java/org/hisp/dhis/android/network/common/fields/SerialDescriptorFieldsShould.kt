@@ -131,6 +131,23 @@ internal class SerialDescriptorFieldsShould {
     }
 
     @Test
+    fun accept_property_paths_through_nested_dtos_and_lists() {
+        SampleDTO.serializer().descriptor.requirePropertyPath("displayName")
+        SampleDTO.serializer().descriptor.requirePropertyPath("reference.id")
+        SampleDTO.serializer().descriptor.requirePropertyPath("children.parent.id")
+    }
+
+    @Test
+    fun reject_property_paths_that_are_not_in_the_dto() {
+        listOf("name", "reference.uid", "tags.id", "created.date", "missing").forEach { path ->
+            val error = assertThrows(IllegalArgumentException::class.java) {
+                SampleDTO.serializer().descriptor.requirePropertyPath(path)
+            }
+            assertThat(error.message).contains("'$path'")
+        }
+    }
+
+    @Test
     fun reject_cyclic_dtos() {
         val error = assertThrows(IllegalArgumentException::class.java) { fieldsOf(NodeDTO.serializer()) }
         assertThat(error.message).contains("Cyclic DTO reference")

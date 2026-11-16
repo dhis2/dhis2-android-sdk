@@ -33,8 +33,8 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class RelationshipTypeService(private val client: HttpServiceClient) {
     suspend fun getRelationshipTypes(
-        lastUpdated: Filter<RelationshipType>?,
-        accessDataReadFilter: String,
+        lastUpdated: Filter?,
+        accessFilter: String,
         paging: Boolean,
     ): RelationshipTypePayload {
         return client.get {
@@ -42,7 +42,7 @@ internal class RelationshipTypeService(private val client: HttpServiceClient) {
             parameters {
                 fields<RelationshipTypeDTO>()
                 filter(lastUpdated)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

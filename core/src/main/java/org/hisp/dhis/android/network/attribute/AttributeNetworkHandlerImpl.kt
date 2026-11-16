@@ -27,10 +27,10 @@
  */
 package org.hisp.dhis.android.network.attribute
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.attribute.Attribute
 import org.hisp.dhis.android.core.attribute.internal.AttributeNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
@@ -42,7 +42,7 @@ internal class AttributeNetworkHandlerImpl(
 
     override suspend fun getAttributes(attributeUids: Set<String>): PayloadJson<Attribute> {
         val apiPayload = service.getAttributes(
-            Field.uid<Attribute>().`in`(attributeUids),
+            Filter.uidIn(attributeUids),
             false,
         )
         return apiPayload.mapItems(AttributeDTO::toDomain)

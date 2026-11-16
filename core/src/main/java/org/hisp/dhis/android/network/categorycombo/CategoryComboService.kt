@@ -33,7 +33,7 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class CategoryComboService(private val client: HttpServiceClient) {
     suspend fun getCategoryCombos(
-        filter: Filter<CategoryCombo>,
+        filter: Filter,
         paging: Boolean,
     ): CategoryComboPayload {
         return client.get {

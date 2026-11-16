@@ -28,13 +28,14 @@
 
 package org.hisp.dhis.android.network.programindicator
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.category.internal.DefaultCategoryComboManager
 import org.hisp.dhis.android.core.common.ObjectWithUid
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.internal.ProgramIndicatorNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.hisp.dhis.android.persistence.program.ProgramIndicatorTableInfo
 import org.koin.core.annotation.Singleton
 
@@ -46,9 +47,8 @@ internal class ProgramIndicatorNetworkHandlerImpl(
     private val service = ProgramIndicatorService(httpServiceClient)
 
     override suspend fun getDisplayInFormProgramIndicators(programUids: Set<String>): Payload<ProgramIndicator> {
-        val displayInFormFilter = Field.create<ProgramIndicator>(ProgramIndicatorTableInfo.Columns.DISPLAY_IN_FORM)
-            .eq(true)
-        val programUidsFilter = "program.${ObjectWithUid.uid.`in`(programUids).generateString()}"
+        val displayInFormFilter = Filter.eq(FilterPath.PROGRAM_INDICATOR_DISPLAY_IN_FORM, true)
+        val programUidsFilter = Filter.`in`(FilterPath.PROGRAM_INDICATOR_PROGRAM, programUids).generateString()
         val apiPayload = service.getProgramIndicator(
             displayInForm = displayInFormFilter,
             program = programUidsFilter,
@@ -63,7 +63,7 @@ internal class ProgramIndicatorNetworkHandlerImpl(
         val apiPayload = service.getProgramIndicator(
             displayInForm = null,
             program = null,
-            uids = Field.uid<ProgramIndicator>().`in`(uids),
+            uids = Filter.uidIn(uids),
             false,
         )
         defaultCategoryComboManager.loadDefaults()

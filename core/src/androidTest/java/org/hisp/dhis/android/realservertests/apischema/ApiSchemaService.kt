@@ -29,16 +29,13 @@
 package org.hisp.dhis.android.realservertests.apischema
 
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
-import org.hisp.dhis.android.network.common.fields.Fields
 
 internal class ApiSchemaService(private val client: HttpServiceClient) {
-    suspend fun getSchema(
-        fields: Fields<ApiSchema>,
-    ): ApiSchemaPayload {
+    suspend fun getSchema(): ApiSchemaPayload {
         return client.get {
             url("schemas")
             parameters {
-                fields(fields)
+                fields<ApiSchema>()
             }
         }
     }

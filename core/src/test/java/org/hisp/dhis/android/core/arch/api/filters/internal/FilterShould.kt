@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,10 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
-import com.google.common.truth.Truth
-import org.hisp.dhis.android.network.common.fields.Field
+import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.network.common.filters.Filter
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -37,11 +39,21 @@ import org.junit.runners.JUnit4
 class FilterShould {
 
     @Test
-    fun return_correct_values_when_create_field_filter() {
-        val field: Field<*> = Field.create<Any>("test_field_name")
-        val filter = field.gt("test_field_filter_operator")
+    fun generate_single_value_filters() {
+        assertThat(Filter.eq(FilterPath.CATEGORY_COMBO_IS_DEFAULT, true).generateString())
+            .isEqualTo("isDefault:eq:true")
+        assertThat(Filter.gt(FilterPath.RELATIONSHIP_TYPE_LAST_UPDATED, "2024-01-01").generateString())
+            .isEqualTo("lastUpdated:gt:2024-01-01")
+        assertThat(Filter.like(FilterPath.ORGANISATION_UNIT_PATH, "uid1").generateString())
+            .isEqualTo("path:like:uid1")
+    }
 
-        Truth.assertThat(filter.operator).isEqualTo("gt")
-        Truth.assertThat(filter.values.contains("test_field_filter_operator")).isTrue()
+    @Test
+    fun generate_in_filters() {
+        assertThat(Filter.`in`(FilterPath.PROGRAM_STAGE_PROGRAM, listOf("uid1", "uid2")).generateString())
+            .isEqualTo("program.id:in:[uid1,uid2]")
+        assertThat(Filter.`in`(FilterPath.PROGRAM_STAGE_PROGRAM, emptyList()).generateString())
+            .isEqualTo("program.id:in:[]")
+        assertThat(Filter.uidIn(listOf("uid1", "uid2")).generateString()).isEqualTo("id:in:[uid1,uid2]")
     }
 }

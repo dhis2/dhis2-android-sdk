@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2024, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,27 +25,14 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.network.common.filters
 
-import org.hisp.dhis.android.network.common.fields.Field
-
-internal class InFilter<T>(
-    override val field: Field<T>,
-    override val operator: String,
-    override val values: Collection<String>,
-) : Filter<T> {
-    override fun generateString(): String {
-        val valuesString = values.joinToString(",")
-        return "${field.name}:$operator:[$valuesString]"
-    }
-
-    companion object {
-        fun <T> create(
-            field: Field<T>,
-            values: Collection<String>,
-        ): Filter<T> {
-            // If the filter is incomplete, return null so the filter is not included in the request.
-            return InFilter(field, "in", values)
-        }
-    }
+/**
+ * Filters that limit metadata requests to objects the user can read (metadata access) or whose data the user can
+ * read (data access).
+ */
+internal object AccessFilters {
+    const val READ = "access.read:eq:true"
+    const val DATA_READ = "access.data.read:eq:true"
 }

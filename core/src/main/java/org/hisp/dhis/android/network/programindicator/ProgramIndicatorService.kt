@@ -34,9 +34,9 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 internal class ProgramIndicatorService(private val client: HttpServiceClient) {
     suspend fun getProgramIndicator(
-        displayInForm: Filter<ProgramIndicator>?,
+        displayInForm: Filter?,
         program: String?,
-        uids: Filter<ProgramIndicator>?,
+        uids: Filter?,
         paging: Boolean,
     ): ProgramIndicatorPayload {
         return client.get {

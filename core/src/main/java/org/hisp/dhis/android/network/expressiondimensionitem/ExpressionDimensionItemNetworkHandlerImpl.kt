@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.expressiondimensionitem
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.expressiondimensionitem.ExpressionDimensionItem
 import org.hisp.dhis.android.core.expressiondimensionitem.internal.ExpressionDimensionItemNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -42,7 +42,7 @@ internal class ExpressionDimensionItemNetworkHandlerImpl(
     private val service = ExpressionDimensionItemService(httpServiceClient)
     override suspend fun getExpressionDimensionItems(itemUids: Set<String>): Payload<ExpressionDimensionItem> {
         val apiPayload = service.getExpressionDimensionItems(
-            Field.uid<ExpressionDimensionItem>().`in`(itemUids),
+            Filter.uidIn(itemUids),
             false,
         )
         return apiPayload.mapItems(ExpressionDimensionItemDTO::toDomain)

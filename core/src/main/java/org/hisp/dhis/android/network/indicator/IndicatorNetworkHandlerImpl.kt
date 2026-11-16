@@ -28,11 +28,11 @@
 
 package org.hisp.dhis.android.network.indicator
 
+import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.indicator.Indicator
 import org.hisp.dhis.android.core.indicator.internal.IndicatorNetworkHandler
-import org.hisp.dhis.android.network.common.fields.Field
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -44,7 +44,7 @@ internal class IndicatorNetworkHandlerImpl(
     override suspend fun getIndicators(uids: Set<String>): Payload<Indicator> {
         val apiPayload = service.getIndicators(
             null,
-            Field.uid<Indicator>().`in`(uids),
+            Filter.uidIn(uids),
             false,
         )
         return apiPayload.mapItems(IndicatorDTO::toDomain)

@@ -33,7 +33,7 @@ import org.hisp.dhis.android.core.program.ProgramStage
 internal class ProgramStageService(private val client: HttpServiceClient) {
     suspend fun getProgramStages(
         programUidsFilterString: String,
-        accessDataReadFilter: String,
+        accessFilter: String,
         paging: Boolean,
     ): ProgramStagePayload {
         return client.get {
@@ -41,7 +41,7 @@ internal class ProgramStageService(private val client: HttpServiceClient) {
             parameters {
                 fields<ProgramStageDTO>()
                 attribute("filter", programUidsFilterString)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

@@ -33,7 +33,7 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
 
     suspend fun getCategoryOptions(
         categoryUidsFilterString: String,
-        accessDataReadFilter: String,
+        accessFilter: String,
         paging: Boolean,
     ): CategoryOptionPayload {
         return client.get {
@@ -41,7 +41,7 @@ internal class CategoryOptionService(private val client: HttpServiceClient) {
             parameters {
                 fields<CategoryOptionDTO>()
                 attribute("filter", categoryUidsFilterString)
-                attribute("filter", accessDataReadFilter)
+                attribute("filter", accessFilter)
                 paging(paging)
             }
         }

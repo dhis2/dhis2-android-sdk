@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.eventfilter
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.event.EventFilter
@@ -48,7 +49,7 @@ internal class EventFilterNetworkHandlerImpl(
     ): PayloadJson<EventFilter> {
         val accessFilter = AccessFilters.READ
         val apiPayload = service.getEventFilters(
-            Filter.`in`<EventFilterDTO>("program", partitionUids),
+            Filter.`in`(FilterPath.EVENT_FILTER_PROGRAM, partitionUids),
             accessFilter,
             false,
         )

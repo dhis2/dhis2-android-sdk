@@ -28,13 +28,13 @@
 
 package org.hisp.dhis.android.network.externalmaplayer
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
 import org.hisp.dhis.android.core.map.layer.MapLayer
 import org.hisp.dhis.android.core.map.layer.MapLayerPosition
 import org.hisp.dhis.android.core.map.layer.internal.externalmap.ExternalMapLayerNetworkHandler
-import org.hisp.dhis.android.persistence.map.MapLayerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -44,7 +44,7 @@ internal class ExternalMapLayerNetworkHandlerImpl(
     private val service = ExternalMapLayerService(httpServiceClient)
     override suspend fun getExternalMapLayers(): Payload<MapLayer> {
         val apiPayload = service.getExternalMapLayers(
-            Filter.eq<ExternalMapLayerDTO>("mapLayerPosition", MapLayerPosition.BASEMAP),
+            Filter.eq(FilterPath.EXTERNAL_MAP_LAYER_POSITION, MapLayerPosition.BASEMAP),
             false,
         )
         return apiPayload.mapItems(ExternalMapLayerDTO::toDomain)

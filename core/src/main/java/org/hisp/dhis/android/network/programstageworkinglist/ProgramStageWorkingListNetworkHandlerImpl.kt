@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.programstageworkinglist
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -47,7 +48,7 @@ internal class ProgramStageWorkingListNetworkHandlerImpl(
     override suspend fun getProgramStageWorkingLists(uids: Set<String>): Payload<ProgramStageWorkingList> {
         val accessFilter = AccessFilters.READ
         val apiPayload = service.getProgramStageWorkingLists(
-            Filter.`in`<ProgramStageWorkingListDTO>("program.id", uids),
+            Filter.`in`(FilterPath.PROGRAM_STAGE_WORKING_LIST_PROGRAM, uids),
             accessFilter,
             false,
         )

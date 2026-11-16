@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.programindicator
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -46,8 +47,8 @@ internal class ProgramIndicatorNetworkHandlerImpl(
     private val service = ProgramIndicatorService(httpServiceClient)
 
     override suspend fun getDisplayInFormProgramIndicators(programUids: Set<String>): Payload<ProgramIndicator> {
-        val displayInFormFilter = Filter.eq<ProgramIndicatorDTO>("displayInForm", true)
-        val programUidsFilter = Filter.`in`<ProgramIndicatorDTO>("program.id", programUids).generateString()
+        val displayInFormFilter = Filter.eq(FilterPath.PROGRAM_INDICATOR_DISPLAY_IN_FORM, true)
+        val programUidsFilter = Filter.`in`(FilterPath.PROGRAM_INDICATOR_PROGRAM, programUids).generateString()
         val apiPayload = service.getProgramIndicator(
             displayInForm = displayInFormFilter,
             program = programUidsFilter,

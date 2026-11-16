@@ -28,16 +28,13 @@
 
 package org.hisp.dhis.android.network.common.filters
 
-import kotlinx.serialization.serializer
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
-import org.hisp.dhis.android.network.common.fields.requirePropertyPath
 
 /**
- * A `filter` request parameter, generated as `field:operator:value`. The field is the API property name, or a path to
- * a nested property like `program.id`, and must exist in the DTO the request returns, so a typo or a name that does
- * not match the DTO fails instead of filtering on the wrong property.
+ * A `filter` request parameter, generated as `field:operator:value`. The field is a declared [FilterPath], so it is
+ * checked against its DTO by `FilterPathShould`; only the `id` of [uidIn], present in every DTO, is not.
  */
-internal data class Filter @PublishedApi internal constructor(
+internal data class Filter private constructor(
     val field: String,
     val operator: String,
     val value: String,
@@ -45,30 +42,17 @@ internal data class Filter @PublishedApi internal constructor(
     fun generateString(): String = "$field:$operator:$value"
 
     companion object {
-        inline fun <reified DTO> eq(field: String, value: Any): Filter = create<DTO>(field, "eq", value.toString())
+        fun eq(path: FilterPath, value: Any): Filter = Filter(path.path, "eq", value.toString())
 
-        inline fun <reified DTO> gt(field: String, value: String): Filter = create<DTO>(field, "gt", value)
+        fun gt(path: FilterPath, value: String): Filter = Filter(path.path, "gt", value)
 
-        inline fun <reified DTO> like(field: String, value: String): Filter = create<DTO>(field, "like", value)
+        fun like(path: FilterPath, value: String): Filter = Filter(path.path, "like", value)
 
-        inline fun <reified DTO> `in`(field: String, values: Collection<String>): Filter =
-            create<DTO>(field, "in", inValue(values))
+        fun `in`(path: FilterPath, values: Collection<String>): Filter = inFilter(path.path, values)
 
-        fun uidIn(uids: Collection<String>): Filter = Filter(BaseIdentifiableObject.UID, "in", inValue(uids))
+        fun uidIn(uids: Collection<String>): Filter = inFilter(BaseIdentifiableObject.UID, uids)
 
-        /**
-         * For filters on server properties the DTO does not declare because the SDK never reads them, so the field
-         * cannot be checked.
-         */
-        fun inUnchecked(field: String, values: Collection<String>): Filter = Filter(field, "in", inValue(values))
-
-        @PublishedApi
-        internal inline fun <reified DTO> create(field: String, operator: String, value: String): Filter {
-            serializer<DTO>().descriptor.requirePropertyPath(field)
-            return Filter(field, operator, value)
-        }
-
-        @PublishedApi
-        internal fun inValue(values: Collection<String>): String = values.joinToString(",", prefix = "[", postfix = "]")
+        private fun inFilter(field: String, values: Collection<String>): Filter =
+            Filter(field, "in", values.joinToString(",", prefix = "[", postfix = "]"))
     }
 }

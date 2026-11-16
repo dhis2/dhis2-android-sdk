@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.programstage
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -46,7 +47,7 @@ internal class ProgramStageNetworkHandlerImpl(
     override suspend fun getProgramStages(uids: Set<String>): Payload<ProgramStage> {
         val accessFilter = AccessFilters.DATA_READ
         val programUidsFilterStr =
-            Filter.`in`<ProgramStageDTO>("program.id", uids).generateString()
+            Filter.`in`(FilterPath.PROGRAM_STAGE_PROGRAM, uids).generateString()
         val apiPayload = service.getProgramStages(
             programUidsFilterStr,
             accessFilter,

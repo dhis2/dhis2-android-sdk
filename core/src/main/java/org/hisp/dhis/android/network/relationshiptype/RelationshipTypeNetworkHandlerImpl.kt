@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.relationshiptype
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -46,7 +47,8 @@ internal class RelationshipTypeNetworkHandlerImpl(
     override suspend fun getRelationshipTypes(lastUpdated: String?): Payload<RelationshipType> {
         val accessFilter = AccessFilters.DATA_READ
         val apiPayload = service.getRelationshipTypes(
-            lastUpdated.takeIf { !it.isNullOrEmpty() }?.let { Filter.gt<RelationshipTypeDTO>("lastUpdated", it) },
+            lastUpdated.takeIf { !it.isNullOrEmpty() }
+                ?.let { Filter.gt(FilterPath.RELATIONSHIP_TYPE_LAST_UPDATED, it) },
             accessFilter,
             false,
         )

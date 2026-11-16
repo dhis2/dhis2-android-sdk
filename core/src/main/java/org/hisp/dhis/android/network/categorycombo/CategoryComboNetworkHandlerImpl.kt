@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.network.categorycombo
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.category.CategoryCombo
@@ -51,7 +52,7 @@ internal class CategoryComboNetworkHandlerImpl(
 
     override suspend fun getDefaultCategoryCombo(): CategoryCombo? {
         val apiPayload = service.getCategoryCombos(
-            Filter.eq<CategoryComboDTO>("isDefault", true),
+            Filter.eq(FilterPath.CATEGORY_COMBO_IS_DEFAULT, true),
             paging = false,
         )
         return apiPayload.items.find { it.isDefault == true }?.toDomain()

@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.organisationunit
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.payload.internal.Payload
@@ -46,7 +47,7 @@ internal class OrganisationUnitNetworkHandlerImpl(
 
     override suspend fun getOrganisationUnits(parentUid: String, pageSize: Int, page: Int): Payload<OrganisationUnit> {
         val apiPayload = service.getOrganisationUnits(
-            Filter.like<OrganisationUnitDTO>("path", parentUid),
+            Filter.like(FilterPath.ORGANISATION_UNIT_PATH, parentUid),
             ASC_ORDER,
             true,
             pageSize,

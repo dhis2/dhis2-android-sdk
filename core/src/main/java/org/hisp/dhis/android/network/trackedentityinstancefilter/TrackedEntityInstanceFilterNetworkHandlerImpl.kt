@@ -28,6 +28,7 @@
 
 package org.hisp.dhis.android.network.trackedentityinstancefilter
 
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.hisp.dhis.android.network.common.filters.Filter
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
@@ -53,14 +54,14 @@ internal class TrackedEntityInstanceFilterNetworkHandlerImpl(
     ): PayloadJson<TrackedEntityInstanceFilter> {
         return if (dhis2VersionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
             val apiPayload = service.getTrackedEntityInstanceFilters(
-                Filter.`in`<TrackedEntityInstanceFilterDTO>("program.id", partitionUids),
+                Filter.`in`(FilterPath.TRACKED_ENTITY_INSTANCE_FILTER_PROGRAM, partitionUids),
                 accessFilter,
                 false,
             )
             apiPayload.mapItems(TrackedEntityInstanceFilterDTO::toDomain)
         } else {
             val apiPayload = service.getTrackedEntityInstanceFilters37(
-                Filter.`in`<TrackedEntityInstanceFilterDTO>("program.id", partitionUids),
+                Filter.`in`(FilterPath.TRACKED_ENTITY_INSTANCE_FILTER_PROGRAM, partitionUids),
                 accessFilter,
                 false,
             )

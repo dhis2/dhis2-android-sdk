@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2004-2022, University of Oslo
+ *  Copyright (c) 2004-2025, University of Oslo
  *  All rights reserved.
  *
  *  Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,12 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 package org.hisp.dhis.android.core.arch.api.filters.internal
 
 import com.google.common.truth.Truth.assertThat
-import kotlinx.serialization.Serializable
 import org.hisp.dhis.android.network.common.filters.Filter
-import org.junit.Assert.assertThrows
+import org.hisp.dhis.android.network.common.filters.FilterPath
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -38,49 +38,22 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class FilterShould {
 
-    @Serializable
-    private data class ReferenceDTO(val id: String)
-
-    @Serializable
-    private data class SampleDTO(
-        val isDefault: Boolean?,
-        val lastUpdated: String?,
-        val path: String?,
-        val program: ReferenceDTO?,
-        val programs: List<ReferenceDTO>?,
-    )
-
     @Test
     fun generate_single_value_filters() {
-        assertThat(Filter.eq<SampleDTO>("isDefault", true).generateString()).isEqualTo("isDefault:eq:true")
-        assertThat(Filter.gt<SampleDTO>("lastUpdated", "2024-01-01").generateString())
+        assertThat(Filter.eq(FilterPath.CATEGORY_COMBO_IS_DEFAULT, true).generateString())
+            .isEqualTo("isDefault:eq:true")
+        assertThat(Filter.gt(FilterPath.RELATIONSHIP_TYPE_LAST_UPDATED, "2024-01-01").generateString())
             .isEqualTo("lastUpdated:gt:2024-01-01")
-        assertThat(Filter.like<SampleDTO>("path", "uid1").generateString()).isEqualTo("path:like:uid1")
+        assertThat(Filter.like(FilterPath.ORGANISATION_UNIT_PATH, "uid1").generateString())
+            .isEqualTo("path:like:uid1")
     }
 
     @Test
     fun generate_in_filters() {
-        assertThat(Filter.`in`<SampleDTO>("program.id", listOf("uid1", "uid2")).generateString())
+        assertThat(Filter.`in`(FilterPath.PROGRAM_STAGE_PROGRAM, listOf("uid1", "uid2")).generateString())
             .isEqualTo("program.id:in:[uid1,uid2]")
-        assertThat(Filter.`in`<SampleDTO>("program.id", emptyList()).generateString()).isEqualTo("program.id:in:[]")
+        assertThat(Filter.`in`(FilterPath.PROGRAM_STAGE_PROGRAM, emptyList()).generateString())
+            .isEqualTo("program.id:in:[]")
         assertThat(Filter.uidIn(listOf("uid1", "uid2")).generateString()).isEqualTo("id:in:[uid1,uid2]")
-        assertThat(Filter.inUnchecked("categories.id", listOf("uid1")).generateString())
-            .isEqualTo("categories.id:in:[uid1]")
-    }
-
-    @Test
-    fun accept_paths_through_lists() {
-        assertThat(Filter.`in`<SampleDTO>("programs.id", listOf("uid1")).generateString())
-            .isEqualTo("programs.id:in:[uid1]")
-    }
-
-    @Test
-    fun reject_fields_that_are_not_dto_properties() {
-        listOf("isdefault", "program.uid", "path.id", "categories.id").forEach { field ->
-            val error = assertThrows(IllegalArgumentException::class.java) {
-                Filter.`in`<SampleDTO>(field, listOf("uid1"))
-            }
-            assertThat(error.message).contains("'$field'")
-        }
     }
 }

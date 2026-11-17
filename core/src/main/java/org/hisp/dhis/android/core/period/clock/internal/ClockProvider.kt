@@ -27,8 +27,16 @@
  */
 package org.hisp.dhis.android.core.period.clock.internal
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 internal interface ClockProvider {
     val clock: Clock
+
+    fun today(): LocalDate = clock.todayIn(TimeZone.currentSystemDefault())
 }
+
+internal fun Instant.truncatedToMillis(): Instant = Instant.fromEpochMilliseconds(toEpochMilliseconds())

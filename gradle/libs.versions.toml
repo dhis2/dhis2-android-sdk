@@ -38,7 +38,7 @@ antlrExpressionParser = "1.0.39"
 pegExpressionParser = "1.6.1"
 
 # Kotlin
-kotlinxDatetime = "0.7.1"
+kotlinxDatetime = "0.8.0"
 coroutines = "1.11.0"
 koin = "4.2.2"
 koinPlugin = "1.0.1"

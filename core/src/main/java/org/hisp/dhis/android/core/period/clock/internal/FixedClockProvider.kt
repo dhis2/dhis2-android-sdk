@@ -42,7 +42,7 @@ internal class FixedClockProvider(localDate: LocalDateTime) : ClockProvider {
 }
 
 internal class FixedClock(localDate: LocalDateTime) : Clock {
-    private val fixedInstant = localDate.toInstant(TimeZone.currentSystemDefault())
+    private val fixedInstant = localDate.toInstant(TimeZone.currentSystemDefault()).truncatedToMillis()
 
     override fun now(): Instant = fixedInstant
 }

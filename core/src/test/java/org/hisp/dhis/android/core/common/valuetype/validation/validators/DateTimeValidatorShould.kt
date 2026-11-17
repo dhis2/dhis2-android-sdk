@@ -35,28 +35,11 @@ class DateTimeValidatorShould : ValidatorShouldHelper<DateTimeFailure>(DateTimeV
 
     @Test
     fun `Should success when passing valid values`() {
-        valueShouldSuccess("2021-04-15T23:59")
-        valueShouldSuccess("0001-04-15T23:59")
-        valueShouldSuccess("1995-01-01T01:01")
+        dateTimeFixture("DATETIME", "valid").forEach { valueShouldSuccess(it) }
     }
 
     @Test
     fun `Should fail when passing malformed values`() {
-        valueShouldFail("", DateTimeFailure.ParseException)
-        valueShouldFail("asd", DateTimeFailure.ParseException)
-        valueShouldFail("12021-04-15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("2021-40-15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("2021-04-80T25:59", DateTimeFailure.ParseException)
-        valueShouldFail("2021-04-15T23:70", DateTimeFailure.ParseException)
-        valueShouldFail("2021-00-15T23:20", DateTimeFailure.ParseException)
-        valueShouldFail("2021-01-00T23:20", DateTimeFailure.ParseException)
-        valueShouldFail("2021-01-02N23:20", DateTimeFailure.ParseException)
-        valueShouldFail("-2021-04-15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("-0000-04-15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("2021-04-15T23:59-", DateTimeFailure.ParseException)
-        valueShouldFail("2021/04/15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("0000-04-15T23:59", DateTimeFailure.ParseException)
-        valueShouldFail("1995-1-1T1:01", DateTimeFailure.ParseException)
-        valueShouldFail("0004-1-1T1:01", DateTimeFailure.ParseException)
+        dateTimeFixture("DATETIME", "invalid").forEach { valueShouldFail(it, DateTimeFailure.ParseException) }
     }
 }

@@ -28,22 +28,19 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.DateFailure
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 object DateValidator : ValueTypeValidator<DateFailure> {
 
-    private val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private const val MAX_YEAR = 9999
+    internal val VALID_YEARS = 1..MAX_YEAR
 
     override fun validate(value: String): Result<String, DateFailure> {
-        return try {
-            val formattedValue = LocalDate.parse(value, formatter)
-            Result.Success(formattedValue.toString())
-        } catch (e: DateTimeParseException) {
-            Result.Failure(DateFailure.ParseException)
+        return when (LocalDate.Formats.ISO.parseOrNull(value)?.takeIf { it.year in VALID_YEARS }) {
+            null -> Result.Failure(DateFailure.ParseException)
+            else -> Result.Success(value)
         }
     }
 }

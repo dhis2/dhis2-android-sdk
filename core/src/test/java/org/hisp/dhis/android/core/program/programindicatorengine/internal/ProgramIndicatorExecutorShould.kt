@@ -38,6 +38,9 @@ import org.hisp.dhis.android.core.enrollment.Enrollment
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
 import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.event.EventStatus
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.clock.internal.reset
+import org.hisp.dhis.android.core.period.clock.internal.setFixed
 import org.hisp.dhis.android.core.program.ProgramIndicator
 import org.hisp.dhis.android.core.program.ProgramStage
 import org.hisp.dhis.android.core.program.internal.ProgramStageStore
@@ -53,6 +56,7 @@ import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 import java.text.ParseException
+import java.util.Locale
 
 /**
  * Unit test for in-memory program indicator executor.
@@ -360,6 +364,22 @@ class ProgramIndicatorExecutorShould {
 
         val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
         assertThat(result).isEqualTo("2020-01-05")
+    }
+
+    @Test
+    fun evaluate_current_date_with_the_clock_independently_of_the_locale() {
+        val defaultLocale = Locale.getDefault()
+        try {
+            ClockProviderFactory.setFixed()
+            Locale.setDefault(Locale.forLanguageTag("ar-u-nu-arab"))
+            setExpression(`var`("current_date"))
+
+            val result = programIndicatorExecutor.getProgramIndicatorValue(programIndicator)
+            assertThat(result).isEqualTo("2019-12-10")
+        } finally {
+            Locale.setDefault(defaultLocale)
+            ClockProviderFactory.reset()
+        }
     }
 
     @Test

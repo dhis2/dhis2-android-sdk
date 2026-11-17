@@ -35,36 +35,11 @@ class TimeValidatorShould : ValidatorShouldHelper<TimeFailure>(TimeValidator) {
 
     @Test
     fun `Should success when passing valid values`() {
-        valueShouldSuccess("00:00")
-        valueShouldSuccess("02:20")
-        valueShouldSuccess("11:59")
-        valueShouldSuccess("12:00")
-        valueShouldSuccess("12:59")
-        valueShouldSuccess("23:59")
+        dateTimeFixture("TIME", "valid").forEach { valueShouldSuccess(it) }
     }
 
     @Test
     fun `Should fail when passing malformed values`() {
-        valueShouldFail("", TimeFailure.ParseException)
-        valueShouldFail("sdf", TimeFailure.ParseException)
-        valueShouldFail("00", TimeFailure.ParseException)
-        valueShouldFail("0:", TimeFailure.ParseException)
-        valueShouldFail(":0", TimeFailure.ParseException)
-        valueShouldFail(":", TimeFailure.ParseException)
-        valueShouldFail("2", TimeFailure.ParseException)
-        valueShouldFail("23", TimeFailure.ParseException)
-        valueShouldFail("24", TimeFailure.ParseException)
-        valueShouldFail("08:85", TimeFailure.ParseException)
-        valueShouldFail("26:25", TimeFailure.ParseException)
-        valueShouldFail("-05:25", TimeFailure.ParseException)
-        valueShouldFail("-00:00", TimeFailure.ParseException)
-        valueShouldFail("-00:00", TimeFailure.ParseException)
-        valueShouldFail("00:1985", TimeFailure.ParseException)
-        valueShouldFail("24:00", TimeFailure.ParseException)
-        valueShouldFail("02:2", TimeFailure.ParseException)
-        valueShouldFail("2:2", TimeFailure.ParseException)
-        valueShouldFail("0:0", TimeFailure.ParseException)
-        valueShouldFail("0:00", TimeFailure.ParseException)
-        valueShouldFail("2:20", TimeFailure.ParseException)
+        dateTimeFixture("TIME", "invalid").forEach { valueShouldFail(it, TimeFailure.ParseException) }
     }
 }

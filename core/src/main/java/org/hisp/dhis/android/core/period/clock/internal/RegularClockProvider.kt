@@ -28,7 +28,10 @@
 package org.hisp.dhis.android.core.period.clock.internal
 
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 internal class RegularClockProvider : ClockProvider {
-    override val clock = Clock.System
+    override val clock: Clock = object : Clock {
+        override fun now(): Instant = Clock.System.now().truncatedToMillis()
+    }
 }

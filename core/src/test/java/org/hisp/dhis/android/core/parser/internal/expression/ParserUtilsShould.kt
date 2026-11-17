@@ -29,9 +29,11 @@ package org.hisp.dhis.android.core.parser.internal.expression
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.number
+import org.hisp.dhis.android.core.arch.helpers.DateUtils
 import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.junit.Assert.assertThrows
 import org.junit.Test
+import java.util.Locale
 
 class ParserUtilsShould {
 
@@ -59,6 +61,19 @@ class ParserUtilsShould {
             "2022-13-35",
         ).forEach {
             assertThrows(ParserExceptionWithoutContext::class.java) { ParserUtils.parseExpressionDate(it) }
+        }
+    }
+
+    @Test
+    fun format_medium_date_string_independently_of_the_locale() {
+        val defaultLocale = Locale.getDefault()
+        try {
+            Locale.setDefault(Locale.forLanguageTag("ar-u-nu-arab"))
+            val date = DateUtils.DATE_FORMAT.parse("2020-01-05T10:30:00.000")
+
+            assertThat(ParserUtils.getMediumDateString(date)).isEqualTo("2020-01-05")
+        } finally {
+            Locale.setDefault(defaultLocale)
         }
     }
 

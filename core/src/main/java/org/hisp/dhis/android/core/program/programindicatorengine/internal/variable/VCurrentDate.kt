@@ -30,13 +30,13 @@ package org.hisp.dhis.android.core.program.programindicatorengine.internal.varia
 import org.hisp.dhis.android.core.parser.internal.expression.CommonExpressionVisitor
 import org.hisp.dhis.android.core.parser.internal.expression.ExpressionItem
 import org.hisp.dhis.android.core.parser.internal.expression.ParserUtils
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser.ExprContext
-import java.util.*
 
 internal class VCurrentDate : ExpressionItem {
 
     override fun evaluate(ctx: ExprContext, visitor: CommonExpressionVisitor): Any? {
-        return ParserUtils.getMediumDateString(Date())
+        return ParserUtils.getMediumDateString(ClockProviderFactory.clockProvider.today())
     }
 
     override fun getSql(ctx: ExprContext, visitor: CommonExpressionVisitor): Any {

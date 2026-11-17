@@ -42,6 +42,7 @@ import org.hisp.dhis.antlr.ParserExceptionWithoutContext
 import org.hisp.dhis.parser.expression.antlr.ExpressionParser
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -146,9 +147,7 @@ internal object ParserUtils {
      */
     fun getMediumDateString(date: Date?): String? {
         return date?.let {
-            val format = SimpleDateFormat()
-            format.applyPattern(DEFAULT_DATE_FORMAT)
-            format.format(date)
+            SimpleDateFormat(DEFAULT_DATE_FORMAT, Locale.US).format(date)
         }
     }
 

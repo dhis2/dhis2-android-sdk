@@ -35,6 +35,7 @@ import kotlinx.serialization.json.long
 import kotlinx.serialization.json.put
 import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
+import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
 import java.net.MalformedURLException
 import java.net.URL
 import java.security.MessageDigest
@@ -75,7 +76,7 @@ internal object JWTHelper {
         keyId: String,
         expiresInSeconds: Long = EXPIRESINSECONDS,
     ): String {
-        val issuedAt = System.currentTimeMillis() / MILLIS_PER_SECOND
+        val issuedAt = ClockProviderFactory.clockProvider.clock.now().epochSeconds
 
         // No `typ` member: the assertion is unambiguously a JWT in this context and adding it would
         // change the bytes sent to the server.
@@ -114,7 +115,8 @@ internal object JWTHelper {
     fun isUnexpired(jwt: String): Boolean {
         return try {
             val expirationSeconds = expirationSecondsOf(jwt)
-            expirationSeconds == null || expirationSeconds * MILLIS_PER_SECOND >= System.currentTimeMillis()
+            val nowMillis = ClockProviderFactory.clockProvider.clock.now().toEpochMilliseconds()
+            expirationSeconds == null || expirationSeconds * MILLIS_PER_SECOND >= nowMillis
         } catch (e: Exception) {
             D2Logger.e(TAG, "Invalid JWT: ${e::class.simpleName}")
             false

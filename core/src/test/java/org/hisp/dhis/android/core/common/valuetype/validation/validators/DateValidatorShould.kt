@@ -35,23 +35,11 @@ class DateValidatorShould : ValidatorShouldHelper<DateFailure>(DateValidator) {
 
     @Test
     fun `Should success when passing valid values`() {
-        valueShouldSuccess("2021-04-14")
-        valueShouldSuccess("0001-01-01")
-        valueShouldSuccess("9999-12-31")
+        dateTimeFixture("DATE", "valid").forEach { valueShouldSuccess(it) }
     }
 
     @Test
     fun `Should fail when passing malformed values`() {
-        valueShouldFail("", DateFailure.ParseException)
-        valueShouldFail("asd", DateFailure.ParseException)
-        valueShouldFail("-5221-01-14", DateFailure.ParseException)
-        valueShouldFail("5221-01-14-", DateFailure.ParseException)
-        valueShouldFail("2021/01/10", DateFailure.ParseException)
-        valueShouldFail("2021-01-94", DateFailure.ParseException)
-        valueShouldFail("2021-33-04", DateFailure.ParseException)
-        valueShouldFail("2021-00-04", DateFailure.ParseException)
-        valueShouldFail("2021-02-00", DateFailure.ParseException)
-        valueShouldFail("0001-01-1", DateFailure.ParseException)
-        valueShouldFail("0001-1-1", DateFailure.ParseException)
+        dateTimeFixture("DATE", "invalid").forEach { valueShouldFail(it, DateFailure.ParseException) }
     }
 }

@@ -28,28 +28,26 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.format.char
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.DateTimeFailure
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
 
 object DateTimeValidator : ValueTypeValidator<DateTimeFailure> {
 
-    private val DATE_TIME_PATTERN = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$".toRegex()
+    private val format = LocalDateTime.Format {
+        date(LocalDate.Formats.ISO)
+        char('T')
+        hour()
+        char(':')
+        minute()
+    }
 
     override fun validate(value: String): Result<String, DateTimeFailure> {
-        if (!DATE_TIME_PATTERN.matches(value)) {
-            return Result.Failure(DateTimeFailure.ParseException)
-        }
-
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")
-
-        return try {
-            val formattedValue = LocalDateTime.parse(value, formatter)
-            Result.Success(formattedValue.toString())
-        } catch (e: DateTimeParseException) {
-            Result.Failure(DateTimeFailure.ParseException)
+        return when (format.parseOrNull(value)?.takeIf { it.year in DateValidator.VALID_YEARS }) {
+            null -> Result.Failure(DateTimeFailure.ParseException)
+            else -> Result.Success(value)
         }
     }
 }

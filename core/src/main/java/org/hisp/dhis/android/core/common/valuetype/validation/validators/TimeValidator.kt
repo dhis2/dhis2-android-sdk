@@ -28,21 +28,23 @@
 
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format.char
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.common.valuetype.validation.failures.TimeFailure
 
 object TimeValidator : ValueTypeValidator<TimeFailure> {
 
-    private val TIME_PATTERN = "([01][0-9]|2[0-3]):[0-5][0-9]".toRegex()
+    private val format = LocalTime.Format {
+        hour()
+        char(':')
+        minute()
+    }
 
     override fun validate(value: String): Result<String, TimeFailure> {
-        return when {
-            value.matches(TIME_PATTERN) -> {
-                Result.Success(value)
-            }
-            else -> {
-                Result.Failure(TimeFailure.ParseException)
-            }
+        return when (format.parseOrNull(value)) {
+            null -> Result.Failure(TimeFailure.ParseException)
+            else -> Result.Success(value)
         }
     }
 }

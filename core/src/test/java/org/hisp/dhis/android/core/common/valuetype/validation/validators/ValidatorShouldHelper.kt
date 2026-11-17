@@ -29,6 +29,11 @@
 package org.hisp.dhis.android.core.common.valuetype.validation.validators
 
 import com.google.common.truth.Truth
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.junit.Assert.fail
 
@@ -39,14 +44,21 @@ open class ValidatorShouldHelper<F : Throwable>(v: ValueTypeValidator<F>) {
     fun valueShouldSuccess(value: String) {
         when (val result = validator.validate(value)) {
             is Result.Success -> Truth.assertThat(result.value).isEqualTo(value)
-            is Result.Failure -> fail()
+            is Result.Failure -> fail("Expected \"$value\" to be valid")
         }
     }
 
     fun valueShouldFail(value: String, failure: F) {
         when (val result = validator.validate(value)) {
-            is Result.Success -> fail()
+            is Result.Success -> fail("Expected \"$value\" to be invalid")
             is Result.Failure -> Truth.assertThat(result.failure).isEqualTo(failure)
         }
+    }
+
+    /** Values of [valueType] in the DATE / DATETIME / TIME fixture that Mobile UI reuses. */
+    fun dateTimeFixture(valueType: String, list: String): List<String> {
+        val json = ResourcesFileReader().getStringFromFile("common/value_type_date_time_validation.json")
+        return Json.parseToJsonElement(json).jsonObject.getValue(valueType).jsonObject.getValue(list)
+            .jsonArray.map { it.jsonPrimitive.content }
     }
 }

@@ -37,6 +37,7 @@ import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.arch.helpers.ResourceContext
 import org.hisp.dhis.android.core.arch.helpers.UidGeneratorImpl
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
@@ -70,7 +71,7 @@ import java.io.File
 class FileResourceCollectionRepository internal constructor(
     private val fileResourceStore: FileResourceStore,
     scope: RepositoryScope,
-    transformer: FileResourceProjectionTransformer,
+    private val projectionTransformer: FileResourceProjectionTransformer,
     dataStatePropagator: DataStatePropagator,
     private val fileResourceFiles: FileResourceFiles,
     private val imageTransformer: ImageTransformer,
@@ -83,12 +84,12 @@ class FileResourceCollectionRepository internal constructor(
     databaseAdapter,
     childrenAppenders,
     scope,
-    transformer,
+    Transformer { file: File -> projectionTransformer.transform(file.absoluteFile.toOkioPath()) },
     FilterConnectorFactory(scope) { s: RepositoryScope ->
         FileResourceCollectionRepository(
             fileResourceStore,
             s,
-            transformer,
+            projectionTransformer,
             dataStatePropagator,
             fileResourceFiles,
             imageTransformer,
@@ -178,8 +179,8 @@ class FileResourceCollectionRepository internal constructor(
     private suspend fun addFile(file: Path, name: String): String = withContext(dispatcher) {
         try {
             val generatedUid = UidGeneratorImpl().generate()
-            val dstFile = fileResourceFiles.saveFile(file, generatedUid).toFile()
-            val fileResource = transformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
+            val dstFile = fileResourceFiles.saveFile(file, generatedUid)
+            val fileResource = projectionTransformer.transform(dstFile).toBuilder().uid(generatedUid).name(name).build()
             store.insert(fileResource)
             fileResource.uid()
         } catch (e: Exception) {

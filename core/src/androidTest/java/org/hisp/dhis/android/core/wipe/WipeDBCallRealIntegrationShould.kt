@@ -43,7 +43,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         assertThatDatabase(d2Dao).isNotEmpty()
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         assertThatDatabase(d2Dao).isEmpty()
     }
 
@@ -57,7 +57,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         assertThatDatabase(d2Dao).isNotEmpty()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
 
         assertThatDatabase(d2Dao).isEmpty()
     }
@@ -68,7 +68,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         d2.userModule().logIn(username, password, url).blockingGet()
         d2.metadataModule().blockingDownload()
         assertThatDatabase(d2Dao).isNotEmpty()
-        d2.wipeModule().wipeMetadata()
+        d2.wipeModule().blockingWipeMetadata()
         assertThatDatabase(d2Dao).isEmpty()
     }
 
@@ -81,7 +81,7 @@ class WipeDBCallRealIntegrationShould : BaseRealIntegrationTest() {
         val trackedEntityInstanceStore: TrackedEntityInstanceStore = koin.get()
         var hasTrackedEntities = trackedEntityInstanceStore.count() > 0
         assertThat(hasTrackedEntities).isTrue()
-        d2.wipeModule().wipeData()
+        d2.wipeModule().blockingWipeData()
         hasTrackedEntities = trackedEntityInstanceStore.count() > 0
         assertThat(hasTrackedEntities).isFalse()
     }

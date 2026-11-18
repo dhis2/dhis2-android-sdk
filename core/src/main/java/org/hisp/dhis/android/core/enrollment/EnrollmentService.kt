@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.enrollment
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 @Suppress("TooManyFunctions")
 interface EnrollmentService {
@@ -37,15 +39,15 @@ interface EnrollmentService {
      *
      * @see isOpen
      */
-    fun blockingIsOpen(enrollmentUid: String): Boolean
+    fun blockingIsOpen(enrollmentUid: String): Boolean = runBlockingOnIO { suspendIsOpen(enrollmentUid) }
 
     /**
      * Checks if the enrollment status is ACTIVE.
      */
     @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
-    fun isOpen(enrollmentUid: String): Single<Boolean>
+    fun isOpen(enrollmentUid: String): Single<Boolean> = rxIsOpen(enrollmentUid)
 
-    fun rxIsOpen(enrollmentUid: String): Single<Boolean>
+    fun rxIsOpen(enrollmentUid: String): Single<Boolean> = rxSingle { suspendIsOpen(enrollmentUid) }
 
     suspend fun suspendIsOpen(enrollmentUid: String): Boolean
 
@@ -54,7 +56,8 @@ interface EnrollmentService {
      *
      * @see getEnrollmentAccess
      */
-    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
+    fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess =
+        runBlockingOnIO { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
 
     /**
      * Evaluates the access level of the user to this program and trackedEntityInstance.
@@ -66,21 +69,33 @@ interface EnrollmentService {
         message = "Use rxGetEnrollmentAccess instead",
         ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"),
     )
-    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
+    fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> =
+        rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)
 
-    fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess>
+    fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> =
+        rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
 
     suspend fun suspendGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess
 
-    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
+    fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean =
+        runBlockingOnIO { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
 
     @Deprecated(
-        message = "Use rxAllowEventCreation instead",
-        ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"),
+        message = "Use rxGetAllowEventCreation instead",
+        ReplaceWith("rxGetAllowEventCreation(enrollmentUid, stagesToHide)"),
     )
-    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+    fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> =
+        rxGetAllowEventCreation(enrollmentUid, stagesToHide)
 
-    fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean>
+    @Deprecated(
+        message = "Use rxGetAllowEventCreation instead",
+        ReplaceWith("rxGetAllowEventCreation(enrollmentUid, stagesToHide)"),
+    )
+    fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> =
+        rxGetAllowEventCreation(enrollmentUid, stagesToHide)
+
+    fun rxGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> =
+        rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
 
     suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean
 }

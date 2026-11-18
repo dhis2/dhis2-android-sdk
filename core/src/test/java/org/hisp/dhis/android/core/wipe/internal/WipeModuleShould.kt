@@ -54,7 +54,7 @@ class WipeModuleShould {
     @Test
     @Throws(Exception::class)
     fun wipe_all_modules() = runTest {
-        wipeModule.wipeEverything()
+        wipeModule.blockingWipeEverything()
 
         Mockito.verify(moduleWiperA).wipeMetadata()
         Mockito.verify(moduleWiperB).wipeMetadata()
@@ -66,7 +66,7 @@ class WipeModuleShould {
     @Test
     @Throws(Exception::class)
     fun wipe_metadata_in_modules() = runTest {
-        wipeModule.wipeMetadata()
+        wipeModule.blockingWipeMetadata()
 
         Mockito.verify(moduleWiperA).wipeMetadata()
         Mockito.verify(moduleWiperB).wipeMetadata()
@@ -78,7 +78,7 @@ class WipeModuleShould {
     @Test
     @Throws(Exception::class)
     fun wipe_data_in_modules() = runTest {
-        wipeModule.wipeData()
+        wipeModule.blockingWipeData()
 
         Mockito.verify(moduleWiperA, Mockito.never()).wipeMetadata()
         Mockito.verify(moduleWiperB, Mockito.never()).wipeMetadata()

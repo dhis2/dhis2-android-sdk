@@ -64,7 +64,7 @@ class NotePostCallRealIntegrationShould : BaseRealIntegrationTest() {
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        runBlocking { d2.wipeModule().wipeEverything() }
+        runBlocking { d2.wipeModule().blockingWipeEverything() }
     }
 
     private fun addNote() {

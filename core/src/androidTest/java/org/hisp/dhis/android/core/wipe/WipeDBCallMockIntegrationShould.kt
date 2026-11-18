@@ -76,7 +76,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
 
         assertThatDatabase(d2Dao).isFull()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
 
         assertThatDatabase(d2Dao).isEmpty()
     }

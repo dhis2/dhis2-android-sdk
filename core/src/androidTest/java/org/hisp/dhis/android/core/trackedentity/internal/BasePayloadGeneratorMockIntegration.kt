@@ -71,7 +71,7 @@ open class BasePayloadGeneratorMockIntegration : BaseMockIntegrationTestMetadata
 
     @After
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 
     protected suspend fun storeTrackerData() {

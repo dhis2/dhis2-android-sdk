@@ -40,8 +40,24 @@ interface DHISVersionManager {
      */
     suspend fun suspendGetVersion(): DHISVersion
 
-    fun getPatchVersion(): DHISPatchVersion?
-    fun getSmsVersion(): SMSVersion?
+    fun getPatchVersion(): DHISPatchVersion? = runBlockingOnIO { suspendGetPatchVersion() }
+
+    /**
+     * Suspending version of [getPatchVersion].
+     *
+     * @see getPatchVersion
+     */
+    suspend fun suspendGetPatchVersion(): DHISPatchVersion?
+
+    fun getSmsVersion(): SMSVersion? = runBlockingOnIO { suspendGetSmsVersion() }
+
+    /**
+     * Suspending version of [getSmsVersion].
+     *
+     * @see getSmsVersion
+     */
+    suspend fun suspendGetSmsVersion(): SMSVersion?
+
     fun getBypassVersion(): Boolean?
 
     /**
@@ -50,7 +66,14 @@ interface DHISVersionManager {
      * @param version Version to compare to
      * @return True if current version matches the parameter
      */
-    fun isVersion(version: DHISVersion): Boolean
+    fun isVersion(version: DHISVersion): Boolean = runBlockingOnIO { suspendIsVersion(version) }
+
+    /**
+     * Suspending version of [isVersion].
+     *
+     * @see isVersion
+     */
+    suspend fun suspendIsVersion(version: DHISVersion): Boolean
 
     /**
      * Check if the current version is strictly greater than the parameter.

@@ -30,11 +30,9 @@ package org.hisp.dhis.android.core.user.openid
 
 import android.content.Context
 import android.content.Intent
-import io.reactivex.Observable
-import io.reactivex.Single
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.rx2.rxSingle
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import net.openid.appauth.AuthState
@@ -42,7 +40,6 @@ import net.openid.appauth.AuthorizationException
 import net.openid.appauth.AuthorizationResponse
 import net.openid.appauth.AuthorizationService
 import net.openid.appauth.TokenRequest
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -69,15 +66,7 @@ internal class OpenIDConnectHandlerImpl(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : OpenIDConnectHandler {
 
-    override fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> {
-        return rxSingle { suspendLogIn(config) }
-    }
-
-    override fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
-        return runBlockingOnIO { suspendLogIn(config) }
-    }
-
-    private suspend fun suspendLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
+    override suspend fun suspendLogIn(config: OpenIDConnectConfig): IntentWithRequestCode {
         val authRequest = OpenIDConnectRequestHelper(config).prepareAuthRequest()
         val authService = AuthorizationService(context)
         val intent = authService.getAuthorizationRequestIntent(authRequest)
@@ -85,24 +74,8 @@ internal class OpenIDConnectHandlerImpl(
         return IntentWithRequestCode(intent, RC_AUTH)
     }
 
-    override fun handleLogInResponse(
-        serverUrl: String,
-        intent: Intent?,
-        requestCode: Int,
-    ): Single<User> {
-        return rxSingle { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
-    }
-
-    override fun blockingHandleLogInResponse(
-        serverUrl: String,
-        intent: Intent?,
-        requestCode: Int,
-    ): User {
-        return runBlockingOnIO { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
-    }
-
     @Suppress("TooGenericExceptionThrown")
-    private suspend fun suspendHandleLogInResponse(
+    override suspend fun suspendHandleLogInResponse(
         serverUrl: String,
         intent: Intent?,
         requestCode: Int,
@@ -123,8 +96,8 @@ internal class OpenIDConnectHandlerImpl(
         }
     }
 
-    override fun logOutObservable(): Observable<Unit> {
-        return logoutHandler.logOutObservable()
+    override fun flowLogOut(): Flow<Unit> {
+        return logoutHandler.logOutFlow()
     }
 
     override suspend fun suspendSetPin(pin: String): Result<Unit, D2Error> {

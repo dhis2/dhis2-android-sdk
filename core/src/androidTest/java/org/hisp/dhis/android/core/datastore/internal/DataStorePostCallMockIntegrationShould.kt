@@ -45,7 +45,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
 
     @After
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 
     @Test

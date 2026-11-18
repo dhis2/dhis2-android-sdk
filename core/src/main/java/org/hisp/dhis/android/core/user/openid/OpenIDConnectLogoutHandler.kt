@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.user.openid
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Single
 import org.koin.core.annotation.Singleton
@@ -40,14 +41,14 @@ internal class OpenIDConnectLogoutHandler(
     private val credentialsSecureStore: CredentialsSecureStore,
 ) {
 
-    private val logOutSubject = PublishSubject.create<Unit>()
+    private val logOutFlow = MutableSharedFlow<Unit>(extraBufferCapacity = Channel.UNLIMITED)
 
-    fun logOutObservable(): Observable<Unit> {
-        return logOutSubject
+    fun logOutFlow(): Flow<Unit> {
+        return logOutFlow
     }
 
     fun logOut() {
         credentialsSecureStore.remove()
-        logOutSubject.onNext(Unit)
+        logOutFlow.tryEmit(Unit)
     }
 }

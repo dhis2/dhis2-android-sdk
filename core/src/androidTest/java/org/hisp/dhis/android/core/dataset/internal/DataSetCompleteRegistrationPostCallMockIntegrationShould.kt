@@ -46,7 +46,7 @@ class DataSetCompleteRegistrationPostCallMockIntegrationShould : BaseMockIntegra
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 
     @Test

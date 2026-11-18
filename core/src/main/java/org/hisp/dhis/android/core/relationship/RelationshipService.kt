@@ -28,8 +28,31 @@
 
 package org.hisp.dhis.android.core.relationship
 
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
+
+@Suppress("TooManyFunctions")
 interface RelationshipService {
-    fun hasAccessPermission(relationshipType: RelationshipType): Boolean
+    @Deprecated(
+        message = "Use blockingHasAccessPermission instead",
+        ReplaceWith("blockingHasAccessPermission(relationshipType)"),
+    )
+    fun hasAccessPermission(relationshipType: RelationshipType): Boolean =
+        blockingHasAccessPermission(relationshipType)
+
+    fun blockingHasAccessPermission(relationshipType: RelationshipType): Boolean =
+        runBlockingOnIO { suspendHasAccessPermission(relationshipType) }
+
+    suspend fun suspendHasAccessPermission(relationshipType: RelationshipType): Boolean
+
+    @Deprecated(
+        message = "Use blockingGetRelationshipTypesForTrackedEntities instead",
+        ReplaceWith("blockingGetRelationshipTypesForTrackedEntities(trackedEntityType, programUid)"),
+    )
+    fun getRelationshipTypesForTrackedEntities(
+        trackedEntityType: String,
+        programUid: String? = null,
+    ): List<RelationshipTypeWithEntitySide> =
+        blockingGetRelationshipTypesForTrackedEntities(trackedEntityType, programUid)
 
     /**
      * Returns all the relationship types relevant to the given trackedEntityType and program (optional).
@@ -39,10 +62,28 @@ interface RelationshipService {
      * @param trackedEntityType the trackedEntityType uid
      * @param programUid optional program uid
      */
-    fun getRelationshipTypesForTrackedEntities(
+    fun blockingGetRelationshipTypesForTrackedEntities(
+        trackedEntityType: String,
+        programUid: String? = null,
+    ): List<RelationshipTypeWithEntitySide> = runBlockingOnIO {
+        suspendGetRelationshipTypesForTrackedEntities(trackedEntityType, programUid)
+    }
+
+    /**
+     * Suspending version of [blockingGetRelationshipTypesForTrackedEntities].
+     */
+    suspend fun suspendGetRelationshipTypesForTrackedEntities(
         trackedEntityType: String,
         programUid: String? = null,
     ): List<RelationshipTypeWithEntitySide>
+
+    @Deprecated(
+        message = "Use blockingGetRelationshipTypesForEnrollments instead",
+        ReplaceWith("blockingGetRelationshipTypesForEnrollments(programUid)"),
+    )
+    fun getRelationshipTypesForEnrollments(
+        programUid: String,
+    ): List<RelationshipTypeWithEntitySide> = blockingGetRelationshipTypesForEnrollments(programUid)
 
     /**
      * Returns all the relationship types relevant to the given enrollment (program uid).
@@ -51,9 +92,24 @@ interface RelationshipService {
      *
      * @param programUid the program uid
      */
-    fun getRelationshipTypesForEnrollments(
+    fun blockingGetRelationshipTypesForEnrollments(
+        programUid: String,
+    ): List<RelationshipTypeWithEntitySide> = runBlockingOnIO { suspendGetRelationshipTypesForEnrollments(programUid) }
+
+    /**
+     * Suspending version of [blockingGetRelationshipTypesForEnrollments].
+     */
+    suspend fun suspendGetRelationshipTypesForEnrollments(
         programUid: String,
     ): List<RelationshipTypeWithEntitySide>
+
+    @Deprecated(
+        message = "Use blockingGetRelationshipTypesForEvents instead",
+        ReplaceWith("blockingGetRelationshipTypesForEvents(programStageUid)"),
+    )
+    fun getRelationshipTypesForEvents(
+        programStageUid: String,
+    ): List<RelationshipTypeWithEntitySide> = blockingGetRelationshipTypesForEvents(programStageUid)
 
     /**
      * Returns all the relationship types relevant to the given event (program stage uid).
@@ -62,7 +118,14 @@ interface RelationshipService {
      *
      * @param programStageUid the program stage uid
      */
-    fun getRelationshipTypesForEvents(
+    fun blockingGetRelationshipTypesForEvents(
+        programStageUid: String,
+    ): List<RelationshipTypeWithEntitySide> = runBlockingOnIO { suspendGetRelationshipTypesForEvents(programStageUid) }
+
+    /**
+     * Suspending version of [blockingGetRelationshipTypesForEvents].
+     */
+    suspend fun suspendGetRelationshipTypesForEvents(
         programStageUid: String,
     ): List<RelationshipTypeWithEntitySide>
 }

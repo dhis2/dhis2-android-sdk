@@ -37,7 +37,7 @@ class RelationshipServiceIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Test
     fun getAvailableRelationshipsForTrackedEntities() {
         val relationshipsWithoutProgram = d2.relationshipModule().relationshipService()
-            .getRelationshipTypesForTrackedEntities("nEenWmSyUEp")
+            .blockingGetRelationshipTypesForTrackedEntities("nEenWmSyUEp")
 
         assertThat(relationshipsWithoutProgram.size).isEqualTo(2)
         assertThat(
@@ -52,7 +52,7 @@ class RelationshipServiceIntegrationShould : BaseMockIntegrationTestFullDispatch
         ).isTrue()
 
         val relationshipsWithProgram = d2.relationshipModule().relationshipService()
-            .getRelationshipTypesForTrackedEntities("nEenWmSyUEp", "other_program")
+            .blockingGetRelationshipTypesForTrackedEntities("nEenWmSyUEp", "other_program")
 
         assertThat(relationshipsWithProgram.size).isEqualTo(1)
         assertThat(relationshipsWithProgram[0].relationshipType.uid()).isEqualTo("WiH6923nMtb")
@@ -62,7 +62,7 @@ class RelationshipServiceIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Test
     fun getAvailableRelationshipsForEnrollments() {
         val relationships = d2.relationshipModule().relationshipService()
-            .getRelationshipTypesForEnrollments("IpHINAT79UW")
+            .blockingGetRelationshipTypesForEnrollments("IpHINAT79UW")
 
         assertThat(relationships.size).isEqualTo(1)
         assertThat(relationships[0].relationshipType.uid()).isEqualTo("WiH6923nMtb")
@@ -72,7 +72,7 @@ class RelationshipServiceIntegrationShould : BaseMockIntegrationTestFullDispatch
     @Test
     fun getAvailableRelationshipsForEvents() {
         val relationships = d2.relationshipModule().relationshipService()
-            .getRelationshipTypesForEvents("dBwrot7S420")
+            .blockingGetRelationshipTypesForEvents("dBwrot7S420")
 
         assertThat(relationships.size).isEqualTo(1)
         assertThat(relationships[0].relationshipType.uid()).isEqualTo("o51cUNONthg")

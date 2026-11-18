@@ -43,6 +43,8 @@ abstract class ReadOnlyObjectRepositoryImpl<M : Any, R : ReadOnlyObjectRepositor
     abstract fun blockingGetWithoutChildren(): M?
     protected abstract suspend fun getWithoutChildrenInternal(): M?
 
+    suspend fun suspendGetWithoutChildren(): M? = getWithoutChildrenInternal()
+
     /**
      * Returns the object in a suspend way.
      * @return the object

@@ -54,7 +54,9 @@ internal class TrackedEntitySearchDataFetcherHelper(
 ) {
     suspend fun getHeaderExpression(program: String?): String? {
         return program?.let {
-            val itemHeader = appearanceSettingsObjectRepository.getProgramConfigurationByUid(program)?.itemHeader()
+            val itemHeader = appearanceSettingsObjectRepository
+                .suspendGetProgramConfigurationByUid(program)
+                ?.itemHeader()
             val programIndicatorHeader = itemHeader?.programIndicator()
 
             if (programIndicatorHeader != null) {

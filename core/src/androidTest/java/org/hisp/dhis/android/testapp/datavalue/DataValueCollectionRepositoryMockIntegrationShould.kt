@@ -275,16 +275,18 @@ class DataValueCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
     @Test
     @OptIn(LegacyDataValueApi::class)
     @Suppress("DEPRECATION")
-    fun deprecated_value_method_throws_error_when_no_valid_dataset_found() {
+    fun deprecated_value_method_throws_error_on_write_when_no_valid_dataset_found() {
+        val repository = d2.dataValueModule().dataValues()
+            .value(
+                "202001",
+                "DiszpKrYNg8",
+                "nonExistentDataElement",
+                "Gmbgme7z9BF",
+                "Gmbgme7z9BF",
+            )
+
         try {
-            d2.dataValueModule().dataValues()
-                .value(
-                    "202001",
-                    "DiszpKrYNg8",
-                    "nonExistentDataElement",
-                    "Gmbgme7z9BF",
-                    "Gmbgme7z9BF",
-                )
+            repository.blockingSet("5")
             fail("Should throw D2Error when no valid DataSet is found")
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.INVALID_CONFIGURATION)

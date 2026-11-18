@@ -53,6 +53,10 @@ internal data class ProgramDataDownloadParams(
     val programStageWorkingLists: List<ProgramStageWorkingList>? = null,
     val eventFilters: List<EventFilter>? = null,
     val downloadFileResources: Boolean = false,
+    // Filter uids set through byFilterUid(). They are resolved into the filter objects when the download starts.
+    val trackedEntityInstanceFilterUids: List<String>? = null,
+    val programStageWorkingListUids: List<String>? = null,
+    val eventFilterUids: List<String>? = null,
 ) : BaseScope {
 
     fun hasProgramOrFilters(): Boolean {

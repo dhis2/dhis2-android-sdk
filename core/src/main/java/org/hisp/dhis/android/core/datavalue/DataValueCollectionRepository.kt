@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import org.hisp.dhis.android.core.arch.call.D2Progress
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.ReadOnlyWithUploadCollectionRepository
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyCollectionRepositoryImpl
@@ -87,24 +86,9 @@ class DataValueCollectionRepository internal constructor(
         attributeOptionCombo: String,
         sourceDataSet: String,
     ): DataValueObjectRepository {
-        val updatedScope = byPeriod().eq(period)
-            .byOrganisationUnitUid().eq(organisationUnit)
-            .byDataElementUid().eq(dataElement)
-            .byCategoryOptionComboUid().eq(categoryOptionCombo)
-            .byAttributeOptionComboUid().eq(attributeOptionCombo)
-            .scope
-        return DataValueObjectRepository(
-            store,
-            databaseAdapter,
-            childrenAppenders,
-            updatedScope,
-            period,
-            organisationUnit,
-            dataElement,
-            categoryOptionCombo,
-            attributeOptionCombo,
-            sourceDataSet,
-        )
+        return valueRepository(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo) {
+            sourceDataSet
+        }
     }
 
     @LegacyDataValueApi
@@ -122,8 +106,8 @@ class DataValueCollectionRepository internal constructor(
         categoryOptionCombo: String,
         attributeOptionCombo: String,
     ): DataValueObjectRepository {
-        return runBlockingOnIO {
-            val dataSet = dataSetElementStore.getFirstValidDataSet(
+        return valueRepository(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo) {
+            dataSetElementStore.getFirstValidDataSet(
                 dataElementUid = dataElement,
                 periodId = period,
                 organisationUnitUid = organisationUnit,
@@ -134,8 +118,39 @@ class DataValueCollectionRepository internal constructor(
                 .errorCode(D2ErrorCode.INVALID_CONFIGURATION)
                 .errorDescription("No valid DataSet found for DataElement $dataElement")
                 .build()
-            value(period, organisationUnit, dataElement, categoryOptionCombo, attributeOptionCombo, dataSet)
         }
+    }
+
+    /**
+     * The source dataSet is resolved by [sourceDataSetProvider] when a value is written, so building the repository
+     * does not query the database.
+     */
+    private fun valueRepository(
+        period: String,
+        organisationUnit: String,
+        dataElement: String,
+        categoryOptionCombo: String,
+        attributeOptionCombo: String,
+        sourceDataSetProvider: suspend () -> String?,
+    ): DataValueObjectRepository {
+        val updatedScope = byPeriod().eq(period)
+            .byOrganisationUnitUid().eq(organisationUnit)
+            .byDataElementUid().eq(dataElement)
+            .byCategoryOptionComboUid().eq(categoryOptionCombo)
+            .byAttributeOptionComboUid().eq(attributeOptionCombo)
+            .scope
+        return DataValueObjectRepository(
+            store,
+            databaseAdapter,
+            childrenAppenders,
+            updatedScope,
+            period,
+            organisationUnit,
+            dataElement,
+            categoryOptionCombo,
+            attributeOptionCombo,
+            sourceDataSetProvider,
+        )
     }
 
     fun byDataElementUid(): StringFilterConnector<DataValueCollectionRepository> {

@@ -86,22 +86,38 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getHomeFilters(): Map<HomeFilter, FilterSetting>? {
-        return blockingGet()?.filterSorting()?.home()
+        return runBlockingOnIO { suspendGetHomeFilters() }
+    }
+
+    suspend fun suspendGetHomeFilters(): Map<HomeFilter, FilterSetting>? {
+        return suspendGet()?.filterSorting()?.home()
     }
 
     fun getDataSetFiltersByUid(uid: String?): Map<DataSetFilter, FilterSetting>? {
-        val dataSetSettings = blockingGet()?.filterSorting()?.dataSetSettings()
+        return runBlockingOnIO { suspendGetDataSetFiltersByUid(uid) }
+    }
+
+    suspend fun suspendGetDataSetFiltersByUid(uid: String?): Map<DataSetFilter, FilterSetting>? {
+        val dataSetSettings = suspendGet()?.filterSorting()?.dataSetSettings()
 
         return dataSetSettings?.specificSettings()?.get(uid)
             ?: dataSetSettings?.globalSettings()
     }
 
     fun getTrackedEntityTypeFilters(): Map<ProgramFilter, FilterSetting>? {
-        return blockingGet()?.filterSorting()?.programSettings()?.globalSettings()
+        return runBlockingOnIO { suspendGetTrackedEntityTypeFilters() }
+    }
+
+    suspend fun suspendGetTrackedEntityTypeFilters(): Map<ProgramFilter, FilterSetting>? {
+        return suspendGet()?.filterSorting()?.programSettings()?.globalSettings()
     }
 
     fun getProgramFiltersByUid(uid: String?): Map<ProgramFilter, FilterSetting>? {
-        val programFilters = blockingGet()?.filterSorting()?.programSettings()
+        return runBlockingOnIO { suspendGetProgramFiltersByUid(uid) }
+    }
+
+    suspend fun suspendGetProgramFiltersByUid(uid: String?): Map<ProgramFilter, FilterSetting>? {
+        val programFilters = suspendGet()?.filterSorting()?.programSettings()
 
         return programFilters?.specificSettings()?.get(uid)
             ?: programFilters?.globalSettings()
@@ -160,12 +176,20 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getGlobalProgramConfigurationSetting(): ProgramConfigurationSetting? {
-        val programSettingList = runBlockingOnIO { programConfigurationSettingStore.selectAll() }
+        return runBlockingOnIO { suspendGetGlobalProgramConfigurationSetting() }
+    }
+
+    suspend fun suspendGetGlobalProgramConfigurationSetting(): ProgramConfigurationSetting? {
+        val programSettingList = programConfigurationSettingStore.selectAll()
         return getGlobal(programSettingList) { it.uid }
     }
 
     fun getGlobalDataSetConfigurationSetting(): DataSetConfigurationSetting? {
-        val dataSetSettingList = runBlockingOnIO { dataSetConfigurationSettingStore.selectAll() }
+        return runBlockingOnIO { suspendGetGlobalDataSetConfigurationSetting() }
+    }
+
+    suspend fun suspendGetGlobalDataSetConfigurationSetting(): DataSetConfigurationSetting? {
+        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
         return getGlobal(dataSetSettingList) { it.uid }
     }
 
@@ -176,17 +200,25 @@ class AppearanceSettingsObjectRepository internal constructor(
     }
 
     fun getProgramConfigurationByUid(uid: String?): ProgramConfigurationSetting? {
-        val programSettingList = runBlockingOnIO { programConfigurationSettingStore.selectAll() }
+        return runBlockingOnIO { suspendGetProgramConfigurationByUid(uid) }
+    }
+
+    suspend fun suspendGetProgramConfigurationByUid(uid: String?): ProgramConfigurationSetting? {
+        val programSettingList = programConfigurationSettingStore.selectAll()
         val result = getSpecifics(programSettingList) { it.uid }[uid]
 
-        return result ?: getGlobalProgramConfigurationSetting()
+        return result ?: suspendGetGlobalProgramConfigurationSetting()
     }
 
     fun getDataSetConfigurationByUid(uid: String?): DataSetConfigurationSetting? {
-        val dataSetSettingList = runBlockingOnIO { dataSetConfigurationSettingStore.selectAll() }
+        return runBlockingOnIO { suspendGetDataSetConfigurationByUid(uid) }
+    }
+
+    suspend fun suspendGetDataSetConfigurationByUid(uid: String?): DataSetConfigurationSetting? {
+        val dataSetSettingList = dataSetConfigurationSettingStore.selectAll()
         val result = getSpecifics(dataSetSettingList) { it.uid }[uid]
 
-        return result ?: getGlobalDataSetConfigurationSetting()
+        return result ?: suspendGetGlobalDataSetConfigurationSetting()
     }
 
     @Deprecated("")

@@ -186,10 +186,18 @@ class RelationshipCollectionRepository internal constructor(
         return relationshipManager.blockingGetByItem(searchItem, includeDeleted, onlyAccessible)
     }
 
-    internal suspend fun getByItemInternal(
+    /**
+     * Suspending version of [getByItem].
+     * @param searchItem Relationship item
+     * @param includeDeleted Whether to include deleted relationships or not
+     * @param onlyAccessible Whether to include only accessible relationships (owned relationships or any bidirectional
+     * relationship) or all linked relationships
+     * @return List of relationships
+     */
+    suspend fun suspendGetByItem(
         searchItem: RelationshipItem,
-        includeDeleted: Boolean,
-        onlyAccessible: Boolean,
+        includeDeleted: Boolean = false,
+        onlyAccessible: Boolean = true,
     ): List<Relationship> {
         return relationshipManager.getByItem(searchItem, includeDeleted, onlyAccessible)
     }

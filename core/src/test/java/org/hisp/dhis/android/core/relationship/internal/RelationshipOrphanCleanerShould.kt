@@ -89,7 +89,7 @@ class RelationshipOrphanCleanerShould {
         val deleted = cleaner.deleteOrphan(parent, emptyList())
 
         assertThat(deleted).isTrue()
-        verify(relationshipRepository).getByItemInternal(RelationshipHelper.teiItem("parentTei"), true, false)
+        verify(relationshipRepository).suspendGetByItem(RelationshipHelper.teiItem("parentTei"), true, false)
         verify(relationshipStore).deleteByEntity(existing)
     }
 
@@ -193,7 +193,7 @@ class RelationshipOrphanCleanerShould {
 
     @Test
     fun build_the_right_item_for_each_cleaner_subclass() = runTest {
-        whenever(relationshipRepository.getByItemInternal(any(), any(), any())).doReturn(emptyList())
+        whenever(relationshipRepository.suspendGetByItem(any(), any(), any())).doReturn(emptyList())
 
         cleaner.deleteOrphan(parent, emptyList())
         EnrollmentRelationshipOrphanCleaner(relationshipStore, relationshipRepository)
@@ -201,14 +201,14 @@ class RelationshipOrphanCleanerShould {
         EventRelationshipOrphanCleaner(relationshipStore, relationshipRepository)
             .deleteOrphan(event("parentEvent"), emptyList())
 
-        verify(relationshipRepository).getByItemInternal(RelationshipHelper.teiItem("parentTei"), true, false)
+        verify(relationshipRepository).suspendGetByItem(RelationshipHelper.teiItem("parentTei"), true, false)
         verify(relationshipRepository)
-            .getByItemInternal(RelationshipHelper.enrollmentItem("parentEnrollment"), true, false)
-        verify(relationshipRepository).getByItemInternal(RelationshipHelper.eventItem("parentEvent"), true, false)
+            .suspendGetByItem(RelationshipHelper.enrollmentItem("parentEnrollment"), true, false)
+        verify(relationshipRepository).suspendGetByItem(RelationshipHelper.eventItem("parentEvent"), true, false)
     }
 
     private suspend fun givenExistingRelationships(vararg relationships: Relationship) {
-        whenever(relationshipRepository.getByItemInternal(any<RelationshipItem>(), any(), any()))
+        whenever(relationshipRepository.suspendGetByItem(any<RelationshipItem>(), any(), any()))
             .doReturn(relationships.toList())
     }
 

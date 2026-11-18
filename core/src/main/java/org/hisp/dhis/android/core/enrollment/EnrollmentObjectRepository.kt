@@ -70,11 +70,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { suspendSetOrganisationUnitUid(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
+    suspend fun suspendSetOrganisationUnitUid(organisationUnitUid: String?): Unit {
         return updateIfChangedInternal(
             organisationUnitUid,
             { it.organisationUnit() },
@@ -85,11 +85,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEnrollmentDate(enrollmentDate: Date?): Unit {
-        return runBlockingOnIO { setEnrollmentDateInternal(enrollmentDate) }
+        return runBlockingOnIO { suspendSetEnrollmentDate(enrollmentDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setEnrollmentDateInternal(enrollmentDate: Date?): Unit {
+    suspend fun suspendSetEnrollmentDate(enrollmentDate: Date?): Unit {
         return updateIfChangedInternal(enrollmentDate, { it.enrollmentDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).enrollmentDate(value).build()
         }
@@ -97,11 +97,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setIncidentDate(incidentDate: Date?): Unit {
-        return runBlockingOnIO { setIncidentDateInternal(incidentDate) }
+        return runBlockingOnIO { suspendSetIncidentDate(incidentDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setIncidentDateInternal(incidentDate: Date?): Unit {
+    suspend fun suspendSetIncidentDate(incidentDate: Date?): Unit {
         return updateIfChangedInternal(incidentDate, { it.incidentDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).incidentDate(value).build()
         }
@@ -109,11 +109,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return runBlockingOnIO { setCompletedDateInternal(completedDate) }
+        return runBlockingOnIO { suspendSetCompletedDate(completedDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setCompletedDateInternal(completedDate: Date?): Unit {
+    suspend fun suspendSetCompletedDate(completedDate: Date?): Unit {
         return updateIfChangedInternal(completedDate, { it.completedDate() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).completedDate(value).build()
         }
@@ -121,11 +121,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean?): Unit {
-        return runBlockingOnIO { setFollowUpInternal(followUp) }
+        return runBlockingOnIO { suspendSetFollowUp(followUp) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setFollowUpInternal(followUp: Boolean?): Unit {
+    suspend fun suspendSetFollowUp(followUp: Boolean?): Unit {
         return updateIfChangedInternal(followUp, { it.followUp() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).followUp(value).build()
         }
@@ -133,11 +133,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(enrollmentStatus: EnrollmentStatus): Unit {
-        return runBlockingOnIO { setStatusInternal(enrollmentStatus) }
+        return runBlockingOnIO { suspendSetStatus(enrollmentStatus) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setStatusInternal(enrollmentStatus: EnrollmentStatus): Unit {
+    suspend fun suspendSetStatus(enrollmentStatus: EnrollmentStatus): Unit {
         return updateIfChangedInternal(enrollmentStatus, { it.status() }) { enrollment: Enrollment, value ->
             val completedDate = if (value == EnrollmentStatus.COMPLETED) Date() else null
             updateBuilder(enrollment).status(value).completedDate(completedDate).build()
@@ -146,11 +146,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String): Unit {
-        return runBlockingOnIO { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
+        return runBlockingOnIO { suspendSetAttributeOptionComboUid(attributeOptionComboUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setAttributeOptionComboUidInternal(attributeOptionComboUid: String): Unit {
+    suspend fun suspendSetAttributeOptionComboUid(attributeOptionComboUid: String): Unit {
         return updateIfChangedInternal(
             attributeOptionComboUid,
             { it.attributeOptionCombo() },
@@ -161,11 +161,11 @@ class EnrollmentObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlockingOnIO { setGeometryInternal(geometry) }
+        return runBlockingOnIO { suspendSetGeometry(geometry) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
+    suspend fun suspendSetGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChangedInternal(geometry, { it.geometry() }) { enrollment: Enrollment, value ->
             updateBuilder(enrollment).geometry(value).build()

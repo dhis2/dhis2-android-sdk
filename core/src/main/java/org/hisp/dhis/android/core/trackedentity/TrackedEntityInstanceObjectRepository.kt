@@ -71,11 +71,11 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { suspendSetOrganisationUnitUid(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
+    suspend fun suspendSetOrganisationUnitUid(organisationUnitUid: String?): Unit {
         return updateIfChangedInternal(
             organisationUnitUid,
             { it.organisationUnit() },
@@ -86,11 +86,11 @@ class TrackedEntityInstanceObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlockingOnIO { setGeometryInternal(geometry) }
+        return runBlockingOnIO { suspendSetGeometry(geometry) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
+    suspend fun suspendSetGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChangedInternal(geometry, { it.geometry() }) { tei: TrackedEntityInstance, value ->
             updateBuilder(tei).geometry(value).build()

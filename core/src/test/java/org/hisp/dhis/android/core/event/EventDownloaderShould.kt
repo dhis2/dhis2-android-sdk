@@ -29,20 +29,26 @@
 package org.hisp.dhis.android.core.event
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.flow.emptyFlow
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.event.internal.EventDownloadCall
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class EventDownloaderShould {
 
-    private val call: EventDownloadCall = mock()
+    private val call: EventDownloadCall = mock {
+        on { download(any()) } doReturn emptyFlow()
+    }
     private val eventFilterCollectionRepository: EventFilterCollectionRepository = mock()
     private val eventFilterCollectionRepositoryList: EventFilterCollectionRepository = mock()
     private val connectorEvent: StringFilterConnector<EventFilterCollectionRepository> = mock()
@@ -69,13 +75,13 @@ class EventDownloaderShould {
         whenever(eventFilterCollectionRepositoryList.withEventDataFilters()).thenReturn(
             eventFilterCollectionRepositoryList,
         )
-        whenever(eventFilterCollectionRepository.blockingGet()).thenReturn(listOf(eventFilter))
-        whenever(eventFilterCollectionRepositoryList.blockingGet()).thenReturn(eventFilterList)
+        eventFilterCollectionRepository.stub { onBlocking { suspendGet() } doReturn listOf(eventFilter) }
+        eventFilterCollectionRepositoryList.stub { onBlocking { suspendGet() } doReturn eventFilterList }
     }
 
     @Test
     fun should_parse_uid_eq_params() {
-        downloader.byUid().eq("uid").download()
+        downloader.byUid().eq("uid").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -86,7 +92,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_parse_uid_in_params() {
-        downloader.byUid().`in`("uid0", "uid1", "uid2").download()
+        downloader.byUid().`in`("uid0", "uid1", "uid2").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -99,7 +105,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_eq_params() {
-        downloader.byFilterUid().eq(filterUid).download()
+        downloader.byFilterUid().eq(filterUid).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -110,7 +116,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_in_params() {
-        downloader.byFilterUid().`in`(filterUidList).download()
+        downloader.byFilterUid().`in`(filterUidList).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -124,7 +130,7 @@ class EventDownloaderShould {
     @Test
     fun should_parse_event_filter_params() {
         val eventFilter: EventFilter = mock()
-        downloader.byEventFilter().eq(eventFilter).download()
+        downloader.byEventFilter().eq(eventFilter).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -134,7 +140,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_not_download_file_resources_by_default() {
-        downloader.download()
+        downloader.blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -144,7 +150,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_parse_download_file_resources_params() {
-        downloader.downloadFileResources(true).download()
+        downloader.downloadFileResources(true).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue
@@ -154,7 +160,7 @@ class EventDownloaderShould {
 
     @Test
     fun should_parse_download_file_resources_params_when_disabled() {
-        downloader.downloadFileResources(false).download()
+        downloader.downloadFileResources(false).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
         val params = paramsCapture.firstValue

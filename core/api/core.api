@@ -2757,6 +2757,7 @@ public abstract class org/hisp/dhis/android/core/arch/repositories/object/intern
 	public fun rxGet ()Lio/reactivex/Single;
 	public fun suspendExists (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun suspendGet (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetWithoutChildren (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyOneObjectRepositoryImpl : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyObjectRepositoryImpl {
@@ -2795,7 +2796,6 @@ public class org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWr
 	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	protected fun suspendDelete (Lorg/hisp/dhis/android/core/common/CoreObject;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun suspendDeleteIfExist (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	protected final fun updateIfChanged (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lorg/hisp/dhis/android/core/common/Unit;
 	protected final fun updateIfChangedInternal (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -8277,6 +8277,8 @@ public final class org/hisp/dhis/android/core/datavalue/DataValueObjectRepositor
 	public final fun setFollowUp (Z)V
 	public fun suspendDelete (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun suspendSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetComment (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetFollowUp (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface annotation class org/hisp/dhis/android/core/datavalue/LegacyDataValueApi : java/lang/annotation/Annotation {
@@ -8730,6 +8732,14 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentObjectReposit
 	public final fun setIncidentDate (Ljava/util/Date;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setOrganisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;)Lorg/hisp/dhis/android/core/common/Unit;
+	public final fun suspendSetAttributeOptionComboUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetCompletedDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetEnrollmentDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetFollowUp (Ljava/lang/Boolean;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetGeometry (Lorg/hisp/dhis/android/core/common/Geometry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetIncidentDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetOrganisationUnitUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetStatus (Lorg/hisp/dhis/android/core/enrollment/EnrollmentStatus;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/enrollment/EnrollmentService {
@@ -8965,6 +8975,7 @@ public final class org/hisp/dhis/android/core/event/EventCollectionRepository : 
 	public final fun orderByTimeline (Lorg/hisp/dhis/android/core/arch/repositories/scope/RepositoryScope$OrderByDirection;)Lorg/hisp/dhis/android/core/event/EventCollectionRepository;
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun rxUpload ()Lio/reactivex/Observable;
+	public final fun suspendCountTrackedEntityInstances (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventObjectRepository;
 	public fun upload ()Lio/reactivex/Observable;
@@ -9333,6 +9344,15 @@ public final class org/hisp/dhis/android/core/event/EventObjectRepository : org/
 	public final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setOrganisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setStatus (Lorg/hisp/dhis/android/core/event/EventStatus;)Lorg/hisp/dhis/android/core/common/Unit;
+	public final fun suspendSetAssignedUser (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetAttributeOptionComboUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetCompletedBy (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetCompletedDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetDueDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetEventDate (Ljava/util/Date;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetGeometry (Lorg/hisp/dhis/android/core/common/Geometry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetOrganisationUnitUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetStatus (Lorg/hisp/dhis/android/core/event/EventStatus;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/event/EventQueryCriteria : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/FilterQueryCriteria {
@@ -11546,6 +11566,10 @@ public final class org/hisp/dhis/android/core/maintenance/PerformanceHintsServic
 	public final fun areThereProgramsWithExcessiveProgramRules ()Z
 	public final fun areThereVulnerabilities ()Z
 	public final fun getProgramsWithExcessiveProgramRules ()Ljava/util/List;
+	public final fun suspendAreThereExcessiveOrganisationUnits (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendAreThereProgramsWithExcessiveProgramRules (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendAreThereVulnerabilities (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetProgramsWithExcessiveProgramRules (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/map/MapModule {
@@ -13209,6 +13233,9 @@ public final class org/hisp/dhis/android/core/period/internal/PeriodHelper {
 	public final fun rxGetPeriodForPeriodTypeAndDate (Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;I)Lio/reactivex/Single;
 	public final fun rxGetPeriodsForDataSet (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun suspendGetPeriodForPeriodId (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetPeriodForPeriodTypeAndDate (Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendGetPeriodForPeriodTypeAndDate$default (Lorg/hisp/dhis/android/core/period/internal/PeriodHelper;Lorg/hisp/dhis/android/core/period/PeriodType;Ljava/util/Date;ILkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun suspendGetPeriodsForDataSet (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/period/internal/PeriodHelper$Companion {
@@ -16280,6 +16307,8 @@ public final class org/hisp/dhis/android/core/relationship/RelationshipCollectio
 	public fun rxAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;)Lio/reactivex/Single;
 	public synthetic fun suspendAdd (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun suspendAdd (Lorg/hisp/dhis/android/core/relationship/Relationship;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetByItem (Lorg/hisp/dhis/android/core/relationship/RelationshipItem;ZZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendGetByItem$default (Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;Lorg/hisp/dhis/android/core/relationship/RelationshipItem;ZZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public synthetic fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadOnlyObjectRepository;
 	public fun uid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/repositories/object/ReadWriteObjectRepository;
 	public final fun withItems ()Lorg/hisp/dhis/android/core/relationship/RelationshipCollectionRepository;
@@ -16779,9 +16808,9 @@ public final class org/hisp/dhis/android/core/relationship/TrackerDataViewBuilde
 
 public final class org/hisp/dhis/android/core/relationship/internal/RelationshipTypeCollectionRepositoryHelper {
 	public static final field INSTANCE Lorg/hisp/dhis/android/core/relationship/internal/RelationshipTypeCollectionRepositoryHelper;
-	public static final fun availableForEnrollmentRawQuery (Lorg/hisp/dhis/android/core/enrollment/Enrollment;)Ljava/lang/String;
-	public static final fun availableForEventRawQuery (Lorg/hisp/dhis/android/core/event/Event;)Ljava/lang/String;
-	public static final fun availableForTrackedEntityInstanceRawQuery (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityInstance;)Ljava/lang/String;
+	public static final fun availableForEnrollmentRawQuery (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun availableForEventRawQuery (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun availableForTrackedEntityInstanceRawQuery (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/resource/internal/OrgHispDhisAndroidCoreResourceInternalResourceDIModuleModuleKt {
@@ -17088,6 +17117,7 @@ public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizatio
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualizationsSettingObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadOnlyAnyObjectWithDownloadRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithDownloadObjectRepository {
 	public final fun blockingByDataSet (Ljava/lang/String;)Ljava/util/List;
+	public final fun blockingGetByDataSet (Ljava/lang/String;)Ljava/util/List;
 	public final fun blockingGetByProgram (Ljava/lang/String;)Ljava/util/List;
 	public final fun getByDataSet (Ljava/lang/String;)Lio/reactivex/Single;
 	public final fun getByProgram (Ljava/lang/String;)Lio/reactivex/Single;
@@ -17715,6 +17745,14 @@ public final class org/hisp/dhis/android/core/settings/AppearanceSettingsObjectR
 	public final fun getProgramConfigurationByUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/settings/ProgramConfigurationSetting;
 	public final fun getProgramFiltersByUid (Ljava/lang/String;)Ljava/util/Map;
 	public final fun getTrackedEntityTypeFilters ()Ljava/util/Map;
+	public final fun suspendGetDataSetConfigurationByUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetDataSetFiltersByUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetGlobalDataSetConfigurationSetting (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetGlobalProgramConfigurationSetting (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetHomeFilters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetProgramConfigurationByUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetProgramFiltersByUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendGetTrackedEntityTypeFilters (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/settings/ChartType : java/lang/Enum {
@@ -21492,12 +21530,16 @@ public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanc
 	public synthetic fun propagateState (Lorg/hisp/dhis/android/core/common/CoreObject;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandleAction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setGeometry (Lorg/hisp/dhis/android/core/common/Geometry;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun setOrganisationUnitUid (Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
+	public final fun suspendSetGeometry (Lorg/hisp/dhis/android/core/common/Geometry;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun suspendSetOrganisationUnitUid (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/TrackedEntityInstanceService {
 	public fun <init> (Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/trackedentity/TrackedEntityAttributeValueCollectionRepository;Lorg/hisp/dhis/android/core/program/ProgramTrackedEntityAttributeCollectionRepository;Lorg/hisp/dhis/android/core/fileresource/FileResourceCollectionRepository;)V
 	public final fun blockingInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/common/Unit;
 	public final fun inheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun rxInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public final fun suspendInheritAttributes (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/TrackedEntityModule {

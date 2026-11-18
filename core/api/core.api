@@ -291,9 +291,9 @@ public final class org/hisp/dhis/android/core/analytics/OrgHispDhisAndroidCoreAn
 }
 
 public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository {
-	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun evaluate ()Lio/reactivex/Single;
-	public abstract fun rxEvaluate ()Lio/reactivex/Single;
+	public fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public fun evaluate ()Lio/reactivex/Single;
+	public fun rxEvaluate ()Lio/reactivex/Single;
 	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withAggregationType (Lorg/hisp/dhis/android/core/common/AggregationType;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
 	public abstract fun withDimension (Lorg/hisp/dhis/android/core/analytics/aggregated/DimensionItem;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
@@ -301,14 +301,26 @@ public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/
 	public abstract fun withLegendStrategy (Lorg/hisp/dhis/android/core/analytics/AnalyticsLegendStrategy;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;
 }
 
+public final class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository$DefaultImpls {
+	public static fun blockingEvaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun evaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;)Lio/reactivex/Single;
+	public static fun rxEvaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsRepository;)Lio/reactivex/Single;
+}
+
 public abstract interface class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository {
-	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun evaluate ()Lio/reactivex/Single;
-	public abstract fun rxEvaluate ()Lio/reactivex/Single;
+	public fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public fun evaluate ()Lio/reactivex/Single;
+	public fun rxEvaluate ()Lio/reactivex/Single;
 	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withOrganisationUnits (Ljava/util/List;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
 	public abstract fun withPeriods (Ljava/util/List;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
 	public abstract fun withVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;
+}
+
+public final class org/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository$DefaultImpls {
+	public static fun blockingEvaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun evaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;)Lio/reactivex/Single;
+	public static fun rxEvaluate (Lorg/hisp/dhis/android/core/analytics/aggregated/AnalyticsVisualizationsRepository;)Lio/reactivex/Single;
 }
 
 public abstract class org/hisp/dhis/android/core/analytics/aggregated/Dimension {
@@ -817,17 +829,23 @@ public final class org/hisp/dhis/android/core/analytics/aggregated/mock/GridAnal
 }
 
 public abstract interface class org/hisp/dhis/android/core/analytics/linelist/EventLineListRepository : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
-	public abstract fun blockingEvaluate ()Ljava/util/List;
+	public fun blockingEvaluate ()Ljava/util/List;
 	public abstract fun byEventDate ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/PeriodsFilterConnector;
 	public abstract fun byOrganisationUnit ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/OrganisationUnitFilterConnector;
 	public abstract fun byProgramStage ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
 	public abstract fun byTrackedEntityInstance ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EqFilterConnector;
-	public abstract fun evaluate ()Lio/reactivex/Single;
-	public abstract fun rxEvaluate ()Lio/reactivex/Single;
+	public fun evaluate ()Lio/reactivex/Single;
+	public fun rxEvaluate ()Lio/reactivex/Single;
 	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withDataElement (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
 	public abstract fun withLegendStrategy (Lorg/hisp/dhis/android/core/analytics/AnalyticsLegendStrategy;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
 	public abstract fun withProgramIndicator (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;
+}
+
+public final class org/hisp/dhis/android/core/analytics/linelist/EventLineListRepository$DefaultImpls {
+	public static fun blockingEvaluate (Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;)Ljava/util/List;
+	public static fun evaluate (Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;)Lio/reactivex/Single;
+	public static fun rxEvaluate (Lorg/hisp/dhis/android/core/analytics/linelist/EventLineListRepository;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/analytics/linelist/LineListResponse {
@@ -1444,9 +1462,9 @@ public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerL
 }
 
 public abstract interface class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository {
-	public abstract fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun evaluate ()Lio/reactivex/Single;
-	public abstract fun rxEvaluate ()Lio/reactivex/Single;
+	public fun blockingEvaluate ()Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public fun evaluate ()Lio/reactivex/Single;
+	public fun rxEvaluate ()Lio/reactivex/Single;
 	public abstract fun suspendEvaluate (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withColumn (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListItem;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withEnrollmentOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
@@ -1456,6 +1474,12 @@ public abstract interface class org/hisp/dhis/android/core/analytics/trackerline
 	public abstract fun withSorting (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListSortingItem;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withTrackedEntityInstanceOutput (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
 	public abstract fun withTrackerVisualization (Ljava/lang/String;)Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;
+}
+
+public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository$DefaultImpls {
+	public static fun blockingEvaluate (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun evaluate (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;)Lio/reactivex/Single;
+	public static fun rxEvaluate (Lorg/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListRepository;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/analytics/trackerlinelist/TrackerLineListResponse {
@@ -7252,21 +7276,21 @@ public final class org/hisp/dhis/android/core/dataset/DataSetInstanceCollectionR
 
 public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstanceService {
 	public fun blockingGetCompletionStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompletionStatus;
-	public abstract fun blockingGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetEditableStatus;
-	public abstract fun blockingGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
-	public abstract fun blockingGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public fun blockingGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetEditableStatus;
+	public fun blockingGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public fun blockingGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public fun blockingGetValidationRulesConfiguration (Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetValidationRulesConfiguration;
-	public abstract fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
-	public abstract fun getEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun getMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
+	public fun getEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun getMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun getMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
 	public fun rxGetCompletionStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxGetMissingMandatoryFieldsCombination (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public fun rxGetValidationRulesConfiguration (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxHasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxHasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun suspendGetCompletionStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendGetEditableStatus (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendGetMissingMandatoryDataElementOperands (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -7277,9 +7301,21 @@ public abstract interface class org/hisp/dhis/android/core/dataset/DataSetInstan
 
 public final class org/hisp/dhis/android/core/dataset/DataSetInstanceService$DefaultImpls {
 	public static fun blockingGetCompletionStatus (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetCompletionStatus;
+	public static fun blockingGetEditableStatus (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetEditableStatus;
+	public static fun blockingGetMissingMandatoryDataElementOperands (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static fun blockingGetMissingMandatoryFieldsCombination (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public static fun blockingGetValidationRulesConfiguration (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;)Lorg/hisp/dhis/android/core/dataset/DataSetValidationRulesConfiguration;
+	public static fun blockingHasDataWriteAccess (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;)Z
+	public static fun getEditableStatus (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun getMissingMandatoryDataElementOperands (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun getMissingMandatoryFieldsCombination (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun hasDataWriteAccess (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;)Lio/reactivex/Single;
 	public static fun rxGetCompletionStatus (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxGetEditableStatus (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxGetMissingMandatoryDataElementOperands (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxGetMissingMandatoryFieldsCombination (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public static fun rxGetValidationRulesConfiguration (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxHasDataWriteAccess (Lorg/hisp/dhis/android/core/dataset/DataSetInstanceService;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/dataset/DataSetInstanceSummary : org/hisp/dhis/android/core/common/CoreObject {
@@ -8356,10 +8392,16 @@ public final class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedD
 }
 
 public abstract interface class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader {
-	public abstract fun blockingDownload ()V
-	public abstract fun download ()Lio/reactivex/Observable;
+	public fun blockingDownload ()V
+	public fun download ()Lio/reactivex/Observable;
 	public abstract fun flowDownload ()Lkotlinx/coroutines/flow/Flow;
-	public abstract fun rxDownload ()Lio/reactivex/Observable;
+	public fun rxDownload ()Lio/reactivex/Observable;
+}
+
+public final class org/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader$DefaultImpls {
+	public static fun blockingDownload (Lorg/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader;)V
+	public static fun download (Lorg/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader;)Lio/reactivex/Observable;
+	public static fun rxDownload (Lorg/hisp/dhis/android/core/domain/aggregated/data/AggregatedDataDownloader;)Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/domain/aggregated/data/internal/AggregatedDataCallBundle {
@@ -9496,24 +9538,24 @@ public final class org/hisp/dhis/android/core/event/EventQueryCriteriaBuilder$Co
 }
 
 public abstract interface class org/hisp/dhis/android/core/event/EventService {
-	public abstract fun blockingCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun blockingCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Z
 	public fun blockingGetEditableStatus (Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventEditableStatus;
-	public abstract fun blockingHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Z
-	public abstract fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
-	public abstract fun blockingIsEditable (Ljava/lang/String;)Z
-	public abstract fun blockingIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Z
-	public abstract fun canAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Z
+	public fun blockingHasDataWriteAccess (Ljava/lang/String;)Z
+	public fun blockingIsEditable (Ljava/lang/String;)Z
+	public fun blockingIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Z
+	public fun canAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public fun getEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun hasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
-	public abstract fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun isEditable (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun isInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
-	public abstract fun rxCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun hasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public fun hasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun isEditable (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun isInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public fun rxCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public fun rxGetEditableStatus (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
-	public abstract fun rxHasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxIsEditable (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public fun rxHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public fun rxHasDataWriteAccess (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxIsEditable (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
 	public abstract fun suspendCanAddEventToEnrollment (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendGetEditableStatus (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/Event;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -9523,9 +9565,24 @@ public abstract interface class org/hisp/dhis/android/core/event/EventService {
 }
 
 public final class org/hisp/dhis/android/core/event/EventService$DefaultImpls {
+	public static fun blockingCanAddEventToEnrollment (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;Ljava/lang/String;)Z
 	public static fun blockingGetEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lorg/hisp/dhis/android/core/event/EventEditableStatus;
+	public static fun blockingHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Z
+	public static fun blockingHasDataWriteAccess (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Z
+	public static fun blockingIsEditable (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Z
+	public static fun blockingIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Z
+	public static fun canAddEventToEnrollment (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public static fun getEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun hasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public static fun hasDataWriteAccess (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun isEditable (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun isInOrgunitRange (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public static fun rxCanAddEventToEnrollment (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 	public static fun rxGetEditableStatus (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxHasCategoryComboAccess (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
+	public static fun rxHasDataWriteAccess (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxIsEditable (Lorg/hisp/dhis/android/core/event/EventService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxIsInOrgunitRange (Lorg/hisp/dhis/android/core/event/EventService;Lorg/hisp/dhis/android/core/event/Event;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/event/EventStatus : java/lang/Enum {
@@ -16965,10 +17022,16 @@ public final class org/hisp/dhis/android/core/server/OrgHispDhisAndroidCoreServe
 }
 
 public abstract interface class org/hisp/dhis/android/core/server/ServerModule {
-	public abstract fun blockingCheckServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun checkServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxCheckServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingCheckServerUrl (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public fun checkServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxCheckServerUrl (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun suspendCheckServerUrl (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/server/ServerModule$DefaultImpls {
+	public static fun blockingCheckServerUrl (Lorg/hisp/dhis/android/core/server/ServerModule;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun checkServerUrl (Lorg/hisp/dhis/android/core/server/ServerModule;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxCheckServerUrl (Lorg/hisp/dhis/android/core/server/ServerModule;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/settings/AnalyticsDhisVisualization : org/hisp/dhis/android/core/common/CoreObject, org/hisp/dhis/android/core/common/ObjectWithUidInterfaceKt {
@@ -18318,10 +18381,16 @@ public final class org/hisp/dhis/android/core/settings/CustomIntentResponseExtra
 }
 
 public abstract interface class org/hisp/dhis/android/core/settings/CustomIntentService {
-	public abstract fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
-	public abstract fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
-	public abstract fun rxEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
+	public fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
+	public fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
+	public fun rxEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
 	public abstract fun suspendEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/settings/CustomIntentService$DefaultImpls {
+	public static fun blockingEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntentService;Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Ljava/util/Map;
+	public static fun evaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntentService;Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
+	public static fun rxEvaluateRequestParams (Lorg/hisp/dhis/android/core/settings/CustomIntentService;Lorg/hisp/dhis/android/core/settings/CustomIntent;Lorg/hisp/dhis/android/core/settings/CustomIntentContext;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/settings/CustomIntentTrigger {
@@ -21965,14 +22034,23 @@ public final class org/hisp/dhis/android/core/trackedentity/internal/TrackerBase
 }
 
 public abstract interface class org/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager {
-	public abstract fun blockingBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun breakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
-	public abstract fun rxBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
-	public abstract fun rxTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun blockingBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun blockingTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun breakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun rxBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun rxTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
 	public abstract fun suspendBreakGlass (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendTransfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun transfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public fun transfer (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+}
+
+public final class org/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager$DefaultImpls {
+	public static fun blockingBreakGlass (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public static fun blockingTransfer (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public static fun breakGlass (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public static fun rxBreakGlass (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public static fun rxTransfer (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
+	public static fun transfer (Lorg/hisp/dhis/android/core/trackedentity/ownership/OwnershipManager;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Completable;
 }
 
 public final class org/hisp/dhis/android/core/trackedentity/ownership/ProgramOwner : org/hisp/dhis/android/core/common/DataObjectKt {

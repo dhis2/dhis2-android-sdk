@@ -30,15 +30,17 @@ package org.hisp.dhis.android.core.domain.aggregated.data
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 
 interface AggregatedDataDownloader {
 
     fun flowDownload(): Flow<AggregatedD2Progress>
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
-    fun download(): Observable<AggregatedD2Progress>
+    fun download(): Observable<AggregatedD2Progress> = rxDownload()
 
-    fun rxDownload(): Observable<AggregatedD2Progress>
+    fun rxDownload(): Observable<AggregatedD2Progress> = flowDownload().asObservable()
 
-    fun blockingDownload()
+    fun blockingDownload() = flowDownload().collectAndWrapException()
 }

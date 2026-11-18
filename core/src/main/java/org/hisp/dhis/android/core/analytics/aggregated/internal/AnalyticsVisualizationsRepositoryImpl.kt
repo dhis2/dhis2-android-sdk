@@ -28,14 +28,11 @@
 
 package org.hisp.dhis.android.core.analytics.aggregated.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.aggregated.AnalyticsVisualizationsRepository
 import org.hisp.dhis.android.core.analytics.aggregated.DimensionItem
 import org.hisp.dhis.android.core.analytics.aggregated.GridAnalyticsResponse
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -56,19 +53,6 @@ internal class AnalyticsVisualizationsRepositoryImpl(
         orgUnits: List<DimensionItem.OrganisationUnitItem>,
     ): AnalyticsVisualizationsRepository {
         return updateParams { params -> params.copy(organisationUnits = orgUnits) }
-    }
-
-    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    override fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
-        return rxSingle { service.evaluate(params) }
-    }
-
-    override fun rxEvaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> {
-        return rxSingle { service.evaluate(params) }
-    }
-
-    override fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {
-        return runBlockingOnIO { service.evaluate(params) }
     }
 
     override suspend fun suspendEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> {

@@ -28,7 +28,9 @@
 package org.hisp.dhis.android.core.analytics.linelist
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EqFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.OrganisationUnitFilterConnector
@@ -80,16 +82,16 @@ interface EventLineListRepository : BaseRepository {
      * It is mandatory to specify a programStage using the method [byProgramStage]. Other parameters are optional.
      */
     @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    fun evaluate(): Single<List<LineListResponse>>
+    fun evaluate(): Single<List<LineListResponse>> = rxEvaluate()
 
-    fun rxEvaluate(): Single<List<LineListResponse>>
+    fun rxEvaluate(): Single<List<LineListResponse>> = rxSingle { suspendEvaluate() }
 
     /**
      * Blocking version of [evaluate].
      *
      * @see evaluate
      */
-    fun blockingEvaluate(): List<LineListResponse>
+    fun blockingEvaluate(): List<LineListResponse> = runBlockingOnIO { suspendEvaluate() }
 
     suspend fun suspendEvaluate(): List<LineListResponse>
 }

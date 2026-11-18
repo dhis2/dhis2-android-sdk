@@ -29,9 +29,11 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.AnalyticsLegendStrategy
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.AggregationType
 
 interface AnalyticsRepository {
@@ -45,11 +47,11 @@ interface AnalyticsRepository {
     fun withAggregationType(aggregationType: AggregationType): AnalyticsRepository
 
     @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
+    fun evaluate(): Single<Result<DimensionalResponse, AnalyticsException>> = rxEvaluate()
 
-    fun rxEvaluate(): Single<Result<DimensionalResponse, AnalyticsException>>
+    fun rxEvaluate(): Single<Result<DimensionalResponse, AnalyticsException>> = rxSingle { suspendEvaluate() }
 
-    fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException>
+    fun blockingEvaluate(): Result<DimensionalResponse, AnalyticsException> = runBlockingOnIO { suspendEvaluate() }
 
     suspend fun suspendEvaluate(): Result<DimensionalResponse, AnalyticsException>
 }

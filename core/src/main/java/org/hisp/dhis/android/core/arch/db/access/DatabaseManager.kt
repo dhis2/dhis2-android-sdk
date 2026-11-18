@@ -28,9 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.db.access
 
-import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
-import java.io.File
 
 /**
  * Interface for managing database lifecycle operations.
@@ -64,12 +62,6 @@ internal interface DatabaseManager {
     fun createOrOpenEncryptedDatabase(databaseName: String, password: String): DatabaseAdapter
 
     fun createOrOpenDatabase(account: DatabaseAccount): DatabaseAdapter
-
-    fun openSQLCipherDatabaseDirectly(
-        databaseFile: File,
-        password: String?,
-        hook: SQLiteDatabaseHook?,
-    ): net.zetetic.database.sqlcipher.SQLiteDatabase
 
     /**
      * Deletes the database with the specified name.

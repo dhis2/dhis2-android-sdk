@@ -317,6 +317,12 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/dataStore/scorecard") ->
                         createMockResponse(DATA_STORE_NAMESPACE_SCORECARD)
 
+                    path == "/api/userDataStore" ->
+                        createMockResponse(USER_DATA_STORE_NAMESPACES)
+
+                    path.startsWith("/api/userDataStore/capture") ->
+                        createMockResponse(USER_DATA_STORE_NAMESPACE_CAPTURE)
+
                     else -> {
                         MockResponse()
                             .setResponseCode(HttpStatusCode.NotFound.value)
@@ -538,6 +544,8 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val DATA_STORE_NAMESPACES = "datastore/namespaces.json"
         private const val DATA_STORE_NAMESPACE_CAPTURE = "datastore/namespace_capture.json"
         private const val DATA_STORE_NAMESPACE_SCORECARD = "datastore/namespace_scorecard.json"
+        private const val USER_DATA_STORE_NAMESPACES = "userdatastore/namespaces.json"
+        private const val USER_DATA_STORE_NAMESPACE_CAPTURE = "userdatastore/namespace_capture.json"
         private const val DATA_SET_COMPLETE_REGISTRATIONS_JSON =
             "dataset/data_set_complete_registrations.json"
         private const val DATA_APPROVALS_MULTIPLE_JSON = "dataapproval/data_approvals_multiple.json"

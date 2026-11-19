@@ -32,4 +32,7 @@ interface DataStoreModule {
 
     fun dataStore(): DataStoreCollectionRepository
     fun dataStoreDownloader(): DataStoreDownloader
+
+    fun userDataStore(): UserDataStoreCollectionRepository
+    fun userDataStoreDownloader(): UserDataStoreDownloader
 }

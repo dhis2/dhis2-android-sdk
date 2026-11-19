@@ -97,6 +97,7 @@ abstract class BaseMockIntegrationTestFullDispatcher : BaseMockIntegrationTest()
 
         private fun downloadDataStore() {
             d2.dataStoreModule().dataStoreDownloader().blockingDownload()
+            d2.dataStoreModule().userDataStoreDownloader().blockingDownload()
         }
 
         private suspend fun storeSomeD2Errors() {

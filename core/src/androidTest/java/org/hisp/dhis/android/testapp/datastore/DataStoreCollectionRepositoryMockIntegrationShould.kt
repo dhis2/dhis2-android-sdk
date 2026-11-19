@@ -130,4 +130,40 @@ class DataStoreCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTe
 
         assertThat(value).isEqualTo("{}")
     }
+
+    @Test
+    fun find_all_user_data_store_entries_apart_from_data_store_ones() {
+        val userEntries = d2.dataStoreModule().userDataStore()
+            .blockingGet()
+
+        assertThat(userEntries.size).isEqualTo(2)
+        assertThat(userEntries.map { it.key() }).containsExactly("preferences", "lastVisited")
+    }
+
+    @Test
+    fun filter_user_data_store_by_key_and_sync_state() {
+        val userEntries = d2.dataStoreModule().userDataStore()
+            .byKey().eq("preferences")
+            .bySyncState().eq(State.SYNCED)
+            .blockingGet()
+
+        assertThat(userEntries.size).isEqualTo(1)
+    }
+
+    @Test
+    fun download_the_json_values_of_user_data_store_entries() {
+        val preferences = d2.dataStoreModule().userDataStore()
+            .value("capture", "preferences")
+            .blockingGet()!!
+            .value()!!
+        val lastVisited = d2.dataStoreModule().userDataStore()
+            .value("capture", "lastVisited")
+            .blockingGet()!!
+            .value()
+
+        val parsed = KotlinxJsonParser.instance.parseToJsonElement(preferences).jsonObject
+        assertThat(parsed["theme"]!!.jsonPrimitive.content).isEqualTo("dark")
+        assertThat(parsed["favoritePrograms"]!!.jsonArray).hasSize(2)
+        assertThat(lastVisited).isEqualTo("\"2026-11-19\"")
+    }
 }

@@ -45,7 +45,7 @@ class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMock
 
     @Before
     fun setUp() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 
     @Test
@@ -89,6 +89,6 @@ class TrackedEntityInstanceDownloadCallEnqueableMockIntegrationShould : BaseMock
 
     @After
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 }

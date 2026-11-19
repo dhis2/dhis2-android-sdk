@@ -94,7 +94,7 @@ class MetadataCallRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     fun response_successful_on_login_wipe_db_and_login() = runTest {
         d2.userModule().logIn(username, password, url).blockingGet()
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         d2.userModule().logIn(username, password, url).blockingGet()
     }
 

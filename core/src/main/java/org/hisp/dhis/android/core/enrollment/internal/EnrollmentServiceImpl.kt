@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.enrollment.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.enrollment.EnrollmentAccess
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentService
@@ -52,7 +49,6 @@ import org.hisp.dhis.android.persistence.trackedentity.ProgramTempOwnerTableInfo
 import org.koin.core.annotation.Singleton
 import java.util.Date
 
-@Suppress("TooManyFunctions")
 @Singleton
 internal class EnrollmentServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
@@ -65,39 +61,10 @@ internal class EnrollmentServiceImpl(
     private val programOwnerStore: ProgramOwnerStore,
 ) : EnrollmentService {
 
-    override fun blockingIsOpen(enrollmentUid: String): Boolean {
-        return runBlockingOnIO { suspendIsOpen(enrollmentUid) }
-    }
-
-    @Deprecated(message = "Use rxIsOpen instead", ReplaceWith("rxIsOpen(enrollmentUid)"))
-    override fun isOpen(enrollmentUid: String): Single<Boolean> {
-        return rxSingle { suspendIsOpen(enrollmentUid) }
-    }
-
-    override fun rxIsOpen(enrollmentUid: String): Single<Boolean> {
-        return rxSingle { suspendIsOpen(enrollmentUid) }
-    }
-
     override suspend fun suspendIsOpen(enrollmentUid: String): Boolean {
         val enrollment = enrollmentRepository.uid(enrollmentUid).suspendGet() ?: return true
 
         return enrollment.status()?.equals(EnrollmentStatus.ACTIVE) ?: false
-    }
-
-    override fun blockingGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): EnrollmentAccess {
-        return runBlockingOnIO { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
-    }
-
-    @Deprecated(
-        message = "Use rxGetEnrollmentAccess instead",
-        ReplaceWith("rxGetEnrollmentAccess(trackedEntityInstanceUid, programUid)"),
-    )
-    override fun getEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
-        return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
-    }
-
-    override fun rxGetEnrollmentAccess(trackedEntityInstanceUid: String, programUid: String): Single<EnrollmentAccess> {
-        return rxSingle { suspendGetEnrollmentAccess(trackedEntityInstanceUid, programUid) }
     }
 
     override suspend fun suspendGetEnrollmentAccess(
@@ -165,22 +132,6 @@ internal class EnrollmentServiceImpl(
             .byOrganisationUnitScope(OrganisationUnit.Scope.SCOPE_DATA_CAPTURE)
             .uid(ownerOrgUnit)
             .suspendExists()
-    }
-
-    override fun blockingGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {
-        return runBlockingOnIO { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
-    }
-
-    @Deprecated(
-        message = "Use rxAllowEventCreation instead",
-        ReplaceWith("rxAllowEventCreation(enrollmentUid, stagesToHide)"),
-    )
-    override fun allowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
-        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
-    }
-
-    override fun rxAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Single<Boolean> {
-        return rxSingle { suspendGetAllowEventCreation(enrollmentUid, stagesToHide) }
     }
 
     override suspend fun suspendGetAllowEventCreation(enrollmentUid: String, stagesToHide: List<String>): Boolean {

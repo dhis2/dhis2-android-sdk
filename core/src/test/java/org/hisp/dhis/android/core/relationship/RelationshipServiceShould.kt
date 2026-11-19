@@ -19,7 +19,7 @@ import org.mockito.kotlin.doReturnConsecutively
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.wheneverBlocking
 
 class RelationshipServiceShould {
 
@@ -50,7 +50,7 @@ class RelationshipServiceShould {
         )
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = true)
-        assertTrue(relationshipService.hasAccessPermission(bidirectionalRelationship))
+        assertTrue(relationshipService.blockingHasAccessPermission(bidirectionalRelationship))
     }
 
     @Test
@@ -62,10 +62,10 @@ class RelationshipServiceShould {
         )
 
         mockTeTypeAccessResponse(fromAccess = false, toAccess = true)
-        assertTrue(!relationshipService.hasAccessPermission(bidirectionalRelationship))
+        assertTrue(!relationshipService.blockingHasAccessPermission(bidirectionalRelationship))
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = false)
-        assertTrue(!relationshipService.hasAccessPermission(bidirectionalRelationship))
+        assertTrue(!relationshipService.blockingHasAccessPermission(bidirectionalRelationship))
     }
 
     @Test
@@ -89,15 +89,15 @@ class RelationshipServiceShould {
         )
 
         mockTeTypeAccessResponse(fromAccess = true, toAccess = true)
-        relationshipService.hasAccessPermission(teTypeRelationship)
+        relationshipService.blockingHasAccessPermission(teTypeRelationship)
         verify(trackedEntityTypeRepository, times(2)).uid(any())
 
         mockProgramAccessResponse(fromAccess = true, toAccess = true)
-        relationshipService.hasAccessPermission(programRelationship)
+        relationshipService.blockingHasAccessPermission(programRelationship)
         verify(programRepository, times(2)).uid(any())
 
         mockProgramStageAccessResponse(fromAccess = true, toAccess = true)
-        relationshipService.hasAccessPermission(programStageRelationship)
+        relationshipService.blockingHasAccessPermission(programStageRelationship)
         verify(programStageRepository, times(2)).uid(any())
     }
 
@@ -110,7 +110,7 @@ class RelationshipServiceShould {
         )
         mockTeTypeAccessResponse(fromAccess = true, toAccess = false)
 
-        assertTrue(relationshipService.hasAccessPermission(unidirectionalRelationship))
+        assertTrue(relationshipService.blockingHasAccessPermission(unidirectionalRelationship))
     }
 
     @Test
@@ -122,22 +122,18 @@ class RelationshipServiceShould {
         )
         mockTeTypeAccessResponse(fromAccess = false, toAccess = false)
 
-        assertTrue(!relationshipService.hasAccessPermission(unidirectionalRelationship))
+        assertTrue(!relationshipService.blockingHasAccessPermission(unidirectionalRelationship))
     }
 
     private fun mockTeTypeAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
-        whenever(
-            trackedEntityTypeRepository.uid(any()).blockingGet(),
-        ) doReturnConsecutively listOf(
+        wheneverBlocking { trackedEntityTypeRepository.uid(any()).suspendGet() } doReturnConsecutively listOf(
             TrackedEntityType.builder().uid("from").access(accessData(fromAccess)).build(),
             TrackedEntityType.builder().uid("to").access(accessData(toAccess)).build(),
         )
     }
 
     private fun mockProgramAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
-        whenever(
-            programRepository.uid(any()).blockingGet(),
-        ) doReturnConsecutively listOf(
+        wheneverBlocking { programRepository.uid(any()).suspendGet() } doReturnConsecutively listOf(
             Program.builder().uid("from").access(accessData(fromAccess))
                 .categoryCombo(ObjectWithUid.create("categoryCombo"))
                 .enrollmentCategoryCombo(ObjectWithUid.create("categoryCombo")).build(),
@@ -148,9 +144,7 @@ class RelationshipServiceShould {
     }
 
     private fun mockProgramStageAccessResponse(fromAccess: Boolean, toAccess: Boolean) {
-        whenever(
-            programStageRepository.uid(any()).blockingGet(),
-        ) doReturnConsecutively listOf(
+        wheneverBlocking { programStageRepository.uid(any()).suspendGet() } doReturnConsecutively listOf(
             ProgramStage.builder().uid("from").access(accessData(fromAccess)).build(),
             ProgramStage.builder().uid("to").access(accessData(toAccess)).build(),
         )

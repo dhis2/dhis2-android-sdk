@@ -28,8 +28,9 @@
 
 package org.hisp.dhis.android.core.user.internal
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.Credentials
@@ -62,22 +63,14 @@ internal class AccountManagerImpl(
     private val oauth2StateSecureStore: OAuth2StateSecureStore,
     private val openIDConnectStateSecureStore: OpenIDConnectStateSecureStore,
 ) : AccountManager {
-    private val accountDeletionSubject = PublishSubject.create<AccountDeletionReason>()
+    private val accountDeletionFlow = MutableSharedFlow<AccountDeletionReason>(extraBufferCapacity = Channel.UNLIMITED)
 
-    override fun getAccounts(): List<DatabaseAccount> {
-        return runBlockingOnIO { getAccountsInternal() }
-    }
-
-    suspend fun getAccountsInternal(): List<DatabaseAccount> {
+    override suspend fun suspendGetAccounts(): List<DatabaseAccount> {
         val configuration = updateCurrentAccountLastAccessDate()
         return configuration?.accounts() ?: emptyList()
     }
 
-    override fun getCurrentAccount(): DatabaseAccount? {
-        return runBlockingOnIO { getCurrentAccountInternal() }
-    }
-
-    suspend fun getCurrentAccountInternal(): DatabaseAccount? {
+    override suspend fun suspendGetCurrentAccount(): DatabaseAccount? {
         val credentials = credentialsSecureStore.get() ?: return null
         val configuration = updateCurrentAccountLastAccessDate()
         return DatabaseConfigurationHelper.getAccount(configuration, credentials.serverUrl, credentials.username)
@@ -92,13 +85,13 @@ internal class AccountManagerImpl(
     }
 
     @Throws(D2Error::class)
-    override fun deleteCurrentAccount() {
+    override suspend fun suspendDeleteCurrentAccount() {
         val credentials = credentialsSecureStore.get()
 
         if (credentials == null) {
             throwNotAnyAuthenticatedUser()
         } else {
-            deleteAccount(credentials)
+            deleteAccountInternal(credentials, AccountDeletionReason.APPLICATION_REQUEST)
         }
     }
 
@@ -124,17 +117,17 @@ internal class AccountManagerImpl(
 
     @Throws(D2Error::class)
     fun deleteAccount(credentials: Credentials) {
-        deleteAccountInternal(credentials, AccountDeletionReason.APPLICATION_REQUEST)
+        runBlockingOnIO { deleteAccountInternal(credentials, AccountDeletionReason.APPLICATION_REQUEST) }
     }
 
     internal fun deleteAccountAndEmit(credentials: Credentials, deletionReason: AccountDeletionReason) {
-        deleteAccountInternal(credentials, deletionReason)
+        runBlockingOnIO { deleteAccountInternal(credentials, deletionReason) }
     }
 
     @Throws(D2Error::class)
-    private fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
-        accountDeletionSubject.onNext(deletionReason)
-        runBlockingOnIO { logOutCall.logOut() }
+    private suspend fun deleteAccountInternal(credentials: Credentials, deletionReason: AccountDeletionReason) {
+        accountDeletionFlow.tryEmit(deletionReason)
+        logOutCall.logOut()
         val configuration = databasesConfigurationStore.get()
         if (configuration != null) {
             val loggedAccount = DatabaseConfigurationHelper.getLoggedAccount(
@@ -165,8 +158,8 @@ internal class AccountManagerImpl(
         }
     }*/
 
-    override fun accountDeletionObservable(): Observable<AccountDeletionReason> {
-        return accountDeletionSubject
+    override fun flowAccountDeletion(): Flow<AccountDeletionReason> {
+        return accountDeletionFlow
     }
 
     private fun updateCurrentAccountLastAccessDate(): DatabasesConfiguration? {

@@ -28,18 +28,44 @@
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 interface DataSetIndicatorEngine {
 
+    @Deprecated(
+        message = "Use rxEvaluate instead",
+        ReplaceWith("rxEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)"),
+    )
     fun evaluate(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,
         orgUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<Double>
+    ): Single<Double> = rxEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
+
+    fun rxEvaluate(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Single<Double> = rxSingle {
+        suspendEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
+    }
 
     fun blockingEvaluate(
+        indicatorUid: String,
+        dataSetUid: String,
+        periodId: String,
+        orgUnitUid: String,
+        attributeOptionComboUid: String,
+    ): Double = runBlockingOnIO {
+        suspendEvaluate(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
+    }
+
+    suspend fun suspendEvaluate(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,

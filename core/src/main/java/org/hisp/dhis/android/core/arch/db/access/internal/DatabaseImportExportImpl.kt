@@ -48,7 +48,6 @@ import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormatNonNull
 import org.koin.core.annotation.Singleton
-import java.io.File
 import java.util.Date
 
 @Singleton
@@ -73,14 +72,9 @@ internal class DatabaseImportExportImpl(
     private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
-    @Deprecated("Use the okio.Path overload.")
-    override fun importDatabase(file: File): DatabaseExportMetadata {
-        return importDatabase(file.toOkioPath())
-    }
-
     @Suppress("TooGenericExceptionCaught")
-    override fun importDatabase(file: Path): DatabaseExportMetadata {
-        if (userModule.blockingIsLogged()) {
+    override suspend fun suspendImportDatabase(file: Path): DatabaseExportMetadata {
+        if (userModule.suspendIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log out to import database")
                 .errorCode(D2ErrorCode.DATABASE_IMPORT_LOGOUT_FIRST)
@@ -138,11 +132,6 @@ internal class DatabaseImportExportImpl(
             fileSystem.deleteIfExists(importMetadataFile)
             fileSystem.deleteIfExists(importDatabaseFile)
         }
-    }
-
-    @Deprecated("Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.")
-    override suspend fun exportLoggedUserDatabase(): File {
-        return exportLoggedUserDatabaseToPath().toFile()
     }
 
     override suspend fun exportLoggedUserDatabaseToPath(): Path {

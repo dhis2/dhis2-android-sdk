@@ -116,7 +116,7 @@ internal class EventLineListServiceImpl(
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
 
-                    val value = programIndicatorEngine.getEventProgramIndicatorValueInternal(it.uid(), pi.uid)
+                    val value = programIndicatorEngine.suspendGetEventProgramIndicatorValue(it.uid(), pi.uid)
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null

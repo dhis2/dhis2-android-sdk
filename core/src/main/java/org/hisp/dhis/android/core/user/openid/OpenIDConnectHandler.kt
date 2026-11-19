@@ -31,17 +31,45 @@ package org.hisp.dhis.android.core.user.openid
 import android.content.Intent
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.user.User
 
+@Suppress("TooManyFunctions")
 interface OpenIDConnectHandler {
-    fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode>
-    fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode
-    fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User>
-    fun blockingHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User
-    fun logOutObservable(): Observable<Unit>
+    @Deprecated(message = "Use rxLogIn instead", ReplaceWith("rxLogIn(config)"))
+    fun logIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> = rxLogIn(config)
+    fun rxLogIn(config: OpenIDConnectConfig): Single<IntentWithRequestCode> = rxSingle { suspendLogIn(config) }
+    fun blockingLogIn(config: OpenIDConnectConfig): IntentWithRequestCode = runBlockingOnIO { suspendLogIn(config) }
+    suspend fun suspendLogIn(config: OpenIDConnectConfig): IntentWithRequestCode
+
+    @Deprecated(
+        message = "Use rxHandleLogInResponse instead",
+        ReplaceWith("rxHandleLogInResponse(serverUrl, intent, requestCode)"),
+    )
+    fun handleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User> =
+        rxHandleLogInResponse(serverUrl, intent, requestCode)
+
+    fun rxHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): Single<User> =
+        rxSingle { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
+
+    fun blockingHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User =
+        runBlockingOnIO { suspendHandleLogInResponse(serverUrl, intent, requestCode) }
+
+    suspend fun suspendHandleLogInResponse(serverUrl: String, intent: Intent?, requestCode: Int): User
+
+    @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
+    fun logOutObservable(): Observable<Unit> = rxLogOutObservable()
+    fun rxLogOutObservable(): Observable<Unit> = flowLogOut().asObservable()
+
+    /**
+     * Emits every time the user is logged out.
+     */
+    fun flowLogOut(): Flow<Unit>
 
     suspend fun suspendSetPin(pin: String): Result<Unit, D2Error>
 

@@ -40,7 +40,7 @@ internal class RelationshipServiceImpl(
     private val trackedEntityTypeRepository: TrackedEntityTypeCollectionRepository,
     private val relationshipTypeRepository: RelationshipTypeCollectionRepository,
 ) : RelationshipService {
-    override fun hasAccessPermission(relationshipType: RelationshipType): Boolean {
+    override suspend fun suspendHasAccessPermission(relationshipType: RelationshipType): Boolean {
         val fromAccess = relationshipType.fromConstraint()?.let { constraintAccess(it) } ?: false
         val toAccess = relationshipType.toConstraint()?.let { constraintAccess(it) } ?: false
 
@@ -53,7 +53,7 @@ internal class RelationshipServiceImpl(
         return writeAccess
     }
 
-    override fun getRelationshipTypesForTrackedEntities(
+    override suspend fun suspendGetRelationshipTypesForTrackedEntities(
         trackedEntityType: String,
         programUid: String?,
     ): List<RelationshipTypeWithEntitySide> {
@@ -62,7 +62,7 @@ internal class RelationshipServiceImpl(
         val potentialRelTypes = relationshipTypeRepository
             .byConstraint(entityType, trackedEntityType)
             .withConstraints()
-            .blockingGet()
+            .suspendGet()
 
         return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
             constraint.trackedEntityType()?.uid() == trackedEntityType &&
@@ -74,7 +74,7 @@ internal class RelationshipServiceImpl(
         }
     }
 
-    override fun getRelationshipTypesForEnrollments(
+    override suspend fun suspendGetRelationshipTypesForEnrollments(
         programUid: String,
     ): List<RelationshipTypeWithEntitySide> {
         val entityType = RelationshipEntityType.PROGRAM_INSTANCE
@@ -82,14 +82,14 @@ internal class RelationshipServiceImpl(
         val potentialRelTypes = relationshipTypeRepository
             .byConstraint(entityType, programUid)
             .withConstraints()
-            .blockingGet()
+            .suspendGet()
 
         return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
             constraint.program()?.uid() == programUid
         }
     }
 
-    override fun getRelationshipTypesForEvents(
+    override suspend fun suspendGetRelationshipTypesForEvents(
         programStageUid: String,
     ): List<RelationshipTypeWithEntitySide> {
         val entityType = RelationshipEntityType.PROGRAM_STAGE_INSTANCE
@@ -97,34 +97,34 @@ internal class RelationshipServiceImpl(
         val potentialRelTypes = relationshipTypeRepository
             .byConstraint(entityType, programStageUid)
             .withConstraints()
-            .blockingGet()
+            .suspendGet()
 
         return mapToApplicableSides(entityType, potentialRelTypes) { constraint ->
             constraint.programStage()?.uid() == programStageUid
         }
     }
 
-    private fun constraintAccess(
+    private suspend fun constraintAccess(
         constraint: RelationshipConstraint,
     ): Boolean = when (constraint.relationshipEntity()) {
         RelationshipEntityType.PROGRAM_INSTANCE -> {
             val programUid = constraint.program()?.uid()
-            programRepository.uid(programUid).blockingGet()!!.access().data().write()
+            programRepository.uid(programUid).suspendGet()!!.access().data().write()
         }
 
         RelationshipEntityType.PROGRAM_STAGE_INSTANCE -> {
             if (constraint.programStage()?.uid() != null) {
                 val programStageUid = constraint.programStage()?.uid()
-                programStageRepository.uid(programStageUid).blockingGet()?.access()!!.data().write()
+                programStageRepository.uid(programStageUid).suspendGet()?.access()!!.data().write()
             } else {
                 val programUid = constraint.program()?.uid()
-                programRepository.uid(programUid).blockingGet()!!.access().data().write()
+                programRepository.uid(programUid).suspendGet()!!.access().data().write()
             }
         }
 
         RelationshipEntityType.TRACKED_ENTITY_INSTANCE -> {
             val teTypeUid = constraint.trackedEntityType()?.uid()
-            trackedEntityTypeRepository.uid(teTypeUid).blockingGet()!!.access().data().write()
+            trackedEntityTypeRepository.uid(teTypeUid).suspendGet()!!.access().data().write()
         }
 
         else -> false

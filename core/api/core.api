@@ -1806,10 +1806,19 @@ public final class org/hisp/dhis/android/core/arch/db/access/DatabaseExportMetad
 }
 
 public abstract interface class org/hisp/dhis/android/core/arch/db/access/DatabaseImportExport {
-	public abstract fun exportLoggedUserDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun blockingImportDatabase (Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public fun exportLoggedUserDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun exportLoggedUserDatabaseToPath (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun importDatabase (Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
-	public abstract fun importDatabase (Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public fun importDatabase (Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public fun importDatabase (Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public abstract fun suspendImportDatabase (Lokio/Path;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/arch/db/access/DatabaseImportExport$DefaultImpls {
+	public static fun blockingImportDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseImportExport;Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public static fun exportLoggedUserDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseImportExport;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun importDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseImportExport;Ljava/io/File;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
+	public static fun importDatabase (Lorg/hisp/dhis/android/core/arch/db/access/DatabaseImportExport;Lokio/Path;)Lorg/hisp/dhis/android/core/arch/db/access/DatabaseExportMetadata;
 }
 
 public abstract class org/hisp/dhis/android/core/arch/db/access/internal/AppDatabase : androidx/room3/RoomDatabase {
@@ -8743,18 +8752,32 @@ public final class org/hisp/dhis/android/core/enrollment/EnrollmentObjectReposit
 }
 
 public abstract interface class org/hisp/dhis/android/core/enrollment/EnrollmentService {
-	public abstract fun allowEventCreation (Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
-	public abstract fun blockingGetAllowEventCreation (Ljava/lang/String;Ljava/util/List;)Z
-	public abstract fun blockingGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentAccess;
-	public abstract fun blockingIsOpen (Ljava/lang/String;)Z
-	public abstract fun getEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun isOpen (Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxAllowEventCreation (Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
-	public abstract fun rxGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
-	public abstract fun rxIsOpen (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun allowEventCreation (Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public fun blockingGetAllowEventCreation (Ljava/lang/String;Ljava/util/List;)Z
+	public fun blockingGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentAccess;
+	public fun blockingIsOpen (Ljava/lang/String;)Z
+	public fun getEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun isOpen (Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxAllowEventCreation (Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public fun rxGetAllowEventCreation (Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public fun rxGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxIsOpen (Ljava/lang/String;)Lio/reactivex/Single;
 	public abstract fun suspendGetAllowEventCreation (Ljava/lang/String;Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendGetEnrollmentAccess (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendIsOpen (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/enrollment/EnrollmentService$DefaultImpls {
+	public static fun allowEventCreation (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public static fun blockingGetAllowEventCreation (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/util/List;)Z
+	public static fun blockingGetEnrollmentAccess (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/enrollment/EnrollmentAccess;
+	public static fun blockingIsOpen (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;)Z
+	public static fun getEnrollmentAccess (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun isOpen (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxAllowEventCreation (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public static fun rxGetAllowEventCreation (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/util/List;)Lio/reactivex/Single;
+	public static fun rxGetEnrollmentAccess (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxIsOpen (Lorg/hisp/dhis/android/core/enrollment/EnrollmentService;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/enrollment/EnrollmentStatus : java/lang/Enum {
@@ -10910,8 +10933,16 @@ public final class org/hisp/dhis/android/core/indicator/OrgHispDhisAndroidCoreIn
 }
 
 public abstract interface class org/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine {
-	public abstract fun blockingEvaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)D
-	public abstract fun evaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun blockingEvaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)D
+	public fun evaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public fun rxEvaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public abstract fun suspendEvaluate (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine$DefaultImpls {
+	public static fun blockingEvaluate (Lorg/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)D
+	public static fun evaluate (Lorg/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
+	public static fun rxEvaluate (Lorg/hisp/dhis/android/core/indicator/datasetindicatorengine/DataSetIndicatorEngine;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/reactivex/Single;
 }
 
 public final class org/hisp/dhis/android/core/legendset/DataElementLegendSetLink : org/hisp/dhis/android/core/common/CoreObject {
@@ -15687,9 +15718,20 @@ public final class org/hisp/dhis/android/core/program/SectionRenderingType : jav
 }
 
 public abstract interface class org/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine {
-	public abstract fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public abstract fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun blockingGetEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun blockingGetEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun getEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public abstract fun getProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun suspendGetEnrollmentProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetEventProgramIndicatorValue (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine$DefaultImpls {
+	public static fun blockingGetEnrollmentProgramIndicatorValue (Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static fun blockingGetEventProgramIndicatorValue (Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static fun getEnrollmentProgramIndicatorValue (Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static fun getEventProgramIndicatorValue (Lorg/hisp/dhis/android/core/program/programindicatorengine/ProgramIndicatorEngine;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class org/hisp/dhis/android/core/program/programindicatorengine/internal/ProgramIndicatorContext {
@@ -16606,15 +16648,35 @@ public abstract interface class org/hisp/dhis/android/core/relationship/Relation
 }
 
 public abstract interface class org/hisp/dhis/android/core/relationship/RelationshipService {
-	public abstract fun getRelationshipTypesForEnrollments (Ljava/lang/String;)Ljava/util/List;
-	public abstract fun getRelationshipTypesForEvents (Ljava/lang/String;)Ljava/util/List;
-	public abstract fun getRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public fun blockingGetRelationshipTypesForEnrollments (Ljava/lang/String;)Ljava/util/List;
+	public fun blockingGetRelationshipTypesForEvents (Ljava/lang/String;)Ljava/util/List;
+	public fun blockingGetRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static synthetic fun blockingGetRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
+	public fun blockingHasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+	public fun getRelationshipTypesForEnrollments (Ljava/lang/String;)Ljava/util/List;
+	public fun getRelationshipTypesForEvents (Ljava/lang/String;)Ljava/util/List;
+	public fun getRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
-	public abstract fun hasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+	public fun hasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+	public abstract fun suspendGetRelationshipTypesForEnrollments (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetRelationshipTypesForEvents (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetRelationshipTypesForTrackedEntities (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun suspendGetRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun suspendHasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipType;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipService$DefaultImpls {
+	public static fun blockingGetRelationshipTypesForEnrollments (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;)Ljava/util/List;
+	public static fun blockingGetRelationshipTypesForEvents (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;)Ljava/util/List;
+	public static fun blockingGetRelationshipTypesForTrackedEntities (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
+	public static synthetic fun blockingGetRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
+	public static fun blockingHasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+	public static fun getRelationshipTypesForEnrollments (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;)Ljava/util/List;
+	public static fun getRelationshipTypesForEvents (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;)Ljava/util/List;
+	public static fun getRelationshipTypesForTrackedEntities (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;)Ljava/util/List;
 	public static synthetic fun getRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/util/List;
+	public static fun hasAccessPermission (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Lorg/hisp/dhis/android/core/relationship/RelationshipType;)Z
+	public static synthetic fun suspendGetRelationshipTypesForTrackedEntities$default (Lorg/hisp/dhis/android/core/relationship/RelationshipService;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/relationship/RelationshipType : org/hisp/dhis/android/core/common/BaseIdentifiableObject, org/hisp/dhis/android/core/common/CoreObject {
@@ -20003,22 +20065,28 @@ public final class org/hisp/dhis/android/core/systeminfo/DHISVersion$Companion {
 
 public abstract interface class org/hisp/dhis/android/core/systeminfo/DHISVersionManager {
 	public abstract fun getBypassVersion ()Ljava/lang/Boolean;
-	public abstract fun getPatchVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
-	public abstract fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
+	public fun getPatchVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public fun getSmsVersion ()Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
 	public fun getVersion ()Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public fun isGreaterOrEqualThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
 	public fun isGreaterThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
-	public abstract fun isVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
+	public fun isVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
 	public abstract fun setBypassVersion (Ljava/lang/Boolean;)V
+	public abstract fun suspendGetPatchVersion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetSmsVersion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendGetVersion (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendIsGreaterOrEqualThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendIsGreaterThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendIsVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/DHISVersionManager$DefaultImpls {
+	public static fun getPatchVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;)Lorg/hisp/dhis/android/core/systeminfo/DHISPatchVersion;
+	public static fun getSmsVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;)Lorg/hisp/dhis/android/core/systeminfo/SMSVersion;
 	public static fun getVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;)Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;
 	public static fun isGreaterOrEqualThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
 	public static fun isGreaterThan (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
+	public static fun isVersion (Lorg/hisp/dhis/android/core/systeminfo/DHISVersionManager;Lorg/hisp/dhis/android/core/systeminfo/DHISVersion;)Z
 }
 
 public final class org/hisp/dhis/android/core/systeminfo/OrgHispDhisAndroidCoreSysteminfoSystemInfoDIModuleModuleKt {
@@ -22849,12 +22917,31 @@ public final class org/hisp/dhis/android/core/user/AccountDeletionReason : java/
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/AccountManager {
-	public abstract fun accountDeletionObservable ()Lio/reactivex/Observable;
-	public abstract fun deleteCurrentAccount ()V
-	public abstract fun getAccounts ()Ljava/util/List;
-	public abstract fun getCurrentAccount ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
+	public fun accountDeletionObservable ()Lio/reactivex/Observable;
+	public fun blockingDeleteCurrentAccount ()V
+	public fun blockingGetAccounts ()Ljava/util/List;
+	public fun blockingGetCurrentAccount ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
+	public fun deleteCurrentAccount ()V
+	public abstract fun flowAccountDeletion ()Lkotlinx/coroutines/flow/Flow;
+	public fun getAccounts ()Ljava/util/List;
+	public fun getCurrentAccount ()Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
 	public abstract fun getMaxAccounts ()Ljava/lang/Integer;
+	public fun rxAccountDeletionObservable ()Lio/reactivex/Observable;
 	public abstract fun setMaxAccounts (Ljava/lang/Integer;)V
+	public abstract fun suspendDeleteCurrentAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetAccounts (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendGetCurrentAccount (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/android/core/user/AccountManager$DefaultImpls {
+	public static fun accountDeletionObservable (Lorg/hisp/dhis/android/core/user/AccountManager;)Lio/reactivex/Observable;
+	public static fun blockingDeleteCurrentAccount (Lorg/hisp/dhis/android/core/user/AccountManager;)V
+	public static fun blockingGetAccounts (Lorg/hisp/dhis/android/core/user/AccountManager;)Ljava/util/List;
+	public static fun blockingGetCurrentAccount (Lorg/hisp/dhis/android/core/user/AccountManager;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
+	public static fun deleteCurrentAccount (Lorg/hisp/dhis/android/core/user/AccountManager;)V
+	public static fun getAccounts (Lorg/hisp/dhis/android/core/user/AccountManager;)Ljava/util/List;
+	public static fun getCurrentAccount (Lorg/hisp/dhis/android/core/user/AccountManager;)Lorg/hisp/dhis/android/core/configuration/internal/DatabaseAccount;
+	public static fun rxAccountDeletionObservable (Lorg/hisp/dhis/android/core/user/AccountManager;)Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/user/AuthenticatedUser : org/hisp/dhis/android/core/common/CoreObject {
@@ -23509,28 +23596,45 @@ public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Config$Companion
 }
 
 public abstract interface class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler {
-	public abstract fun blockingBuildEnrollmentUrl (Ljava/lang/String;)Ljava/lang/String;
-	public abstract fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
+	public fun blockingBuildEnrollmentUrl (Ljava/lang/String;)Ljava/lang/String;
+	public fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
-	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
+	public fun blockingHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun blockingHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public abstract fun blockingLogOut ()V
+	public fun blockingResetRegistration ()V
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public abstract fun flowLogOut ()Lkotlinx/coroutines/flow/Flow;
 	public abstract fun getClientId ()Ljava/lang/String;
 	public abstract fun isDeviceRegistered ()Z
 	public abstract fun isLoggedIn ()Z
-	public abstract fun logOutObservable ()Lio/reactivex/Observable;
-	public abstract fun resetRegistration ()V
-	public abstract fun rxLogOutObservable ()Lio/reactivex/Observable;
+	public fun logOutObservable ()Lio/reactivex/Observable;
+	public fun resetRegistration ()V
+	public fun rxLogOutObservable ()Lio/reactivex/Observable;
+	public abstract fun suspendBuildEnrollmentUrl (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendChangePin (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHandleEnrollmentResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHandleLogInResponse (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendLogOut (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendResetRegistration (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendSetPin (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2Handler$DefaultImpls {
+	public static fun blockingBuildEnrollmentUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;)Ljava/lang/String;
+	public static fun blockingBuildLogoutUrl (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
 	public static fun blockingChangePin (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun blockingHandleEnrollmentResponse (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public static fun blockingHandleLogInResponse (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/user/User;
+	public static fun blockingLogIn (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Config;)Ljava/lang/String;
+	public static fun blockingResetRegistration (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;)V
 	public static fun blockingSetPin (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun logOutObservable (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;)Lio/reactivex/Observable;
+	public static fun resetRegistration (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;)V
+	public static fun rxLogOutObservable (Lorg/hisp/dhis/android/core/user/oauth2/OAuth2Handler;)Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/user/oauth2/OAuth2State {
@@ -23611,19 +23715,33 @@ public final class org/hisp/dhis/android/core/user/openid/OpenIDConnectConfig {
 
 public abstract interface class org/hisp/dhis/android/core/user/openid/OpenIDConnectHandler {
 	public fun blockingChangePin (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun blockingHandleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lorg/hisp/dhis/android/core/user/User;
-	public abstract fun blockingLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lorg/hisp/dhis/android/core/user/openid/IntentWithRequestCode;
+	public fun blockingHandleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lorg/hisp/dhis/android/core/user/User;
+	public fun blockingLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lorg/hisp/dhis/android/core/user/openid/IntentWithRequestCode;
 	public fun blockingSetPin (Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
-	public abstract fun handleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
-	public abstract fun logIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
-	public abstract fun logOutObservable ()Lio/reactivex/Observable;
+	public abstract fun flowLogOut ()Lkotlinx/coroutines/flow/Flow;
+	public fun handleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
+	public fun logIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
+	public fun logOutObservable ()Lio/reactivex/Observable;
+	public fun rxHandleLogInResponse (Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
+	public fun rxLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
+	public fun rxLogOutObservable ()Lio/reactivex/Observable;
 	public abstract fun suspendChangePin (Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendHandleLogInResponse (Ljava/lang/String;Landroid/content/Intent;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun suspendSetPin (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class org/hisp/dhis/android/core/user/openid/OpenIDConnectHandler$DefaultImpls {
 	public static fun blockingChangePin (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun blockingHandleLogInResponse (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;Landroid/content/Intent;I)Lorg/hisp/dhis/android/core/user/User;
+	public static fun blockingLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lorg/hisp/dhis/android/core/user/openid/IntentWithRequestCode;
 	public static fun blockingSetPin (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;)Lorg/hisp/dhis/android/core/arch/helpers/Result;
+	public static fun handleLogInResponse (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
+	public static fun logIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
+	public static fun logOutObservable (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;)Lio/reactivex/Observable;
+	public static fun rxHandleLogInResponse (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Ljava/lang/String;Landroid/content/Intent;I)Lio/reactivex/Single;
+	public static fun rxLogIn (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectConfig;)Lio/reactivex/Single;
+	public static fun rxLogOutObservable (Lorg/hisp/dhis/android/core/user/openid/OpenIDConnectHandler;)Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/util/StringUtils {
@@ -25118,9 +25236,24 @@ public final class org/hisp/dhis/android/core/wipe/internal/TableWiper {
 }
 
 public abstract interface class org/hisp/dhis/android/core/wipe/internal/WipeModule {
-	public abstract fun wipeData ()V
-	public abstract fun wipeEverything ()V
-	public abstract fun wipeMetadata ()V
+	public fun blockingWipeData ()V
+	public fun blockingWipeEverything ()V
+	public fun blockingWipeMetadata ()V
+	public abstract fun suspendWipeData (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendWipeEverything (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun suspendWipeMetadata (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun wipeData ()V
+	public fun wipeEverything ()V
+	public fun wipeMetadata ()V
+}
+
+public final class org/hisp/dhis/android/core/wipe/internal/WipeModule$DefaultImpls {
+	public static fun blockingWipeData (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
+	public static fun blockingWipeEverything (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
+	public static fun blockingWipeMetadata (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
+	public static fun wipeData (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
+	public static fun wipeEverything (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
+	public static fun wipeMetadata (Lorg/hisp/dhis/android/core/wipe/internal/WipeModule;)V
 }
 
 public final class org/hisp/dhis/android/network/dependencyinjection/OrgHispDhisAndroidNetworkDependencyinjectionNetworkDIModuleModuleKt {

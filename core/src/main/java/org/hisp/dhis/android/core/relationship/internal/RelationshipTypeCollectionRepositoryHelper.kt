@@ -25,102 +25,125 @@
  *  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  *  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.hisp.dhis.android.core.relationship.internal
 
-import org.hisp.dhis.android.core.enrollment.Enrollment
-import org.hisp.dhis.android.core.event.Event
+import org.hisp.dhis.android.core.common.IdentifiableColumns
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType
 import org.hisp.dhis.android.core.relationship.RelationshipConstraintType.FROM
 import org.hisp.dhis.android.core.relationship.RelationshipEntityType
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.enrollment.EnrollmentTableInfo
+import org.hisp.dhis.android.persistence.event.EventTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo.Columns
 import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
+import org.hisp.dhis.android.persistence.trackedentity.TrackedEntityInstanceTableInfo
 
 object RelationshipTypeCollectionRepositoryHelper {
 
     @JvmStatic
-    fun availableForTrackedEntityInstanceRawQuery(tei: TrackedEntityInstance?): String {
-        return availableForItemRawQuery(tei, availabilityTeiQuery)
+    fun availableForTrackedEntityInstanceRawQuery(teiUid: String): String {
+        return availableForItemRawQuery(teiUid, availabilityTeiQuery)
     }
 
-    private val availabilityTeiQuery = { tei: TrackedEntityInstance?, type: RelationshipConstraintType? ->
+    private val availabilityTeiQuery = { teiUid: String, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
-            tei?.let { tei ->
-                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
-                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
-                tei.trackedEntityType()?.let { appendKeyStringValue(Columns.TRACKED_ENTITY_TYPE, it) }
-                appendComplexQuery(appendOptionalEnrollmentInProgram(tei))
-            }
+            type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
+            appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.TRACKED_ENTITY_INSTANCE)
+            appendInSubQuery(
+                Columns.TRACKED_ENTITY_TYPE,
+                selectColumnByUid(
+                    TrackedEntityInstanceTableInfo.TABLE_INFO.name(),
+                    TrackedEntityInstanceTableInfo.Columns.TRACKED_ENTITY_TYPE,
+                    teiUid,
+                ),
+            )
+            appendComplexQuery(appendOptionalEnrollmentInProgram(teiUid))
         }
 
         relationshipTypeInConstraint(whereClause.build())
     }
 
-    private fun appendOptionalEnrollmentInProgram(tei: TrackedEntityInstance): String {
+    private fun appendOptionalEnrollmentInProgram(teiUid: String): String {
         return WhereClauseBuilder()
             .appendIsNullValue(Columns.PROGRAM)
             .appendOrInSubQuery(
                 Columns.PROGRAM,
-                "SELECT ${EnrollmentTableInfo.Columns.PROGRAM} FROM ${EnrollmentTableInfo.TABLE_INFO.name()}" +
-                    " WHERE ${EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE} == '${tei.uid()}'",
+                "SELECT ${EnrollmentTableInfo.Columns.PROGRAM} FROM ${EnrollmentTableInfo.TABLE_INFO.name()} " +
+                    "WHERE " +
+                    WhereClauseBuilder()
+                        .appendKeyStringValue(EnrollmentTableInfo.Columns.TRACKED_ENTITY_INSTANCE, teiUid)
+                        .build(),
             )
             .build()
     }
 
     @JvmStatic
-    fun availableForEnrollmentRawQuery(enrollment: Enrollment?): String {
-        return availableForItemRawQuery(enrollment, availableForEnrollment)
+    fun availableForEnrollmentRawQuery(enrollmentUid: String): String {
+        return availableForItemRawQuery(enrollmentUid, availableForEnrollment)
     }
 
-    private val availableForEnrollment = { enrollment: Enrollment?, type: RelationshipConstraintType? ->
+    private val availableForEnrollment = { enrollmentUid: String, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
-            enrollment?.let {
-                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
-                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_INSTANCE)
-                appendKeyStringValue(Columns.PROGRAM, enrollment.program()!!)
-            }
+            type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
+            appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_INSTANCE)
+            appendInSubQuery(
+                Columns.PROGRAM,
+                selectColumnByUid(
+                    EnrollmentTableInfo.TABLE_INFO.name(),
+                    EnrollmentTableInfo.Columns.PROGRAM,
+                    enrollmentUid,
+                ),
+            )
         }
 
         relationshipTypeInConstraint(whereClause.build())
     }
 
     @JvmStatic
-    fun availableForEventRawQuery(event: Event?): String {
-        return availableForItemRawQuery(event, availableForEvent)
+    fun availableForEventRawQuery(eventUid: String): String {
+        return availableForItemRawQuery(eventUid, availableForEvent)
     }
 
-    private val availableForEvent = { event: Event?, type: RelationshipConstraintType? ->
+    private val availableForEvent = { eventUid: String, type: RelationshipConstraintType? ->
         val whereClause = WhereClauseBuilder().apply {
-            event?.let {
-                type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
-                appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_STAGE_INSTANCE)
-                appendComplexQuery(
-                    WhereClauseBuilder()
-                        .appendOrKeyStringValue(Columns.PROGRAM, event.program()!!)
-                        .appendOrKeyStringValue(Columns.PROGRAM_STAGE, event.programStage()!!)
-                        .build(),
-                )
-            }
+            type?.let { appendKeyStringValue(Columns.CONSTRAINT_TYPE, type.name) }
+            appendKeyStringValue(Columns.RELATIONSHIP_ENTITY, RelationshipEntityType.PROGRAM_STAGE_INSTANCE)
+            appendComplexQuery(
+                WhereClauseBuilder()
+                    .appendInSubQuery(
+                        Columns.PROGRAM,
+                        selectColumnByUid(EventTableInfo.TABLE_INFO.name(), EventTableInfo.Columns.PROGRAM, eventUid),
+                    )
+                    .appendOrInSubQuery(
+                        Columns.PROGRAM_STAGE,
+                        selectColumnByUid(
+                            EventTableInfo.TABLE_INFO.name(),
+                            EventTableInfo.Columns.PROGRAM_STAGE,
+                            eventUid,
+                        ),
+                    )
+                    .build(),
+            )
         }
 
         relationshipTypeInConstraint(whereClause.build())
     }
 
-    private fun <T> availableForItemRawQuery(
-        t: T?,
-        availableForItem: (T, RelationshipConstraintType?) -> String,
+    private fun availableForItemRawQuery(
+        uid: String,
+        availableForItem: (String, RelationshipConstraintType?) -> String,
     ): String {
-        return t?.let {
-            "SELECT DISTINCT ${RelationshipTypeTableInfo.Columns.UID} " +
-                "FROM ${RelationshipTypeTableInfo.TABLE_INFO.name()} " +
-                "WHERE ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, FROM)}) " +
-                "OR (${RelationshipTypeTableInfo.Columns.BIDIRECTIONAL} = 1 " +
-                "AND ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(it, null)}))"
-        } ?: ""
+        return "SELECT DISTINCT ${RelationshipTypeTableInfo.Columns.UID} " +
+            "FROM ${RelationshipTypeTableInfo.TABLE_INFO.name()} " +
+            "WHERE ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(uid, FROM)}) " +
+            "OR (${RelationshipTypeTableInfo.Columns.BIDIRECTIONAL} = 1 " +
+            "AND ${RelationshipTypeTableInfo.Columns.UID} IN (${availableForItem(uid, null)}))"
+    }
+
+    private fun selectColumnByUid(table: String, column: String, uid: String): String {
+        return "SELECT $column FROM $table WHERE " +
+            WhereClauseBuilder().appendKeyStringValue(IdentifiableColumns.UID, uid).build()
     }
 
     private fun relationshipTypeInConstraint(whereClause: String): String {

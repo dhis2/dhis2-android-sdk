@@ -30,7 +30,6 @@ package org.hisp.dhis.android.core.arch.repositories.`object`.internal
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.internal.ObjectWithoutUidStore
 import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadOnlyObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteObjectRepository
@@ -121,14 +120,6 @@ internal constructor(
                 .originalException(e)
                 .build()
         }
-    }
-
-    protected fun <V> updateIfChanged(
-        newValue: V?,
-        propertyGetter: (M?) -> V?,
-        updater: (M?, V?) -> M,
-    ): org.hisp.dhis.android.core.common.Unit {
-        return runBlockingOnIO { updateIfChangedInternal(newValue, propertyGetter, updater) }
     }
 
     protected suspend fun <V> updateIfChangedInternal(

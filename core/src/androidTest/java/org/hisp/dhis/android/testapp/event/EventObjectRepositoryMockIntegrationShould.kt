@@ -180,7 +180,7 @@ class EventObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDi
         repository.setGeometry(geometry)
         assertThat(repository.blockingGet()!!.geometry()).isEqualTo(geometry)
 
-        repository.setGeometryInternal(null)
+        repository.suspendSetGeometry(null)
         assertThat(repository.blockingGet()!!.geometry()).isNull()
 
         repository.blockingDelete()

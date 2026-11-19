@@ -28,14 +28,16 @@
 package org.hisp.dhis.android.core.trackedentity
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import okio.Path.Companion.toPath
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.common.Unit
 import org.hisp.dhis.android.core.common.ValueType
 import org.hisp.dhis.android.core.fileresource.FileResourceCollectionRepository
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.program.ProgramTrackedEntityAttributeCollectionRepository
 import org.koin.core.annotation.Singleton
-import java.io.File
 
 @Singleton
 class TrackedEntityInstanceService(
@@ -48,7 +50,7 @@ class TrackedEntityInstanceService(
      * Inherit the tracked entity attribute values from one TEI to another. It only inherits attributes that are marked
      * as "inherited=true" and that belong to program passed as parameter. This method is useful when creating new
      * relationships. Inherited values are persisted in database. Important: this is a blocking method and it should
-     * not be executed in the main thread. Consider the asynchronous version [inheritAttributes].
+     * not be executed in the main thread. Consider the asynchronous version [suspendInheritAttributes].
      *
      * @param fromTeiUid TrackedEntityInstance to inherit values from.
      * @param toTeiUid   TrackedEntityInstance that receive the inherited values.
@@ -57,50 +59,22 @@ class TrackedEntityInstanceService(
      */
     @Throws(D2Error::class)
     fun blockingInheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Unit {
-        val programAttributes = programTrackedEntityAttributeRepository
-            .byProgram().eq(programUid)
-            .blockingGet()
-
-        val attributeUids = programAttributes.mapNotNull { UidsHelper.getUidOrNull(it.trackedEntityAttribute()) }
-
-        val inheritableAttributeUids = trackedEntityAttributeRepository
-            .byUid().`in`(attributeUids)
-            .byInherit().isTrue
-            .blockingGetUids()
-
-        if (inheritableAttributeUids.isNotEmpty()) {
-            val fromTeiAttributes = trackedEntityAttributeValueRepository
-                .byTrackedEntityInstance().eq(fromTeiUid)
-                .byTrackedEntityAttribute().`in`(inheritableAttributeUids)
-                .blockingGet()
-
-            for (attributeValue in fromTeiAttributes) {
-                inheritAttribute(attributeValue, toTeiUid)
-            }
-        }
-
-        return Unit()
+        return runBlockingOnIO { suspendInheritAttributes(fromTeiUid, toTeiUid, programUid) }
     }
 
-    @Throws(D2Error::class)
-    private fun inheritAttribute(attributeValue: TrackedEntityAttributeValue, toTeiUid: String) {
-        val attribute = trackedEntityAttributeRepository.uid(attributeValue.trackedEntityAttribute()).blockingGet()
+    @Deprecated(
+        message = "Use rxInheritAttributes instead",
+        ReplaceWith("rxInheritAttributes(fromTeiUid, toTeiUid, programUid)"),
+    )
+    fun inheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Single<Unit> {
+        return rxInheritAttributes(fromTeiUid, toTeiUid, programUid)
+    }
 
-        if (attribute?.valueType() == ValueType.IMAGE || attribute?.valueType() == ValueType.FILE_RESOURCE) {
-            val file = File(
-                fileResourceCollectionRepository.uid(attributeValue.value()).blockingGet()!!.path()!!,
-            )
-
-            val newFileResourceId = fileResourceCollectionRepository.blockingAdd(file)
-
-            trackedEntityAttributeValueRepository
-                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                .blockingSet(newFileResourceId)
-        } else {
-            trackedEntityAttributeValueRepository
-                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
-                .blockingSet(attributeValue.value())
-        }
+    /**
+     * Rx version of [suspendInheritAttributes].
+     */
+    fun rxInheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Single<Unit> {
+        return rxSingle { suspendInheritAttributes(fromTeiUid, toTeiUid, programUid) }
     }
 
     /**
@@ -113,7 +87,49 @@ class TrackedEntityInstanceService(
      * @param programUid Only attributes associated to this program will be inherited.
      * @return Unit
      */
-    fun inheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Single<Unit> {
-        return Single.fromCallable { blockingInheritAttributes(fromTeiUid, toTeiUid, programUid) }
+    @Throws(D2Error::class)
+    suspend fun suspendInheritAttributes(fromTeiUid: String, toTeiUid: String, programUid: String): Unit {
+        val programAttributes = programTrackedEntityAttributeRepository
+            .byProgram().eq(programUid)
+            .suspendGet()
+
+        val attributeUids = programAttributes.mapNotNull { UidsHelper.getUidOrNull(it.trackedEntityAttribute()) }
+
+        val inheritableAttributeUids = trackedEntityAttributeRepository
+            .byUid().`in`(attributeUids)
+            .byInherit().isTrue
+            .suspendGetUids()
+
+        if (inheritableAttributeUids.isNotEmpty()) {
+            val fromTeiAttributes = trackedEntityAttributeValueRepository
+                .byTrackedEntityInstance().eq(fromTeiUid)
+                .byTrackedEntityAttribute().`in`(inheritableAttributeUids)
+                .suspendGet()
+
+            for (attributeValue in fromTeiAttributes) {
+                inheritAttribute(attributeValue, toTeiUid)
+            }
+        }
+
+        return Unit()
+    }
+
+    @Throws(D2Error::class)
+    private suspend fun inheritAttribute(attributeValue: TrackedEntityAttributeValue, toTeiUid: String) {
+        val attribute = trackedEntityAttributeRepository.uid(attributeValue.trackedEntityAttribute()).suspendGet()
+
+        if (attribute?.valueType() == ValueType.IMAGE || attribute?.valueType() == ValueType.FILE_RESOURCE) {
+            val path = fileResourceCollectionRepository.uid(attributeValue.value()).suspendGet()!!.path()!!.toPath()
+
+            val newFileResourceId = fileResourceCollectionRepository.suspendAdd(path)
+
+            trackedEntityAttributeValueRepository
+                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                .suspendSet(newFileResourceId)
+        } else {
+            trackedEntityAttributeValueRepository
+                .value(attributeValue.trackedEntityAttribute(), toTeiUid)
+                .suspendSet(attributeValue.value())
+        }
     }
 }

@@ -29,16 +29,19 @@
 package org.hisp.dhis.android.core.fileresource
 
 import okio.Path
+import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface FileResourceDirectories {
 
     /**
-     * Requires a logged-in user, since each account has its own directory.
+     * Throws a [D2Error] if no user is logged in.
      */
+    @Throws(D2Error::class)
     fun fileResourceDirectory(): Path
 
     /**
-     * Requires a logged-in user. It is not cleared automatically, so the app has to tidy it up.
+     * Throws a [D2Error] if no user is logged in.
      */
+    @Throws(D2Error::class)
     fun fileCacheResourceDirectory(): Path
 }

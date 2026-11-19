@@ -986,7 +986,7 @@ If you only need a high level overview of the aggregated data status, you can us
 
 ## Dealing with FileResources { #android_sdk_file_resources }
 
-The SDK offers a module (the `FileResourceModule`) that allows to work with files. Files are represented as [Okio](https://square.github.io/okio/) `Path` objects, which can be converted from and to `java.io.File` with `File.toOkioPath()` and `Path.toFile()`.
+The SDK offers a module (the `FileResourceModule`) that allows to work with files. Files are represented as [Okio](https://square.github.io/okio/) `Path` objects, which can be converted from and to `java.io.File` with `File.toOkioPath()` (`Path.get(file)` from Java) and `Path.toFile()`.
 
 In the context of a mobile connection, dealing with fileResources could be high bandwidth consuming. For this reason, fileResources are not downloaded by default when downloading data and they must be explicitly downloaded if wanted. The recommendation is to download to fileResources only if it is important to have them in the device. If they are not downloaded, there is no negative consequence in terms of data integrity; the only consequence is that they are not available in the device.
 
@@ -1050,7 +1050,7 @@ Through this repository it is possible to request files and save new ones.
 
 - **Directories**. Through `directories()`, `fileResourceDirectory()` returns the `sdk_resources` directory where the SDK saves the files associated with the file resources, and `fileCacheResourceDirectory()` returns the `sdk_cache_resources` directory. The cache directory should be the place where volatile files are stored, such as camera photos or images to be resized. Since it is contained in the cache directory, Android may auto-delete its files once the system is about to run out of memory. Third party applications can also delete files from the cache directory. Even the user can manually clear the cache from Settings. However, the fact that the cache can be cleared in the methods explained above should not mean that the cache will automatically get cleared; therefore, the cache will need to be tidied up from time to time proactively.
 
-  Each account has its own directories, so a user must be logged in.
+  Each account has its own directories, so a user must be logged in: otherwise these methods, and the ones of `imageTransformer()`, throw a `D2Error` with `NO_AUTHENTICATED_USER`.
 
   ```kotlin
   val directory = d2.fileResourceModule().directories().fileResourceDirectory()
@@ -1119,4 +1119,4 @@ The members that use `java.io.File` are deprecated and will be removed in a futu
 | `databaseImportExport().importDatabase(file)` | `databaseImportExport().importDatabase(path)` |
 | `databaseImportExport().exportLoggedUserDatabase()` | `databaseImportExport().exportLoggedUserDatabaseToPath()` |
 
-The static helpers look up `D2` globally to resolve the directories of the account, so they need it to be instantiated with a logged-in user even though their signatures do not show it. The module methods make this dependency explicit. The `context` parameter of `FileResourceDirectoryHelper` is not used.
+`FileResourceDirectoryHelper` looks up `D2` globally to resolve the directories of the account, so it needs D2 instantiated even though its signature does not show it, and it returns the shared root directories if no user is logged in. Its `context` parameter is not used. `FileResizerHelper` and `FileCompressionHelper` also work without D2: they write the result next to the source file. The module methods make the dependency on D2 and on a logged-in user explicit.

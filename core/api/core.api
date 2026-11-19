@@ -11361,6 +11361,7 @@ public final class org/hisp/dhis/android/core/maintenance/D2ErrorCode : java/lan
 	public static final field CANT_INSTANTIATE_KEYSTORE Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field COULD_NOT_RESERVE_VALUE_ON_SERVER Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field DATABASE_EXPORT_ENCRYPTED_NOT_SUPPORTED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
+	public static final field DATABASE_EXPORT_FAILED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field DATABASE_EXPORT_LOGIN_FIRST Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field DATABASE_IMPORT_ALREADY_EXISTS Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;
 	public static final field DATABASE_IMPORT_FAILED Lorg/hisp/dhis/android/core/maintenance/D2ErrorCode;

@@ -31,6 +31,8 @@ import org.hisp.dhis.android.core.datastore.DataStoreCollectionRepository
 import org.hisp.dhis.android.core.datastore.DataStoreDownloader
 import org.hisp.dhis.android.core.datastore.DataStoreModule
 import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
+import org.hisp.dhis.android.core.datastore.UserDataStoreCollectionRepository
+import org.hisp.dhis.android.core.datastore.UserDataStoreDownloader
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -38,6 +40,8 @@ internal class DataStoreModuleImpl(
     private val localDataStore: LocalDataStoreCollectionRepository,
     private val dataStoreEntryCollectionRepository: DataStoreCollectionRepository,
     private val dataStoreDownloader: DataStoreDownloader,
+    private val userDataStoreCollectionRepository: UserDataStoreCollectionRepository,
+    private val userDataStoreDownloader: UserDataStoreDownloader,
 ) : DataStoreModule {
     override fun localDataStore(): LocalDataStoreCollectionRepository {
         return localDataStore
@@ -49,5 +53,13 @@ internal class DataStoreModuleImpl(
 
     override fun dataStoreDownloader(): DataStoreDownloader {
         return dataStoreDownloader
+    }
+
+    override fun userDataStore(): UserDataStoreCollectionRepository {
+        return userDataStoreCollectionRepository
+    }
+
+    override fun userDataStoreDownloader(): UserDataStoreDownloader {
+        return userDataStoreDownloader
     }
 }

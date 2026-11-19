@@ -93,6 +93,8 @@ import org.hisp.dhis.android.persistence.datastore.DataStoreDB
 import org.hisp.dhis.android.persistence.datastore.DataStoreDao
 import org.hisp.dhis.android.persistence.datastore.LocalDataStoreDB
 import org.hisp.dhis.android.persistence.datastore.LocalDataStoreDao
+import org.hisp.dhis.android.persistence.datastore.UserDataStoreDB
+import org.hisp.dhis.android.persistence.datastore.UserDataStoreDao
 import org.hisp.dhis.android.persistence.datavalue.DataValueConflictDB
 import org.hisp.dhis.android.persistence.datavalue.DataValueConflictDao
 import org.hisp.dhis.android.persistence.datavalue.DataValueDB
@@ -351,6 +353,7 @@ import org.hisp.dhis.android.persistence.visualization.VisualizationDimensionIte
         SectionIndicatorLinkDB::class,
         DataStoreDB::class,
         LocalDataStoreDB::class,
+        UserDataStoreDB::class,
         DataValueConflictDB::class,
         DataValueDB::class,
         AggregatedDataSyncDB::class,
@@ -503,6 +506,7 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun sectionIndicatorLinkDao(): SectionIndicatorLinkDao
     internal abstract fun dataStoreDao(): DataStoreDao
     internal abstract fun localDataStoreDao(): LocalDataStoreDao
+    internal abstract fun userDataStoreDao(): UserDataStoreDao
     internal abstract fun dataValueConflictDao(): DataValueConflictDao
     internal abstract fun dataValueDao(): DataValueDao
     internal abstract fun aggregatedDataSyncDao(): AggregatedDataSyncDao
@@ -618,6 +622,6 @@ abstract class AppDatabase : RoomDatabase() {
     internal abstract fun visualizationDimensionItemDao(): VisualizationDimensionItemDao
 
     companion object {
-        const val VERSION = 182
+        const val VERSION = 183
     }
 }

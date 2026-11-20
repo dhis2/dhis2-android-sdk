@@ -7980,6 +7980,8 @@ public abstract interface class org/hisp/dhis/android/core/datastore/DataStoreMo
 	public abstract fun dataStore ()Lorg/hisp/dhis/android/core/datastore/DataStoreCollectionRepository;
 	public abstract fun dataStoreDownloader ()Lorg/hisp/dhis/android/core/datastore/DataStoreDownloader;
 	public abstract fun localDataStore ()Lorg/hisp/dhis/android/core/datastore/LocalDataStoreCollectionRepository;
+	public abstract fun userDataStore ()Lorg/hisp/dhis/android/core/datastore/UserDataStoreCollectionRepository;
+	public abstract fun userDataStoreDownloader ()Lorg/hisp/dhis/android/core/datastore/UserDataStoreDownloader;
 }
 
 public final class org/hisp/dhis/android/core/datastore/DataStoreObjectRepository : org/hisp/dhis/android/core/arch/repositories/object/internal/ReadWriteWithValueObjectRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/object/ReadWriteValueObjectRepository {
@@ -8048,6 +8050,26 @@ public final class org/hisp/dhis/android/core/datastore/LocalDataStoreObjectRepo
 
 public final class org/hisp/dhis/android/core/datastore/OrgHispDhisAndroidCoreDatastoreDataStoreDIModuleModuleKt {
 	public static final fun module (Lorg/hisp/dhis/android/core/datastore/DataStoreDIModule;)Lorg/koin/core/module/Module;
+}
+
+public final class org/hisp/dhis/android/core/datastore/UserDataStoreCollectionRepository : org/hisp/dhis/android/core/arch/repositories/collection/internal/ReadOnlyCollectionRepositoryImpl, org/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository {
+	public fun blockingUpload ()V
+	public final fun byDeleted ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/BooleanFilterConnector;
+	public final fun byKey ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun byNamespace ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public final fun bySyncState ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/EnumFilterConnector;
+	public final fun byValue ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/StringFilterConnector;
+	public fun flowUpload ()Lkotlinx/coroutines/flow/Flow;
+	public fun rxUpload ()Lio/reactivex/Observable;
+	public fun upload ()Lio/reactivex/Observable;
+	public final fun value (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/android/core/datastore/DataStoreObjectRepository;
+}
+
+public final class org/hisp/dhis/android/core/datastore/UserDataStoreDownloader : org/hisp/dhis/android/core/arch/repositories/collection/BaseRepository {
+	public final fun blockingDownload ()V
+	public final fun byNamespace ()Lorg/hisp/dhis/android/core/arch/repositories/filters/internal/ListFilterConnector;
+	public final fun flowDownload ()Lkotlinx/coroutines/flow/Flow;
+	public final fun rxDownload ()Lio/reactivex/Observable;
 }
 
 public final class org/hisp/dhis/android/core/datastore/internal/DataStoreModuleWiper : org/hisp/dhis/android/core/wipe/internal/ModuleWiper {
@@ -26006,6 +26028,26 @@ public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTab
 public final class org/hisp/dhis/android/persistence/datastore/LocalDataStoreTableInfo$Columns$Companion {
 }
 
+public final class org/hisp/dhis/android/persistence/datastore/UserDataStoreTableInfo {
+	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datastore/UserDataStoreTableInfo;
+	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
+	public static final field TABLE_NAME Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/datastore/UserDataStoreTableInfo$Columns : org/hisp/dhis/android/core/common/CoreColumns {
+	public static final field Companion Lorg/hisp/dhis/android/persistence/datastore/UserDataStoreTableInfo$Columns$Companion;
+	public static final field DELETED Ljava/lang/String;
+	public static final field KEY Ljava/lang/String;
+	public static final field NAMESPACE Ljava/lang/String;
+	public static final field SYNC_STATE Ljava/lang/String;
+	public static final field VALUE Ljava/lang/String;
+	public fun <init> ()V
+	public fun all ()[Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/android/persistence/datastore/UserDataStoreTableInfo$Columns$Companion {
+}
+
 public final class org/hisp/dhis/android/persistence/datavalue/DataValueConflictTableInfo {
 	public static final field INSTANCE Lorg/hisp/dhis/android/persistence/datavalue/DataValueConflictTableInfo;
 	public static final field TABLE_INFO Lorg/hisp/dhis/android/core/arch/db/tableinfos/TableInfo;
@@ -28964,12 +29006,18 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_d
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/DataStoreCollectionRepository;Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/DataStoreDownloader;Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/LocalDataStoreCollectionRepository;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/UserDataStoreCollectionRepository;Lorg/hisp/dhis/android/core/arch/repositories/collection/ReadOnlyWithUploadCollectionRepository;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/UserDataStoreDownloader;Lorg/hisp/dhis/android/core/arch/repositories/collection/BaseRepository;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreDownloadCall;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreHandler;Lorg/hisp/dhis/android/core/arch/handlers/internal/LinkHandler;Lorg/hisp/dhis/android/core/arch/handlers/internal/HandlerBaseImpl;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreImportHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreModuleImpl;Lorg/hisp/dhis/android/core/datastore/DataStoreModule;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStoreModuleWiper;Lorg/hisp/dhis/android/core/wipe/internal/ModuleWiper;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/DataStorePostCall;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreDownloadCall;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreHandler;Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreHandler;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreImportHandler;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_core_datastore_DataStoreDIModule_single (Lorg/hisp/dhis/android/core/datastore/internal/UserDataStorePostCall;)V
 }
 
 public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_core_datavalue_DataValueDIModuleKt {
@@ -29562,6 +29610,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_networ
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/dataset/DataSetNetworkHandlerImpl;Lorg/hisp/dhis/android/core/dataset/internal/DataSetNetworkHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/datasetcompleteregistration/DataSetCompleteRegistrationNetworkHandlerImpl;Lorg/hisp/dhis/android/core/dataset/internal/DataSetCompleteRegistrationNetworkHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/datastore/DataStoreNetworkHandlerImpl;Lorg/hisp/dhis/android/core/datastore/internal/DataStoreNetworkHandler;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/datastore/UserDataStoreNetworkHandlerImpl;Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreNetworkHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/datavalue/DataValueNetworkHandlerImpl;Lorg/hisp/dhis/android/core/datavalue/internal/DataValueNetworkHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/enrollment/EnrollmentNetworkHandlerImpl;Lorg/hisp/dhis/android/core/enrollment/internal/EnrollmentNetworkHandler;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_network_dependencyinjection_NetworkDIModule_single (Lorg/hisp/dhis/android/network/event/EventNetworkHandlerImpl;Lorg/hisp/dhis/android/core/event/internal/EventNetworkHandler;)V
@@ -29643,6 +29692,7 @@ public final class org/koin/plugin/hints/Koin_hints_org_hisp_dhis_android_persis
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/dataset/SectionStoreImpl;Lorg/hisp/dhis/android/core/dataset/internal/SectionStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datastore/DataStoreStoreImpl;Lorg/hisp/dhis/android/core/datastore/internal/DataStoreEntryStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datastore/LocalDataStoreStoreImpl;Lorg/hisp/dhis/android/core/datastore/internal/LocalDataStoreStore;)V
+	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datastore/UserDataStoreStoreImpl;Lorg/hisp/dhis/android/core/datastore/internal/UserDataStoreEntryStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datavalue/DataValueConflictStoreImpl;Lorg/hisp/dhis/android/core/datavalue/internal/DataValueConflictStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/datavalue/DataValueStoreImpl;Lorg/hisp/dhis/android/core/datavalue/internal/DataValueStore;)V
 	public static final synthetic fun componentscan_org_hisp_dhis_android_persistence_dependencyinjection_PersistenceDIModule_single (Lorg/hisp/dhis/android/persistence/db/access/RoomDatabaseAdapter;Lorg/hisp/dhis/android/core/arch/db/access/DatabaseAdapter;)V

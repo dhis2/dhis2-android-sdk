@@ -95,6 +95,7 @@ class WipeDBCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().limit(1).blockingDownload()
         d2.aggregatedModule().data().blockingDownload()
         d2.dataStoreModule().dataStoreDownloader().blockingDownload()
+        d2.dataStoreModule().userDataStoreDownloader().blockingDownload()
     }
 
     private suspend fun givenOthersInDatabase() {

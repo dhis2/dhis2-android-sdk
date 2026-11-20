@@ -31,6 +31,7 @@ import org.hisp.dhis.android.core.wipe.internal.ModuleWiper
 import org.hisp.dhis.android.core.wipe.internal.TableWiper
 import org.hisp.dhis.android.persistence.datastore.DataStoreTableInfo
 import org.hisp.dhis.android.persistence.datastore.LocalDataStoreTableInfo
+import org.hisp.dhis.android.persistence.datastore.UserDataStoreTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -43,6 +44,7 @@ class DataStoreModuleWiper internal constructor(private val tableWiper: TableWip
         tableWiper.wipeTables(
             LocalDataStoreTableInfo.TABLE_INFO,
             DataStoreTableInfo.TABLE_INFO,
+            UserDataStoreTableInfo.TABLE_INFO,
         )
     }
 }

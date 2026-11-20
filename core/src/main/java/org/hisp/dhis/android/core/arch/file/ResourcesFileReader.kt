@@ -28,7 +28,7 @@
 
 package org.hisp.dhis.android.core.arch.file
 
-import java.io.IOException
+import okio.IOException
 
 class ResourcesFileReader : IFileReader {
     @Throws(IOException::class)

@@ -32,8 +32,10 @@ import androidx.room3.useWriterConnection
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -164,8 +166,14 @@ class DatabaseManagerIntegrationShould {
             val storeRegistry = KoinStoreRegistry()
             val databaseAdapter = RoomDatabaseAdapter(storeRegistry)
             val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
-            databaseManager =
-                RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
+            databaseManager = RoomDatabaseManager(
+                databaseAdapter,
+                context,
+                passwordManager,
+                SqliteDriverFactoryImpl(),
+                AndroidPlatformDirectories(context),
+                FileSystem.SYSTEM,
+            )
         }
 
         @AfterClass

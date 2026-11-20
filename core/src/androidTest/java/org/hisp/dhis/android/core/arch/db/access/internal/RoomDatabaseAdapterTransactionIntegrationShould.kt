@@ -34,8 +34,10 @@ import com.google.common.truth.Truth.assertWithMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.core.constant.Constant
@@ -69,7 +71,16 @@ internal abstract class RoomDatabaseAdapterTransactionIntegrationShould : BaseMo
         context.deleteDatabase(databaseName)
         databaseAdapter = RoomDatabaseAdapter(KoinStoreRegistry())
         val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
-        open(RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl()))
+        open(
+            RoomDatabaseManager(
+                databaseAdapter,
+                context,
+                passwordManager,
+                SqliteDriverFactoryImpl(),
+                AndroidPlatformDirectories(context),
+                FileSystem.SYSTEM,
+            ),
+        )
     }
 
     // Set when a transaction never finished: closing would then wait for it forever.

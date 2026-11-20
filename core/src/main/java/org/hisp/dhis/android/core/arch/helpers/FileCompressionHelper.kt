@@ -52,7 +52,7 @@ object FileCompressionHelper {
     @JvmOverloads
     fun compressFile(fileToCompress: File, targetSizeBytes: Long = IMAGE_TARGET_SIZE_BYTES): File {
         val source = fileToCompress.toOkioPath()
-        val outputDirectory = ImageProcessorLocator.outputDirectory(fileToCompress)
+        val outputDirectory = ImageProcessorLocator.outputDirectory(fileToCompress.absoluteFile.toOkioPath())
         val compressed = ImageProcessorLocator.processor.compress(source, targetSizeBytes, outputDirectory)
         return if (compressed == source) fileToCompress else compressed.toFile()
     }

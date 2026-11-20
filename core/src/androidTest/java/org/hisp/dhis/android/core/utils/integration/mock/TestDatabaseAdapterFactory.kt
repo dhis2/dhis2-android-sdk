@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core.utils.integration.mock
 
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -57,7 +59,14 @@ object TestDatabaseAdapterFactory {
         val context = InstrumentationRegistry.getInstrumentation().context
         val SecureStore = InMemorySecureStore()
         val passwordManager = DatabaseEncryptionPasswordManager.create(SecureStore)
-        val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
+        val databaseManager = RoomDatabaseManager(
+            databaseAdapter,
+            context,
+            passwordManager,
+            SqliteDriverFactoryImpl(),
+            AndroidPlatformDirectories(context),
+            FileSystem.SYSTEM,
+        )
 
         databaseManager.createInMemoryDatabase()
         databaseAdapter.setForeignKeyConstraintsEnabled(false)

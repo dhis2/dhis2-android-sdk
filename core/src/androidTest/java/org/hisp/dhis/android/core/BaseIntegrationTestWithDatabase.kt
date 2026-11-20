@@ -29,8 +29,10 @@ package org.hisp.dhis.android.core
 
 import androidx.test.platform.app.InstrumentationRegistry
 import kotlinx.coroutines.runBlocking
+import okio.FileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.stores.KoinStoreRegistry
+import org.hisp.dhis.android.core.arch.file.internal.AndroidPlatformDirectories
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.access.RoomDatabaseAdapter
@@ -49,7 +51,14 @@ abstract class BaseIntegrationTestWithDatabase {
     open fun setUp() {
         val context = InstrumentationRegistry.getInstrumentation().context
         val passwordManager = DatabaseEncryptionPasswordManager.create(InMemorySecureStore())
-        val roomDatabaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
+        val roomDatabaseManager = RoomDatabaseManager(
+            databaseAdapter,
+            context,
+            passwordManager,
+            SqliteDriverFactoryImpl(),
+            AndroidPlatformDirectories(context),
+            FileSystem.SYSTEM,
+        )
 
         roomDatabaseManager.createOrOpenUnencryptedDatabase("dbName")
     }

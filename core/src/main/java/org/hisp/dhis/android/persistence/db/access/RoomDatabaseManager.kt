@@ -37,16 +37,18 @@ import androidx.sqlite.execSQL
 import kotlinx.coroutines.Dispatchers
 import net.zetetic.database.DatabaseErrorHandler
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
+import okio.FileSystem
+import okio.Path
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.db.access.DatabaseManager
 import org.hisp.dhis.android.core.arch.db.access.internal.AppDatabase
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.hisp.dhis.android.persistence.db.migrations.RoomGeneratedMigrations.ALL_MIGRATIONS
 import org.koin.core.annotation.Singleton
-import java.io.File
 import java.nio.charset.StandardCharsets
 
 /**
@@ -63,6 +65,8 @@ internal class RoomDatabaseManager(
     private val context: Context,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val driverFactory: SqliteDriverFactory,
+    private val platformDirectories: PlatformDirectories,
+    private val fileSystem: FileSystem,
 ) : DatabaseManager {
 
     companion object {
@@ -155,8 +159,8 @@ internal class RoomDatabaseManager(
         }
     }
 
-    override fun openSQLCipherDatabaseDirectly(
-        databaseFile: File,
+    fun openSQLCipherDatabaseDirectly(
+        databasePath: Path,
         password: String?,
         hook: SQLiteDatabaseHook?,
     ): net.zetetic.database.sqlcipher.SQLiteDatabase {
@@ -164,7 +168,7 @@ internal class RoomDatabaseManager(
         NativeLibraryLoader.loadSQLCipher()
 
         return net.zetetic.database.sqlcipher.SQLiteDatabase.openOrCreateDatabase(
-            databaseFile,
+            databasePath.toString(),
             (password ?: "").toByteArray(StandardCharsets.UTF_8),
             null,
             LoggingErrorHandler(TAG),
@@ -175,7 +179,7 @@ internal class RoomDatabaseManager(
     @Suppress("TooGenericExceptionCaught")
     override fun deleteDatabase(databaseName: String, isEncrypted: Boolean): Boolean {
         return try {
-            context.deleteDatabase(databaseName)
+            platformDirectories.deleteDatabase(databaseName)
             if (isEncrypted) {
                 passwordManager.deletePassword(databaseName)
             }
@@ -187,8 +191,7 @@ internal class RoomDatabaseManager(
     }
 
     override fun databaseExists(databaseName: String): Boolean {
-        val dbFile = context.getDatabasePath(databaseName)
-        return dbFile.exists()
+        return fileSystem.exists(platformDirectories.databasePath(databaseName))
     }
 
     override fun disableDatabase() {

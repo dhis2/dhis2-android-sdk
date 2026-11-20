@@ -31,8 +31,8 @@ import io.ktor.http.HttpStatusCode
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.RecordedRequest
+import okio.IOException
 import org.hisp.dhis.android.core.arch.file.IFileReader
-import java.io.IOException
 
 class Dhis2Dispatcher internal constructor(
     private val fileReader: IFileReader,

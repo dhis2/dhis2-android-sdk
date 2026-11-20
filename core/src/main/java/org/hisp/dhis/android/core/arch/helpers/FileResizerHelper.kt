@@ -62,7 +62,7 @@ object FileResizerHelper {
     @Throws(D2Error::class)
     fun resizeFile(fileToResize: File, dimension: Dimension): File {
         val source = fileToResize.toOkioPath()
-        val outputDirectory = ImageProcessorLocator.outputDirectory(fileToResize)
+        val outputDirectory = ImageProcessorLocator.outputDirectory(fileToResize.absoluteFile.toOkioPath())
         val resized = ImageProcessorLocator.processor.resize(source, dimension.toImageDimension(), outputDirectory)
         return if (resized == source) fileToResize else resized.toFile()
     }

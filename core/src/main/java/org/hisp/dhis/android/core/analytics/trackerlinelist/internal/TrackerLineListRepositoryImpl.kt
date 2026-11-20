@@ -28,20 +28,16 @@
 
 package org.hisp.dhis.android.core.analytics.trackerlinelist.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListItem
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListRepository
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListResponse
 import org.hisp.dhis.android.core.analytics.trackerlinelist.TrackerLineListSortingItem
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("TooManyFunctions")
 internal class TrackerLineListRepositoryImpl(
     private val params: TrackerLineListParams,
     private val service: TrackerLineListService,
@@ -92,19 +88,6 @@ internal class TrackerLineListRepositoryImpl(
 
     override fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository {
         return updateParams { params.copy(sorting = listOf(sorting)) }
-    }
-
-    @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    override fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
-        return rxSingle { service.evaluate(params) }
-    }
-
-    override fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> {
-        return rxSingle { service.evaluate(params) }
-    }
-
-    override fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {
-        return runBlockingOnIO { service.evaluate(params) }
     }
 
     override suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException> {

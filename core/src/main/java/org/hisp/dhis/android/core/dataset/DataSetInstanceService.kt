@@ -47,21 +47,26 @@ interface DataSetInstanceService {
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<DataSetEditableStatus>
+    ): Single<DataSetEditableStatus> =
+        rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
 
     fun rxGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<DataSetEditableStatus>
+    ): Single<DataSetEditableStatus> = rxSingle {
+        suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+    }
 
     fun blockingGetEditableStatus(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): DataSetEditableStatus
+    ): DataSetEditableStatus = runBlockingOnIO {
+        suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+    }
 
     suspend fun suspendGetEditableStatus(
         dataSetUid: String,
@@ -74,11 +79,12 @@ interface DataSetInstanceService {
         message = "Use rxHasDataWriteAccess instead",
         ReplaceWith("rxHasDataWriteAccess(dataSetUid)"),
     )
-    fun hasDataWriteAccess(dataSetUid: String): Single<Boolean>
+    fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> = rxHasDataWriteAccess(dataSetUid)
 
-    fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean>
+    fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean> = rxSingle { suspendHasDataWriteAccess(dataSetUid) }
 
-    fun blockingHasDataWriteAccess(dataSetUid: String): Boolean
+    fun blockingHasDataWriteAccess(dataSetUid: String): Boolean =
+        runBlockingOnIO { suspendHasDataWriteAccess(dataSetUid) }
 
     suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean
 
@@ -94,21 +100,36 @@ interface DataSetInstanceService {
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>>
+    ): Single<List<DataElementOperand>> =
+        rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
 
     fun rxGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>>
+    ): Single<List<DataElementOperand>> = rxSingle {
+        suspendGetMissingMandatoryDataElementOperands(
+            dataSetUid,
+            periodId,
+            organisationUnitUid,
+            attributeOptionComboUid,
+        )
+    }
 
     fun blockingGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): List<DataElementOperand>
+    ): List<DataElementOperand> = runBlockingOnIO {
+        suspendGetMissingMandatoryDataElementOperands(
+            dataSetUid,
+            periodId,
+            organisationUnitUid,
+            attributeOptionComboUid,
+        )
+    }
 
     suspend fun suspendGetMissingMandatoryDataElementOperands(
         dataSetUid: String,
@@ -129,21 +150,26 @@ interface DataSetInstanceService {
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>>
+    ): Single<List<DataElementOperand>> =
+        rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
 
     fun rxGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>>
+    ): Single<List<DataElementOperand>> = rxSingle {
+        suspendGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+    }
 
     fun blockingGetMissingMandatoryFieldsCombination(
         dataSetUid: String,
         periodId: String,
         organisationUnitUid: String,
         attributeOptionComboUid: String,
-    ): List<DataElementOperand>
+    ): List<DataElementOperand> = runBlockingOnIO {
+        suspendGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
+    }
 
     suspend fun suspendGetMissingMandatoryFieldsCombination(
         dataSetUid: String,

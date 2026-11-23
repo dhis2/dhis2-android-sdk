@@ -135,11 +135,6 @@ internal class DatabaseImportExportImpl(
         }
     }
 
-    @Deprecated("Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.")
-    override suspend fun exportLoggedUserDatabase(): File {
-        return exportLoggedUserDatabaseToPath().toFile()
-    }
-
     @Suppress("TooGenericExceptionCaught")
     override suspend fun exportLoggedUserDatabaseToPath(): Path {
         val exportMetadataFile = workingFile(ExportMetadata)

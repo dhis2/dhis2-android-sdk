@@ -69,7 +69,7 @@ class HttpHttpsProtocolSwitchRealIntegrationShould : BaseRealIntegrationTest() {
 
         d2.userModule().blockingLogIn(testUsername, testPassword, lowercaseUrl)
 
-        val accountsFirst = d2.userModule().accountManager().getAccounts()
+        val accountsFirst = d2.userModule().accountManager().blockingGetAccounts()
         assertThat(accountsFirst).hasSize(1)
         val firstDbName = accountsFirst[0].databaseName()
 
@@ -78,14 +78,14 @@ class HttpHttpsProtocolSwitchRealIntegrationShould : BaseRealIntegrationTest() {
         d2 = D2Factory.forNewDatabase(isRealIntegration = true)
         d2.userModule().blockingLogIn(testUsername, testPassword, uppercaseUrl)
 
-        val accountsSecond = d2.userModule().accountManager().getAccounts()
+        val accountsSecond = d2.userModule().accountManager().blockingGetAccounts()
 
         // Should be the same account (domain case is normalized)
         assertThat(accountsSecond).hasSize(1)
         assertThat(accountsSecond[0].databaseName()).isEqualTo(firstDbName)
 
         // Cleanup
-        d2.userModule().accountManager().deleteCurrentAccount()
+        d2.userModule().accountManager().blockingDeleteCurrentAccount()
     }
 
     /**

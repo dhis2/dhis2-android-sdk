@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.event
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
@@ -61,8 +63,18 @@ class EventDownloader internal constructor(
      *
      * @return -
      */
-    fun flowDownload(): Flow<TrackerD2Progress> {
-        return call.download(params)
+    fun flowDownload(): Flow<TrackerD2Progress> = flow {
+        emitAll(call.download(resolveFilterUids(params)))
+    }
+
+    private suspend fun resolveFilterUids(params: ProgramDataDownloadParams): ProgramDataDownloadParams {
+        return params.eventFilterUids?.let { filterUids ->
+            val eventFilters = eventFilterCollectionRepository
+                .byUid().`in`(filterUids)
+                .withEventDataFilters()
+                .suspendGet()
+            params.copy(eventFilters = eventFilters, eventFilterUids = null)
+        } ?: params
     }
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
@@ -103,17 +115,13 @@ class EventDownloader internal constructor(
 
     fun byFilterUid(): ListFilterConnector<EventDownloader, String> {
         return connectorFactory.listConnector { filterUids ->
-            val eventFilters = eventFilterCollectionRepository
-                .byUid().`in`(filterUids)
-                .withEventDataFilters()
-                .blockingGet()
-            params.copy(eventFilters = eventFilters)
+            params.copy(eventFilterUids = filterUids)
         }
     }
 
     fun byEventFilter(): ListFilterConnector<EventDownloader, EventFilter> =
         connectorFactory.listConnector { eventFilters ->
-            params.copy(eventFilters = eventFilters)
+            params.copy(eventFilters = eventFilters, eventFilterUids = null)
         }
 
     /**

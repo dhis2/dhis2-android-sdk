@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.systeminfo.internal
 
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
@@ -60,22 +59,14 @@ internal class DHISVersionManagerImpl internal constructor(
                 .build()
     }
 
-    override fun getPatchVersion(): DHISPatchVersion? {
-        return runBlockingOnIO { getPatchVersionInternal() }
-    }
-
-    internal suspend fun getPatchVersionInternal(): DHISPatchVersion? {
+    override suspend fun suspendGetPatchVersion(): DHISPatchVersion? {
         return patchVersion ?: systemInfoStore.selectFirst()?.let { systemInfo ->
             systemInfo.version()?.let { DHISPatchVersion.getValue(it, getBypassVersion()) }
                 .also { patch -> patchVersion = patch }
         }
     }
 
-    override fun getSmsVersion(): SMSVersion? {
-        return runBlockingOnIO { getSmsVersionInternal() }
-    }
-
-    internal suspend fun getSmsVersionInternal(): SMSVersion? {
+    override suspend fun suspendGetSmsVersion(): SMSVersion? {
         return smsVersion
             ?: systemInfoStore.selectFirst()?.let { systemInfo ->
                 systemInfo.version()?.let { SMSVersion.getValue(it, getBypassVersion()) }
@@ -87,11 +78,7 @@ internal class DHISVersionManagerImpl internal constructor(
         return bypassDHIS2Version
     }
 
-    override fun isVersion(version: DHISVersion): Boolean {
-        return runBlockingOnIO { isVersionInternal(version) }
-    }
-
-    internal suspend fun isVersionInternal(version: DHISVersion): Boolean {
+    override suspend fun suspendIsVersion(version: DHISVersion): Boolean {
         return version === suspendGetVersion()
     }
 

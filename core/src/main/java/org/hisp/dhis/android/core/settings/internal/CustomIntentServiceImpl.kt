@@ -28,9 +28,6 @@
 
 package org.hisp.dhis.android.core.settings.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.organisationunit.internal.OrganisationUnitStore
 import org.hisp.dhis.android.core.settings.CustomIntent
 import org.hisp.dhis.android.core.settings.CustomIntentContext
@@ -47,31 +44,6 @@ internal class CustomIntentServiceImpl(
     private val userStore: UserStore,
     private val orgunitStore: OrganisationUnitStore,
 ) : CustomIntentService {
-    @Deprecated(
-        message = "Use rxEvaluateRequestParams instead",
-        ReplaceWith("rxEvaluateRequestParams(customIntent, context)"),
-    )
-    override fun evaluateRequestParams(
-        customIntent: CustomIntent,
-        context: CustomIntentContext,
-    ): Single<Map<String, Any?>> {
-        return rxSingle { suspendEvaluateRequestParams(customIntent, context) }
-    }
-
-    override fun rxEvaluateRequestParams(
-        customIntent: CustomIntent,
-        context: CustomIntentContext,
-    ): Single<Map<String, Any?>> {
-        return rxSingle { suspendEvaluateRequestParams(customIntent, context) }
-    }
-
-    override fun blockingEvaluateRequestParams(
-        customIntent: CustomIntent,
-        context: CustomIntentContext,
-    ): Map<String, Any?> {
-        return runBlockingOnIO { suspendEvaluateRequestParams(customIntent, context) }
-    }
-
     override suspend fun suspendEvaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,

@@ -214,7 +214,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
         val pushedEnrollment = getEnrollmentByTrackedEntityInstanceFromDb(trackedEntityInstanceUid)
         val pushedEvent = getEventFromDb(eventUid)
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
 
         downloadMetadata()
 
@@ -253,7 +253,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         downloadMetadata()
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid).blockingDownload()
@@ -281,7 +281,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         downloadMetadata()
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload()
@@ -307,7 +307,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstances().byUid().eq(newUid1).blockingUpload()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         downloadMetadata()
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(newUid1).blockingDownload()
@@ -386,7 +386,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         downloadMetadata()
 
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq(teiA.uid()).blockingDownload()
@@ -489,7 +489,7 @@ class TrackedEntityInstancePostCallRealIntegrationShould : BaseRealIntegrationTe
 
         d2.trackedEntityModule().trackedEntityInstances().blockingUpload()
 
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         downloadMetadata()
         d2.trackedEntityModule().trackedEntityInstanceDownloader().byUid().eq("LxMVYhJm3Jp").blockingDownload()
 

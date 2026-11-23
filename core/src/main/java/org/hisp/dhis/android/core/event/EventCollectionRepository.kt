@@ -328,10 +328,10 @@ class EventCollectionRepository internal constructor(
     }
 
     fun countTrackedEntityInstances(): Int {
-        return runBlockingOnIO { countTrackedEntityInstancesInternal() }
+        return runBlockingOnIO { suspendCountTrackedEntityInstances() }
     }
 
-    private suspend fun countTrackedEntityInstancesInternal(): Int {
+    suspend fun suspendCountTrackedEntityInstances(): Int {
         return eventStore.countTeisWhereEvents(whereClause)
     }
 

@@ -70,6 +70,8 @@ internal open class ReadOnlyWithTransformerCollectionRepositoryImpl<
         return runBlockingOnIO { getWithoutChildrenInternal() }
     }
 
+    suspend fun suspendGetWithoutChildren(): List<M> = getWithoutChildrenInternal()
+
     suspend fun getWithoutChildrenInternal(): List<M> {
         return store.selectWhere(
             whereClause,

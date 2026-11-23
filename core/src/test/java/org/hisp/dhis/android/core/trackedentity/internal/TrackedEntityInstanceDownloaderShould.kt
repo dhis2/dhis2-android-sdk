@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.trackedentity.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.flow.emptyFlow
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilterConnector
 import org.hisp.dhis.android.core.program.internal.ProgramDataDownloadParams
 import org.hisp.dhis.android.core.programstageworkinglist.ProgramStageWorkingList
@@ -40,14 +41,19 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.KArgumentCaptor
+import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class TrackedEntityInstanceDownloaderShould {
-    private val call: TrackedEntityInstanceDownloadCall = mock()
+    private val call: TrackedEntityInstanceDownloadCall = mock {
+        on { download(any()) } doReturn emptyFlow()
+    }
     private val programStageWorkingListCollectionRepository: ProgramStageWorkingListCollectionRepository = mock()
     private val trackedEntityInstanceFilterCollectionRepository: TrackedEntityInstanceFilterCollectionRepository =
         mock()
@@ -85,7 +91,7 @@ class TrackedEntityInstanceDownloaderShould {
         whenever(programStageWorkingListCollectionRepository.withDataFilters()).thenReturn(
             programStageWorkingListCollectionRepository,
         )
-        whenever(programStageWorkingListCollectionRepository.blockingGet()).thenReturn(emptyList())
+        programStageWorkingListCollectionRepository.stub { onBlocking { suspendGet() } doReturn emptyList() }
 
         whenever(trackedEntityInstanceFilterCollectionRepository.byUid()).thenReturn(connectorTei)
         whenever(connectorTei.`in`(listOf(filterUid))).thenReturn(trackedEntityInstanceFilterCollectionRepository)
@@ -104,8 +110,8 @@ class TrackedEntityInstanceDownloaderShould {
         whenever(trackedEntityInstanceFilterCollectionRepositoryList.withAttributeValueFilters()).thenReturn(
             trackedEntityInstanceFilterCollectionRepositoryList,
         )
-        whenever(trackedEntityInstanceFilterCollectionRepository.blockingGet()).thenReturn(listOf(teiFilter))
-        whenever(trackedEntityInstanceFilterCollectionRepositoryList.blockingGet()).thenReturn(teiFilterList)
+        trackedEntityInstanceFilterCollectionRepository.stub { onBlocking { suspendGet() } doReturn listOf(teiFilter) }
+        trackedEntityInstanceFilterCollectionRepositoryList.stub { onBlocking { suspendGet() } doReturn teiFilterList }
     }
 
     @Test
@@ -117,7 +123,7 @@ class TrackedEntityInstanceDownloaderShould {
             .limit(500)
             .byProgramStatus(EnrollmentScope.ONLY_ACTIVE)
             .overwrite(true)
-            .download()
+            .blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -132,7 +138,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_uid_eq_params() {
-        downloader.byUid().eq("uid").download()
+        downloader.byUid().eq("uid").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -143,7 +149,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_uid_in_params() {
-        downloader.byUid().`in`("uid0", "uid1", "uid2").download()
+        downloader.byUid().`in`("uid0", "uid1", "uid2").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -156,7 +162,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_eq_params() {
-        downloader.byFilterUid().eq("filterUid").download()
+        downloader.byFilterUid().eq("filterUid").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -167,7 +173,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_filter_uid_in_params() {
-        downloader.byFilterUid().`in`("filterUid0", "filterUid1", "filterUid2").download()
+        downloader.byFilterUid().`in`("filterUid0", "filterUid1", "filterUid2").blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -181,7 +187,7 @@ class TrackedEntityInstanceDownloaderShould {
     @Test
     fun should_parse_tracked_entity_instance_filter_params() {
         val trackedEntityInstanceFilter: TrackedEntityInstanceFilter = mock()
-        downloader.byTrackedEntityInstanceFilter().eq(trackedEntityInstanceFilter).download()
+        downloader.byTrackedEntityInstanceFilter().eq(trackedEntityInstanceFilter).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -194,7 +200,7 @@ class TrackedEntityInstanceDownloaderShould {
         val programStageWorkingList1: ProgramStageWorkingList = mock()
         val programStageWorkingList2: ProgramStageWorkingList = mock()
         downloader.byProgramStageWorkingList().`in`(listOf(programStageWorkingList1, programStageWorkingList2))
-            .download()
+            .blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -205,7 +211,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_not_download_file_resources_by_default() {
-        downloader.download()
+        downloader.blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -215,7 +221,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_download_file_resources_params() {
-        downloader.downloadFileResources(true).download()
+        downloader.downloadFileResources(true).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 
@@ -225,7 +231,7 @@ class TrackedEntityInstanceDownloaderShould {
 
     @Test
     fun should_parse_download_file_resources_params_when_disabled() {
-        downloader.downloadFileResources(false).download()
+        downloader.downloadFileResources(false).blockingDownload()
 
         verify(call).download(paramsCapture.capture())
 

@@ -27,8 +27,9 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.koin.core.annotation.Singleton
 
@@ -36,17 +37,17 @@ import org.koin.core.annotation.Singleton
 internal class OAuth2LogoutHandler(
     private val credentialsSecureStore: CredentialsSecureStore,
 ) {
-    private val logoutSubject = PublishSubject.create<Unit>()
+    private val logoutFlow = MutableSharedFlow<Unit>(extraBufferCapacity = Channel.UNLIMITED)
 
     fun logOut() {
         val credentials = credentialsSecureStore.get()
         if (credentials?.oauth2State != null) {
             credentialsSecureStore.remove()
-            logoutSubject.onNext(Unit)
+            logoutFlow.tryEmit(Unit)
         }
     }
 
-    fun logOutObservable(): Observable<Unit> {
-        return logoutSubject
+    fun logOutFlow(): Flow<Unit> {
+        return logoutFlow
     }
 }

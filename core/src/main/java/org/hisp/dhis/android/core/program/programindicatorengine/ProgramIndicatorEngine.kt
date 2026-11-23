@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.android.core.program.programindicatorengine
 
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
+
 interface ProgramIndicatorEngine {
     /**
      * @param enrollmentUid Enrollment uid to evaluate the program indicator
@@ -46,6 +48,13 @@ interface ProgramIndicatorEngine {
         programIndicatorUid: String,
     ): String?
 
+    @Deprecated(
+        message = "Use blockingGetEnrollmentProgramIndicatorValue instead",
+        ReplaceWith("blockingGetEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)"),
+    )
+    fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? =
+        blockingGetEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
+
     /**
      * Evaluates a program indicator in the context of an enrollment. This is only intended to evaluate the
      * called "inline program indicator" (those indicators that appear at data entry) or line-list indicators.
@@ -54,7 +63,20 @@ interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
+    fun blockingGetEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? =
+        runBlockingOnIO { suspendGetEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid) }
+
+    /**
+     * Suspending version of [blockingGetEnrollmentProgramIndicatorValue].
+     */
+    suspend fun suspendGetEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String?
+
+    @Deprecated(
+        message = "Use blockingGetEventProgramIndicatorValue instead",
+        ReplaceWith("blockingGetEventProgramIndicatorValue(eventUid, programIndicatorUid)"),
+    )
+    fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? =
+        blockingGetEventProgramIndicatorValue(eventUid, programIndicatorUid)
 
     /**
      * Evaluates a program indicator in the context of an event (single or tracker). This is only intended to
@@ -65,5 +87,11 @@ interface ProgramIndicatorEngine {
      * @param programIndicatorUid Program indicator to evaluate
      * @return Program indicator evaluation
      */
-    fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String?
+    fun blockingGetEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? =
+        runBlockingOnIO { suspendGetEventProgramIndicatorValue(eventUid, programIndicatorUid) }
+
+    /**
+     * Suspending version of [blockingGetEventProgramIndicatorValue].
+     */
+    suspend fun suspendGetEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String?
 }

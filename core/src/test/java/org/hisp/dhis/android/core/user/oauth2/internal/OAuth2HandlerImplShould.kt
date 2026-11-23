@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.user.oauth2.internal
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.hisp.dhis.android.core.arch.helpers.Result
@@ -548,16 +549,24 @@ class OAuth2HandlerImplShould {
     }
 
     @Test
+    fun flowLogOut_delegates_to_logout_handler() {
+        handler.flowLogOut()
+        verify(logoutHandler).logOutFlow()
+    }
+
+    @Test
     fun rxLogOutObservable_delegates_to_logout_handler() {
+        whenever(logoutHandler.logOutFlow()).thenReturn(emptyFlow())
         handler.rxLogOutObservable()
-        verify(logoutHandler).logOutObservable()
+        verify(logoutHandler).logOutFlow()
     }
 
     @Test
     @Suppress("DEPRECATION")
     fun logOutObservable_delegates_to_logout_handler() {
+        whenever(logoutHandler.logOutFlow()).thenReturn(emptyFlow())
         handler.logOutObservable()
-        verify(logoutHandler).logOutObservable()
+        verify(logoutHandler).logOutFlow()
     }
 
     // endregion
@@ -680,7 +689,7 @@ class OAuth2HandlerImplShould {
         oauth2SecureStore.tempState = "s"
         oauth2SecureStore.tempCodeVerifier = "v"
 
-        handler.resetRegistration()
+        handler.blockingResetRegistration()
 
         verify(keyStoreManager).deleteKey(KEY_ID)
         assertThat(oauth2SecureStore.clientId).isNull()
@@ -694,7 +703,7 @@ class OAuth2HandlerImplShould {
 
     @Test
     fun resetRegistration_skips_keypair_deletion_when_no_key_id() {
-        handler.resetRegistration()
+        handler.blockingResetRegistration()
 
         verify(keyStoreManager, never()).deleteKey(any())
     }

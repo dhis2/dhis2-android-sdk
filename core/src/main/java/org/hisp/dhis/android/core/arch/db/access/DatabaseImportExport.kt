@@ -28,25 +28,34 @@
 package org.hisp.dhis.android.core.arch.db.access
 
 import okio.Path
+import okio.Path.Companion.toOkioPath
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import java.io.File
 
 interface DatabaseImportExport {
 
     @Deprecated(
-        "Use the okio.Path overload.",
-        ReplaceWith("importDatabase(file.toOkioPath())", "okio.Path.Companion.toOkioPath"),
+        "Use blockingImportDatabase with an okio.Path.",
+        ReplaceWith("blockingImportDatabase(file.toOkioPath())", "okio.Path.Companion.toOkioPath"),
     )
-    fun importDatabase(file: File): DatabaseExportMetadata
+    fun importDatabase(file: File): DatabaseExportMetadata = blockingImportDatabase(file.toOkioPath())
+
+    @Deprecated(message = "Use blockingImportDatabase instead", ReplaceWith("blockingImportDatabase(file)"))
+    @Throws(D2Error::class)
+    fun importDatabase(file: Path): DatabaseExportMetadata = blockingImportDatabase(file)
 
     @Throws(D2Error::class)
-    fun importDatabase(file: Path): DatabaseExportMetadata
+    fun blockingImportDatabase(file: Path): DatabaseExportMetadata = runBlockingOnIO { suspendImportDatabase(file) }
+
+    @Throws(D2Error::class)
+    suspend fun suspendImportDatabase(file: Path): DatabaseExportMetadata
 
     @Deprecated(
         "Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.",
         ReplaceWith("exportLoggedUserDatabaseToPath().toFile()"),
     )
-    suspend fun exportLoggedUserDatabase(): File
+    suspend fun exportLoggedUserDatabase(): File = exportLoggedUserDatabaseToPath().toFile()
 
     @Throws(D2Error::class)
     suspend fun exportLoggedUserDatabaseToPath(): Path

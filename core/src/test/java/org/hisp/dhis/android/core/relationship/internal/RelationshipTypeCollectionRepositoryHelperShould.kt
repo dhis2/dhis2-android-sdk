@@ -28,18 +28,12 @@
 package org.hisp.dhis.android.core.relationship.internal
 
 import com.google.common.truth.Truth.assertThat
-import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 @RunWith(JUnit4::class)
 class RelationshipTypeCollectionRepositoryHelperShould {
-
-    private val trackedEntityInstance: TrackedEntityInstance = mock()
 
     /**
      * Test to showcase the generated sql query
@@ -47,12 +41,9 @@ class RelationshipTypeCollectionRepositoryHelperShould {
     @Test
     fun create_tracked_entity_instance_raw_query() {
         val teiUid = "tei_uid"
-        val teiTypeUid = "tei_type_uid"
-        whenever(trackedEntityInstance.uid()).doReturn(teiUid)
-        whenever(trackedEntityInstance.trackedEntityType()).doReturn(teiTypeUid)
 
-        val rawQuery =
-            RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery(trackedEntityInstance)
+        val rawQuery = RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery(teiUid)
+        val teiTypeSubQuery = "SELECT trackedEntityType FROM TrackedEntityInstance WHERE uid = '$teiUid'"
 
         assertThat(rawQuery).isEqualTo(
             "SELECT DISTINCT uid FROM RelationshipType " +
@@ -61,9 +52,9 @@ class RelationshipTypeCollectionRepositoryHelperShould {
                 "SELECT relationshipType FROM RelationshipConstraint " +
                 "WHERE constraintType = 'FROM' " +
                 "AND relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
-                "AND trackedEntityType = '$teiTypeUid' " +
+                "AND trackedEntityType IN ($teiTypeSubQuery) " +
                 "AND (program IS NULL " +
-                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
+                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance = '$teiUid'))" +
                 ") " +
                 "OR " +
                 "(" +
@@ -72,11 +63,48 @@ class RelationshipTypeCollectionRepositoryHelperShould {
                 "(" +
                 "SELECT relationshipType FROM RelationshipConstraint " +
                 "WHERE relationshipEntity = 'TRACKED_ENTITY_INSTANCE' " +
-                "AND trackedEntityType = '$teiTypeUid' " +
+                "AND trackedEntityType IN ($teiTypeSubQuery) " +
                 "AND (program IS NULL " +
-                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance == '$teiUid'))" +
+                "OR program IN (SELECT program FROM Enrollment WHERE trackedEntityInstance = '$teiUid'))" +
                 ")" +
                 ")",
+        )
+    }
+
+    @Test
+    fun create_enrollment_raw_query() {
+        val enrollmentUid = "enrollment_uid"
+
+        val rawQuery = RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery(enrollmentUid)
+
+        val constraint = "relationshipEntity = 'PROGRAM_INSTANCE' " +
+            "AND program IN (SELECT program FROM Enrollment WHERE uid = '$enrollmentUid')"
+
+        assertThat(rawQuery).isEqualTo(
+            "SELECT DISTINCT uid FROM RelationshipType " +
+                "WHERE uid IN (SELECT relationshipType FROM RelationshipConstraint " +
+                "WHERE constraintType = 'FROM' AND $constraint) " +
+                "OR (bidirectional = 1 " +
+                "AND uid IN (SELECT relationshipType FROM RelationshipConstraint WHERE $constraint))",
+        )
+    }
+
+    @Test
+    fun create_event_raw_query() {
+        val eventUid = "event_uid"
+
+        val rawQuery = RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery(eventUid)
+
+        val constraint = "relationshipEntity = 'PROGRAM_STAGE_INSTANCE' " +
+            "AND (program IN (SELECT program FROM Event WHERE uid = '$eventUid') " +
+            "OR programStage IN (SELECT programStage FROM Event WHERE uid = '$eventUid'))"
+
+        assertThat(rawQuery).isEqualTo(
+            "SELECT DISTINCT uid FROM RelationshipType " +
+                "WHERE uid IN (SELECT relationshipType FROM RelationshipConstraint " +
+                "WHERE constraintType = 'FROM' AND $constraint) " +
+                "OR (bidirectional = 1 " +
+                "AND uid IN (SELECT relationshipType FROM RelationshipConstraint WHERE $constraint))",
         )
     }
 }

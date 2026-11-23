@@ -42,34 +42,46 @@ class PerformanceHintsService internal constructor(
     private val programRulesPerProgramThreshold: Int,
 ) {
     fun areThereExcessiveOrganisationUnits(): Boolean {
-        return runBlockingOnIO { organisationUnitStore.count() > organisationUnitThreshold }
+        return runBlockingOnIO { suspendAreThereExcessiveOrganisationUnits() }
+    }
+
+    suspend fun suspendAreThereExcessiveOrganisationUnits(): Boolean {
+        return organisationUnitStore.count() > organisationUnitThreshold
     }
 
     val programsWithExcessiveProgramRules: List<Program?>
-        get() {
-            return runBlockingOnIO {
-                val programRules = programRuleStore.selectAll()
+        get() = runBlockingOnIO { suspendGetProgramsWithExcessiveProgramRules() }
 
-                val rulesMap: Map<String, List<ProgramRule>> =
-                    mapByParentUid(programRules) { programRule -> programRule.program()!!.uid() }
+    suspend fun suspendGetProgramsWithExcessiveProgramRules(): List<Program?> {
+        val programRules = programRuleStore.selectAll()
 
-                val programsWithExcessiveProgramRules: MutableList<Program?> = ArrayList()
-                for ((key, value) in rulesMap) {
-                    if (value.size > programRulesPerProgramThreshold) {
-                        val program = programStore.selectByUid(key)
-                        programsWithExcessiveProgramRules.add(program)
-                    }
-                }
+        val rulesMap: Map<String, List<ProgramRule>> =
+            mapByParentUid(programRules) { programRule -> programRule.program()!!.uid() }
 
-                programsWithExcessiveProgramRules
+        val programsWithExcessiveProgramRules: MutableList<Program?> = ArrayList()
+        for ((key, value) in rulesMap) {
+            if (value.size > programRulesPerProgramThreshold) {
+                val program = programStore.selectByUid(key)
+                programsWithExcessiveProgramRules.add(program)
             }
         }
 
+        return programsWithExcessiveProgramRules
+    }
+
     fun areThereProgramsWithExcessiveProgramRules(): Boolean {
-        return programsWithExcessiveProgramRules.isNotEmpty()
+        return runBlockingOnIO { suspendAreThereProgramsWithExcessiveProgramRules() }
+    }
+
+    suspend fun suspendAreThereProgramsWithExcessiveProgramRules(): Boolean {
+        return suspendGetProgramsWithExcessiveProgramRules().isNotEmpty()
     }
 
     fun areThereVulnerabilities(): Boolean {
-        return this.areThereExcessiveOrganisationUnits() || areThereProgramsWithExcessiveProgramRules()
+        return runBlockingOnIO { suspendAreThereVulnerabilities() }
+    }
+
+    suspend fun suspendAreThereVulnerabilities(): Boolean {
+        return suspendAreThereExcessiveOrganisationUnits() || suspendAreThereProgramsWithExcessiveProgramRules()
     }
 }

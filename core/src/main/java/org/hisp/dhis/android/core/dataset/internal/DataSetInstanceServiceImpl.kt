@@ -28,10 +28,7 @@
 
 package org.hisp.dhis.android.core.dataset.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.cache.internal.ExpirableCache
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.category.CategoryOption
 import org.hisp.dhis.android.core.category.CategoryOptionCollectionRepository
 import org.hisp.dhis.android.core.category.CategoryOptionComboCollectionRepository
@@ -75,46 +72,6 @@ internal class DataSetInstanceServiceImpl(
     private val validationRuleCollectionRepository: ValidationRuleCollectionRepository,
 ) : DataSetInstanceService {
 
-    @Deprecated(
-        message = "Use rxGetEditableStatus instead",
-        ReplaceWith(
-            "rxGetEditableStatus(dataSetUid, periodId, organisationUnitUid, " +
-                "attributeOptionComboUid)",
-        ),
-    )
-    override fun getEditableStatus(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<DataSetEditableStatus> {
-        return rxSingle {
-            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
-        }
-    }
-
-    override fun rxGetEditableStatus(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<DataSetEditableStatus> {
-        return rxSingle {
-            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
-        }
-    }
-
-    override fun blockingGetEditableStatus(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): DataSetEditableStatus {
-        return runBlockingOnIO {
-            suspendGetEditableStatus(dataSetUid, periodId, organisationUnitUid, attributeOptionComboUid)
-        }
-    }
-
     @Suppress("ComplexMethod")
     override suspend fun suspendGetEditableStatus(
         dataSetUid: String,
@@ -156,77 +113,9 @@ internal class DataSetInstanceServiceImpl(
         }
     }
 
-    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(dataSetUid)"))
-    override fun hasDataWriteAccess(dataSetUid: String): Single<Boolean> {
-        return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
-    }
-
-    override fun rxHasDataWriteAccess(dataSetUid: String): Single<Boolean> {
-        return rxSingle { suspendHasDataWriteAccess(dataSetUid) }
-    }
-
-    override fun blockingHasDataWriteAccess(dataSetUid: String): Boolean {
-        return runBlockingOnIO { suspendHasDataWriteAccess(dataSetUid) }
-    }
-
     override suspend fun suspendHasDataWriteAccess(dataSetUid: String): Boolean {
         val dataSet = dataSetCollectionRepository.uid(dataSetUid).suspendGet() ?: return false
         return dataSet.access().write()
-    }
-
-    @Deprecated(
-        message = "Use rxGetMissingMandatoryDataElementOperands instead",
-        ReplaceWith(
-            "rxGetMissingMandatoryDataElementOperands(dataSetUid, periodId, organisationUnitUid, " +
-                "attributeOptionComboUid)",
-        ),
-    )
-    override fun getMissingMandatoryDataElementOperands(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>> {
-        return rxSingle {
-            suspendGetMissingMandatoryDataElementOperands(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
-    }
-
-    override fun rxGetMissingMandatoryDataElementOperands(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>> {
-        return rxSingle {
-            suspendGetMissingMandatoryDataElementOperands(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
-    }
-
-    override fun blockingGetMissingMandatoryDataElementOperands(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): List<DataElementOperand> {
-        return runBlockingOnIO {
-            suspendGetMissingMandatoryDataElementOperands(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
     }
 
     override suspend fun suspendGetMissingMandatoryDataElementOperands(
@@ -262,61 +151,6 @@ internal class DataSetInstanceServiceImpl(
                 ).suspendExists()
             }
         } ?: false
-    }
-
-    @Deprecated(
-        message = "Use rxGetMissingMandatoryFieldsCombination instead",
-        ReplaceWith(
-            "rxGetMissingMandatoryFieldsCombination(dataSetUid, periodId, organisationUnitUid, " +
-                "attributeOptionComboUid)",
-        ),
-    )
-    override fun getMissingMandatoryFieldsCombination(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>> {
-        return rxSingle {
-            suspendGetMissingMandatoryFieldsCombination(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
-    }
-
-    override fun rxGetMissingMandatoryFieldsCombination(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<List<DataElementOperand>> {
-        return rxSingle {
-            suspendGetMissingMandatoryFieldsCombination(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
-    }
-
-    override fun blockingGetMissingMandatoryFieldsCombination(
-        dataSetUid: String,
-        periodId: String,
-        organisationUnitUid: String,
-        attributeOptionComboUid: String,
-    ): List<DataElementOperand> {
-        return runBlockingOnIO {
-            suspendGetMissingMandatoryFieldsCombination(
-                dataSetUid,
-                periodId,
-                organisationUnitUid,
-                attributeOptionComboUid,
-            )
-        }
     }
 
     @Suppress("MagicNumber")

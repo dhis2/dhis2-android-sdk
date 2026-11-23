@@ -27,10 +27,7 @@
  */
 package org.hisp.dhis.android.core.indicator.datasetindicatorengine
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.UidsHelper.mapByUid
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.constant.Constant
 import org.hisp.dhis.android.core.constant.ConstantCollectionRepository
 import org.hisp.dhis.android.core.datavalue.DataValue
@@ -58,29 +55,7 @@ internal class DataSetIndicatorEngineImpl(
     private val dataSetIndicatorEvaluator: DataSetIndicatorEvaluator,
 ) : DataSetIndicatorEngine {
 
-    override fun evaluate(
-        indicatorUid: String,
-        dataSetUid: String,
-        periodId: String,
-        orgUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Single<Double> {
-        return rxSingle { evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid) }
-    }
-
-    override fun blockingEvaluate(
-        indicatorUid: String,
-        dataSetUid: String,
-        periodId: String,
-        orgUnitUid: String,
-        attributeOptionComboUid: String,
-    ): Double {
-        return runBlockingOnIO {
-            evaluateInternal(indicatorUid, dataSetUid, periodId, orgUnitUid, attributeOptionComboUid)
-        }
-    }
-
-    private suspend fun evaluateInternal(
+    override suspend fun suspendEvaluate(
         indicatorUid: String,
         dataSetUid: String,
         periodId: String,

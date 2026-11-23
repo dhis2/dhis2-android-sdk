@@ -67,7 +67,7 @@ abstract class EventEndpointCallBaseMockIntegrationShould : BaseMockIntegrationT
     @After
     fun tearDown() {
         runBlocking {
-            d2.wipeModule().wipeData()
+            d2.wipeModule().blockingWipeData()
             syncStore.delete()
             syncStore.insert(initSyncParams)
         }

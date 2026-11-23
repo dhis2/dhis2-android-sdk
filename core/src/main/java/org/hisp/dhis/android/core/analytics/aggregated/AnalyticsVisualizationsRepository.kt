@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.analytics.aggregated
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 interface AnalyticsVisualizationsRepository {
 
@@ -41,11 +43,11 @@ interface AnalyticsVisualizationsRepository {
     fun withOrganisationUnits(orgUnits: List<DimensionItem.OrganisationUnitItem>): AnalyticsVisualizationsRepository
 
     @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
+    fun evaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> = rxEvaluate()
 
-    fun rxEvaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>>
+    fun rxEvaluate(): Single<Result<GridAnalyticsResponse, AnalyticsException>> = rxSingle { suspendEvaluate() }
 
-    fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
+    fun blockingEvaluate(): Result<GridAnalyticsResponse, AnalyticsException> = runBlockingOnIO { suspendEvaluate() }
 
     suspend fun suspendEvaluate(): Result<GridAnalyticsResponse, AnalyticsException>
 }

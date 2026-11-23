@@ -29,20 +29,46 @@
 package org.hisp.dhis.android.core.user
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asObservable
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.maintenance.D2Error
 
+@Suppress("TooManyFunctions")
 interface AccountManager {
-    fun getAccounts(): List<DatabaseAccount>
+    @Deprecated(message = "Use blockingGetAccounts instead", ReplaceWith("blockingGetAccounts()"))
+    fun getAccounts(): List<DatabaseAccount> = blockingGetAccounts()
 
-    fun getCurrentAccount(): DatabaseAccount?
+    fun blockingGetAccounts(): List<DatabaseAccount> = runBlockingOnIO { suspendGetAccounts() }
+
+    suspend fun suspendGetAccounts(): List<DatabaseAccount>
+
+    @Deprecated(message = "Use blockingGetCurrentAccount instead", ReplaceWith("blockingGetCurrentAccount()"))
+    fun getCurrentAccount(): DatabaseAccount? = blockingGetCurrentAccount()
+
+    fun blockingGetCurrentAccount(): DatabaseAccount? = runBlockingOnIO { suspendGetCurrentAccount() }
+
+    suspend fun suspendGetCurrentAccount(): DatabaseAccount?
 
     fun setMaxAccounts(maxAccounts: Int?)
 
     fun getMaxAccounts(): Int?
 
+    @Deprecated(message = "Use blockingDeleteCurrentAccount instead", ReplaceWith("blockingDeleteCurrentAccount()"))
     @Throws(D2Error::class)
-    fun deleteCurrentAccount()
+    fun deleteCurrentAccount() = blockingDeleteCurrentAccount()
 
-    fun accountDeletionObservable(): Observable<AccountDeletionReason>
+    @Throws(D2Error::class)
+    fun blockingDeleteCurrentAccount() = runBlockingOnIO { suspendDeleteCurrentAccount() }
+
+    @Throws(D2Error::class)
+    suspend fun suspendDeleteCurrentAccount()
+
+    @Deprecated(message = "Use rxAccountDeletionObservable instead", ReplaceWith("rxAccountDeletionObservable()"))
+    fun accountDeletionObservable(): Observable<AccountDeletionReason> = rxAccountDeletionObservable()
+
+    fun rxAccountDeletionObservable(): Observable<AccountDeletionReason> = flowAccountDeletion().asObservable()
+
+    fun flowAccountDeletion(): Flow<AccountDeletionReason>
 }

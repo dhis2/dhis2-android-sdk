@@ -68,7 +68,12 @@ class AnalyticsDhisVisualizationsSettingObjectRepository internal constructor(
         return rxSingle { suspendGetByDataSet(dataSet)!! }
     }
 
+    @Deprecated(message = "Use blockingGetByDataSet instead", ReplaceWith("blockingGetByDataSet(dataSet)"))
     fun blockingByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
+        return blockingGetByDataSet(dataSet)
+    }
+
+    fun blockingGetByDataSet(dataSet: String?): List<AnalyticsDhisVisualizationsGroup>? {
         return runBlockingOnIO { suspendGetByDataSet(dataSet) }
     }
 

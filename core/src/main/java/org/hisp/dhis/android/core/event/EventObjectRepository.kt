@@ -73,11 +73,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setOrganisationUnitUid(organisationUnitUid: String?): Unit {
-        return runBlockingOnIO { setOrganisationUnitUidInternal(organisationUnitUid) }
+        return runBlockingOnIO { suspendSetOrganisationUnitUid(organisationUnitUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setOrganisationUnitUidInternal(organisationUnitUid: String?): Unit {
+    suspend fun suspendSetOrganisationUnitUid(organisationUnitUid: String?): Unit {
         return updateIfChangedInternal(organisationUnitUid, { it.organisationUnit() }) { event: Event, value ->
             updateBuilder(event).organisationUnit(value).build()
         }
@@ -85,11 +85,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setEventDate(eventDate: Date?): Unit {
-        return runBlockingOnIO { setEventDateInternal(eventDate) }
+        return runBlockingOnIO { suspendSetEventDate(eventDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setEventDateInternal(eventDate: Date?): Unit {
+    suspend fun suspendSetEventDate(eventDate: Date?): Unit {
         return updateIfChangedInternal(eventDate, { it.eventDate() }) { event: Event, value ->
             updateBuilder(event).eventDate(value).build()
         }
@@ -97,11 +97,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setStatus(eventStatus: EventStatus): Unit {
-        return runBlockingOnIO { setStatusInternal(eventStatus) }
+        return runBlockingOnIO { suspendSetStatus(eventStatus) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setStatusInternal(eventStatus: EventStatus): Unit {
+    suspend fun suspendSetStatus(eventStatus: EventStatus): Unit {
         return updateIfChangedInternal(eventStatus, { it.status() }) { event: Event, value ->
             val completedDate = if (value == EventStatus.COMPLETED) Date() else null
             val completedBy = if (value == EventStatus.COMPLETED) userStore.selectFirst()!!.username() else null
@@ -111,11 +111,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedDate(completedDate: Date?): Unit {
-        return runBlockingOnIO { setCompletedDateInternal(completedDate) }
+        return runBlockingOnIO { suspendSetCompletedDate(completedDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setCompletedDateInternal(completedDate: Date?): Unit {
+    suspend fun suspendSetCompletedDate(completedDate: Date?): Unit {
         return updateIfChangedInternal(completedDate, { it.completedDate() }) { event: Event, value ->
             updateBuilder(event).completedDate(value).build()
         }
@@ -123,11 +123,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setCompletedBy(completedBy: String?): Unit {
-        return runBlockingOnIO { setCompletedByInternal(completedBy) }
+        return runBlockingOnIO { suspendSetCompletedBy(completedBy) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setCompletedByInternal(completedBy: String?): Unit {
+    suspend fun suspendSetCompletedBy(completedBy: String?): Unit {
         return updateIfChangedInternal(completedBy, { it.completedBy() }) { event: Event, value ->
             updateBuilder(event).completedBy(value).build()
         }
@@ -135,11 +135,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setDueDate(dueDate: Date?): Unit {
-        return runBlockingOnIO { setDueDateInternal(dueDate) }
+        return runBlockingOnIO { suspendSetDueDate(dueDate) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setDueDateInternal(dueDate: Date?): Unit {
+    suspend fun suspendSetDueDate(dueDate: Date?): Unit {
         return updateIfChangedInternal(dueDate, { it.dueDate() }) { event: Event, value ->
             updateBuilder(event).dueDate(value).build()
         }
@@ -147,11 +147,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setGeometry(geometry: Geometry?): Unit {
-        return runBlockingOnIO { setGeometryInternal(geometry) }
+        return runBlockingOnIO { suspendSetGeometry(geometry) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setGeometryInternal(geometry: Geometry?): Unit {
+    suspend fun suspendSetGeometry(geometry: Geometry?): Unit {
         GeometryHelper.validateGeometry(geometry)
         return updateIfChangedInternal(geometry, { it.geometry() }) { event: Event, value ->
             updateBuilder(event).geometry(value).build()
@@ -160,11 +160,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
-        return runBlockingOnIO { setAttributeOptionComboUidInternal(attributeOptionComboUid) }
+        return runBlockingOnIO { suspendSetAttributeOptionComboUid(attributeOptionComboUid) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setAttributeOptionComboUidInternal(attributeOptionComboUid: String?): Unit {
+    suspend fun suspendSetAttributeOptionComboUid(attributeOptionComboUid: String?): Unit {
         return updateIfChangedInternal(attributeOptionComboUid, { it.attributeOptionCombo() }) { event: Event, value ->
             updateBuilder(event).attributeOptionCombo(value).build()
         }
@@ -172,11 +172,11 @@ class EventObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     fun setAssignedUser(assignedUser: String?): Unit {
-        return runBlockingOnIO { setAssignedUserInternal(assignedUser) }
+        return runBlockingOnIO { suspendSetAssignedUser(assignedUser) }
     }
 
     @Throws(D2Error::class)
-    internal suspend fun setAssignedUserInternal(assignedUser: String?): Unit {
+    suspend fun suspendSetAssignedUser(assignedUser: String?): Unit {
         return updateIfChangedInternal(assignedUser, { it.assignedUser() }) { event: Event, value ->
             updateBuilder(event).assignedUser(value).build()
         }

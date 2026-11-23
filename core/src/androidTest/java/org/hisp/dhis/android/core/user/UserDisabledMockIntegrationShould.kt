@@ -47,14 +47,14 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
     @After
     @Throws(D2Error::class)
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeData() }
+        runBlocking { d2.wipeModule().blockingWipeData() }
     }
 
     @Test
     fun delete_database_when_user_disabled() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
         addDummyData()
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(1)
 
         try {
             d2.dataValueModule().dataValues().blockingUpload()
@@ -62,14 +62,14 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
             val d2Error = e.cause as D2Error
             assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
         }
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(0)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(0)
     }
 
     @Test
     fun do_not_delete_database_when_user_has_bad_credentials() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_unauthorized.json")
         addDummyData()
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(1)
 
         try {
             d2.dataValueModule().dataValues().blockingUpload()
@@ -77,7 +77,7 @@ class UserDisabledMockIntegrationShould : BaseMockIntegrationTestMetadataEnqueab
             val d2Error = e.cause as D2Error
             assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.API_UNSUCCESSFUL_RESPONSE)
         }
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(1)
     }
 
     private fun addDummyData() {

@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.user.oauth2
 
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -36,15 +38,34 @@ import org.hisp.dhis.android.core.user.User
 @Suppress("TooManyFunctions")
 interface OAuth2Handler {
 
-    fun blockingBuildEnrollmentUrl(serverUrl: String): String
+    fun blockingBuildEnrollmentUrl(serverUrl: String): String =
+        runBlockingOnIO { suspendBuildEnrollmentUrl(serverUrl) }
 
-    fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String)
+    suspend fun suspendBuildEnrollmentUrl(serverUrl: String): String
 
-    fun blockingBuildLogoutUrl(config: OAuth2Config): String
+    fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) =
+        runBlockingOnIO { suspendHandleEnrollmentResponse(serverUrl, iat, state) }
 
-    fun blockingLogIn(config: OAuth2Config): String
+    suspend fun suspendHandleEnrollmentResponse(serverUrl: String, iat: String, state: String)
+
+    fun blockingBuildLogoutUrl(config: OAuth2Config): String = runBlockingOnIO { suspendBuildLogoutUrl(config) }
+
+    suspend fun suspendBuildLogoutUrl(config: OAuth2Config): String
+
+    fun blockingLogIn(config: OAuth2Config): String = runBlockingOnIO { suspendLogIn(config) }
+
+    suspend fun suspendLogIn(config: OAuth2Config): String
 
     fun blockingHandleLogInResponse(
+        existingUsername: String?,
+        serverUrl: String,
+        authorizationCode: String,
+        state: String,
+    ): User = runBlockingOnIO {
+        suspendHandleLogInResponse(existingUsername, serverUrl, authorizationCode, state)
+    }
+
+    suspend fun suspendHandleLogInResponse(
         existingUsername: String?,
         serverUrl: String,
         authorizationCode: String,
@@ -71,9 +92,19 @@ interface OAuth2Handler {
     suspend fun suspendLogOut()
 
     @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
-    fun logOutObservable(): Observable<Unit>
+    fun logOutObservable(): Observable<Unit> = rxLogOutObservable()
 
-    fun rxLogOutObservable(): Observable<Unit>
+    fun rxLogOutObservable(): Observable<Unit> = flowLogOut().asObservable()
 
-    fun resetRegistration()
+    /**
+     * Emits every time the user is logged out.
+     */
+    fun flowLogOut(): Flow<Unit>
+
+    @Deprecated(message = "Use blockingResetRegistration instead", ReplaceWith("blockingResetRegistration()"))
+    fun resetRegistration() = blockingResetRegistration()
+
+    fun blockingResetRegistration() = runBlockingOnIO { suspendResetRegistration() }
+
+    suspend fun suspendResetRegistration()
 }

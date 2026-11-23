@@ -30,9 +30,7 @@ package org.hisp.dhis.android.core.arch.helpers.internal
 
 import okio.FileSystem
 import okio.Path
-import okio.Path.Companion.toOkioPath
 import org.hisp.dhis.android.core.D2Manager
-import java.io.File
 
 /**
  * Gives the deprecated static image helpers (`FileResizerHelper`, `FileCompressionHelper`) access to an
@@ -48,10 +46,10 @@ internal object ImageProcessorLocator {
      * Where the results of processing [source] are written: the cache directory of the logged account when D2 is
      * instantiated, since they are volatile files, and the directory of [source] otherwise.
      */
-    fun outputDirectory(source: File): Path {
+    @Suppress("TooGenericExceptionCaught")
+    fun outputDirectory(source: Path): Path {
         if (!D2Manager.isD2Instantiated()) {
-            val parent = requireNotNull(source.absoluteFile.parentFile) { "${source.name} has no parent directory" }
-            return parent.toOkioPath()
+            return requireNotNull(source.parent) { "${source.name} has no parent directory" }
         }
         return D2Manager.getD2().d2DIComponent.fileResourceDirectories.fileCacheResourceDirectoryOrRoot()
     }

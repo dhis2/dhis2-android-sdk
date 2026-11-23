@@ -32,10 +32,10 @@ import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import okhttp3.mockwebserver.RecordedRequest
+import okio.IOException
 import org.hisp.dhis.android.core.arch.file.IFileReader
 import org.hisp.dhis.android.core.arch.file.ResourcesFileReader
 import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
-import java.io.IOException
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date

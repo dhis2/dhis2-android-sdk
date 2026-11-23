@@ -28,31 +28,29 @@
 package org.hisp.dhis.android.core.fileresource.internal
 
 import okio.FileSystem
-import okio.Path.Companion.toOkioPath
+import okio.Path
 import org.hisp.dhis.android.core.arch.handlers.internal.Transformer
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.fileresource.FileResource
 import org.hisp.dhis.android.core.fileresource.FileResourceDomain
 import org.hisp.dhis.android.core.fileresource.internal.FileResourceUtil.getContentTypeFromName
 import org.koin.core.annotation.Singleton
-import java.io.File
 import java.util.Date
 
 @Singleton
 internal class FileResourceProjectionTransformer(
     private val fileSystem: FileSystem,
-) : Transformer<File, FileResource> {
-    override fun transform(o: File): FileResource {
-        val file = o.absoluteFile.toOkioPath()
+) : Transformer<Path, FileResource> {
+    override fun transform(o: Path): FileResource {
         val creationDate = Date()
         return FileResource.builder()
-            .uid(file.name.substringBeforeLast("."))
+            .uid(o.name.substringBeforeLast("."))
             .syncState(State.TO_POST)
             .created(creationDate)
             .lastUpdated(creationDate)
-            .contentLength(fileSystem.metadataOrNull(file)?.size ?: 0L)
-            .contentType(getContentTypeFromName(file.name))
-            .path(file.toString())
+            .contentLength(fileSystem.metadataOrNull(o)?.size ?: 0L)
+            .contentType(getContentTypeFromName(o.name))
+            .path(o.toString())
             .domain(FileResourceDomain.DATA_VALUE)
             .build()
     }

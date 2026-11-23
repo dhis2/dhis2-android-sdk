@@ -74,7 +74,14 @@ class DatabaseConfigurationMigrationIntegrationShould {
     private val storeRegistry = KoinStoreRegistry()
     private val databaseAdapter: DatabaseAdapter = RoomDatabaseAdapter(storeRegistry)
     private val passwordManager = DatabaseEncryptionPasswordManager.create(secureStore)
-    private val databaseManager = RoomDatabaseManager(databaseAdapter, context, passwordManager, SqliteDriverFactoryImpl())
+    private val databaseManager = RoomDatabaseManager(
+        databaseAdapter,
+        context,
+        passwordManager,
+        SqliteDriverFactoryImpl(),
+        AndroidPlatformDirectories(context),
+        FileSystem.SYSTEM,
+    )
 
     private val serverUrl = "https://server.org"
     private val serverUrlWithApi = "https://server.org/api/"

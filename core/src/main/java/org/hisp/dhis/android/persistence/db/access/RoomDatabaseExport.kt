@@ -28,19 +28,20 @@
 
 package org.hisp.dhis.android.persistence.db.access
 
-import android.content.Context
 import net.zetetic.database.sqlcipher.SQLiteConnection
 import net.zetetic.database.sqlcipher.SQLiteDatabase
 import net.zetetic.database.sqlcipher.SQLiteDatabaseHook
+import okio.FileSystem
+import okio.IOException
 import okio.Path
 import org.hisp.dhis.android.core.arch.db.access.internal.BaseDatabaseExport
+import org.hisp.dhis.android.core.arch.file.internal.PlatformDirectories
 import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.common.internal.NativeLibraryLoader.loadSQLCipher
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseConfigurationHelper
 import org.hisp.dhis.android.core.configuration.internal.DatabaseEncryptionPasswordManager
 import org.koin.core.annotation.Singleton
-import java.io.File
 
 /**
  * Room implementation of database export functionality for encryption/decryption operations.
@@ -48,7 +49,8 @@ import java.io.File
  */
 @Singleton
 internal class RoomDatabaseExport(
-    private val context: Context,
+    private val platformDirectories: PlatformDirectories,
+    private val fileSystem: FileSystem,
     private val passwordManager: DatabaseEncryptionPasswordManager,
     private val configurationHelper: DatabaseConfigurationHelper,
     private val databaseManager: RoomDatabaseManager,
@@ -64,8 +66,8 @@ internal class RoomDatabaseExport(
     override suspend fun encrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         exportDatabase(
-            context.getDatabasePath(oldConfiguration.databaseName()),
-            context.getDatabasePath(newConfiguration.databaseName()),
+            platformDirectories.databasePath(oldConfiguration.databaseName()),
+            platformDirectories.databasePath(newConfiguration.databaseName()),
             oldPassword = null, // Unencrypted source
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             encrypt = true,
@@ -79,8 +81,8 @@ internal class RoomDatabaseExport(
      */
     override suspend fun encryptAndCopyTo(newConfiguration: DatabaseAccount, sourceFile: Path, targetFile: Path) {
         exportDatabase(
-            sourceFile.toFile(),
-            targetFile.toFile(),
+            sourceFile,
+            targetFile,
             oldPassword = null, // Unencrypted source
             newPassword = passwordManager.getPassword(newConfiguration.databaseName()),
             encrypt = true,
@@ -95,8 +97,8 @@ internal class RoomDatabaseExport(
     override suspend fun decrypt(serverUrl: String, oldConfiguration: DatabaseAccount) {
         val newConfiguration = configurationHelper.changeEncryption(serverUrl, oldConfiguration)
         exportDatabase(
-            context.getDatabasePath(oldConfiguration.databaseName()),
-            context.getDatabasePath(newConfiguration.databaseName()),
+            platformDirectories.databasePath(oldConfiguration.databaseName()),
+            platformDirectories.databasePath(newConfiguration.databaseName()),
             oldPassword = passwordManager.getPassword(oldConfiguration.databaseName()),
             newPassword = "", // Empty password for unencrypted database
             encrypt = false,
@@ -110,8 +112,8 @@ internal class RoomDatabaseExport(
      */
     override suspend fun decryptAndCopyTo(account: DatabaseAccount, destinationFile: Path) {
         exportDatabase(
-            context.getDatabasePath(account.databaseName()),
-            destinationFile.toFile(),
+            platformDirectories.databasePath(account.databaseName()),
+            destinationFile,
             oldPassword = passwordManager.getPassword(account.databaseName()),
             newPassword = "", // Empty password for unencrypted database
             encrypt = false,
@@ -131,8 +133,8 @@ internal class RoomDatabaseExport(
      */
     @Suppress("LongParameterList", "TooGenericExceptionCaught")
     private suspend fun exportDatabase(
-        sourceFile: File,
-        targetFile: File,
+        sourceFile: Path,
+        targetFile: Path,
         oldPassword: String?,
         newPassword: String,
         encrypt: Boolean,
@@ -148,7 +150,7 @@ internal class RoomDatabaseExport(
                 databaseManager.openSQLCipherDatabaseDirectly(sourceFile, oldPassword, oldHook)
             try {
                 // Attach target database
-                sourceDbDirect.execSQL("ATTACH DATABASE '${targetFile.absolutePath}' AS roomExport KEY '$newPassword';")
+                sourceDbDirect.execSQL("ATTACH DATABASE '$targetFile' AS roomExport KEY '$newPassword';")
 
                 // Add encryption hook to target database if required
                 if (newHook != null) {
@@ -191,7 +193,11 @@ internal class RoomDatabaseExport(
                     }
                     sourceDbDirect.close()
                 }
-                targetFile.delete()
+                try {
+                    fileSystem.delete(targetFile)
+                } catch (deleteError: IOException) {
+                    e.addSuppressed(deleteError)
+                }
                 throw e
             }
         }

@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.storage.internal.InMemorySecureStore
+import org.hisp.dhis.android.core.period.clock.internal.RegularClockProvider
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
 import org.hisp.dhis.android.core.user.oauth2.internal.OAuth2SecureStore
 import org.junit.Before
@@ -50,7 +51,12 @@ class OAuth2NetworkHandlerImplShould {
 
     @Before
     fun setUp() {
-        networkHandler = OAuth2NetworkHandlerImpl(httpClient, coroutineAPICallExecutor, oAuth2SecureStore)
+        networkHandler = OAuth2NetworkHandlerImpl(
+            httpClient,
+            coroutineAPICallExecutor,
+            oAuth2SecureStore,
+            RegularClockProvider(),
+        )
     }
 
     // region buildLogoutUrl

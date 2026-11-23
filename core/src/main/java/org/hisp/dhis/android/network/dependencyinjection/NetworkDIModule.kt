@@ -30,6 +30,7 @@ package org.hisp.dhis.android.network.dependencyinjection
 
 import org.hisp.dhis.android.core.arch.ArchDIModule
 import org.hisp.dhis.android.core.category.CategoryDIModule
+import org.hisp.dhis.android.core.period.PeriodDIModule
 import org.hisp.dhis.android.core.systeminfo.SystemInfoDIModule
 import org.hisp.dhis.android.core.user.UserDIModule
 import org.koin.core.annotation.ComponentScan
@@ -39,6 +40,7 @@ import org.koin.core.annotation.Module
     includes = [
         ArchDIModule::class,
         CategoryDIModule::class,
+        PeriodDIModule::class,
         SystemInfoDIModule::class,
         UserDIModule::class,
     ],

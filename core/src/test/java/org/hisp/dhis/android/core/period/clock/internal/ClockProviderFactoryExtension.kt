@@ -34,6 +34,10 @@ internal fun ClockProviderFactory.setFixed() {
     clockProvider = createFixed()
 }
 
+internal fun ClockProviderFactory.reset() {
+    clockProvider = RegularClockProvider()
+}
+
 @Suppress("MagicNumber")
 internal fun ClockProviderFactory.createFixed(): ClockProvider {
     val date = LocalDateTime(2019, 12, 10, 10, 30, 0, 0)

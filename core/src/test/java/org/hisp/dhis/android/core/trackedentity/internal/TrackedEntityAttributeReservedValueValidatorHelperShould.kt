@@ -31,7 +31,9 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.atStartOfDayInSystem
 import org.hisp.dhis.android.core.period.clock.internal.ClockProviderFactory
+import org.hisp.dhis.android.core.period.clock.internal.reset
 import org.hisp.dhis.android.core.period.clock.internal.setFixed
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,6 +47,11 @@ class TrackedEntityAttributeReservedValueValidatorHelperShould {
     fun setUp() {
         ClockProviderFactory.setFixed()
         helper = TrackedEntityAttributeReservedValueValidatorHelper()
+    }
+
+    @After
+    fun tearDown() {
+        ClockProviderFactory.reset()
     }
 
     @Test

@@ -32,6 +32,7 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.Result
 import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.period.clock.internal.ClockProvider
 import org.hisp.dhis.android.core.server.OauthConfig.Companion.REQUIRED_CODE_CHALLENGE_METHOD
 import org.hisp.dhis.android.core.server.OauthConfig.Companion.REQUIRED_RESPONSE_TYPE
 import org.hisp.dhis.android.core.user.oauth2.OAuth2Config
@@ -46,6 +47,7 @@ internal class OAuth2NetworkHandlerImpl(
     httpClient: HttpServiceClient,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val oAuth2SecureStore: OAuth2SecureStore,
+    private val clockProvider: ClockProvider,
 ) : OAuth2NetworkHandler {
 
     private val service = OAuth2Service(httpClient)
@@ -99,7 +101,7 @@ internal class OAuth2NetworkHandlerImpl(
                 keyId = "",
                 accessToken = response.accessToken,
                 refreshToken = response.refreshToken,
-                expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
+                expiresAt = clockProvider.clock.now().epochSeconds + response.expiresIn,
                 scope = response.scope,
                 tokenEndpoint = tokenEndpoint,
             )
@@ -127,7 +129,7 @@ internal class OAuth2NetworkHandlerImpl(
                 keyId = keyId,
                 accessToken = response.accessToken,
                 refreshToken = response.refreshToken ?: refreshToken,
-                expiresAt = System.currentTimeMillis() / 1000 + response.expiresIn,
+                expiresAt = clockProvider.clock.now().epochSeconds + response.expiresIn,
                 scope = response.scope,
                 tokenEndpoint = endpoint,
             )

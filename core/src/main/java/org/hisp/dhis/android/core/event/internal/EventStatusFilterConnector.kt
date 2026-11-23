@@ -27,8 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import org.hisp.dhis.android.core.arch.helpers.DateUtils
-import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.BaseRepositoryFactory
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.EnumFilterConnector
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
@@ -199,7 +197,7 @@ class EventStatusFilterConnector internal constructor(
     }
 
     private val currentDateString: String
-        get() = DateUtils.SIMPLE_DATE_FORMAT.format(ClockProviderFactory.clockProvider.clock.now().toJavaDate())
+        get() = ClockProviderFactory.clockProvider.today().toString()
 
     private fun buildNegatedConditionClauses(isOverdue: Boolean): String {
         val innerClause1 = WhereClauseBuilder()

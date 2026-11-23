@@ -27,15 +27,37 @@
  */
 package org.hisp.dhis.android.core.wipe.internal
 
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface WipeModule {
+    @Deprecated(message = "Use blockingWipeEverything instead", ReplaceWith("blockingWipeEverything()"))
     @Throws(D2Error::class)
-    fun wipeEverything()
+    fun wipeEverything() = blockingWipeEverything()
 
     @Throws(D2Error::class)
-    fun wipeMetadata()
+    fun blockingWipeEverything() = runBlockingOnIO { suspendWipeEverything() }
 
     @Throws(D2Error::class)
-    fun wipeData()
+    suspend fun suspendWipeEverything()
+
+    @Deprecated(message = "Use blockingWipeMetadata instead", ReplaceWith("blockingWipeMetadata()"))
+    @Throws(D2Error::class)
+    fun wipeMetadata() = blockingWipeMetadata()
+
+    @Throws(D2Error::class)
+    fun blockingWipeMetadata() = runBlockingOnIO { suspendWipeMetadata() }
+
+    @Throws(D2Error::class)
+    suspend fun suspendWipeMetadata()
+
+    @Deprecated(message = "Use blockingWipeData instead", ReplaceWith("blockingWipeData()"))
+    @Throws(D2Error::class)
+    fun wipeData() = blockingWipeData()
+
+    @Throws(D2Error::class)
+    fun blockingWipeData() = runBlockingOnIO { suspendWipeData() }
+
+    @Throws(D2Error::class)
+    suspend fun suspendWipeData()
 }

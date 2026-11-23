@@ -73,7 +73,7 @@ class AnalyticsDhisVisualizationsSettingObjectRepositoryMockIntegrationShould :
             .settingModule()
             .analyticsSetting()
             .visualizationsSettings()
-            .blockingByDataSet("BfMAe6Itzgt")
+            .blockingGetByDataSet("BfMAe6Itzgt")
 
         assertThat(programSettings?.size).isEqualTo(1)
         assertThat(programSettings?.first()?.visualizations()?.size).isEqualTo(1)

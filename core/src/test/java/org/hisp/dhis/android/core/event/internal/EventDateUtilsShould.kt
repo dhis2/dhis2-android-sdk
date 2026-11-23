@@ -64,7 +64,7 @@ class EventDateUtilsShould {
     @Before
     fun setUp() = runTest {
         whenever(
-            periodHelper.getPeriodForPeriodTypeAndDateInternal(
+            periodHelper.suspendGetPeriodForPeriodTypeAndDate(
                 PeriodType.Monthly,
                 Date(thirdJanuary.toEpochMilliseconds()),
                 1,

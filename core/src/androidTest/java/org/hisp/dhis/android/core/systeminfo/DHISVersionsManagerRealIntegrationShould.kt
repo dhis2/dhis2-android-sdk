@@ -35,7 +35,7 @@ import org.hisp.dhis.android.core.data.server.RealServerMother
 class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     fun return_2_30_version_when_connecting_to_2_30_server() = runTest {
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
         d2.userModule().logIn(username, password, RealServerMother.url2_30).blockingGet()
 
@@ -46,7 +46,7 @@ class DHISVersionsManagerRealIntegrationShould : BaseRealIntegrationTest() {
     // @Test
     @Throws(Exception::class)
     fun return_2_31_version_when_connecting_to_2_31_server() = runTest {
-        d2.wipeModule().wipeEverything()
+        d2.wipeModule().blockingWipeEverything()
         val versionManager = d2.systemInfoModule().versionManager()
         d2.userModule().logIn(username, password, RealServerMother.url2_31).blockingGet()
 

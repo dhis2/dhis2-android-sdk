@@ -45,7 +45,7 @@ class UserDisabledRxAPIMockIntegrationShould : BaseMockIntegrationTestEmptyEnque
     @Test
     fun delete_database_when_user_disabled_on_rx_api_call_executor() = runTest {
         dhis2MockServer.enqueueMockResponse(401, "user/user_disabled.json")
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(1)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(1)
 
         try {
             d2.eventModule().eventDownloader().blockingDownload()
@@ -53,6 +53,6 @@ class UserDisabledRxAPIMockIntegrationShould : BaseMockIntegrationTestEmptyEnque
             val d2Error = e.cause as D2Error
             assertThat(d2Error.errorCode()).isEqualTo(D2ErrorCode.USER_ACCOUNT_DISABLED)
         }
-        assertThat(d2.userModule().accountManager().getAccounts().size).isEqualTo(0)
+        assertThat(d2.userModule().accountManager().blockingGetAccounts().size).isEqualTo(0)
     }
 }

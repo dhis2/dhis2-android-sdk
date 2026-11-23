@@ -40,8 +40,6 @@ import org.hisp.dhis.android.core.D2Manager
  */
 internal object ImageProcessorLocator {
 
-    private val TAG = ImageProcessorLocator::class.java.simpleName
-
     val processor: ImageProcessor by lazy { AndroidImageProcessor(FileSystem.SYSTEM) }
 
     /**
@@ -53,12 +51,6 @@ internal object ImageProcessorLocator {
         if (!D2Manager.isD2Instantiated()) {
             return requireNotNull(source.parent) { "${source.name} has no parent directory" }
         }
-        val directories = D2Manager.getD2().d2DIComponent.fileResourceDirectories
-        return try {
-            directories.fileCacheResourceDirectory()
-        } catch (e: RuntimeException) {
-            D2Logger.w(TAG, "Could not resolve the account cache directory", e)
-            directories.rootFileCacheResourceDirectory()
-        }
+        return D2Manager.getD2().d2DIComponent.fileResourceDirectories.fileCacheResourceDirectoryOrRoot()
     }
 }

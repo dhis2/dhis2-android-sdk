@@ -158,7 +158,7 @@ class PerformanceBenchmark {
     }
 
     private fun logDatabaseEncryption() {
-        val encrypted = d2.userModule().accountManager().getCurrentAccount()?.encrypted()
+        val encrypted = d2.userModule().accountManager().blockingGetCurrentAccount()?.encrypted()
         Log.d(INFO_TAG, "Database encrypted: $encrypted")
     }
 
@@ -533,7 +533,7 @@ class PerformanceBenchmark {
 
     private suspend fun wipeDataAndDowload() {
         runWithTrace("Wipe data and dowload again") {
-            d2.wipeModule().wipeData()
+            d2.wipeModule().blockingWipeData()
             doDownloadData()
         }
     }

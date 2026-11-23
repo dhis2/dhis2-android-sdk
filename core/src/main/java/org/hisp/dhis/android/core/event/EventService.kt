@@ -39,7 +39,8 @@ interface EventService {
      *
      * @see hasDataWriteAccess
      */
-    fun blockingHasDataWriteAccess(eventUid: String): Boolean
+    fun blockingHasDataWriteAccess(eventUid: String): Boolean =
+        runBlockingOnIO { suspendHasDataWriteAccess(eventUid) }
 
     /**
      * Check if user has data write access to a particular event.
@@ -48,9 +49,11 @@ interface EventService {
      * If the event does not exist, returns null
      */
     @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
-    fun hasDataWriteAccess(eventUid: String): Single<Boolean>
+    fun hasDataWriteAccess(eventUid: String): Single<Boolean> =
+        rxHasDataWriteAccess(eventUid)
 
-    fun rxHasDataWriteAccess(eventUid: String): Single<Boolean>
+    fun rxHasDataWriteAccess(eventUid: String): Single<Boolean> =
+        rxSingle { suspendHasDataWriteAccess(eventUid) }
 
     suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean
 
@@ -59,15 +62,18 @@ interface EventService {
      *
      * @see isInOrgunitRange
      */
-    fun blockingIsInOrgunitRange(event: Event): Boolean
+    fun blockingIsInOrgunitRange(event: Event): Boolean =
+        runBlockingOnIO { suspendIsInOrgunitRange(event) }
 
     /**
      * Check if the event has the event date within the opening period of the assigned organisation unit.
      */
     @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
-    fun isInOrgunitRange(event: Event): Single<Boolean>
+    fun isInOrgunitRange(event: Event): Single<Boolean> =
+        rxIsInOrgunitRange(event)
 
-    fun rxIsInOrgunitRange(event: Event): Single<Boolean>
+    fun rxIsInOrgunitRange(event: Event): Single<Boolean> =
+        rxSingle { suspendIsInOrgunitRange(event) }
 
     suspend fun suspendIsInOrgunitRange(event: Event): Boolean
 
@@ -76,16 +82,19 @@ interface EventService {
      *
      * @see hasCategoryComboAccess
      */
-    fun blockingHasCategoryComboAccess(event: Event): Boolean
+    fun blockingHasCategoryComboAccess(event: Event): Boolean =
+        runBlockingOnIO { suspendHasCategoryComboAccess(event) }
 
     /**
      * Check if user has access to the categoryCombo linked to the event and also if the categoryCombo is active
      * in the event date.
      */
     @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
-    fun hasCategoryComboAccess(event: Event): Single<Boolean>
+    fun hasCategoryComboAccess(event: Event): Single<Boolean> =
+        rxHasCategoryComboAccess(event)
 
-    fun rxHasCategoryComboAccess(event: Event): Single<Boolean>
+    fun rxHasCategoryComboAccess(event: Event): Single<Boolean> =
+        rxSingle { suspendHasCategoryComboAccess(event) }
 
     suspend fun suspendHasCategoryComboAccess(event: Event): Boolean
 
@@ -94,16 +103,19 @@ interface EventService {
      *
      * @see isEditable
      */
-    fun blockingIsEditable(eventUid: String): Boolean
+    fun blockingIsEditable(eventUid: String): Boolean =
+        runBlockingOnIO { suspendIsEditable(eventUid) }
 
     /**
      * Check if the event can be edited or not. If you want to know the reason why the event is not editable, check
      * the method [getEditableStatus] for a richer description of the status.
      */
     @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
-    fun isEditable(eventUid: String): Single<Boolean>
+    fun isEditable(eventUid: String): Single<Boolean> =
+        rxIsEditable(eventUid)
 
-    fun rxIsEditable(eventUid: String): Single<Boolean>
+    fun rxIsEditable(eventUid: String): Single<Boolean> =
+        rxSingle { suspendIsEditable(eventUid) }
 
     suspend fun suspendIsEditable(eventUid: String): Boolean
 
@@ -136,7 +148,8 @@ interface EventService {
      *
      * @see canAddEventToEnrollment
      */
-    fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean
+    fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean =
+        runBlockingOnIO { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
 
     /**
      * Evaluates if an enrollments accepts more events for a particular programStage.
@@ -147,9 +160,11 @@ interface EventService {
         message = "Use rxCanAddEventToEnrollment instead",
         ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"),
     )
-    fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
+    fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> =
+        rxCanAddEventToEnrollment(enrollmentUid, programStageUid)
 
-    fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean>
+    fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> =
+        rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
 
     suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean
 }

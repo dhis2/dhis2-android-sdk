@@ -88,7 +88,7 @@ internal class EventLineListServiceImpl(
         return events.mapNotNull {
             (it.eventDate() ?: it.dueDate())?.let { referenceDate ->
                 val periodType = programStage?.periodType() ?: PeriodType.Daily
-                val eventPeriod = periodHelper.getPeriodForPeriodTypeAndDateInternal(periodType, referenceDate)
+                val eventPeriod = periodHelper.suspendGetPeriodForPeriodTypeAndDate(periodType, referenceDate)
 
                 val eventDataValues = params.dataElements.map { de ->
                     val dv = dataElementValues.find { dv -> dv.event() == it.uid() && dv.dataElement() == de.uid }
@@ -116,7 +116,7 @@ internal class EventLineListServiceImpl(
 
                 val programIndicatorValues = params.programIndicators.map { pi ->
 
-                    val value = programIndicatorEngine.getEventProgramIndicatorValueInternal(it.uid(), pi.uid)
+                    val value = programIndicatorEngine.suspendGetEventProgramIndicatorValue(it.uid(), pi.uid)
 
                     val legend = when (params.analyticsLegendStrategy) {
                         is AnalyticsLegendStrategy.None -> null

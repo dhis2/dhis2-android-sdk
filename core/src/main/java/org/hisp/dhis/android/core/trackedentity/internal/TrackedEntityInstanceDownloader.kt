@@ -29,6 +29,8 @@ package org.hisp.dhis.android.core.trackedentity.internal
 
 import io.reactivex.Observable
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.rx2.asObservable
 import org.hisp.dhis.android.core.arch.call.internal.collectAndWrapException
 import org.hisp.dhis.android.core.arch.repositories.collection.BaseRepository
@@ -72,8 +74,32 @@ class TrackedEntityInstanceDownloader internal constructor(
      *
      * @return -
      */
-    fun flowDownload(): Flow<TrackerD2Progress> {
-        return call.download(params)
+    fun flowDownload(): Flow<TrackerD2Progress> = flow {
+        emitAll(call.download(resolveFilterUids(params)))
+    }
+
+    private suspend fun resolveFilterUids(params: ProgramDataDownloadParams): ProgramDataDownloadParams {
+        val workingLists = params.programStageWorkingListUids?.let { filterUids ->
+            programStageWorkingListObjectRepository
+                .byUid().`in`(filterUids)
+                .withAttributeValueFilters()
+                .withDataFilters()
+                .suspendGet()
+        }
+        val teiFilters = params.trackedEntityInstanceFilterUids?.let { filterUids ->
+            trackedEntityInstanceFilterCollectionRepository
+                .byUid().`in`(filterUids)
+                .withTrackedEntityInstanceEventFilters()
+                .withAttributeValueFilters()
+                .suspendGet()
+        }
+        return params.copy(
+            programStageWorkingLists = workingLists?.takeIf { it.isNotEmpty() } ?: params.programStageWorkingLists,
+            trackedEntityInstanceFilters = teiFilters?.takeIf { it.isNotEmpty() }
+                ?: params.trackedEntityInstanceFilters,
+            programStageWorkingListUids = null,
+            trackedEntityInstanceFilterUids = null,
+        )
     }
 
     @Deprecated(message = "Use rxDownload instead", ReplaceWith("rxDownload()"))
@@ -131,25 +157,10 @@ class TrackedEntityInstanceDownloader internal constructor(
 
     fun byFilterUid(): ListFilterConnector<TrackedEntityInstanceDownloader, String> {
         return connectorFactory.listConnector { filterUids ->
-            val wl = programStageWorkingListObjectRepository
-                .byUid().`in`(filterUids)
-                .withAttributeValueFilters()
-                .withDataFilters()
-                .blockingGet()
-            val teiFilters = trackedEntityInstanceFilterCollectionRepository
-                .byUid().`in`(filterUids)
-                .withTrackedEntityInstanceEventFilters()
-                .withAttributeValueFilters()
-                .blockingGet()
-            params
-                .run {
-                    wl.takeIf { it.isNotEmpty() }
-                        ?.let { copy(programStageWorkingLists = wl) } ?: this
-                }
-                .run {
-                    teiFilters.takeIf { it.isNotEmpty() }
-                        ?.let { copy(trackedEntityInstanceFilters = teiFilters) } ?: this
-                }
+            params.copy(
+                programStageWorkingListUids = filterUids,
+                trackedEntityInstanceFilterUids = filterUids,
+            )
         }
     }
 
@@ -158,12 +169,12 @@ class TrackedEntityInstanceDownloader internal constructor(
         TrackedEntityInstanceFilter,
         > =
         connectorFactory.listConnector { teiFilters ->
-            params.copy(trackedEntityInstanceFilters = teiFilters)
+            params.copy(trackedEntityInstanceFilters = teiFilters, trackedEntityInstanceFilterUids = null)
         }
 
     fun byProgramStageWorkingList(): ListFilterConnector<TrackedEntityInstanceDownloader, ProgramStageWorkingList> =
         connectorFactory.listConnector { programStageWorkingLists ->
-            params.copy(programStageWorkingLists = programStageWorkingLists)
+            params.copy(programStageWorkingLists = programStageWorkingLists, programStageWorkingListUids = null)
         }
 
     /**

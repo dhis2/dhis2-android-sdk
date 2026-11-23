@@ -29,12 +29,12 @@ package org.hisp.dhis.android.core.arch.helpers
 
 import android.content.Context
 import org.hisp.dhis.android.core.D2Manager
-import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
+import org.hisp.dhis.android.core.fileresource.internal.FileResourceDirectoriesImpl
 import java.io.File
 
 /**
- * Directories of the file resources of the logged-in user. D2 must be instantiated with a logged-in user, and the
- * `context` parameter is not used.
+ * Directories of the file resources of the logged-in user, or the shared root directories if no user is logged in.
+ * D2 must be instantiated, and the `context` parameter is not used.
  */
 @Deprecated("Use FileResourceModule.directories(), which works on okio.Path.")
 @Suppress("UnusedParameter")
@@ -52,7 +52,7 @@ object FileResourceDirectoryHelper {
     )
     @JvmStatic
     fun getFileResourceDirectory(context: Context): File {
-        return directories().fileResourceDirectory().toFile()
+        return directories().fileResourceDirectoryOrRoot().toFile()
     }
 
     /**
@@ -68,10 +68,10 @@ object FileResourceDirectoryHelper {
     )
     @JvmStatic
     fun getFileCacheResourceDirectory(context: Context): File {
-        return directories().fileCacheResourceDirectory().toFile()
+        return directories().fileCacheResourceDirectoryOrRoot().toFile()
     }
 
-    private fun directories(): FileResourceDirectories {
-        return D2Manager.getD2().fileResourceModule().directories()
+    private fun directories(): FileResourceDirectoriesImpl {
+        return D2Manager.getD2().d2DIComponent.fileResourceDirectories
     }
 }

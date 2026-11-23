@@ -29,15 +29,12 @@
 package org.hisp.dhis.android.core.trackedentity.ownership
 
 import io.ktor.http.HttpStatusCode
-import io.reactivex.Completable
-import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
 import org.hisp.dhis.android.core.arch.helpers.DateUtils.toJavaDate
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.common.internal.DataStatePropagator
@@ -53,7 +50,6 @@ import java.util.Date
 import kotlin.time.Instant
 
 @Singleton
-@Suppress("TooManyFunctions")
 internal class OwnershipManagerImpl(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val ownershipNetworkHandler: OwnershipNetworkHandler,
@@ -62,22 +58,6 @@ internal class OwnershipManagerImpl(
     private val programOwnerStore: ProgramOwnerStore,
     private val clockProvider: ClockProvider,
 ) : OwnershipManager {
-
-    @Deprecated(
-        message = "Use rxBreakGlass instead",
-        ReplaceWith("rxBreakGlass(trackedEntityInstance, program, reason)"),
-    )
-    override fun breakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return rxCompletable { suspendBreakGlass(trackedEntityInstance, program, reason) }
-    }
-
-    override fun rxBreakGlass(trackedEntityInstance: String, program: String, reason: String): Completable {
-        return rxCompletable { suspendBreakGlass(trackedEntityInstance, program, reason) }
-    }
-
-    override fun blockingBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
-        runBlockingOnIO { suspendBreakGlass(trackedEntityInstance, program, reason) }
-    }
 
     override suspend fun suspendBreakGlass(trackedEntityInstance: String, program: String, reason: String) {
         breakGlassInternal(trackedEntityInstance, program, reason)
@@ -115,22 +95,6 @@ internal class OwnershipManagerImpl(
                         .build()
                 },
             )
-    }
-
-    @Deprecated(
-        message = "Use rxTransfer instead",
-        ReplaceWith("rxTransfer(trackedEntityInstance, program, ownerOrgUnit)"),
-    )
-    override fun transfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
-        return rxCompletable { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
-    }
-
-    override fun rxTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String): Completable {
-        return rxCompletable { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
-    }
-
-    override fun blockingTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {
-        runBlockingOnIO { suspendTransfer(trackedEntityInstance, program, ownerOrgUnit) }
     }
 
     override suspend fun suspendTransfer(trackedEntityInstance: String, program: String, ownerOrgUnit: String) {

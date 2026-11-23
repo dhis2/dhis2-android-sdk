@@ -51,7 +51,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
     @Test
     fun find_accounts_after_login() {
-        val initialAccountSize = d2.userModule().accountManager().getAccounts().size
+        val initialAccountSize = d2.userModule().accountManager().blockingGetAccounts().size
 
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
@@ -59,7 +59,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
-        val accountList = d2.userModule().accountManager().getAccounts()
+        val accountList = d2.userModule().accountManager().blockingGetAccounts()
 
         assertThat(accountList.size).isEqualTo(initialAccountSize + 1)
         val account = accountList.find { it.username() == user1 }
@@ -76,7 +76,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
-        val currentAccount = d2.userModule().accountManager().getCurrentAccount()
+        val currentAccount = d2.userModule().accountManager().blockingGetCurrentAccount()
         assertThat(currentAccount?.username()).isEqualTo(user1)
         // assertThat(currentAccount?.syncState()).isNotNull() commented out due to temporary disabling of
         // syncState update on 1.13.0 release
@@ -90,7 +90,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
             d2.userModule().blockingLogOut()
         }
 
-        val currentAccount = d2.userModule().accountManager().getCurrentAccount()
+        val currentAccount = d2.userModule().accountManager().blockingGetCurrentAccount()
         assertThat(currentAccount).isNull()
     }
 
@@ -120,8 +120,8 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
         try {
-            d2.userModule().accountManager().deleteCurrentAccount()
-            val accountList = d2.userModule().accountManager().getAccounts()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
+            val accountList = d2.userModule().accountManager().blockingGetAccounts()
             val account = accountList.find { it.username() == user1 }
             assertThat(account).isNull()
         } catch (_: D2Error) {
@@ -140,11 +140,11 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
         d2.userModule().blockingLogOut()
         try {
-            d2.userModule().accountManager().deleteCurrentAccount()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
             Assert.fail("Should throw a D2Error")
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER)
-            val accountList = d2.userModule().accountManager().getAccounts()
+            val accountList = d2.userModule().accountManager().blockingGetAccounts()
             val account = accountList.find { it.username() == user1 }
             assertThat(account).isNotNull()
         } catch (_: Exception) {
@@ -156,7 +156,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
     // @Test commented out due to temporary disabling of syncState update on 1.13.0 release
     fun evaluate_sync_status() {
-        val initialAccountSize = d2.userModule().accountManager().getAccounts().size
+        val initialAccountSize = d2.userModule().accountManager().blockingGetAccounts().size
 
         if (d2.userModule().blockingIsLogged()) {
             d2.userModule().blockingLogOut()
@@ -165,7 +165,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
-        val accounts = d2.userModule().accountManager().getAccounts()
+        val accounts = d2.userModule().accountManager().blockingGetAccounts()
         assertThat(accounts.size).isEqualTo(initialAccountSize + 1)
         val u1Account = accounts.find { it.username() == user1 }!!
         assertThat(u1Account.syncState()).isEqualTo(State.SYNCED)
@@ -179,7 +179,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.metadataModule().blockingDownload()
         addDataValue()
 
-        val accounts2 = d2.userModule().accountManager().getAccounts()
+        val accounts2 = d2.userModule().accountManager().blockingGetAccounts()
         assertThat(accounts2.size).isEqualTo(initialAccountSize + 2)
 
         val account1 = accounts2.find { it.username() == user1 }!!
@@ -202,7 +202,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueMetadataResponses()
         d2.metadataModule().blockingDownload()
 
-        val loginConfig = d2.userModule().accountManager().getCurrentAccount()?.loginConfig()
+        val loginConfig = d2.userModule().accountManager().blockingGetCurrentAccount()?.loginConfig()
         assertThat(loginConfig).isNotNull()
         assertThat(loginConfig?.apiVersion).isEqualTo("2.41.3")
     }
@@ -226,7 +226,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
         val user1Name = d2.userModule().user().blockingGet()?.name()
 
-        d2.userModule().accountManager().getAccounts()
+        d2.userModule().accountManager().blockingGetAccounts()
 
         val activeUser = d2.userModule().user().blockingGet()?.name()
         assertThat(activeUser).isEqualTo(user1Name)
@@ -245,13 +245,13 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
-        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialAccount = d2.userModule().accountManager().blockingGetCurrentAccount()
         val initialLastAccessDate = initialAccount?.lastAccessDate()
         assertThat(initialLastAccessDate).isNotNull()
 
         Thread.sleep(1000)
 
-        val accounts = d2.userModule().accountManager().getAccounts()
+        val accounts = d2.userModule().accountManager().blockingGetAccounts()
         val updatedAccount = accounts.find { it.username() == user1 }
         val updatedLastAccessDate = updatedAccount?.lastAccessDate()
 
@@ -270,13 +270,13 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         dhis2MockServer.enqueueLoginResponses()
         d2.userModule().blockingLogIn(user1, pass1, dhis2MockServer.baseEndpoint)
 
-        val initialAccount = d2.userModule().accountManager().getCurrentAccount()
+        val initialAccount = d2.userModule().accountManager().blockingGetCurrentAccount()
         val initialLastAccessDate = initialAccount?.lastAccessDate()
         assertThat(initialLastAccessDate).isNotNull()
 
         Thread.sleep(1000)
 
-        val updatedAccount = d2.userModule().accountManager().getCurrentAccount()
+        val updatedAccount = d2.userModule().accountManager().blockingGetCurrentAccount()
         val updatedLastAccessDate = updatedAccount?.lastAccessDate()
 
         assertThat(updatedLastAccessDate).isNotNull()
@@ -314,7 +314,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
 
         // Get accounts and verify user1 (logged) has more recent lastAccessDate than user2
         // despite user1 being older by creation date
-        val accounts = d2.userModule().accountManager().getAccounts()
+        val accounts = d2.userModule().accountManager().blockingGetAccounts()
         val account1 = accounts.find { it.username() == user1 }
         val account2 = accounts.find { it.username() == user2 }
 
@@ -359,7 +359,7 @@ class AccountManagerMockIntegrationShould : BaseMockIntegrationTestEmptyEnqueabl
         }
         server.enqueueLoginResponses()
         d2.userModule().blockingLogIn(username, password, server.baseEndpoint)
-        d2.userModule().accountManager().deleteCurrentAccount()
+        d2.userModule().accountManager().blockingDeleteCurrentAccount()
     }
 
     companion object {

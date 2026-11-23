@@ -28,7 +28,6 @@
 package org.hisp.dhis.android.core.wipe.internal
 
 import org.hisp.dhis.android.core.arch.call.executors.internal.D2CallExecutorInterface
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 import org.koin.core.annotation.Singleton
 
@@ -38,30 +37,24 @@ internal class WipeModuleImpl(
     private val moduleWipers: List<ModuleWiper>,
 ) : WipeModule {
     @Throws(D2Error::class)
-    override fun wipeEverything() {
-        return runBlockingOnIO {
-            d2CallExecutor.executeD2CallTransactionally {
-                wipeMetadataInternal()
-                wipeDataInternal()
-            }
+    override suspend fun suspendWipeEverything() {
+        d2CallExecutor.executeD2CallTransactionally {
+            wipeMetadataInternal()
+            wipeDataInternal()
         }
     }
 
     @Throws(D2Error::class)
-    override fun wipeMetadata() {
-        return runBlockingOnIO {
-            d2CallExecutor.executeD2CallTransactionally {
-                wipeMetadataInternal()
-            }
+    override suspend fun suspendWipeMetadata() {
+        d2CallExecutor.executeD2CallTransactionally {
+            wipeMetadataInternal()
         }
     }
 
     @Throws(D2Error::class)
-    override fun wipeData() {
-        return runBlockingOnIO {
-            d2CallExecutor.executeD2CallTransactionally {
-                wipeDataInternal()
-            }
+    override suspend fun suspendWipeData() {
+        d2CallExecutor.executeD2CallTransactionally {
+            wipeDataInternal()
         }
     }
 

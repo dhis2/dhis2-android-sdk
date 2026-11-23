@@ -27,7 +27,6 @@
  */
 package org.hisp.dhis.android.core.relationship
 
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.collection.internal.ReadOnlyIdentifiableCollectionRepositoryImpl
 import org.hisp.dhis.android.core.arch.repositories.filters.internal.BooleanFilterConnector
@@ -35,14 +34,11 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.FilterConne
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.arch.repositories.scope.internal.FilterItemOperator
 import org.hisp.dhis.android.core.common.IdentifiableColumns
-import org.hisp.dhis.android.core.enrollment.internal.EnrollmentStore
-import org.hisp.dhis.android.core.event.internal.EventStore
 import org.hisp.dhis.android.core.relationship.internal.RelationshipConstraintChildrenAppender
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEnrollmentRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForEventRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeCollectionRepositoryHelper.availableForTrackedEntityInstanceRawQuery
 import org.hisp.dhis.android.core.relationship.internal.RelationshipTypeStore
-import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceStore
 import org.hisp.dhis.android.persistence.common.querybuilders.WhereClauseBuilder
 import org.hisp.dhis.android.persistence.relationship.RelationshipConstraintTableInfo
 import org.hisp.dhis.android.persistence.relationship.RelationshipTypeTableInfo
@@ -51,22 +47,13 @@ import org.koin.core.annotation.Singleton
 @Singleton
 class RelationshipTypeCollectionRepository internal constructor(
     store: RelationshipTypeStore,
-    private val teiStore: TrackedEntityInstanceStore,
-    private val enrollmentStore: EnrollmentStore,
-    private val eventStore: EventStore,
     scope: RepositoryScope,
 ) : ReadOnlyIdentifiableCollectionRepositoryImpl<RelationshipType, RelationshipTypeCollectionRepository>(
     store,
     childrenAppenders,
     scope,
     FilterConnectorFactory(scope) { s: RepositoryScope ->
-        RelationshipTypeCollectionRepository(
-            store,
-            teiStore,
-            enrollmentStore,
-            eventStore,
-            s,
-        )
+        RelationshipTypeCollectionRepository(store, s)
     },
 ) {
     fun byBidirectional(): BooleanFilterConnector<RelationshipTypeCollectionRepository> {
@@ -99,10 +86,9 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the TEI might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForTrackedEntityInstance(trackedEntityInstanceUid: String): RelationshipTypeCollectionRepository {
-        val trackedEntityInstance = runBlockingOnIO { teiStore.selectByUid(trackedEntityInstanceUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForTrackedEntityInstanceRawQuery(trackedEntityInstance),
+            availableForTrackedEntityInstanceRawQuery(trackedEntityInstanceUid),
         )
     }
 
@@ -112,10 +98,9 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the enrollment might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEnrollment(enrollmentUid: String): RelationshipTypeCollectionRepository {
-        val enrollment = runBlockingOnIO { enrollmentStore.selectByUid(enrollmentUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForEnrollmentRawQuery(enrollment),
+            availableForEnrollmentRawQuery(enrollmentUid),
         )
     }
 
@@ -125,10 +110,9 @@ class RelationshipTypeCollectionRepository internal constructor(
      * - or the event might be assigned to the TO component and the RelationshipType is bidirectional
      */
     fun byAvailableForEvent(eventUid: String): RelationshipTypeCollectionRepository {
-        val event = runBlockingOnIO { eventStore.selectByUid(eventUid) }
         return cf.subQuery(IdentifiableColumns.UID).rawSubQuery(
             FilterItemOperator.IN,
-            availableForEventRawQuery(event),
+            availableForEventRawQuery(eventUid),
         )
     }
 

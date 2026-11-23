@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
+import kotlinx.coroutines.CancellationException
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toOkioPath
@@ -48,7 +49,6 @@ import org.hisp.dhis.android.core.util.copyTo
 import org.hisp.dhis.android.core.util.deleteIfExists
 import org.hisp.dhis.android.core.util.simpleDateFormatNonNull
 import org.koin.core.annotation.Singleton
-import java.io.File
 import java.util.Date
 
 @Singleton
@@ -73,14 +73,9 @@ internal class DatabaseImportExportImpl(
     private val d2ErrorBuilder = D2Error.builder()
         .errorComponent(D2ErrorComponent.SDK)
 
-    @Deprecated("Use the okio.Path overload.")
-    override fun importDatabase(file: File): DatabaseExportMetadata {
-        return importDatabase(file.toOkioPath())
-    }
-
     @Suppress("TooGenericExceptionCaught")
-    override fun importDatabase(file: Path): DatabaseExportMetadata {
-        if (userModule.blockingIsLogged()) {
+    override suspend fun suspendImportDatabase(file: Path): DatabaseExportMetadata {
+        if (userModule.suspendIsLogged()) {
             throw d2ErrorBuilder
                 .errorDescription("Please log out to import database")
                 .errorCode(D2ErrorCode.DATABASE_IMPORT_LOGOUT_FIRST)
@@ -140,11 +135,7 @@ internal class DatabaseImportExportImpl(
         }
     }
 
-    @Deprecated("Use exportLoggedUserDatabaseToPath(), which returns an okio.Path.")
-    override suspend fun exportLoggedUserDatabase(): File {
-        return exportLoggedUserDatabaseToPath().toFile()
-    }
-
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun exportLoggedUserDatabaseToPath(): Path {
         val exportMetadataFile = workingFile(ExportMetadata)
         val copiedDatabase = workingFile(ExportDatabase)
@@ -157,6 +148,26 @@ internal class DatabaseImportExportImpl(
                 .build()
         }
 
+        return try {
+            writeExportZip(exportMetadataFile, copiedDatabase, protectedDatabase)
+        } catch (e: Exception) {
+            when (e) {
+                is D2Error, is CancellationException -> throw e
+                else ->
+                    throw d2ErrorBuilder
+                        .errorDescription("Export database failed")
+                        .errorCode(D2ErrorCode.DATABASE_EXPORT_FAILED)
+                        .originalException(e)
+                        .build()
+            }
+        } finally {
+            fileSystem.deleteIfExists(exportMetadataFile)
+            fileSystem.deleteIfExists(copiedDatabase)
+            fileSystem.deleteIfExists(protectedDatabase)
+        }
+    }
+
+    private suspend fun writeExportZip(exportMetadataFile: Path, copiedDatabase: Path, protectedDatabase: Path): Path {
         val credentials = credentialsStore.get()
             ?: throw IllegalArgumentException("Credentials are not set")
 
@@ -203,10 +214,6 @@ internal class DatabaseImportExportImpl(
             files = listOf(exportMetadataFile, protectedDatabase),
             zipFile = zipFile,
         )
-
-        fileSystem.deleteIfExists(exportMetadataFile)
-        fileSystem.deleteIfExists(copiedDatabase)
-        fileSystem.deleteIfExists(protectedDatabase)
 
         return zipFile
     }

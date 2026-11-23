@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.core.analytics.trackerlinelist
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.analytics.AnalyticsException
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.paging.PageConfig
 
 @Suppress("TooManyFunctions")
@@ -53,11 +55,11 @@ interface TrackerLineListRepository {
     fun withSorting(sorting: TrackerLineListSortingItem): TrackerLineListRepository
 
     @Deprecated(message = "Use rxEvaluate instead", ReplaceWith("rxEvaluate()"))
-    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
+    fun evaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> = rxEvaluate()
 
-    fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>>
+    fun rxEvaluate(): Single<Result<TrackerLineListResponse, AnalyticsException>> = rxSingle { suspendEvaluate() }
 
-    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
+    fun blockingEvaluate(): Result<TrackerLineListResponse, AnalyticsException> = runBlockingOnIO { suspendEvaluate() }
 
     suspend fun suspendEvaluate(): Result<TrackerLineListResponse, AnalyticsException>
 }

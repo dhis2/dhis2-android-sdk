@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.android.core.user.oauth2.internal
 
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.storage.internal.CredentialsSecureStore
 import org.hisp.dhis.android.core.configuration.internal.ServerUrlNormalizer
 import org.hisp.dhis.android.core.maintenance.D2Error
@@ -58,18 +57,14 @@ internal class OAuth2HandlerImpl(
     private val logInExceptions: LogInExceptions,
 ) : OAuth2Handler {
 
-    private suspend fun buildEnrollmentUrlInternal(serverUrl: String): String {
+    override suspend fun suspendBuildEnrollmentUrl(serverUrl: String): String {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
         val state = JWTHelper.generateState()
         oauth2SecureStore.tempState = state
         return dcrNetworkHandler.buildEnrollmentUrl(normalizedUrl, state)
     }
 
-    override fun blockingBuildEnrollmentUrl(serverUrl: String): String {
-        return runBlockingOnIO { buildEnrollmentUrlInternal(serverUrl) }
-    }
-
-    private suspend fun handleEnrollmentResponseInternal(serverUrl: String, iat: String, state: String) {
+    override suspend fun suspendHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) {
         val normalizedUrl = ServerUrlNormalizer.normalize(serverUrl)
         verifyState(state)
         if (!JWTHelper.isUnexpired(iat)) {
@@ -134,10 +129,6 @@ internal class OAuth2HandlerImpl(
         keyStoreManager.deleteKey(previousKeyId)
     }
 
-    override fun blockingHandleEnrollmentResponse(serverUrl: String, iat: String, state: String) {
-        runBlockingOnIO { handleEnrollmentResponseInternal(serverUrl, iat, state) }
-    }
-
     /**
      * Checks the `state` returned by the server against the one generated when the URL the user was
      * sent to was built. Without it the redirect could be forged by a third party.
@@ -154,16 +145,12 @@ internal class OAuth2HandlerImpl(
         oauth2SecureStore.tempState = null
     }
 
-    override fun blockingBuildLogoutUrl(config: OAuth2Config): String {
-        return runBlockingOnIO { buildLogoutUrlInternal(config) }
-    }
-
-    private fun buildLogoutUrlInternal(config: OAuth2Config): String {
+    override suspend fun suspendBuildLogoutUrl(config: OAuth2Config): String {
         val normalizedUrl = ServerUrlNormalizer.normalize(config.serverUrl)
         return oauth2NetworkHandler.buildLogoutUrl(config.copy(serverUrl = normalizedUrl))
     }
 
-    private suspend fun logInInternal(config: OAuth2Config): String {
+    override suspend fun suspendLogIn(config: OAuth2Config): String {
         if (!isDeviceRegistered()) {
             throw logInExceptions.oauth2DeviceNotRegisteredError()
         }
@@ -185,12 +172,8 @@ internal class OAuth2HandlerImpl(
         )
     }
 
-    override fun blockingLogIn(config: OAuth2Config): String {
-        return runBlockingOnIO { logInInternal(config) }
-    }
-
     @Suppress("ThrowsCount")
-    private suspend fun handleLogInResponseInternal(
+    override suspend fun suspendHandleLogInResponse(
         existingUsername: String?,
         serverUrl: String,
         authorizationCode: String,
@@ -248,17 +231,6 @@ internal class OAuth2HandlerImpl(
         }
     }
 
-    override fun blockingHandleLogInResponse(
-        existingUsername: String?,
-        serverUrl: String,
-        authorizationCode: String,
-        state: String,
-    ): User {
-        return runBlockingOnIO {
-            handleLogInResponseInternal(existingUsername, serverUrl, authorizationCode, state)
-        }
-    }
-
     override fun isDeviceRegistered(): Boolean {
         return oauth2SecureStore.isRegistered &&
             oauth2SecureStore.clientId != null &&
@@ -311,16 +283,11 @@ internal class OAuth2HandlerImpl(
         logoutHandler.logOut()
     }
 
-    @Deprecated(message = "Use rxLogOutObservable instead", ReplaceWith("rxLogOutObservable()"))
-    override fun logOutObservable(): Observable<Unit> {
-        return logoutHandler.logOutObservable()
+    override fun flowLogOut(): Flow<Unit> {
+        return logoutHandler.logOutFlow()
     }
 
-    override fun rxLogOutObservable(): Observable<Unit> {
-        return logoutHandler.logOutObservable()
-    }
-
-    override fun resetRegistration() {
+    override suspend fun suspendResetRegistration() {
         val keyId = oauth2SecureStore.keyId
         if (keyId != null) {
             keyStoreManager.deleteKey(keyId)

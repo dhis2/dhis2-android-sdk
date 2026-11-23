@@ -29,15 +29,23 @@
 package org.hisp.dhis.android.core.settings
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 
 interface CustomIntentService {
     @Deprecated(
         message = "Use rxEvaluateRequestParams instead",
         ReplaceWith("rxEvaluateRequestParams(customIntent, context)"),
     )
-    fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
-    fun rxEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>>
-    fun blockingEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?>
+    fun evaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>> =
+        rxEvaluateRequestParams(customIntent, context)
+
+    fun rxEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Single<Map<String, Any?>> =
+        rxSingle { suspendEvaluateRequestParams(customIntent, context) }
+
+    fun blockingEvaluateRequestParams(customIntent: CustomIntent, context: CustomIntentContext): Map<String, Any?> =
+        runBlockingOnIO { suspendEvaluateRequestParams(customIntent, context) }
+
     suspend fun suspendEvaluateRequestParams(
         customIntent: CustomIntent,
         context: CustomIntentContext,

@@ -74,11 +74,11 @@ class PeriodHelper internal constructor(
         ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date)"),
     )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
-        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
+        return rxSingle { suspendGetPeriodForPeriodTypeAndDate(periodType, date) }
     }
 
     fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date): Single<Period> {
-        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date) }
+        return rxSingle { suspendGetPeriodForPeriodTypeAndDate(periodType, date) }
     }
 
     /**
@@ -95,11 +95,11 @@ class PeriodHelper internal constructor(
         ReplaceWith("rxGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset)"),
     )
     fun getPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
-        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+        return rxSingle { suspendGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset) }
     }
 
     fun rxGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int): Single<Period> {
-        return rxSingle { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+        return rxSingle { suspendGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset) }
     }
 
     /**
@@ -114,10 +114,10 @@ class PeriodHelper internal constructor(
     @JvmOverloads
     @Throws(IllegalStateException::class)
     fun blockingGetPeriodForPeriodTypeAndDate(periodType: PeriodType, date: Date, periodOffset: Int = 0): Period {
-        return runBlockingOnIO { getPeriodForPeriodTypeAndDateInternal(periodType, date, periodOffset) }
+        return runBlockingOnIO { suspendGetPeriodForPeriodTypeAndDate(periodType, date, periodOffset) }
     }
 
-    internal suspend fun getPeriodForPeriodTypeAndDateInternal(
+    suspend fun suspendGetPeriodForPeriodTypeAndDate(
         periodType: PeriodType,
         date: Date,
         periodOffset: Int = 0,
@@ -145,7 +145,7 @@ class PeriodHelper internal constructor(
         val periodType = periodTypeFromPeriodId(periodId)
         val date = Date(periodParser.parse(periodId, periodType).toEpochMilliseconds())
 
-        return getPeriodForPeriodTypeAndDateInternal(periodType, date)
+        return suspendGetPeriodForPeriodTypeAndDate(periodType, date)
     }
 
     @Deprecated(message = "Use rxGetPeriodsForDataSet instead", ReplaceWith("rxGetPeriodsForDataSet(dataSetUid)"))
@@ -158,7 +158,11 @@ class PeriodHelper internal constructor(
     }
 
     fun blockingGetPeriodsForDataSet(dataSetUid: String): List<Period> {
-        return runBlockingOnIO { periodForDataSetManager.getPeriodsForDataSetInternal(dataSetUid) }
+        return runBlockingOnIO { suspendGetPeriodsForDataSet(dataSetUid) }
+    }
+
+    suspend fun suspendGetPeriodsForDataSet(dataSetUid: String): List<Period> {
+        return periodForDataSetManager.getPeriodsForDataSetInternal(dataSetUid)
     }
 
     companion object {

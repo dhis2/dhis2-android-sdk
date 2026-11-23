@@ -34,7 +34,10 @@ import okio.fakefilesystem.FakeFileSystem
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
 import org.hisp.dhis.android.core.arch.file.internal.FakePlatformDirectories
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
 import org.junit.After
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -127,6 +130,31 @@ class FileResourceDirectoriesImplShould {
         directories.deleteFileResourceDirectory()
 
         assertThat(fileSystem.exists(platformDirectories.filesDir / "sdk_resources" / ACCOUNT)).isFalse()
+    }
+
+    @Test
+    fun fail_without_a_logged_in_user() {
+        whenever(databaseAdapter.getDatabaseName()).thenReturn("")
+        val sharedFile = writeFile(directories.rootFileResourceDirectory() / "shared.png")
+
+        listOf(
+            { directories.fileResourceDirectory() },
+            { directories.fileCacheResourceDirectory() },
+            { directories.deleteFileResourceDirectory() },
+        ).forEach { call ->
+            val error = assertThrows(D2Error::class.java) { call() }
+            assertThat(error.errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER)
+        }
+        assertThat(fileSystem.exists(sharedFile)).isTrue()
+    }
+
+    @Test
+    fun fall_back_to_the_root_directories_without_a_logged_in_user_for_the_deprecated_helpers() {
+        whenever(databaseAdapter.getDatabaseName()).thenReturn("")
+
+        assertThat(directories.fileResourceDirectoryOrRoot()).isEqualTo(directories.rootFileResourceDirectory())
+        assertThat(directories.fileCacheResourceDirectoryOrRoot())
+            .isEqualTo(directories.rootFileCacheResourceDirectory())
     }
 
     private fun writeFile(path: Path): Path {

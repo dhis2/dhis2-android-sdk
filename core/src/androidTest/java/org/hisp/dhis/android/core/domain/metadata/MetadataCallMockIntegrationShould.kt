@@ -59,7 +59,7 @@ class MetadataCallMockIntegrationShould : BaseMockIntegrationTestEmptyDispatcher
 
     @After
     fun tearDown() {
-        runBlocking { d2.wipeModule().wipeEverything() }
+        runBlocking { d2.wipeModule().blockingWipeEverything() }
     }
 
     @Test

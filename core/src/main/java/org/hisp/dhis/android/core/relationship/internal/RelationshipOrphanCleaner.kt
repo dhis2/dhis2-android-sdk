@@ -45,7 +45,7 @@ internal abstract class RelationshipOrphanCleaner<O : ObjectWithUidInterface, R 
         if (parent == null || children == null) {
             return false
         }
-        val existingRelationships = relationshipRepository.getByItemInternal(
+        val existingRelationships = relationshipRepository.suspendGetByItem(
             getItem(parent.uid()),
             true,
             false,

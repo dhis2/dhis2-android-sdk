@@ -49,6 +49,8 @@ internal constructor(
         return runBlockingOnIO { getWithoutChildrenInternal() }
     }
 
+    suspend fun suspendGetWithoutChildren(): M? = getWithoutChildrenInternal()
+
     private suspend fun getWithoutChildrenInternal(): M? {
         val whereClauseBuilder = WhereClauseFromScopeBuilder(WhereClauseBuilder())
         return store.selectOneWhere(whereClauseBuilder.getWhereClause(scope))

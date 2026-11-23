@@ -65,8 +65,8 @@ internal class ProgramIndicatorEngineImpl(
         programIndicatorUid: String,
     ): String? {
         return when {
-            eventUid != null -> getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid)
-            enrollmentUid != null -> getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid)
+            eventUid != null -> suspendGetEventProgramIndicatorValue(eventUid, programIndicatorUid)
+            enrollmentUid != null -> suspendGetEnrollmentProgramIndicatorValue(enrollmentUid, programIndicatorUid)
             else -> return null
         }
     }
@@ -80,7 +80,7 @@ internal class ProgramIndicatorEngineImpl(
         return runBlockingOnIO { getProgramIndicatorValueInternal(enrollmentUid, eventUid, programIndicatorUid) }
     }
 
-    internal suspend fun getEnrollmentProgramIndicatorValueInternal(
+    override suspend fun suspendGetEnrollmentProgramIndicatorValue(
         enrollmentUid: String,
         programIndicatorUid: String,
     ): String? {
@@ -99,11 +99,7 @@ internal class ProgramIndicatorEngineImpl(
         return evaluateProgramIndicatorContext(programIndicatorContext)
     }
 
-    override fun getEnrollmentProgramIndicatorValue(enrollmentUid: String, programIndicatorUid: String): String? {
-        return runBlockingOnIO { getEnrollmentProgramIndicatorValueInternal(enrollmentUid, programIndicatorUid) }
-    }
-
-    internal suspend fun getEventProgramIndicatorValueInternal(eventUid: String, programIndicatorUid: String): String? {
+    override suspend fun suspendGetEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
         val programIndicator = programIndicatorStore.selectByUid(programIndicatorUid) ?: return null
 
         val event = eventRepository
@@ -124,10 +120,6 @@ internal class ProgramIndicatorEngineImpl(
         )
 
         return evaluateProgramIndicatorContext(programIndicatorContext)
-    }
-
-    override fun getEventProgramIndicatorValue(eventUid: String, programIndicatorUid: String): String? {
-        return runBlockingOnIO { getEventProgramIndicatorValueInternal(eventUid, programIndicatorUid) }
     }
 
     private suspend fun evaluateProgramIndicatorContext(context: ProgramIndicatorContext): String? {

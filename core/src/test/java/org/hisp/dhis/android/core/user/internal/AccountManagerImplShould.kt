@@ -93,7 +93,7 @@ class AccountManagerImplShould {
     fun deleteCurrentAccount_throws_no_authenticated_user_when_no_credentials() {
         whenever(credentialsSecureStore.get()).thenReturn(null)
 
-        val error = runCatching { accountManager.deleteCurrentAccount() }.exceptionOrNull()
+        val error = runCatching { accountManager.blockingDeleteCurrentAccount() }.exceptionOrNull()
 
         assertThat(error).isInstanceOf(D2Error::class.java)
         assertThat((error as D2Error).errorCode()).isEqualTo(D2ErrorCode.NO_AUTHENTICATED_USER)
@@ -106,7 +106,7 @@ class AccountManagerImplShould {
         seedConfiguration(listOf(account))
         whenever(credentialsSecureStore.get()).thenReturn(activeCredentials())
 
-        accountManager.deleteCurrentAccount()
+        accountManager.blockingDeleteCurrentAccount()
 
         verify(databaseManager).deleteDatabase(DB_NAME, false)
         verify(oauth2StateSecureStore).remove(SERVER_URL, USERNAME)
@@ -118,7 +118,7 @@ class AccountManagerImplShould {
         whenever(credentialsSecureStore.get()).thenReturn(activeCredentials())
         whenever(databasesConfigurationStore.get()).thenReturn(null)
 
-        accountManager.deleteCurrentAccount()
+        accountManager.blockingDeleteCurrentAccount()
 
         verify(oauth2StateSecureStore, never()).remove(any(), any())
         verify(databaseManager, never()).deleteDatabase(any(), eq(false))

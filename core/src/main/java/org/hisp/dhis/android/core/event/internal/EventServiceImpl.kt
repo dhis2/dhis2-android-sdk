@@ -27,9 +27,6 @@
  */
 package org.hisp.dhis.android.core.event.internal
 
-import io.reactivex.Single
-import kotlinx.coroutines.rx2.rxSingle
-import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.category.CategoryOptionComboService
 import org.hisp.dhis.android.core.enrollment.EnrollmentCollectionRepository
 import org.hisp.dhis.android.core.enrollment.EnrollmentStatus
@@ -46,7 +43,7 @@ import org.hisp.dhis.android.persistence.trackedentity.ProgramOwnerTableInfo
 import org.koin.core.annotation.Singleton
 
 @Singleton
-@Suppress("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList")
 internal class EventServiceImpl(
     private val enrollmentRepository: EnrollmentCollectionRepository,
     private val eventRepository: EventCollectionRepository,
@@ -59,36 +56,10 @@ internal class EventServiceImpl(
     private val programOwnerStore: ProgramOwnerStore,
 ) : EventService {
 
-    override fun blockingHasDataWriteAccess(eventUid: String): Boolean {
-        return runBlockingOnIO { suspendHasDataWriteAccess(eventUid) }
-    }
-
-    @Deprecated(message = "Use rxHasDataWriteAccess instead", ReplaceWith("rxHasDataWriteAccess(eventUid)"))
-    override fun hasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return rxSingle { suspendHasDataWriteAccess(eventUid) }
-    }
-
-    override fun rxHasDataWriteAccess(eventUid: String): Single<Boolean> {
-        return rxSingle { suspendHasDataWriteAccess(eventUid) }
-    }
-
     override suspend fun suspendHasDataWriteAccess(eventUid: String): Boolean {
         val event = eventRepository.uid(eventUid).suspendGet() ?: return false
 
         return programStageRepository.uid(event.programStage()).suspendGet()?.access()?.data()?.write() ?: false
-    }
-
-    override fun blockingIsInOrgunitRange(event: Event): Boolean {
-        return runBlockingOnIO { suspendIsInOrgunitRange(event) }
-    }
-
-    @Deprecated(message = "Use rxIsInOrgunitRange instead", ReplaceWith("rxIsInOrgunitRange(event)"))
-    override fun isInOrgunitRange(event: Event): Single<Boolean> {
-        return rxSingle { suspendIsInOrgunitRange(event) }
-    }
-
-    override fun rxIsInOrgunitRange(event: Event): Single<Boolean> {
-        return rxSingle { suspendIsInOrgunitRange(event) }
     }
 
     override suspend fun suspendIsInOrgunitRange(event: Event): Boolean {
@@ -99,36 +70,10 @@ internal class EventServiceImpl(
         } ?: true
     }
 
-    override fun blockingHasCategoryComboAccess(event: Event): Boolean {
-        return runBlockingOnIO { suspendHasCategoryComboAccess(event) }
-    }
-
-    @Deprecated(message = "Use rxHasCategoryComboAccess instead", ReplaceWith("rxHasCategoryComboAccess(event)"))
-    override fun hasCategoryComboAccess(event: Event): Single<Boolean> {
-        return rxSingle { suspendHasCategoryComboAccess(event) }
-    }
-
-    override fun rxHasCategoryComboAccess(event: Event): Single<Boolean> {
-        return rxSingle { suspendHasCategoryComboAccess(event) }
-    }
-
     override suspend fun suspendHasCategoryComboAccess(event: Event): Boolean {
         return event.attributeOptionCombo()?.let {
             categoryOptionComboService.suspendHasAccess(it, event.eventDate())
         } ?: true
-    }
-
-    override fun blockingIsEditable(eventUid: String): Boolean {
-        return runBlockingOnIO { suspendIsEditable(eventUid) }
-    }
-
-    @Deprecated(message = "Use rxIsEditable instead", ReplaceWith("rxIsEditable(eventUid)"))
-    override fun isEditable(eventUid: String): Single<Boolean> {
-        return rxSingle { suspendIsEditable(eventUid) }
-    }
-
-    override fun rxIsEditable(eventUid: String): Single<Boolean> {
-        return rxSingle { suspendIsEditable(eventUid) }
     }
 
     override suspend fun suspendIsEditable(eventUid: String): Boolean {
@@ -172,22 +117,6 @@ internal class EventServiceImpl(
             else ->
                 EventEditableStatus.Editable()
         }
-    }
-
-    override fun blockingCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {
-        return runBlockingOnIO { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
-    }
-
-    @Deprecated(
-        message = "Use rxCanAddEventToEnrollment instead",
-        ReplaceWith("rxCanAddEventToEnrollment(enrollmentUid, programStageUid)"),
-    )
-    override fun canAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
-        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
-    }
-
-    override fun rxCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Single<Boolean> {
-        return rxSingle { suspendCanAddEventToEnrollment(enrollmentUid, programStageUid) }
     }
 
     override suspend fun suspendCanAddEventToEnrollment(enrollmentUid: String, programStageUid: String): Boolean {

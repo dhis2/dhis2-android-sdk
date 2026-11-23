@@ -45,10 +45,12 @@ interface ImageTransformer {
     /**
      * Compresses to 600 KB, the size used for uploads.
      */
+    @Throws(D2Error::class)
     fun compress(image: Path): Path
 
     /**
      * Returns [image] if it was not compressed. The result may be a JPEG or a PNG regardless of the input format.
      */
+    @Throws(D2Error::class)
     fun compress(image: Path, targetSizeBytes: Long): Path
 }

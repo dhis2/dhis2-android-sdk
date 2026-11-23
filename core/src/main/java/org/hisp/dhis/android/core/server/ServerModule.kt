@@ -28,13 +28,20 @@
 package org.hisp.dhis.android.core.server
 
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.helpers.Result
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.maintenance.D2Error
 
 interface ServerModule {
     @Deprecated(message = "Use rxCheckServerUrl instead", ReplaceWith("rxCheckServerUrl(serverUrl)"))
-    fun checkServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>>
-    fun rxCheckServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>>
-    fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error>
+    fun checkServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>> = rxCheckServerUrl(serverUrl)
+
+    fun rxCheckServerUrl(serverUrl: String): Single<Result<LoginConfig, D2Error>> =
+        rxSingle { suspendCheckServerUrl(serverUrl) }
+
+    fun blockingCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error> =
+        runBlockingOnIO { suspendCheckServerUrl(serverUrl) }
+
     suspend fun suspendCheckServerUrl(serverUrl: String): Result<LoginConfig, D2Error>
 }

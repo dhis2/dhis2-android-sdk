@@ -28,6 +28,7 @@
 package org.hisp.dhis.android.core.datavalue
 
 import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.helpers.internal.runBlockingOnIO
 import org.hisp.dhis.android.core.arch.repositories.children.internal.ChildrenAppenderGetter
 import org.hisp.dhis.android.core.arch.repositories.`object`.ReadWriteValueObjectRepository
 import org.hisp.dhis.android.core.arch.repositories.`object`.internal.ObjectRepositoryFactory
@@ -49,7 +50,7 @@ class DataValueObjectRepository internal constructor(
     private val dataElement: String,
     private val categoryOptionCombo: String,
     private val attributeOptionCombo: String,
-    private val sourceDataSet: String? = null,
+    private val sourceDataSetProvider: suspend () -> String?,
 ) : ReadWriteWithValueObjectRepositoryImpl<DataValue, DataValueObjectRepository>(
     store,
     databaseAdapter,
@@ -66,7 +67,7 @@ class DataValueObjectRepository internal constructor(
             dataElement,
             categoryOptionCombo,
             attributeOptionCombo,
-            sourceDataSet,
+            sourceDataSetProvider,
         )
     },
 ),
@@ -74,22 +75,35 @@ class DataValueObjectRepository internal constructor(
 
     @Throws(D2Error::class)
     override suspend fun suspendSet(value: String?) {
+        val sourceDataSet = sourceDataSetProvider()
         updateIfChangedInternal(value, { it?.value() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).value(newValue).deleted(false).build()
+            setBuilder(dataValue, sourceDataSet).value(newValue).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setFollowUp(followUp: Boolean) {
-        updateIfChanged(followUp, { it?.followUp() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).followUp(newValue).deleted(false).build()
+        runBlockingOnIO { suspendSetFollowUp(followUp) }
+    }
+
+    @Throws(D2Error::class)
+    suspend fun suspendSetFollowUp(followUp: Boolean) {
+        val sourceDataSet = sourceDataSetProvider()
+        updateIfChangedInternal(followUp, { it?.followUp() }) { dataValue: DataValue?, newValue ->
+            setBuilder(dataValue, sourceDataSet).followUp(newValue).deleted(false).build()
         }
     }
 
     @Throws(D2Error::class)
     fun setComment(comment: String?) {
-        updateIfChanged(comment, { it?.comment() }) { dataValue: DataValue?, newValue ->
-            setBuilder(dataValue).comment(newValue).deleted(false).build()
+        runBlockingOnIO { suspendSetComment(comment) }
+    }
+
+    @Throws(D2Error::class)
+    suspend fun suspendSetComment(comment: String?) {
+        val sourceDataSet = sourceDataSetProvider()
+        updateIfChangedInternal(comment, { it?.comment() }) { dataValue: DataValue?, newValue ->
+            setBuilder(dataValue, sourceDataSet).comment(newValue).deleted(false).build()
         }
     }
 
@@ -106,7 +120,7 @@ class DataValueObjectRepository internal constructor(
         }
     }
 
-    private fun setBuilder(dataValue: DataValue? = null): DataValue.Builder {
+    private fun setBuilder(dataValue: DataValue?, sourceDataSet: String?): DataValue.Builder {
         val date = Date()
         return if (dataValue != null) {
             val state = if (dataValue.syncState() === State.TO_POST) State.TO_POST else State.TO_UPDATE

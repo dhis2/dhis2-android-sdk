@@ -88,7 +88,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
         } catch (e: D2Error) {
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_LOGOUT_FIRST)
         } finally {
-            d2.userModule().accountManager().deleteCurrentAccount()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
         }
     }
 
@@ -105,7 +105,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_ALREADY_EXISTS)
         } finally {
             d2.userModule().blockingLogIn(username, password, serverUrl)
-            d2.userModule().accountManager().deleteCurrentAccount()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
         }
     }
 
@@ -122,7 +122,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_INVALID_FILE)
         } finally {
             d2.userModule().blockingLogIn(username, password, serverUrl)
-            d2.userModule().accountManager().deleteCurrentAccount()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
         }
     }
 
@@ -139,7 +139,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
             assertThat(e.errorCode()).isEqualTo(D2ErrorCode.DATABASE_IMPORT_FAILED)
         } finally {
             d2.userModule().blockingLogIn(username, password, serverUrl)
-            d2.userModule().accountManager().deleteCurrentAccount()
+            d2.userModule().accountManager().blockingDeleteCurrentAccount()
         }
     }
 
@@ -202,9 +202,9 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
         val exportedFile = d2.maintenanceModule().databaseImportExport().exportLoggedUserDatabaseToPath()
 
-        d2.userModule().accountManager().deleteCurrentAccount()
+        d2.userModule().accountManager().blockingDeleteCurrentAccount()
 
-        val fileMetadata = d2.maintenanceModule().databaseImportExport().importDatabase(exportedFile)
+        val fileMetadata = d2.maintenanceModule().databaseImportExport().blockingImportDatabase(exportedFile)
 
         assertThat(fileMetadata.username).isEqualTo(username)
         assertThat(fileMetadata.serverUrl).isEqualTo(serverUrl)
@@ -220,7 +220,7 @@ class DatabaseImportExportFromDatabaseAssetsMockIntegrationShould : BaseMockInte
 
         assertThat(d2.programModule().programs().blockingCount()).isEqualTo(3)
 
-        d2.userModule().accountManager().deleteCurrentAccount()
+        d2.userModule().accountManager().blockingDeleteCurrentAccount()
 
         FileSystem.SYSTEM.delete(exportedFile)
     }

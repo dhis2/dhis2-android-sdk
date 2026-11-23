@@ -81,11 +81,10 @@ internal class FileResourceFiles(
 
     @Throws(IOException::class)
     fun saveFile(sourceFile: Path, fileResourceUid: String): Path {
-        val source = fileSystem.source(sourceFile)
         val generatedName = generateFileName(fileResourceUid, getExtension(sourceFile.name))
         val destinationFile = fileResourceDirectories.fileResourceDirectory() / generatedName
 
-        return writeSource(source, destinationFile)
+        return writeSource(fileSystem.source(sourceFile), destinationFile)
     }
 
     fun saveFileFromResponse(body: ByteArray, fileResource: FileResource): Path {

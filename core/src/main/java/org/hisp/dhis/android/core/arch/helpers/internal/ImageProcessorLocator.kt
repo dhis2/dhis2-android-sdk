@@ -42,26 +42,17 @@ import java.io.File
  */
 internal object ImageProcessorLocator {
 
-    private val TAG = ImageProcessorLocator::class.java.simpleName
-
     val processor: ImageProcessor by lazy { AndroidImageProcessor(FileSystem.SYSTEM) }
 
     /**
      * Where the results of processing [source] are written: the cache directory of the logged account when D2 is
      * instantiated, since they are volatile files, and the directory of [source] otherwise.
      */
-    @Suppress("TooGenericExceptionCaught")
     fun outputDirectory(source: File): Path {
         if (!D2Manager.isD2Instantiated()) {
             val parent = requireNotNull(source.absoluteFile.parentFile) { "${source.name} has no parent directory" }
             return parent.toOkioPath()
         }
-        val directories = D2Manager.getD2().d2DIComponent.fileResourceDirectories
-        return try {
-            directories.fileCacheResourceDirectory()
-        } catch (e: RuntimeException) {
-            D2Logger.w(TAG, "Could not resolve the account cache directory", e)
-            directories.rootFileCacheResourceDirectory()
-        }
+        return D2Manager.getD2().d2DIComponent.fileResourceDirectories.fileCacheResourceDirectoryOrRoot()
     }
 }

@@ -37,6 +37,9 @@ import org.hisp.dhis.android.core.arch.helpers.internal.D2Logger
 import org.hisp.dhis.android.core.configuration.internal.DatabaseAccount
 import org.hisp.dhis.android.core.configuration.internal.DatabaseNameGenerator
 import org.hisp.dhis.android.core.fileresource.FileResourceDirectories
+import org.hisp.dhis.android.core.maintenance.D2Error
+import org.hisp.dhis.android.core.maintenance.D2ErrorCode
+import org.hisp.dhis.android.core.maintenance.D2ErrorComponent
 import org.koin.core.annotation.Singleton
 
 /**
@@ -46,6 +49,7 @@ import org.koin.core.annotation.Singleton
  * Getters create the directory if it does not exist yet.
  */
 @Singleton
+@Suppress("TooManyFunctions")
 internal class FileResourceDirectoriesImpl(
     private val fileSystem: FileSystem,
     private val platformDirectories: PlatformDirectories,
@@ -64,6 +68,20 @@ internal class FileResourceDirectoriesImpl(
 
     override fun fileCacheResourceDirectory(): Path {
         return createIfMissing(cacheRoot / currentSubfolder())
+    }
+
+    /**
+     * Only for the deprecated static helpers: without a logged-in user, they always returned the shared root.
+     */
+    fun fileResourceDirectoryOrRoot(): Path {
+        return createIfMissing(filesRoot / subfolderName(databaseAdapter.getDatabaseName()))
+    }
+
+    /**
+     * Only for the deprecated static helpers: without a logged-in user, they always returned the shared root.
+     */
+    fun fileCacheResourceDirectoryOrRoot(): Path {
+        return createIfMissing(cacheRoot / subfolderName(databaseAdapter.getDatabaseName()))
     }
 
     fun rootFileResourceDirectory(): Path {
@@ -85,7 +103,13 @@ internal class FileResourceDirectoriesImpl(
     }
 
     private fun currentSubfolder(): String {
-        return subfolderName(databaseAdapter.getDatabaseName())
+        return subfolderName(databaseAdapter.getDatabaseName()).ifEmpty {
+            throw D2Error.builder()
+                .errorComponent(D2ErrorComponent.SDK)
+                .errorCode(D2ErrorCode.NO_AUTHENTICATED_USER)
+                .errorDescription("The file resource directories of an account need a logged-in user")
+                .build()
+        }
     }
 
     private fun createIfMissing(directory: Path): Path {

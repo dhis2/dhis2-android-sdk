@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.android.core.arch.db.access.internal
 
+import kotlinx.coroutines.CancellationException
 import okio.FileSystem
 import okio.Path
 import okio.Path.Companion.toOkioPath
@@ -134,6 +135,7 @@ internal class DatabaseImportExportImpl(
         }
     }
 
+    @Suppress("TooGenericExceptionCaught")
     override suspend fun exportLoggedUserDatabaseToPath(): Path {
         val exportMetadataFile = workingFile(ExportMetadata)
         val copiedDatabase = workingFile(ExportDatabase)
@@ -146,6 +148,26 @@ internal class DatabaseImportExportImpl(
                 .build()
         }
 
+        return try {
+            writeExportZip(exportMetadataFile, copiedDatabase, protectedDatabase)
+        } catch (e: Exception) {
+            when (e) {
+                is D2Error, is CancellationException -> throw e
+                else ->
+                    throw d2ErrorBuilder
+                        .errorDescription("Export database failed")
+                        .errorCode(D2ErrorCode.DATABASE_EXPORT_FAILED)
+                        .originalException(e)
+                        .build()
+            }
+        } finally {
+            fileSystem.deleteIfExists(exportMetadataFile)
+            fileSystem.deleteIfExists(copiedDatabase)
+            fileSystem.deleteIfExists(protectedDatabase)
+        }
+    }
+
+    private suspend fun writeExportZip(exportMetadataFile: Path, copiedDatabase: Path, protectedDatabase: Path): Path {
         val credentials = credentialsStore.get()
             ?: throw IllegalArgumentException("Credentials are not set")
 
@@ -192,10 +214,6 @@ internal class DatabaseImportExportImpl(
             files = listOf(exportMetadataFile, protectedDatabase),
             zipFile = zipFile,
         )
-
-        fileSystem.deleteIfExists(exportMetadataFile)
-        fileSystem.deleteIfExists(copiedDatabase)
-        fileSystem.deleteIfExists(protectedDatabase)
 
         return zipFile
     }

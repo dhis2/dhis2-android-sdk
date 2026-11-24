@@ -272,6 +272,9 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
                     path.startsWith("/api/events?") ->
                         createMockResponse(EVENTS_JSON)
 
+                    path.startsWith("/api/tracker/events?") && path.contains("enrollments=") ->
+                        createMockResponse(NEW_ENROLLMENT_EVENTS_JSON)
+
                     path.startsWith("/api/tracker/events?") ->
                         createMockResponse(NEW_EVENTS_JSON)
 
@@ -519,6 +522,7 @@ class Dhis2MockServer(private val fileReader: IFileReader, port: Int) {
         private const val USER_JSON = "user/user38.json"
         private const val EVENTS_JSON = "event/events.json"
         private const val NEW_EVENTS_JSON = "event/new_tracker_importer_events.json"
+        private const val NEW_ENROLLMENT_EVENTS_JSON = "event/new_tracker_importer_enrollment_events.json"
         private const val LEGEND_SETS_JSON = "legendset/legend_sets.json"
         private const val EXPRESSION_DIMENSION_ITEMS =
             "expressiondimensionitem/expression_dimension_items.json"

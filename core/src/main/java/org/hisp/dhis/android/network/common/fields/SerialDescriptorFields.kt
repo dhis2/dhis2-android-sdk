@@ -37,12 +37,18 @@ import kotlinx.serialization.json.JsonNames
 
 /**
  * Builds the `fields` parameter from the DTO: every property except [NotRequested] ones is requested, expanding
- * nested DTOs and list elements recursively. Top-level properties in [exclude] are left out; unknown names fail.
+ * nested DTOs and list elements recursively. Top-level properties in [exclude] are left out; for each property path
+ * in [select], like `enrollments.events`, only the given properties of that nested DTO are requested. Unknown names
+ * fail.
  */
-internal fun SerialDescriptor.toFieldsString(exclude: Set<String> = emptySet()): String {
+internal fun SerialDescriptor.toFieldsString(
+    exclude: Set<String> = emptySet(),
+    select: Map<String, Set<String>> = emptyMap(),
+): String {
     val unknownNames = exclude - elementNames.toSet()
     require(unknownNames.isEmpty()) { "$unknownNames are not properties of ${nonNullSerialName()}" }
-    return fieldsString(path = emptyList(), exclude = exclude)
+    select.forEach { (path, names) -> names.forEach { requirePropertyPath("$path.$it") } }
+    return fieldsString(path = emptyList(), propertyPath = null, exclude = exclude, select = select)
 }
 
 /**
@@ -57,13 +63,25 @@ internal fun SerialDescriptor.requirePropertyPath(path: String) {
     }
 }
 
-private fun SerialDescriptor.fieldsString(path: List<String>, exclude: Set<String> = emptySet()): String {
+private fun SerialDescriptor.fieldsString(
+    path: List<String>,
+    propertyPath: String?,
+    exclude: Set<String> = emptySet(),
+    select: Map<String, Set<String>>,
+): String {
     val currentPath = path + nonNullSerialName()
     require(nonNullSerialName() !in path) { "Cyclic DTO reference: ${currentPath.joinToString(" -> ")}" }
+    val selected = propertyPath?.let { select[it] }
 
-    return (0 until elementsCount).filterNot { getElementName(it) in exclude || isNotRequested(it) }.flatMap { index ->
-        requestedNames(index).map { name -> getElementDescriptor(index).fieldString(name, currentPath) }
-    }.joinToString(",")
+    return (0 until elementsCount)
+        .filterNot { getElementName(it) in exclude || isNotRequested(it) }
+        .filter { selected == null || getElementName(it) in selected }
+        .flatMap { index ->
+            val childPath = propertyPath?.let { "$it.${getElementName(index)}" } ?: getElementName(index)
+            requestedNames(index).map { name ->
+                getElementDescriptor(index).fieldString(name, currentPath, childPath, select)
+            }
+        }.joinToString(",")
 }
 
 private fun SerialDescriptor.isNotRequested(index: Int): Boolean {
@@ -79,12 +97,17 @@ private fun SerialDescriptor.requestedNames(index: Int): List<String> {
     return listOf(getElementName(index)) + alternativeNames
 }
 
-private fun SerialDescriptor.fieldString(name: String, path: List<String>): String {
+private fun SerialDescriptor.fieldString(
+    name: String,
+    path: List<String>,
+    propertyPath: String,
+    select: Map<String, Set<String>>,
+): String {
     val type = unwrapLists()
     return when {
         type.isLeaf() -> name
         type.kind == StructureKind.CLASS || type.kind == StructureKind.OBJECT ->
-            if (type.elementsCount == 0) name else "$name[${type.fieldsString(path)}]"
+            if (type.elementsCount == 0) name else "$name[${type.fieldsString(path, propertyPath, select = select)}]"
         else -> throw IllegalArgumentException(
             "Cannot infer the fields of '${path.joinToString(".")}.$name' (${type.serialName}, kind ${type.kind})",
         )

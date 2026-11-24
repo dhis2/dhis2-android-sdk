@@ -34,8 +34,11 @@ import org.hisp.dhis.android.network.common.filters.Filter
 
 @Suppress("TooManyFunctions")
 class ParametersBuilder(var parameters: MutableList<Pair<String, String>>) {
-    internal inline fun <reified DTO> fields(exclude: Set<String> = emptySet()) {
-        parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString(exclude))
+    internal inline fun <reified DTO> fields(
+        exclude: Set<String> = emptySet(),
+        select: Map<String, Set<String>> = emptyMap(),
+    ) {
+        parameters.add("fields" to serializer<DTO>().descriptor.toFieldsString(exclude, select))
     }
 
     internal inline fun <reified DTO> keys() {

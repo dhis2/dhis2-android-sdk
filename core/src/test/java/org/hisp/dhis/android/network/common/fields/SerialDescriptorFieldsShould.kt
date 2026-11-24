@@ -131,6 +131,20 @@ internal class SerialDescriptorFieldsShould {
     }
 
     @Test
+    fun request_only_selected_properties_of_nested_dtos() {
+        assertThat(SampleDTO.serializer().descriptor.toFieldsString(select = mapOf("children" to setOf("parent"))))
+            .isEqualTo("id,displayName,type,count,reference[id],children[parent[id]],tags,created,coordinates")
+    }
+
+    @Test
+    fun reject_selected_names_that_are_not_properties() {
+        val error = assertThrows(IllegalArgumentException::class.java) {
+            SampleDTO.serializer().descriptor.toFieldsString(select = mapOf("children" to setOf("uid")))
+        }
+        assertThat(error.message).contains("'children.uid'")
+    }
+
+    @Test
     fun accept_property_paths_through_nested_dtos_and_lists() {
         SampleDTO.serializer().descriptor.requirePropertyPath("displayName")
         SampleDTO.serializer().descriptor.requirePropertyPath("reference.id")

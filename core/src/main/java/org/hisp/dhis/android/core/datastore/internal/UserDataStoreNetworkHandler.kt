@@ -28,27 +28,4 @@
 
 package org.hisp.dhis.android.core.datastore.internal
 
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.datastore.DataStoreEntry
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
-
-internal interface UserDataStoreNetworkHandler {
-    suspend fun getNamespaces(): Result<List<String>, D2Error>
-
-    suspend fun getNamespaceKeys(namespace: String): Result<List<String>, D2Error>
-
-    suspend fun getNamespaceValues38(
-        namespace: String,
-        page: Int,
-        pageSize: Int,
-    ): Result<List<DataStoreEntry>, D2Error>
-
-    suspend fun getNamespaceKeyValue(namespace: String, key: String): Result<DataStoreEntry, D2Error>
-
-    suspend fun postNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
-
-    suspend fun putNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
-
-    suspend fun deleteNamespaceKeyValue(dataStoreEntry: DataStoreEntry): Result<HttpMessageResponse, D2Error>
-}
+internal interface UserDataStoreNetworkHandler : DataStoreNetworkHandler

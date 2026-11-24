@@ -36,7 +36,7 @@ import org.junit.Test
 
 /**
  * `DataStoreEntry.value` is the caller-visible JSON of a dataStore entry, so this mapping is the
- * public contract of both dataStore read endpoints — `getNamespaceValues38` and
+ * public contract of both dataStore read endpoints — `getNamespaceValuesPaged` and
  * `getNamespaceKeyValue` each route through [DataStoreEntryDTO.toDomain].
  *
  * These tests pin that the stored value is the JSON payload itself. It previously stored the

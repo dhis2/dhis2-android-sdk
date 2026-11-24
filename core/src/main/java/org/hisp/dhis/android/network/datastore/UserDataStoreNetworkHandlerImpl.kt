@@ -27,96 +27,15 @@
  */
 package org.hisp.dhis.android.network.datastore
 
-import io.ktor.http.HttpStatusCode
 import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.core.arch.api.executors.internal.CoroutineAPICallExecutor
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.hisp.dhis.android.core.datastore.internal.UserDataStoreNetworkHandler
-import org.hisp.dhis.android.core.imports.internal.HttpMessageResponse
-import org.hisp.dhis.android.core.maintenance.D2Error
-import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
 
-@Singleton
+@Singleton(binds = [UserDataStoreNetworkHandler::class])
 internal class UserDataStoreNetworkHandlerImpl(
     httpClient: HttpServiceClient,
-    private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
-) : UserDataStoreNetworkHandler {
-    private val service: UserDataStoreService = UserDataStoreService(httpClient)
-
-    override suspend fun getNamespaces(): Result<List<String>, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = false) {
-            service.getNamespaces()
-        }
-    }
-
-    override suspend fun getNamespaceKeys(namespace: String): Result<List<String>, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = false) {
-            service.getNamespaceKeys(namespace)
-        }
-    }
-
-    override suspend fun getNamespaceValues38(
-        namespace: String,
-        page: Int,
-        pageSize: Int,
-    ): Result<List<DataStoreEntry>, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = false) {
-            val apiPayload = service.getNamespaceValues38(namespace, page, pageSize)
-            apiPayload.items.map { it.toDomain(namespace) }
-        }
-    }
-
-    override suspend fun getNamespaceKeyValue(namespace: String, key: String): Result<DataStoreEntry, D2Error> {
-        return coroutineAPICallExecutor.wrap(storeError = false) {
-            val apiPayload = service.getNamespaceKeyValue(namespace, key)
-            DataStoreEntryDTO(key, apiPayload).toDomain(namespace)
-        }
-    }
-
-    override suspend fun postNamespaceKeyValue(
-        dataStoreEntry: DataStoreEntry,
-    ): Result<HttpMessageResponse, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(HttpStatusCode.Conflict.value),
-            errorClassParser = HttpMessageResponseDTO::toErrorClass,
-        ) {
-            val apiResponse = service.postNamespaceKeyValue(
-                dataStoreEntry.namespace(),
-                dataStoreEntry.toDto(),
-            )
-            apiResponse.toDomain()
-        }
-    }
-
-    override suspend fun putNamespaceKeyValue(
-        dataStoreEntry: DataStoreEntry,
-    ): Result<HttpMessageResponse, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
-            errorClassParser = HttpMessageResponseDTO::toErrorClass,
-        ) {
-            val apiResponse = service.putNamespaceKeyValue(
-                dataStoreEntry.namespace(),
-                dataStoreEntry.toDto(),
-            )
-            apiResponse.toDomain()
-        }
-    }
-
-    override suspend fun deleteNamespaceKeyValue(
-        dataStoreEntry: DataStoreEntry,
-    ): Result<HttpMessageResponse, D2Error> {
-        return coroutineAPICallExecutor.wrap(
-            storeError = false,
-            acceptedErrorCodes = listOf(HttpStatusCode.NotFound.value),
-            errorClassParser = HttpMessageResponseDTO::toErrorClass,
-        ) {
-            val apiResponse = service.deleteNamespaceKeyValue(dataStoreEntry.namespace(), dataStoreEntry.key())
-            apiResponse.toDomain()
-        }
-    }
+    coroutineAPICallExecutor: CoroutineAPICallExecutor,
+) : DataStoreNetworkHandlerImpl(httpClient, coroutineAPICallExecutor), UserDataStoreNetworkHandler {
+    override val apiPath: String = DataStoreService.USER_DATA_STORE
 }

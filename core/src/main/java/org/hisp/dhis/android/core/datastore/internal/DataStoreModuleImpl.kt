@@ -27,12 +27,12 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
+import org.hisp.dhis.android.core.arch.db.access.DatabaseAdapter
+import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.datastore.DataStoreCollectionRepository
 import org.hisp.dhis.android.core.datastore.DataStoreDownloader
 import org.hisp.dhis.android.core.datastore.DataStoreModule
 import org.hisp.dhis.android.core.datastore.LocalDataStoreCollectionRepository
-import org.hisp.dhis.android.core.datastore.UserDataStoreCollectionRepository
-import org.hisp.dhis.android.core.datastore.UserDataStoreDownloader
 import org.koin.core.annotation.Singleton
 
 @Singleton
@@ -40,9 +40,19 @@ internal class DataStoreModuleImpl(
     private val localDataStore: LocalDataStoreCollectionRepository,
     private val dataStoreEntryCollectionRepository: DataStoreCollectionRepository,
     private val dataStoreDownloader: DataStoreDownloader,
-    private val userDataStoreCollectionRepository: UserDataStoreCollectionRepository,
-    private val userDataStoreDownloader: UserDataStoreDownloader,
+    userDataStoreStore: UserDataStoreEntryStore,
+    userDataStorePostCall: UserDataStorePostCall,
+    userDataStoreDownloadCall: UserDataStoreDownloadCall,
+    databaseAdapter: DatabaseAdapter,
 ) : DataStoreModule {
+    private val userDataStoreCollectionRepository = DataStoreCollectionRepository(
+        userDataStoreStore,
+        userDataStorePostCall,
+        RepositoryScope.empty(),
+        databaseAdapter,
+    )
+    private val userDataStoreDownloader = DataStoreDownloader(userDataStoreDownloadCall, DataStoreDownloadParams())
+
     override fun localDataStore(): LocalDataStoreCollectionRepository {
         return localDataStore
     }
@@ -55,11 +65,11 @@ internal class DataStoreModuleImpl(
         return dataStoreDownloader
     }
 
-    override fun userDataStore(): UserDataStoreCollectionRepository {
+    override fun userDataStore(): DataStoreCollectionRepository {
         return userDataStoreCollectionRepository
     }
 
-    override fun userDataStoreDownloader(): UserDataStoreDownloader {
+    override fun userDataStoreDownloader(): DataStoreDownloader {
         return userDataStoreDownloader
     }
 }

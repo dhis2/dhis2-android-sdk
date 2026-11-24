@@ -27,75 +27,10 @@
  */
 package org.hisp.dhis.android.core.datastore.internal
 
-import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import org.hisp.dhis.android.core.arch.call.D2Progress
-import org.hisp.dhis.android.core.arch.call.internal.D2ProgressManager
-import org.hisp.dhis.android.core.arch.helpers.Result
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.errorIfOnline
-import org.hisp.dhis.android.core.arch.helpers.internal.DataStateHelper.forcedOrOwn
-import org.hisp.dhis.android.core.common.State
-import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.koin.core.annotation.Singleton
 
-@Singleton
+@Singleton(binds = [UserDataStorePostCall::class])
 internal class UserDataStorePostCall(
-    private val networkHandler: UserDataStoreNetworkHandler,
-    private val dataStoreEntryImportHandler: UserDataStoreImportHandler,
-    private val store: UserDataStoreEntryStore,
-) {
-    fun uploadDataStoreEntries(entries: List<DataStoreEntry>): Flow<D2Progress> = flow {
-        if (entries.isEmpty()) {
-            return@flow
-        }
-        val progressManager = D2ProgressManager(entries.size)
-        entries.forEach { entry ->
-            postEntry(entry)
-            emit(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = false))
-        }
-        emit(progressManager.increaseProgress(DataStoreEntry::class.java, isComplete = true))
-    }
-
-    private suspend fun postEntry(entry: DataStoreEntry) {
-        store.setState(entry, forcedOrOwn(entry, State.UPLOADING))
-
-        if (entry.deleted() == true) {
-            deleteEntry(entry)
-        } else {
-            createOrUpdate(entry)
-        }
-    }
-
-    private suspend fun deleteEntry(entry: DataStoreEntry) {
-        networkHandler.deleteNamespaceKeyValue(entry).fold(
-            onSuccess = { r -> dataStoreEntryImportHandler.handleDelete(entry, r) },
-            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
-        )
-    }
-
-    private suspend fun createOrUpdate(entry: DataStoreEntry) {
-        val result = when (entry.syncState()) {
-            State.TO_POST ->
-                networkHandler.postNamespaceKeyValue(entry).flatMap { r ->
-                    when (r.httpStatusCode) {
-                        HttpStatusCode.Conflict.value -> networkHandler.putNamespaceKeyValue(entry)
-                        else -> Result.Success(r)
-                    }
-                }
-
-            else ->
-                networkHandler.putNamespaceKeyValue(entry).flatMap { r ->
-                    when (r.httpStatusCode) {
-                        HttpStatusCode.NotFound.value -> networkHandler.postNamespaceKeyValue(entry)
-                        else -> Result.Success(r)
-                    }
-                }
-        }
-
-        result.fold(
-            onSuccess = { r -> dataStoreEntryImportHandler.handleUpdateOrCreate(entry, r) },
-            onFailure = { t -> store.setStateIfUploading(entry, forcedOrOwn(entry, errorIfOnline(t))) },
-        )
-    }
-}
+    networkHandler: UserDataStoreNetworkHandler,
+    store: UserDataStoreEntryStore,
+) : DataStorePostCall(networkHandler, DataStoreImportHandler(store), store)

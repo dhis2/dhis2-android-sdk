@@ -154,7 +154,7 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
     }
 
     @Test
-    fun delete_userDataStore_entry_from_userDataStore_endpoint() = runTest {
+    fun delete_userDataStore_entry_from_userDataStore_endpoint() {
         dhis2MockServer.enqueueMockResponse(
             code = HttpStatusCode.Created.value,
             fileName = "datastore/actions/namespace_key_post_201.json",

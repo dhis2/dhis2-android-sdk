@@ -48,7 +48,6 @@ internal open class DataStoreDownloadCall(
     private val versionManager: DHISVersionManager,
 ) {
 
-    /** First version that supports paged values (?fields=.) for the namespace endpoint. */
     protected open val pagedValuesMinVersion: DHISVersion = DHISVersion.V2_38
 
     fun download(params: DataStoreDownloadParams): Flow<D2Progress> = channelFlow {

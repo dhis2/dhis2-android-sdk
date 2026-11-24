@@ -33,7 +33,7 @@ import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
 internal class DataStoreService(
     private val client: HttpServiceClient,
-    private val apiPath: String = DATA_STORE,
+    private val apiPath: String,
 ) {
     suspend fun getNamespaces(): List<String> {
         return client.get {

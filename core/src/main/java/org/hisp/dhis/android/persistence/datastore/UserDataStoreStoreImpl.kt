@@ -55,7 +55,7 @@ internal class UserDataStoreStoreImpl(
     }
 
     override suspend fun cleanOrphan(namespace: String, slaves: Collection<DataStoreEntry>?) {
-        val dao = databaseAdapter.getCurrentDatabase().userDataStoreDao()
+        val dao = daoProvider() as UserDataStoreDao
         val syncStatesToDelete = listOf(State.SYNCED.name, State.SYNCED_VIA_SMS.name)
 
         if (slaves.isNullOrEmpty()) {

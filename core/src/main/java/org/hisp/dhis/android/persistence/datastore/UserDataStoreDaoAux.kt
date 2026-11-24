@@ -35,7 +35,7 @@ import org.hisp.dhis.android.processor.GenerateDaoQueries
 @GenerateDaoQueries
 internal interface UserDataStoreDaoAux : ObjectDao<UserDataStoreDB> {
     @Query(
-        """UPDATE UserDataStore
+        """UPDATE ${UserDataStoreTableInfo.TABLE_NAME}
         SET ${UserDataStoreTableInfo.Columns.SYNC_STATE} = :state
         WHERE ${UserDataStoreTableInfo.Columns.NAMESPACE} = :namespace
         AND `${UserDataStoreTableInfo.Columns.KEY}` = :key;""",
@@ -43,7 +43,7 @@ internal interface UserDataStoreDaoAux : ObjectDao<UserDataStoreDB> {
     suspend fun setSyncState(state: String, namespace: String, key: String)
 
     @Query(
-        """UPDATE UserDataStore
+        """UPDATE ${UserDataStoreTableInfo.TABLE_NAME}
         SET ${UserDataStoreTableInfo.Columns.SYNC_STATE} = :state
         WHERE ${UserDataStoreTableInfo.Columns.NAMESPACE} = :namespace
         AND `${UserDataStoreTableInfo.Columns.KEY}` = :key

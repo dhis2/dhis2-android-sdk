@@ -29,18 +29,8 @@ package org.hisp.dhis.android.core.datastore
 
 interface DataStoreModule {
     fun localDataStore(): LocalDataStoreCollectionRepository
-
     fun dataStore(): DataStoreCollectionRepository
     fun dataStoreDownloader(): DataStoreDownloader
-
-    /**
-     * Entries of the server /api/userDataStore: values that belong to the logged-in user and are kept in the server,
-     * so they are available on any device the user logs in. Use [userDataStoreDownloader] to download them.
-     */
     fun userDataStore(): DataStoreCollectionRepository
-
-    /**
-     * Download and persist the content in the userDataStore of the logged-in user.
-     */
     fun userDataStoreDownloader(): DataStoreDownloader
 }

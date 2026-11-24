@@ -41,6 +41,5 @@ internal class UserDataStoreDownloadCall(
     versionManager: DHISVersionManager,
 ) : DataStoreDownloadCall(coroutineAPICallExecutor, networkHandler, DataStoreHandler(store), versionManager) {
 
-    // Paged values (?fields=.) are available in /userDataStore since 2.41 (and 2.40.3), see DHIS2-15723
     override val pagedValuesMinVersion: DHISVersion = DHISVersion.V2_41
 }

@@ -40,7 +40,9 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnlineHelper.Companion.toAPIOrderFormat
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryScopeOrderByItem.Companion.DEFAULT_TRACKER_ORDER
 import org.hisp.dhis.android.core.tracker.TrackerExporterVersion
+import org.hisp.dhis.android.core.tracker.exporter.EventsPage
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
+import org.hisp.dhis.android.core.tracker.exporter.TrackerEventsMode
 import org.hisp.dhis.android.core.tracker.exporter.TrackerExporterNetworkHandler
 import org.hisp.dhis.android.core.tracker.exporter.TrackerQueryHelper.getOrgunits
 import org.hisp.dhis.android.core.util.simpleDateFormat
@@ -48,6 +50,7 @@ import org.hisp.dhis.android.network.common.PayloadJson
 import org.koin.core.annotation.Singleton
 
 @Singleton
+@Suppress("TooManyFunctions")
 internal class TrackerExporterNetworkHandlerImpl(
     httpServiceClient: HttpServiceClient,
     private val parameterManager: TrackerExporterParameterManager,
@@ -60,7 +63,14 @@ internal class TrackerExporterNetworkHandlerImpl(
         val programStatus = query.getProgramStatus()
         val programStartDate = query.getProgramStartDate()
 
+        val select = when (query.eventsMode) {
+            TrackerEventsMode.FULL -> emptyMap()
+            TrackerEventsMode.INDEX -> NewTrackedEntityDTO.EVENT_INDEX
+            TrackerEventsMode.NONE -> NewTrackedEntityDTO.WITHOUT_EVENTS
+        }
+
         val apiPayload = service.getTrackedEntityInstances(
+            select = select,
             trackedEntityInstances = parameterManager.getTrackedEntitiesParameter(query.uids),
             orgUnits = parameterManager.getOrgunitsParameter(getOrgunits(query)),
             orgUnitMode = parameterManager.getOrgunitModeParameter(query.commonParams.ouMode),
@@ -207,6 +217,42 @@ internal class TrackerExporterNetworkHandlerImpl(
             eventUid = parameterManager.getEventsParameter(eventQuery.uids),
         )
         return apiPayload.mapItems(NewEventDTO::toDomain)
+    }
+
+    override suspend fun getEventsByUids(program: String, uids: Collection<String>): List<Event> {
+        val apiPayload = service.getEvents<NewEventPayload, NewEventDTO>(
+            orgUnit = null,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
+            program = program,
+            paging = false,
+            page = null,
+            pageSize = null,
+            updatedAfter = null,
+            includeDeleted = true,
+            eventUid = parameterManager.getEventsParameter(uids),
+        )
+        return apiPayload.items.map(NewEventDTO::toDomain)
+    }
+
+    override suspend fun getEventsOfEnrollments(
+        program: String,
+        enrollmentUids: Collection<String>,
+        page: Int,
+        pageSize: Int,
+    ): EventsPage {
+        val apiPayload = service.getEvents<NewEventPayload, NewEventDTO>(
+            orgUnit = null,
+            orgUnitMode = parameterManager.getOrgunitModeParameter(OrganisationUnitMode.ACCESSIBLE),
+            program = program,
+            paging = true,
+            page = page,
+            pageSize = pageSize,
+            updatedAfter = null,
+            includeDeleted = false,
+            enrollments = enrollmentUids,
+            totalPages = page == 1,
+        )
+        return EventsPage(apiPayload.items.map(NewEventDTO::toDomain), apiPayload.pager().pageCount)
     }
 
     override suspend fun getEventRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event> {

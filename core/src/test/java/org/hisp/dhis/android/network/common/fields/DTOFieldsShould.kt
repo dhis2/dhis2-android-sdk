@@ -92,8 +92,11 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 internal class DTOFieldsShould {
 
-    private inline fun <reified DTO> fieldsOf(exclude: Set<String> = emptySet()): String {
-        return ParametersBuilder(mutableListOf()).apply { fields<DTO>(exclude) }.parameters.single().second
+    private inline fun <reified DTO> fieldsOf(
+        exclude: Set<String> = emptySet(),
+        select: Map<String, Set<String>> = emptyMap(),
+    ): String {
+        return ParametersBuilder(mutableListOf()).apply { fields<DTO>(exclude, select) }.parameters.single().second
     }
 
     private val requestedFields = mapOf(
@@ -127,6 +130,10 @@ internal class DTOFieldsShould {
         "NewEventTrackedEntityDTO" to fieldsOf<NewEventTrackedEntityDTO>(),
         "NewTrackedEntityDTO" to fieldsOf<NewTrackedEntityDTO>(),
         "NewTrackedEntityDTO for search" to fieldsOf<NewTrackedEntityDTO>(NewTrackedEntityDTO.SEARCH_EXCLUDED),
+        "NewTrackedEntityDTO with event index" to
+            fieldsOf<NewTrackedEntityDTO>(select = NewTrackedEntityDTO.EVENT_INDEX),
+        "NewTrackedEntityDTO without events" to
+            fieldsOf<NewTrackedEntityDTO>(select = NewTrackedEntityDTO.WITHOUT_EVENTS),
         "NewTrackedEntityDTO without children" to fieldsOf<NewTrackedEntityDTO>(NewTrackedEntityDTO.CHILDREN),
         "OptionDTO" to fieldsOf<OptionDTO>(),
         "OptionGroupDTO" to fieldsOf<OptionGroupDTO>(),
@@ -283,6 +290,31 @@ internal class DTOFieldsShould {
             "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
             "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt],programOwners[program," +
             "trackedEntity,orgUnit]",
+        "NewTrackedEntityDTO with event index" to
+            "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
+            "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt],enrollments[deleted," +
+            "enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,program,enrolledAt,occurredAt," +
+            "completedAt,followUp,status,trackedEntity,geometry[type,coordinates],attributeOptionCombo," +
+            "events[deleted,event,updatedAt]," +
+            "notes[deleted,note,value,storedBy,storedAt]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]],programOwners[program,trackedEntity,orgUnit]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]",
+        "NewTrackedEntityDTO without events" to
+            "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
+            "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt],enrollments[deleted," +
+            "enrollment,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,program,enrolledAt,occurredAt," +
+            "completedAt,followUp,status,trackedEntity,geometry[type,coordinates],attributeOptionCombo," +
+            "notes[deleted,note,value,storedBy,storedAt]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]],programOwners[program,trackedEntity,orgUnit]," +
+            "relationships[deleted,relationship,relationshipType,relationshipName,createdAt,updatedAt," +
+            "from[trackedEntity[trackedEntity],enrollment[enrollment],event[event]],to[trackedEntity[trackedEntity]," +
+            "enrollment[enrollment],event[event]]]",
         "NewTrackedEntityDTO without children" to
             "deleted,trackedEntity,createdAt,updatedAt,createdAtClient,updatedAtClient,orgUnit,trackedEntityType," +
             "geometry[type,coordinates],attributes[attribute,value,createdAt,updatedAt]",

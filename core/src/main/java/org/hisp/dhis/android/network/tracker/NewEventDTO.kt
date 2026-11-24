@@ -99,6 +99,11 @@ internal data class NewEventDTO(
          * Nested collections left out when only the event itself is needed, e.g. as a relationship item.
          */
         val CHILDREN = setOf("notes", "dataValues", "relationships")
+
+        /**
+         * Properties of the event index: enough to diff it against the local database.
+         */
+        val INDEX = setOf("event", "updatedAt", "deleted")
     }
 }
 

@@ -37,6 +37,7 @@ internal data class TrackerAPIQuery(
     val uids: Collection<String> = emptyList(),
     val programStatus: EnrollmentStatus? = null,
     val lastUpdatedStr: String? = null,
+    val eventsMode: TrackerEventsMode = TrackerEventsMode.FULL,
     override val page: Int = 1,
     override val pageSize: Int = DEFAULT_PAGE_SIZE,
     override val paging: Boolean = true,
@@ -73,4 +74,18 @@ internal data class TrackerAPIQuery(
             else -> null
         }
     }
+}
+
+/**
+ * How the events nested in the tracked entities are requested.
+ */
+internal enum class TrackerEventsMode {
+    /** Complete events (legacy exporter, or several programs at once). */
+    FULL,
+
+    /** Index of the events (uid, updatedAt, deleted) to diff it against the local database. */
+    INDEX,
+
+    /** No events: there is nothing local to diff, so they are downloaded apart by enrollment. */
+    NONE,
 }

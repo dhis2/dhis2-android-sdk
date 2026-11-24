@@ -35,6 +35,7 @@ import org.hisp.dhis.android.core.relationship.internal.RelationshipItemRelative
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
 import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQueryOnline
 
+@Suppress("TooManyFunctions")
 internal interface TrackerExporterNetworkHandler {
     suspend fun getTrackedEntityCollectionCall(
         query: TrackerAPIQuery,
@@ -65,5 +66,23 @@ internal interface TrackerExporterNetworkHandler {
     suspend fun getEnrollmentRelationshipEntityCall(item: RelationshipItemRelative): Enrollment
 
     suspend fun getEventCollectionCall(eventQuery: TrackerAPIQuery): Payload<Event>
+
+    suspend fun getEventsByUids(program: String, uids: Collection<String>): List<Event>
+
+    suspend fun getEventsOfEnrollments(
+        program: String,
+        enrollmentUids: Collection<String>,
+        page: Int,
+        pageSize: Int,
+    ): EventsPage
+
     suspend fun getEventRelationshipEntityCall(item: RelationshipItemRelative): Payload<Event>
 }
+
+/**
+ * A page of events. [pageCount] is only known for the first page, which requests the total.
+ */
+internal data class EventsPage(
+    val events: List<Event>,
+    val pageCount: Int?,
+)

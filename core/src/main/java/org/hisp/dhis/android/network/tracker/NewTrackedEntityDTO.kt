@@ -29,6 +29,7 @@
 package org.hisp.dhis.android.network.tracker
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.elementNames
 import kotlinx.serialization.json.JsonNames
 import org.hisp.dhis.android.core.trackedentity.NewTrackerImporterTrackedEntity
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
@@ -89,6 +90,18 @@ internal data class NewTrackedEntityDTO(
          * Nested collections left out by the online search, which keeps the program owners.
          */
         val SEARCH_EXCLUDED = setOf("enrollments", "relationships")
+
+        /**
+         * Nested events reduced to the index used by the selective event download.
+         */
+        val EVENT_INDEX = mapOf("enrollments.events" to NewEventDTO.INDEX)
+
+        /**
+         * Enrollments without their events, which are downloaded apart by enrollment.
+         */
+        val WITHOUT_EVENTS = mapOf(
+            "enrollments" to NewEnrollmentDTO.serializer().descriptor.elementNames.toSet() - "events",
+        )
     }
 }
 

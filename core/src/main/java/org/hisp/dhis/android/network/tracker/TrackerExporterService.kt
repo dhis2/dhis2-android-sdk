@@ -56,6 +56,7 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
 
     suspend fun getTrackedEntityInstances(
         exclude: Set<String> = emptySet(),
+        select: Map<String, Set<String>> = emptyMap(),
         trackedEntityInstances: Map<String, String> = emptyMap(),
         orgUnits: Map<String, String> = emptyMap(),
         orgUnitMode: Map<String, String> = emptyMap(),
@@ -84,7 +85,7 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
         return client.get {
             url(TRACKED_ENTITIES_API)
             parameters {
-                fields<NewTrackedEntityDTO>(exclude)
+                fields<NewTrackedEntityDTO>(exclude, select)
                 trackedEntityInstances.forEach { (key, value) -> attribute(key, value) }
                 orgUnits.forEach { (key, value) -> attribute(key, value) }
                 orgUnitMode.forEach { (key, value) -> attribute(key, value) }
@@ -156,6 +157,8 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
         updatedBefore: String? = null,
         includeDeleted: Boolean,
         eventUid: Map<String, String> = emptyMap(),
+        enrollments: Collection<String>? = null,
+        totalPages: Boolean? = null,
     ): P {
         return client.get {
             url(EVENTS_API)
@@ -184,6 +187,8 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
                 attribute(UPDATED_BEFORE, updatedBefore)
                 attribute(INCLUDE_DELETED, includeDeleted)
                 eventUid.forEach { (key, value) -> attribute(key, value) }
+                attribute(ENROLLMENTS, enrollments?.joinToString(","))
+                attribute(TOTAL_PAGES, totalPages)
                 paging(paging)
                 page(page)
                 pageSize(pageSize)
@@ -212,6 +217,7 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
         const val TRACKED_ENTITY = "trackedEntity"
         const val TRACKED_ENTITIES = "trackedEntities"
         const val ENROLLMENT = "enrollment"
+        const val ENROLLMENTS = "enrollments"
         const val EVENT = "event"
         const val EVENTS = "events"
         const val ORG_UNIT = "orgUnit"
@@ -227,6 +233,7 @@ internal class TrackerExporterService(@PublishedApi internal val client: HttpSer
         const val ENROLLMENT_OCCURRED_BEFORE = "enrollmentOccurredBefore"
         const val FOLLOW_UP = "followUp"
         const val STATUS = "status"
+        const val TOTAL_PAGES = "totalPages"
         const val EVENT_STATUS = "eventStatus"
         const val EVENT_START_DATE = "eventOccurredAfter"
         const val EVENT_END_DATE = "eventOccurredBefore"

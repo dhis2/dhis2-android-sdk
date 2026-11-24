@@ -358,7 +358,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
                 program = callPage.query.commonParams.program,
             )
 
-            persistItems(itemsToPersist, persistParams, relatives)
+            persistItems(itemsToPersist, persistParams, relatives, callPage.query)
 
             downloadFileResourcesIfEnabled(
                 enabled = downloadFileResources,
@@ -471,6 +471,7 @@ internal abstract class TrackerDownloadCall<T, Q : BaseTrackerQueryBundle>(
         items: List<T>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
+        query: TrackerAPIQuery?,
     )
 
     protected abstract suspend fun updateLastUpdated(bundle: Q, syncDate: Date)

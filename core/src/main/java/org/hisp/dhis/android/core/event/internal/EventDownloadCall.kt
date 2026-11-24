@@ -96,6 +96,7 @@ internal class EventDownloadCall internal constructor(
         items: List<Event>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
+        query: TrackerAPIQuery?,
     ) {
         persistenceCallFactory.persistEvents(items, relatives)
     }
@@ -148,7 +149,7 @@ internal class EventDownloadCall internal constructor(
                 program = eventQuery.commonParams.program,
             )
 
-            persistItems(items, params = persistParams, relatives)
+            persistItems(items, params = persistParams, relatives, query = null)
 
             downloadFileResourcesIfEnabled(
                 enabled = downloadFileResources,

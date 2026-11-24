@@ -48,6 +48,7 @@ import org.hisp.dhis.android.core.systeminfo.SystemInfo
 import org.hisp.dhis.android.core.systeminfo.internal.SystemInfoModuleDownloader
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityAttributeValue
 import org.hisp.dhis.android.core.trackedentity.TrackedEntityInstance
+import org.hisp.dhis.android.core.trackedentity.internal.SelectiveEventDownloader
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityEndpointCallFactory
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceDownloadCall
 import org.hisp.dhis.android.core.trackedentity.internal.TrackedEntityInstanceLastUpdatedManager
@@ -65,6 +66,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import org.mockito.kotlin.any
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
@@ -95,6 +97,7 @@ class TrackerDownloadCallShould {
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager = mock()
     private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository = mock()
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper = mock()
+    private val selectiveEventDownloader: SelectiveEventDownloader = mock()
 
     private lateinit var call: TrackedEntityInstanceDownloadCall
 
@@ -106,6 +109,7 @@ class TrackerDownloadCallShould {
         whenever(queryFactory.getQueries(any())).doReturn(emptyList())
         whenever(systemInfoModuleDownloader.downloadAndReturn()).doReturn(systemInfo)
         whenever(systemInfo.serverDate).doReturn(Date())
+        whenever(selectiveEventDownloader.eventsMode(anyOrNull())).doReturn(TrackerEventsMode.FULL)
 
         call = TrackedEntityInstanceDownloadCall(
             userOrganisationUnitLinkStore,
@@ -122,6 +126,7 @@ class TrackerDownloadCallShould {
             lastUpdatedManager,
             teiQueryCollectionRepository,
             breakTheGlassHelper,
+            selectiveEventDownloader,
         )
     }
 

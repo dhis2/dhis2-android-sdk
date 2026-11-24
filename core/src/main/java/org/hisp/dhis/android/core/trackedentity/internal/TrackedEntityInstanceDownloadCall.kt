@@ -51,6 +51,7 @@ import org.hisp.dhis.android.core.trackedentity.search.TrackedEntityInstanceQuer
 import org.hisp.dhis.android.core.tracker.exporter.DownloadOrgunit
 import org.hisp.dhis.android.core.tracker.exporter.TrackerAPIQuery
 import org.hisp.dhis.android.core.tracker.exporter.TrackerDownloadCall
+import org.hisp.dhis.android.core.tracker.exporter.TrackerEventsMode
 import org.hisp.dhis.android.core.tracker.importer.internal.TrackerImporterBreakTheGlassHelper
 import org.hisp.dhis.android.core.user.internal.UserOrganisationUnitLinkStore
 import org.koin.core.annotation.Singleton
@@ -73,6 +74,7 @@ internal class TrackedEntityInstanceDownloadCall(
     private val lastUpdatedManager: TrackedEntityInstanceLastUpdatedManager,
     private val teiQueryCollectionRepository: TrackedEntityInstanceQueryCollectionRepository,
     private val breakTheGlassHelper: TrackerImporterBreakTheGlassHelper,
+    private val selectiveEventDownloader: SelectiveEventDownloader,
 ) : TrackerDownloadCall<TrackedEntityInstance, TrackerQueryBundle>(
     userOrganisationUnitLinkStore,
     systemInfoModuleDownloader,
@@ -99,8 +101,13 @@ internal class TrackedEntityInstanceDownloadCall(
         items: List<TrackedEntityInstance>,
         params: IdentifiableDataHandlerParams,
         relatives: RelationshipItemRelatives,
+        query: TrackerAPIQuery?,
     ) {
-        persistenceCallFactory.persistTEIs(items, params, relatives)
+        if (query == null || query.eventsMode == TrackerEventsMode.FULL) {
+            persistenceCallFactory.persistTEIs(items, params, relatives)
+        } else {
+            selectiveEventDownloader.persist(items, params, relatives, query)
+        }
     }
 
     override suspend fun updateLastUpdated(bundle: TrackerQueryBundle, syncDate: Date) {
@@ -158,7 +165,7 @@ internal class TrackedEntityInstanceDownloadCall(
                     program = teiQuery.commonParams.program,
                 )
 
-                persistItems(teisList, persistParams, relatives)
+                persistItems(teisList, persistParams, relatives, query = null)
 
                 downloadFileResourcesIfEnabled(
                     enabled = downloadFileResources,
@@ -269,6 +276,7 @@ internal class TrackedEntityInstanceDownloadCall(
                 lastUpdatedStr = lastUpdatedManager.getLastUpdatedStr(bundle),
                 orgUnit = orgunit?.uid,
                 uids = teiUids.distinct(),
+                eventsMode = selectiveEventDownloader.eventsMode(program),
             )
         }
     }

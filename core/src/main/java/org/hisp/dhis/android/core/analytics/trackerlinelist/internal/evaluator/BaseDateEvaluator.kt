@@ -50,16 +50,18 @@ internal abstract class BaseDateEvaluator(
     )
     private val periodParser = PeriodParser()
 
-    fun getDateWhereClause(): String {
+    suspend fun getDateWhereClause(): String {
         return if (item.filters.isEmpty()) {
             "1"
         } else {
-            val orClause = item.filters.joinToString(" OR ") { "(${getFilterWhereClause(it)})" }
+            val orClause = item.filters
+                .map { "(${getFilterWhereClause(it)})" }
+                .joinToString(" OR ")
             if (item.filters.size > 1) "($orClause)" else orClause
         }
     }
 
-    private fun getFilterWhereClause(filter: DateFilter): String {
+    private suspend fun getFilterWhereClause(filter: DateFilter): String {
         val filterHelper = FilterHelper(item.id)
         return when (filter) {
             is DateFilter.Absolute -> {

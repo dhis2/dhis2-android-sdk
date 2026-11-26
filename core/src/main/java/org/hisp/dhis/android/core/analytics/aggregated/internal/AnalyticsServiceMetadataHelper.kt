@@ -203,11 +203,11 @@ internal class AnalyticsServiceMetadataHelper(
         )
     }
 
-    private fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
+    private suspend fun getPeriodItems(item: DimensionItem.PeriodItem): List<MetadataItem> {
         return listOf(
             when (item) {
                 is DimensionItem.PeriodItem.Absolute -> {
-                    val period = periodHelper.blockingGetPeriodForPeriodId(item.periodId)
+                    val period = periodHelper.suspendGetPeriodForPeriodId(item.periodId)
                     MetadataItem.PeriodItem(period)
                 }
 

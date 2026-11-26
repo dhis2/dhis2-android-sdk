@@ -33,6 +33,14 @@ import org.hisp.dhis.android.core.arch.helpers.Result
 abstract class IntegerValidatorBase<T : Throwable> : NumberValidatorBase<T>() {
 
     override fun internalValidate(value: String): Result<String, T> {
+        return if (value.matches(INTEGER_PATTERN)) {
+            validateIntegerValue(value)
+        } else {
+            Result.Failure(formatFailure)
+        }
+    }
+
+    private fun validateIntegerValue(value: String): Result<String, T> {
         return try {
             validateInteger(value)
         } catch (e: NumberFormatException) {
@@ -51,4 +59,8 @@ abstract class IntegerValidatorBase<T : Throwable> : NumberValidatorBase<T>() {
     protected abstract fun validateInteger(value: String): Result<String, T>
 
     abstract val overflowFailure: T
+
+    private companion object {
+        val INTEGER_PATTERN = "^(0|-?[1-9]\\d*)$".toRegex()
+    }
 }

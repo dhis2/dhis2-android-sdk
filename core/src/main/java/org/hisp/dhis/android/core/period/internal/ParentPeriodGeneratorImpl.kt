@@ -69,7 +69,7 @@ internal class ParentPeriodGeneratorImpl(
         return periodGenerator.generatePeriod(date.toLocalDate(), offset).toPeriods()
     }
 
-    override fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
+    override suspend fun generateRelativePeriods(relativePeriod: RelativePeriod): List<Period> {
         val periodType = relativePeriod.getPeriodType(relativePeriodHelper)
         val periodGenerator = getPeriodGenerator(periodType)
 

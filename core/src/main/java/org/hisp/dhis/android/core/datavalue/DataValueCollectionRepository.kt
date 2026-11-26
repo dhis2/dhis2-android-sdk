@@ -43,9 +43,9 @@ import org.hisp.dhis.android.core.arch.repositories.filters.internal.StringFilte
 import org.hisp.dhis.android.core.arch.repositories.scope.RepositoryScope
 import org.hisp.dhis.android.core.common.State
 import org.hisp.dhis.android.core.dataset.internal.DataSetElementStore
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.dataValueKey
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.operator
-import org.hisp.dhis.android.core.datavalue.DataValueByDataSetQueryHelper.whereClause
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.dataValueKey
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.operator
+import org.hisp.dhis.android.core.datavalue.internal.DataValueByDataSetQueryHelper.whereClause
 import org.hisp.dhis.android.core.datavalue.internal.DataValuePostCall
 import org.hisp.dhis.android.core.datavalue.internal.DataValueStore
 import org.hisp.dhis.android.core.maintenance.D2Error

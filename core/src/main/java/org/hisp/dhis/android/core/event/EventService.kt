@@ -28,6 +28,8 @@
 package org.hisp.dhis.android.core.event
 
 import io.reactivex.Single
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.rx2.rxSingle
 
 @Suppress("TooManyFunctions")
 interface EventService {
@@ -110,16 +112,22 @@ interface EventService {
      *
      * @see getEditableStatus
      */
-    fun blockingGetEditableStatus(eventUid: String): EventEditableStatus
+    fun blockingGetEditableStatus(eventUid: String): EventEditableStatus = runBlocking {
+        suspendGetEditableStatus(eventUid)
+    }
 
     /**
      * Returns the editable status of an event. In case the event is not editable, the result also includes the
      * reason why it is not editable.
      */
     @Deprecated(message = "Use rxGetEditableStatus instead", ReplaceWith("rxGetEditableStatus(eventUid)"))
-    fun getEditableStatus(eventUid: String): Single<EventEditableStatus>
+    fun getEditableStatus(eventUid: String): Single<EventEditableStatus> = rxSingle {
+        suspendGetEditableStatus(eventUid)
+    }
 
-    fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus>
+    fun rxGetEditableStatus(eventUid: String): Single<EventEditableStatus> = rxSingle {
+        suspendGetEditableStatus(eventUid)
+    }
 
     suspend fun suspendGetEditableStatus(eventUid: String): EventEditableStatus
 

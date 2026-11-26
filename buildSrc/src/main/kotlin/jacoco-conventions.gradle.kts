@@ -130,15 +130,17 @@ tasks.register("jacocoReport", JacocoReport::class) {
     val javaClasses = fileTree(layout.buildDirectory.file("intermediates/javac/debug")) {
         exclude(excludes)
     }
-    val kotlinClasses = fileTree(layout.buildDirectory.file("tmp/kotlin-classes/debug")) {
-        exclude(excludes)
-    }
+    // AGP's built-in Kotlin support emits here instead of tmp/kotlin-classes (see https://kotl.in/gradle/agp-built-in-kotlin)
+    val builtInKotlinClasses =
+        fileTree(layout.buildDirectory.file("intermediates/built_in_kotlinc/debug/compileDebugKotlin/classes")) {
+            exclude(excludes)
+        }
 
     classDirectories.setFrom(
         files(
             listOf(
                 javaClasses,
-                kotlinClasses
+                builtInKotlinClasses
             )
         )
     )

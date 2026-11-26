@@ -170,10 +170,10 @@ internal class EventLineListServiceImpl(
         } else {
             params.eventDates.flatMap { filter ->
                 var innerBuilder = repoBuilder
-                dateFilterPeriodHelper.getStartDate(filter)?.let {
+                dateFilterPeriodHelper.suspendGetStartDate(filter)?.let {
                     innerBuilder = innerBuilder.byEventDate().afterOrEqual(it)
                 }
-                dateFilterPeriodHelper.getEndDate(filter)?.let {
+                dateFilterPeriodHelper.suspendGetEndDate(filter)?.let {
                     innerBuilder = innerBuilder.byEventDate().beforeOrEqual(it)
                 }
                 innerBuilder.suspendGet()

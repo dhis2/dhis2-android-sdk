@@ -141,7 +141,7 @@ internal class AnalyticsVisualizationsService(
             queryAnalyticsRepository = queryAnalyticsRepository.withAggregationType(it)
         }
 
-        return queryAnalyticsRepository.blockingEvaluate()
+        return queryAnalyticsRepository.suspendEvaluate()
     }
 
     private fun buildGridResponse(

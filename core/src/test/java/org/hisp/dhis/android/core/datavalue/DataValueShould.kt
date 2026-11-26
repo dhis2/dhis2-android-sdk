@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import org.hisp.dhis.android.core.common.BaseIdentifiableObject
 import org.hisp.dhis.android.core.common.CoreObjectShould
 import org.hisp.dhis.android.network.datavalue.DataValueDTO
+import org.hisp.dhis.android.network.datavalue.DataValueSetDTO
 import org.junit.Test
 
 internal class DataValueShould : CoreObjectShould<DataValueDTO>(
@@ -41,7 +42,7 @@ internal class DataValueShould : CoreObjectShould<DataValueDTO>(
     @Test
     override fun map_from_json_string() {
         val dataValueDTO = deserialize()
-        val dataValue = dataValueDTO.toDomain("lyLU2wR22tC")
+        val dataValue = dataValueDTO.toDomain("lyLU2wR22tC", DataValueSetDTO())
 
         assertThat(dataValue.dataElement()).isEqualTo("s46m5MS0hxu")
         assertThat(dataValue.period()).isEqualTo("201712")

@@ -422,11 +422,11 @@ class TrackedEntityAttributeReservedValueManager internal constructor(
         val captureOrgUnits = userOrganisationUnitLinkStore.queryOrganisationUnitUidsByScope(
             OrganisationUnit.Scope.SCOPE_DATA_CAPTURE,
         )
-        linkedOrgUnitUids.toMutableList().retainAll(captureOrgUnits)
+        val orgUnitUids = linkedOrgUnitUids.intersect(captureOrgUnits.toSet())
         return organisationUnitStore.selectWhere(
             WhereClauseBuilder().appendInKeyStringValues(
                 IdentifiableColumns.UID,
-                linkedOrgUnitUids,
+                orgUnitUids,
             ).build(),
         ).filter { it.code() != null }
     }

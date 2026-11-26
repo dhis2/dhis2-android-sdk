@@ -27,12 +27,24 @@
  */
 package org.hisp.dhis.android.testapp.event.search
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.paging.PagedList
+import androidx.paging.testing.asSnapshot
 import com.google.common.truth.Truth.assertThat
+import com.jraska.livedata.TestObserver
+import kotlinx.coroutines.test.runTest
+import org.hisp.dhis.android.core.event.Event
 import org.hisp.dhis.android.core.util.toJavaSimpleDateNonNull
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestRule
 
 class EventQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationTestFullDispatcher() {
+
+    @get:Rule
+    val rule: TestRule = InstantTaskExecutorRule()
+
     @Test
     fun find_by_program() {
         val events = d2.eventModule().eventQuery()
@@ -90,5 +102,48 @@ class EventQueryCollectionRepositoryMockIntegrationShould : BaseMockIntegrationT
             .blockingGet()
 
         assertThat(events1.size).isEqualTo(1)
+    }
+
+    @Test
+    fun get_paging_data() = runTest {
+        val events = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .getPagingData(10)
+            .asSnapshot()
+
+        assertThat(events.size).isEqualTo(2)
+    }
+
+    @Test
+    fun get_pager() = runTest {
+        val events = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .getPager(10)
+            .flow
+            .asSnapshot()
+
+        assertThat(events.size).isEqualTo(2)
+    }
+
+    @Test
+    fun get_paged() {
+        @Suppress("DEPRECATION")
+        val liveData = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .getPaged(10)
+
+        TestObserver.test(liveData)
+            .awaitValue()
+            .assertHasValue()
+            .assertValue { pagedList: PagedList<Event> -> pagedList.size == 2 }
+    }
+
+    @Test
+    fun get_data_source() {
+        val dataSource = d2.eventModule().eventQuery()
+            .byProgram().eq("lxAQ7Zs9VYR")
+            .dataSource
+
+        assertThat(dataSource).isNotNull()
     }
 }

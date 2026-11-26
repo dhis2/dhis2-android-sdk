@@ -66,20 +66,21 @@ internal class VisualizationHandler(
         dimensions: List<VisualizationDimension>?,
         visualization: String,
         position: LayoutPosition,
-    ): List<VisualizationDimensionItem> = dimensions.orEmpty().flatMap { it.toDimensionItems(position, visualization) }
+    ): List<VisualizationDimensionItem> =
+        dimensions.orEmpty()
+            .flatMap { it.toDimensionItems(position, visualization) }
+            .mapIndexed { index, item ->
+                item.toBuilder()
+                    .sortOrder(index)
+                    .build()
+            }
 
     private fun VisualizationDimension.toDimensionItems(
         position: LayoutPosition,
         vistualization: String,
     ): List<VisualizationDimensionItem> {
         val baseItems = items().orEmpty().filterNotNull()
-        val nonEmptyItems = baseItems.ifEmpty { listOf(createEmptyItem(position, vistualization)) }
-
-        return nonEmptyItems.mapIndexed { index, item ->
-            item.toBuilder()
-                .sortOrder(index)
-                .build()
-        }
+        return baseItems.ifEmpty { listOf(createEmptyItem(position, vistualization)) }
     }
 
     private fun VisualizationDimension.createEmptyItem(

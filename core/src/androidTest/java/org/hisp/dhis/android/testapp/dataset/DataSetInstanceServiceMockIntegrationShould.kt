@@ -29,8 +29,10 @@
 package org.hisp.dhis.android.testapp.dataset
 
 import com.google.common.truth.Truth.assertThat
+import org.hisp.dhis.android.core.dataset.DataSetCompletionStatus
 import org.hisp.dhis.android.core.dataset.DataSetEditableStatus
 import org.hisp.dhis.android.core.dataset.DataSetNonEditableReason
+import org.hisp.dhis.android.core.dataset.DataSetValidationRulesConfiguration
 import org.hisp.dhis.android.core.period.PeriodType
 import org.hisp.dhis.android.core.utils.integration.mock.BaseMockIntegrationTestFullDispatcher
 import org.junit.Test
@@ -138,5 +140,47 @@ class DataSetInstanceServiceMockIntegrationShould :
         if (status is DataSetEditableStatus.NonEditable) {
             assertThat(status.reason).isNotEqualTo(DataSetNonEditableReason.PERIOD_NOT_IN_DATA_INPUT_PERIODS)
         }
+    }
+
+    @Test
+    fun allow_completion_when_dataset_does_not_require_valid_data() {
+        val status = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetCompletionStatus(
+                "lyLU2wR22tC",
+                "201908",
+                "DiszpKrYNg8",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
+    }
+
+    @Test
+    fun return_mandatory_validation_rules_configuration_when_dataset_requires_valid_data() {
+        val configuration = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetValidationRulesConfiguration("BfMAe6Itzgt")
+
+        assertThat(configuration).isEqualTo(DataSetValidationRulesConfiguration.MANDATORY)
+    }
+
+    @Test
+    fun return_optional_validation_rules_configuration_when_dataset_does_not_require_valid_data() {
+        val configuration = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetValidationRulesConfiguration("lyLU2wR22tC")
+
+        assertThat(configuration).isEqualTo(DataSetValidationRulesConfiguration.OPTIONAL)
+    }
+
+    @Test
+    fun allow_completion_when_validation_rules_pass() {
+        val status = d2.dataSetModule().dataSetInstanceService()
+            .blockingGetCompletionStatus(
+                "BfMAe6Itzgt",
+                "201908",
+                "DiszpKrYNg8",
+                "Gmbgme7z9BF",
+            )
+
+        assertThat(status).isInstanceOf(DataSetCompletionStatus.Completable::class.java)
     }
 }

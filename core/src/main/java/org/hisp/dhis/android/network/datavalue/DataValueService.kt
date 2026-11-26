@@ -40,8 +40,8 @@ internal class DataValueService(private val client: HttpServiceClient) {
         dataSetUids: String,
         periodIds: String,
         orgUnitUids: String,
+        attributeOptionComboUids: String?,
         children: Boolean,
-        paging: Boolean,
         includeDeleted: Boolean?,
     ): DataValueSetDTO {
         return client.get {
@@ -52,9 +52,9 @@ internal class DataValueService(private val client: HttpServiceClient) {
                 attribute("dataSet", dataSetUids)
                 attribute("period", periodIds)
                 attribute("orgUnit", orgUnitUids)
+                attribute("attributeOptionCombo", attributeOptionComboUids)
                 attribute("children", children)
                 attribute("includeDeleted", includeDeleted)
-                paging(paging)
             }
         }
     }

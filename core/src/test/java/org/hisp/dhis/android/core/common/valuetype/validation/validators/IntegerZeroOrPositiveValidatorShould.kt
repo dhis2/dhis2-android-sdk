@@ -55,6 +55,7 @@ class IntegerZeroOrPositiveValidatorShould :
     @Test
     fun `Should fail with a number format exception when value is malformed`() {
         valueShouldFail("5fe2", IntegerZeroOrPositiveFailure.NumberFormatException)
+        valueShouldFail("+5", IntegerZeroOrPositiveFailure.NumberFormatException)
     }
 
     @Test

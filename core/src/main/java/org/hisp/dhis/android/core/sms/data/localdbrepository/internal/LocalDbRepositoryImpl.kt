@@ -30,6 +30,7 @@ package org.hisp.dhis.android.core.sms.data.localdbrepository.internal
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
+import kotlinx.coroutines.rx2.await
 import kotlinx.coroutines.rx2.rxCompletable
 import kotlinx.coroutines.rx2.rxSingle
 import org.hisp.dhis.android.core.arch.json.internal.KotlinxJsonParser
@@ -159,13 +160,13 @@ internal class LocalDbRepositoryImpl(
     }
 
     override fun getTeiEnrollmentToSubmit(enrollmentUid: String): Single<TrackedEntityInstance> {
-        return Single.fromCallable {
-            val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().blockingGet()!!
-            val events = getEventsForEnrollment(enrollmentUid).blockingGet()
+        return rxSingle {
+            val enrollment = enrollmentModule.enrollments().byUid().eq(enrollmentUid).one().suspendGet()!!
+            val events = getEventsForEnrollment(enrollmentUid).await()
             val enrollmentWithEvents = enrollment.toBuilder()
                 .events(events)
                 .build()
-            val trackedEntityInstance = getTrackedEntityInstance(enrollment.trackedEntityInstance()).blockingGet()
+            val trackedEntityInstance = getTrackedEntityInstance(enrollment.trackedEntityInstance()).await()
             trackedEntityInstance.toBuilder()
                 .enrollments(listOf(enrollmentWithEvents))
                 .build()

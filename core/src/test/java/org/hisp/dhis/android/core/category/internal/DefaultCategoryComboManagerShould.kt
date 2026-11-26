@@ -40,6 +40,7 @@ import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.stub
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.mockito.kotlin.whenever
@@ -73,7 +74,7 @@ class DefaultCategoryComboManagerShould {
         whenever(categoryComboCollectionRepository.withCategoryOptionCombos())
             .doReturn(categoryComboCollectionRepository)
         whenever(categoryComboCollectionRepository.one()).doReturn(categoryComboRepository)
-        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
+        categoryComboRepository.stub { onBlocking { suspendGet() } doReturn categoryCombo }
 
         manager = DefaultCategoryComboManager(
             categoryComboCollectionRepository,
@@ -88,7 +89,7 @@ class DefaultCategoryComboManagerShould {
         val result = manager.defaultCategoryComboUid
 
         assertThat(result).isEqualTo(comboUid)
-        verify(categoryComboRepository, never()).blockingGet()
+        verify(categoryComboRepository, never()).suspendGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
@@ -100,29 +101,29 @@ class DefaultCategoryComboManagerShould {
         assertThat(manager.defaultCategoryOptionComboUid).isEqualTo(optionComboUid)
         assertThat(manager.defaultCategoryUid).isEqualTo(categoryUid)
 
-        verify(categoryComboRepository, never()).blockingGet()
+        verify(categoryComboRepository, never()).suspendGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
     @Test
     fun query_database_when_cache_is_empty() = runTest {
-        whenever(categoryComboRepository.blockingGet()).doReturn(categoryCombo)
+        categoryComboRepository.stub { onBlocking { suspendGet() } doReturn categoryCombo }
 
         val result = manager.defaultCategoryComboUid
 
         assertThat(result).isEqualTo(comboUid)
-        verify(categoryComboRepository).blockingGet()
+        verify(categoryComboRepository).suspendGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
     @Test
     fun return_null_when_not_in_database() = runTest {
-        whenever(categoryComboRepository.blockingGet()).doReturn(null)
+        categoryComboRepository.stub { onBlocking { suspendGet() } doReturn null }
 
         val result = manager.defaultCategoryComboUid
 
         assertThat(result).isNull()
-        verify(categoryComboRepository).blockingGet()
+        verify(categoryComboRepository).suspendGet()
         verifyNoMoreInteractions(networkHandler)
     }
 
@@ -153,12 +154,12 @@ class DefaultCategoryComboManagerShould {
 
         manager.clearCache()
 
-        whenever(categoryComboRepository.blockingGet()).doReturn(null)
+        categoryComboRepository.stub { onBlocking { suspendGet() } doReturn null }
 
         val result = manager.defaultCategoryComboUid
 
         assertThat(result).isNull()
-        verify(categoryComboRepository).blockingGet()
+        verify(categoryComboRepository).suspendGet()
     }
 
     @Test

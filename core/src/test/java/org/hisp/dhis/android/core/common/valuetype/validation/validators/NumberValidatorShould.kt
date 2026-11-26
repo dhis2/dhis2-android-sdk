@@ -37,10 +37,11 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
     fun `Should success when passing valid values`() {
         valueShouldSuccess("0")
         valueShouldSuccess("4")
-        valueShouldSuccess("+4")
         valueShouldSuccess("254.3")
         valueShouldSuccess("98.000005")
         valueShouldSuccess("-6.299")
+        valueShouldSuccess("-0.62")
+        valueShouldSuccess("-0")
     }
 
     @Test
@@ -73,5 +74,25 @@ class NumberValidatorShould : ValidatorShouldHelper<NumberFailure>(NumberValidat
         valueShouldFail("ln(2)", NumberFailure.NumberFormatException)
         valueShouldFail("2/3", NumberFailure.NumberFormatException)
         valueShouldFail(".5", NumberFailure.NumberFormatException)
+    }
+
+    @Test
+    fun `Should fail when passing values accepted by Double parsing but rejected by the server`() {
+        valueShouldFail("+4", NumberFailure.NumberFormatException)
+        valueShouldFail("+0.62", NumberFailure.NumberFormatException)
+        valueShouldFail("-.62", NumberFailure.NumberFormatException)
+        valueShouldFail("+.62", NumberFailure.NumberFormatException)
+        valueShouldFail("5.", NumberFailure.NumberFormatException)
+        valueShouldFail("-5.", NumberFailure.NumberFormatException)
+        valueShouldFail("-", NumberFailure.NumberFormatException)
+        valueShouldFail(" 5", NumberFailure.NumberFormatException)
+        valueShouldFail("5 ", NumberFailure.NumberFormatException)
+        valueShouldFail("10d", NumberFailure.NumberFormatException)
+        valueShouldFail("10f", NumberFailure.NumberFormatException)
+        valueShouldFail("0x1p3", NumberFailure.NumberFormatException)
+        valueShouldFail("Infinity", NumberFailure.NumberFormatException)
+        valueShouldFail("-Infinity", NumberFailure.NumberFormatException)
+        valueShouldFail("NaN", NumberFailure.NumberFormatException)
+        valueShouldFail("\u0661\u0662", NumberFailure.NumberFormatException)
     }
 }

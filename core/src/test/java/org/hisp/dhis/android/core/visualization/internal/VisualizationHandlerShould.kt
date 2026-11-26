@@ -31,6 +31,7 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.hisp.dhis.android.core.arch.handlers.internal.HandleAction
 import org.hisp.dhis.android.core.settings.internal.AnalyticsDhisVisualizationCleaner
+import org.hisp.dhis.android.core.visualization.LayoutPosition
 import org.hisp.dhis.android.core.visualization.Visualization
 import org.hisp.dhis.android.core.visualization.VisualizationDimension
 import org.hisp.dhis.android.core.visualization.VisualizationDimensionItem
@@ -113,5 +114,58 @@ class VisualizationHandlerShould {
         // (visualization, dimensionItem) primary key.
         assertThat(placeholderItems).containsExactly("$categoryUid1.allItems", "$categoryUid2.allItems")
         assertThat(placeholderItems.toSet()).hasSize(2)
+    }
+
+    @Test
+    fun `number sort order continuously across dimensions in the same position`() = runTest {
+        val locationCategory = "fMZEcRHuamy"
+        val ageCategory = "YNZyaJHiHYq"
+
+        whenever(visualization.columns()).doReturn(
+            listOf(
+                dimension(LayoutPosition.COLUMN, locationCategory, "qkPbeWaFsnU", "wbrDrL2aYEc"),
+                dimension(LayoutPosition.COLUMN, ageCategory, "btOyqprQ9e8", "GEqzEKCHoGA"),
+            ),
+        )
+        whenever(visualization.rows()).doReturn(
+            listOf(dimension(LayoutPosition.ROW, "pe", "THIS_MONTH")),
+        )
+        whenever(visualization.filters()).doReturn(emptyList())
+
+        val itemsCaptor = argumentCaptor<List<VisualizationDimensionItem>>()
+
+        visualizationHandler.handleMany(listOf(visualization))
+
+        verify(visualizationDimensionItemHandler).handleMany(any(), itemsCaptor.capture())
+
+        val itemsByPosition = itemsCaptor.firstValue.groupBy { it.position() }
+        val columnItems = itemsByPosition.getValue(LayoutPosition.COLUMN)
+            .sortedWith(compareBy({ it.sortOrder() }, { it.dimensionItem() }))
+        val rowItems = itemsByPosition.getValue(LayoutPosition.ROW)
+
+        assertThat(columnItems.map { it.sortOrder() }).containsExactly(0, 1, 2, 3).inOrder()
+        assertThat(columnItems.map { it.dimension() }.distinct())
+            .containsExactly(locationCategory, ageCategory).inOrder()
+        assertThat(rowItems.map { it.sortOrder() }).containsExactly(0)
+    }
+
+    private fun dimension(
+        position: LayoutPosition,
+        dimension: String,
+        vararg items: String,
+    ): VisualizationDimension {
+        return VisualizationDimension.builder()
+            .id(dimension)
+            .items(
+                items.map { item ->
+                    VisualizationDimensionItem.builder()
+                        .visualization("visualization_uid")
+                        .position(position)
+                        .dimension(dimension)
+                        .dimensionItem(item)
+                        .build()
+                },
+            )
+            .build()
     }
 }

@@ -132,10 +132,10 @@ class ProgramStageDataElementCollectionRepositoryMockIntegrationShould : BaseMoc
             .blockingGet()
 
         assertThat(programStageDataElements[0].uid()).isEqualTo("QgGD234oA8i")
-        assertThat(programStageDataElements[0].sortOrder()).isEqualTo(2)
+        assertThat(programStageDataElements[0].sortOrder()).isEqualTo(3)
         assertThat(programStageDataElements[1].uid()).isEqualTo("ZD8pd21Dt4i")
-        assertThat(programStageDataElements[1].sortOrder()).isEqualTo(1)
+        assertThat(programStageDataElements[1].sortOrder()).isEqualTo(2)
         assertThat(programStageDataElements[2].uid()).isEqualTo("eM6beRIqUnM")
-        assertThat(programStageDataElements[2].sortOrder()).isEqualTo(0)
+        assertThat(programStageDataElements[2].sortOrder()).isEqualTo(1)
     }
 }

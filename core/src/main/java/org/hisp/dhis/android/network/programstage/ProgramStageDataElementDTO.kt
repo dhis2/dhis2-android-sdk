@@ -47,13 +47,12 @@ internal data class ProgramStageDataElementDTO(
     val displayInReports: Boolean?,
     val compulsory: Boolean?,
     val allowProvidedElsewhere: Boolean?,
-    val sortOrder: Int?,
     val allowFutureDate: Boolean?,
     val dataElement: DataElementDTO?,
     val programStage: ObjectWithUidDTO?,
     val renderType: ValueTypeRenderingDTO?,
 ) : BaseIdentifiableObjectDTO {
-    fun toDomain(): ProgramStageDataElement {
+    fun toDomain(sortOrder: Int): ProgramStageDataElement {
         return ProgramStageDataElement.builder()
             .applyBaseIdentifiableFields(this)
             .displayInReports(displayInReports)

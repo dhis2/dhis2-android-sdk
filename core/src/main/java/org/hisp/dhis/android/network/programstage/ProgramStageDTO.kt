@@ -116,7 +116,7 @@ internal data class ProgramStageDTO(
             enableUserAssignment?.let { enableUserAssignment(it) }
             programStageSections(programStageSections?.map { it.toDomain(id) })
             programStageDataElements(
-                programStageDataElements?.mapIndexed { index, dataElement -> dataElement.toDomain(index + 1) },
+                programStageDataElements?.mapIndexed { index, dataElement -> dataElement.toDomain(index) },
             )
             periodType(periodType?.let { PeriodType.valueOf(it) })
             program(program?.toDomain())

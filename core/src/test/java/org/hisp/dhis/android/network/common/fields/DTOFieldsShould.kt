@@ -339,7 +339,7 @@ internal class DTOFieldsShould {
             "name,displayName,created,lastUpdated,deleted,sortOrder,programIndicators[id],dataElements[id]," +
             "renderType[DESKTOP[type],MOBILE[type]],description,displayDescription],programStageDataElements[id," +
             "code,name,displayName,created,lastUpdated,deleted,displayInReports,compulsory," +
-            "allowProvidedElsewhere,sortOrder,allowFutureDate,dataElement[id,code,name,displayName,created," +
+            "allowProvidedElsewhere,allowFutureDate,dataElement[id,code,name,displayName,created," +
             "lastUpdated,deleted,shortName,displayShortName,description,displayDescription,valueType," +
             "zeroIsSignificant,aggregationType,formName,domainType,displayFormName,optionSet[id]," +
             "categoryCombo[id],legendSets[id],fieldMask,attributeValues[value,attribute[id]],style[color,icon]]," +

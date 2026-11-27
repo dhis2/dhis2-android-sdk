@@ -44,7 +44,7 @@ internal class ProgramStageDataElementShould : CoreObjectShould<ProgramStageData
     @Test
     override fun map_from_json_string() {
         val programStageDataElementDTO = deserialize()
-        val programStageDataElement = programStageDataElementDTO.toDomain()
+        val programStageDataElement = programStageDataElementDTO.toDomain(sortOrder = 11)
 
         Truth.assertThat(programStageDataElement.lastUpdated()).isEqualTo(
             BaseIdentifiableObject.DATE_FORMAT.parse("2015-08-06T20:16:48.444"),

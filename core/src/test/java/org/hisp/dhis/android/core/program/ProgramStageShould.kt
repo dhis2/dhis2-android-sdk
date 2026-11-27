@@ -97,5 +97,8 @@ internal class ProgramStageShould : CoreObjectShould<ProgramStageDTO>(
         assertThat(dataElements?.get(14)?.uid()).isEqualTo("psBtdqepNVM")
         assertThat(dataElements?.get(15)?.uid()).isEqualTo("UzB6pZxZ2Rb")
         assertThat(dataElements?.get(16)?.uid()).isEqualTo("FQZEMbBVabW")
+        dataElements?.forEachIndexed { index, dataElement ->
+            assertThat(dataElement.sortOrder()).isEqualTo(index)
+        }
     }
 }

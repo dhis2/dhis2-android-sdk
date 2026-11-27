@@ -38,7 +38,7 @@ internal interface DataStoreNetworkHandler {
 
     suspend fun getNamespaceKeys(namespace: String): Result<List<String>, D2Error>
 
-    suspend fun getNamespaceValues38(
+    suspend fun getNamespaceValuesPaged(
         namespace: String,
         page: Int,
         pageSize: Int,

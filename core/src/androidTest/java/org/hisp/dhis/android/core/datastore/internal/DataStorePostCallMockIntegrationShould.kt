@@ -121,6 +121,71 @@ class DataStorePostCallMockIntegrationShould : BaseMockIntegrationTestMetadataEn
         assertThat(d2.dataStoreModule().dataStore().blockingIsEmpty()).isTrue()
     }
 
+    @Test
+    fun post_userDataStore_success_to_userDataStore_endpoint() {
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Created.value,
+            fileName = "datastore/actions/namespace_key_post_201.json",
+        )
+        dhis2MockServer.takeLastRequest()
+        provideUserDataStore("config", "key", "{\"enabled\": true}")
+
+        assertUserEntryExistWithState(State.TO_POST)
+        d2.dataStoreModule().userDataStore().blockingUpload()
+        assertUserEntryExistWithState(State.SYNCED)
+
+        val request = dhis2MockServer.takeRequest()
+        assertThat(request.method).isEqualTo("POST")
+        assertThat(request.path).isEqualTo("/api/userDataStore/config/key")
+        assertThat(d2.dataStoreModule().dataStore().blockingIsEmpty()).isTrue()
+    }
+
+    @Test
+    fun put_userDataStore_if_already_exists() {
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Conflict.value,
+            fileName = "datastore/actions/namespace_key_post_already_exists_409.json",
+        )
+        dhis2MockServer.enqueueMockResponse("datastore/actions/namespace_key_put_200.json")
+        provideUserDataStore("config", "key", "{\"enabled\": true}")
+
+        d2.dataStoreModule().userDataStore().blockingUpload()
+        assertUserEntryExistWithState(State.SYNCED)
+    }
+
+    @Test
+    fun delete_userDataStore_entry_from_userDataStore_endpoint() {
+        dhis2MockServer.enqueueMockResponse(
+            code = HttpStatusCode.Created.value,
+            fileName = "datastore/actions/namespace_key_post_201.json",
+        )
+        dhis2MockServer.enqueueMockResponse("datastore/actions/namespace_key_deleted_200.json")
+        provideUserDataStore("config", "key", "{\"enabled\": true}")
+        d2.dataStoreModule().userDataStore().blockingUpload()
+        dhis2MockServer.takeLastRequest()
+
+        d2.dataStoreModule().userDataStore().value("config", "key").blockingDelete()
+        assertUserEntryExistWithState(State.TO_UPDATE)
+        d2.dataStoreModule().userDataStore().blockingUpload()
+
+        val request = dhis2MockServer.takeRequest()
+        assertThat(request.method).isEqualTo("DELETE")
+        assertThat(request.path).isEqualTo("/api/userDataStore/config/key")
+        assertThat(d2.dataStoreModule().userDataStore().blockingIsEmpty()).isTrue()
+    }
+
+    private fun assertUserEntryExistWithState(state: State) {
+        val entries = d2.dataStoreModule().userDataStore().blockingGet()
+        assertThat(entries.size).isEqualTo(1)
+        assertThat(entries[0].syncState()).isEqualTo(state)
+    }
+
+    private fun provideUserDataStore(namespace: String, key: String, value: String) {
+        d2.dataStoreModule().userDataStore()
+            .value(namespace, key)
+            .blockingSet(value)
+    }
+
     private fun assertExistWithState(state: State) {
         val entries = d2.dataStoreModule().dataStore().blockingGet()
         assertThat(entries.size).isEqualTo(1)

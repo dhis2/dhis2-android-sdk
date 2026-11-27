@@ -31,10 +31,13 @@ import org.hisp.dhis.android.core.arch.api.HttpServiceClient
 import org.hisp.dhis.android.network.common.JsonWrapper
 import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 
-internal class DataStoreService(private val client: HttpServiceClient) {
+internal class DataStoreService(
+    private val client: HttpServiceClient,
+    private val apiPath: String,
+) {
     suspend fun getNamespaces(): List<String> {
         return client.get {
-            url(DATA_STORE)
+            url(apiPath)
         }
     }
 
@@ -42,18 +45,18 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         namespace: String,
     ): List<String> {
         return client.get {
-            url("$DATA_STORE/$namespace")
+            url("$apiPath/$namespace")
         }
     }
 
-    suspend fun getNamespaceValues38(
+    suspend fun getNamespaceValuesPaged(
         namespace: String,
         page: Int,
         pageSize: Int,
         fields: String = ".",
     ): DataStoreEntryPayload {
         return client.get {
-            url("$DATA_STORE/$namespace")
+            url("$apiPath/$namespace")
             parameters {
                 attribute("fields", fields)
                 page(page)
@@ -67,7 +70,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         key: String,
     ): JsonWrapper {
         return client.get {
-            url("$DATA_STORE/$namespace/$key")
+            url("$apiPath/$namespace/$key")
         }
     }
 
@@ -76,7 +79,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         dataStoreEntryDTO: DataStoreEntryDTO,
     ): HttpMessageResponseDTO {
         return client.post {
-            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            url("$apiPath/$namespace/${dataStoreEntryDTO.key}")
             body(dataStoreEntryDTO.value)
         }
     }
@@ -86,7 +89,7 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         dataStoreEntryDTO: DataStoreEntryDTO,
     ): HttpMessageResponseDTO {
         return client.put {
-            url("$DATA_STORE/$namespace/${dataStoreEntryDTO.key}")
+            url("$apiPath/$namespace/${dataStoreEntryDTO.key}")
             body(dataStoreEntryDTO.value)
         }
     }
@@ -96,11 +99,12 @@ internal class DataStoreService(private val client: HttpServiceClient) {
         key: String,
     ): HttpMessageResponseDTO {
         return client.delete {
-            url("$DATA_STORE/$namespace/$key")
+            url("$apiPath/$namespace/$key")
         }
     }
 
     companion object {
-        private const val DATA_STORE = "dataStore"
+        const val DATA_STORE = "dataStore"
+        const val USER_DATA_STORE = "userDataStore"
     }
 }

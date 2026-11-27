@@ -41,12 +41,14 @@ import org.hisp.dhis.android.core.systeminfo.DHISVersionManager
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStoreDownloadCall(
+internal open class DataStoreDownloadCall(
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
     private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryHandler: DataStoreHandler,
     private val versionManager: DHISVersionManager,
 ) {
+
+    protected open val pagedValuesMinVersion: DHISVersion = DHISVersion.V2_38
 
     fun download(params: DataStoreDownloadParams): Flow<D2Progress> = channelFlow {
         coroutineAPICallExecutor.wrapTransactionallyRoom(cleanForeignKeyErrors = true) {
@@ -75,19 +77,19 @@ internal class DataStoreDownloadCall(
     }
 
     private suspend fun fetchNamespace(namespace: String): Result<List<DataStoreEntry>, D2Error> {
-        return if (versionManager.suspendIsGreaterOrEqualThan(DHISVersion.V2_38)) {
-            fetchNamespace38(namespace)
+        return if (versionManager.suspendIsGreaterOrEqualThan(pagedValuesMinVersion)) {
+            fetchNamespacePaged(namespace)
         } else {
-            fetchNamespace37(namespace)
+            fetchNamespaceByKey(namespace)
         }
     }
 
-    private suspend fun fetchNamespace38(namespace: String): Result<List<DataStoreEntry>, D2Error> {
+    private suspend fun fetchNamespacePaged(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         var page = 1
         val entries = mutableListOf<DataStoreEntry>()
 
         while (true) {
-            when (val result = networkHandler.getNamespaceValues38(namespace, page, PAGE_SIZE)) {
+            when (val result = networkHandler.getNamespaceValuesPaged(namespace, page, PAGE_SIZE)) {
                 is Result.Success -> {
                     entries += result.value
                     if (result.value.size < PAGE_SIZE) break
@@ -99,7 +101,7 @@ internal class DataStoreDownloadCall(
         return Result.Success(entries)
     }
 
-    private suspend fun fetchNamespace37(namespace: String): Result<List<DataStoreEntry>, D2Error> {
+    private suspend fun fetchNamespaceByKey(namespace: String): Result<List<DataStoreEntry>, D2Error> {
         return networkHandler.getNamespaceKeys(namespace).map { keys ->
             keys.map { key ->
                 networkHandler.getNamespaceKeyValue(namespace, key).getOrThrow()

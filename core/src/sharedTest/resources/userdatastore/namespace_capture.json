@@ -1,0 +1,19 @@
+{
+  "pager": {
+    "page": 1,
+    "pageSize": 50
+  },
+  "entries": [
+    {
+      "key": "preferences",
+      "value": {
+        "theme": "dark",
+        "favoritePrograms": ["IpHINAT79UW", "eBAyeGv0exc"]
+      }
+    },
+    {
+      "key": "lastVisited",
+      "value": "2026-11-19"
+    }
+  ]
+}

@@ -49,6 +49,20 @@ class DataStoreObjectRepositoryMockIntegrationShould : BaseMockIntegrationTestFu
     }
 
     @Test
+    fun add_and_delete_user_data_store_key_without_touching_data_store() {
+        val repository = d2.dataStoreModule().userDataStore()
+            .value("capture", "new_key")
+        repository.blockingSet("new_value")
+
+        assertThat(repository.blockingGet()!!.value()).isEqualTo("new_value")
+        assertThat(repository.blockingGet()!!.syncState()).isEqualTo(State.TO_POST)
+        assertThat(d2.dataStoreModule().dataStore().value("capture", "new_key").blockingExists()).isFalse()
+
+        repository.blockingDelete()
+        assertThat(repository.blockingExists()).isFalse()
+    }
+
+    @Test
     fun add_new_namespace() {
         val value = "new_value"
         val repository = d2.dataStoreModule().dataStore()

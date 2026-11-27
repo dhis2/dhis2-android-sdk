@@ -40,7 +40,7 @@ import org.hisp.dhis.android.core.datastore.DataStoreEntry
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStorePostCall(
+internal open class DataStorePostCall(
     private val networkHandler: DataStoreNetworkHandler,
     private val dataStoreEntryImportHandler: DataStoreImportHandler,
     private val store: DataStoreEntryStore,

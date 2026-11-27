@@ -39,11 +39,12 @@ import org.hisp.dhis.android.network.common.dto.HttpMessageResponseDTO
 import org.koin.core.annotation.Singleton
 
 @Singleton
-internal class DataStoreNetworkHandlerImpl(
+internal open class DataStoreNetworkHandlerImpl(
     httpClient: HttpServiceClient,
     private val coroutineAPICallExecutor: CoroutineAPICallExecutor,
 ) : DataStoreNetworkHandler {
-    private val service: DataStoreService = DataStoreService(httpClient)
+    protected open val apiPath: String = DataStoreService.DATA_STORE
+    private val service: DataStoreService by lazy { DataStoreService(httpClient, apiPath) }
 
     override suspend fun getNamespaces(): Result<List<String>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
@@ -57,13 +58,13 @@ internal class DataStoreNetworkHandlerImpl(
         }
     }
 
-    override suspend fun getNamespaceValues38(
+    override suspend fun getNamespaceValuesPaged(
         namespace: String,
         page: Int,
         pageSize: Int,
     ): Result<List<DataStoreEntry>, D2Error> {
         return coroutineAPICallExecutor.wrap(storeError = false) {
-            val apiPayload = service.getNamespaceValues38(namespace, page, pageSize)
+            val apiPayload = service.getNamespaceValuesPaged(namespace, page, pageSize)
             apiPayload.items.map { it.toDomain(namespace) }
         }
     }
